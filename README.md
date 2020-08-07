@@ -105,7 +105,7 @@ Finally, there is the risk that any proposal is __too arduous for adoption__. Un
 
 ### No declaration
 
-Why is a declaration needed at all? Why can't the document be fetched and loaded normally, just without creedentials?
+Why is a declaration needed at all? Why can't the document be fetched and loaded normally, just without credentials?
 
 The origin may already have data in its unpartitioned storage, but from the above, our goal is to provide for prerendering which does not grant access to it until the user actually navigates to the destination site. However, this may cause the content to load and behave differently than it would have with access to its unpartitioned storage. Then, when the prerendered document is preseneted, the user will observe any such differences as brokenness.
 
