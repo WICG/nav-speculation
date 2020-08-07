@@ -1,25 +1,24 @@
 # Alternate Loading Modes
 
-In order to making the experience of loading on the web faster, user agents employ prefetching and prerendering techniques.
+In order to making the experience of loading on the web faster, user agents employ prefetching and prerendering techniques. However, making cookies and other credentials available to the origin server or script may be inconsistent with the privacy objectives of the user or of the referring site.
 
-However, sending and loading a resource with cookies and other credentials may be inconsistent with the privacy objectives of the user or of the referring site. To accommodate these expectations, user agents would ideally may wish to fetch the content in a way that does not identify the user. For example, the user agent could:
+First, consider the __fetch__ of the resource. User agents would ideally prefetch the content in a way that does not identify the user. For example, the user agent could:
 
-* fetching without sending credentials (e.g., no Cookie or Authorization headers)
-* fetching from a different client IP address (e.g., using a proxy server or virtual private network, if available)
-* use a previously fetched response that either it fetched earlier, or can be properly authenticated (subject to cache control)
+* send a request without credentials (e.g., no `Cookie` or `Authorization` request header)
+* establish the connection from a different client IP address (e.g., using a proxy server or virtual private network, if available)
+* use a previously fetched response, including one previously fetched by a third party if it can be authenticated
 
-Further, in many cases the destination is so likely that the user agent could make loading close to instantaneous, by loading the document, executing script, loading subresources and so on. However until navigation occurs the document should not access its unpartitioned storage.
+However, because this (intentionally) obscures the user's identity, the response document cannot be personalized for the user. If it is used when the user navigates, the user will notice that they are not logged in (even if they should be), and other surprising behavior. A page designed with this in mind could "upgrade" itself when it loads, by personalizing the page based on data in unpartitioned storage and by fetching personalized content from the server.
 
-However, these behavior changes affect web-visible behavior in a significant way. We propose a lightweight way for a document to declare that it is prepared for loading under these conditions, and will, if necessary, update itself when it gains access to its unpartitioned storage and other privileges.
+Second, consider __prerendering__ the page. User agents would ideally allow HTML parsing, subresource fetching, and script execution in a way that does not identify the user or cause user-visible annoyance. For example, the user agent could:
 
-```
-// HTTP response header
-Supports-Loading-Mode: uncredentialed-prefetch, uncredentialed-prerender
+* apply mitigations as above to subresource and scripted fetches
+* deny scripted access to unpartitioned storage, such as cookies and IndexedDB
+* deny permission to invoke `window.alert`, autoplay audio, and other APIs inappropriate at this time
 
-// HTML meta tag
-<meta http-equiv="Supports-Loading-Mode"
-      content="uncredentialed-prefetch, uncredentialed-prerender">
-```
+In this case, not only is the HTML resource not personalized, but script will observe restrictions that would not ordinarily apply until navigation actually occurs. A page designed with this in mind could tolerate this at prerender time, and "upgrade" itself on navigation by accessing storage or fetching from the network.
+
+Since existing web pages are unlikely to behave well with these restrictions today, and it is impractical for user agents to distinguish such pages, we propose a lightweight way for a page to declare that it is prepared for this and will, if necessary, upgrade itself when it gains access to unpartitioned storage and other privileges.
 
 ## Table of contents
 
@@ -30,6 +29,15 @@ Supports-Loading-Mode: uncredentialed-prefetch, uncredentialed-prerender
 - [Alternatives considered](#alternatives-considered)
 
 ## Declaration
+
+```
+// HTTP response header
+Supports-Loading-Mode: uncredentialed-prefetch, uncredentialed-prerender
+
+// HTML meta tag
+<meta http-equiv="Supports-Loading-Mode"
+      content="uncredentialed-prefetch, uncredentialed-prerender">
+```
 
 This is an [HTTP structured header][http-structured-header] which lists tokens indicating the loading modes the content is ready for. They have the following proposed meaning:
 
