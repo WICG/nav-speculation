@@ -1,5 +1,7 @@
 # Alternate Loading Modes
 
+(Thanks to @domenic, @kinu, @yoavweiss, @clelland, and others, for their thoughts which contributed to this proposal.)
+
 In order to making the experience of loading on the web faster, user agents employ prefetching and prerendering techniques. However, making cookies and other credentials available to the origin server or script may be inconsistent with the privacy objectives of the user or of the referring site.
 
 First, consider the __fetch__ of the resource. User agents would ideally prefetch the content in a way that does not identify the user. For example, the user agent could:
