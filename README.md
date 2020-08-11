@@ -20,6 +20,8 @@ In this case, not only is the HTML resource not personalized, but script will ob
 
 Since existing web pages are unlikely to behave well with these restrictions today, and it is impractical for user agents to distinguish such pages, we propose a lightweight way for a page to declare that it is prepared for this and will, if necessary, upgrade itself when it gains access to unpartitioned storage and other privileges.
 
+There has been previous discussion along these lines in [w3c/resource-hints#82](https://github.com/w3c/resource-hints/issues/82#issuecomment-536492276). (It also proposes a new `prenavigate` hint; defining triggers for these loading modes is not yet part of this proposal.)
+
 ## Table of contents
 
 - [Declaration](#declaration)
