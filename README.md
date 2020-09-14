@@ -56,8 +56,9 @@ This is an [HTTP structured header][http-structured-header] which lists tokens i
   <dd>Implies <code>uncredentialed-prefetch</code>. The resource can be loaded without access to its credentials and storage. Access to certain other APIs may be limited in this state. Either it is not personalized based on credentials, or it includes script to modify the document when the loading state changes to permit it.</dd>
 </dl>
 
-The `<meta>` tag is processed only if it appears within the `<head>` element and no `<script>` tag appears before it.
+The `<meta>` tag is processed only if it appears within the `<head>` element and no `<script>`, `<noscript>` or `<template>` tag appears before it.
 This means that the supported loading modes, if not declared in a response header, can be statically computed with use of an HTML parser without rendering or script execution.
+See [the meta processing model](meta-processing.md) for details.
 
 Blocking subframes which do not make this declaration is likely to make adoption more difficult. Ideally the author would be able to make as few declarations as possible to opt in, as long as this doesn't break too much. Fundamentally, there are three basic options here:
 * subframe load fails
