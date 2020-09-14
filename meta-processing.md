@@ -21,7 +21,7 @@ Parsing stops if the parser state ends the head section, in particular by having
 Notably not in this list are elements which do not have significant effects on parsing and whose effects are easily disregarded or deferred during scanning, such as:
 * `<link>`: Fetches for stylesheets and other resources can simply occur once it's been determined whether loading can proceed for this document. There isn't a clear and compelling reason to not accept a `<meta>` appearing slightly later.
 * `<style>`: This can similarly cause fetches via `@import`, but is also easily ignored until the browser decides to proceed with loading. Its effect on HTML parsing is simple and easy to support.
-* `<bgsound>`: Both fetching the resource and playing the background sound are easy to ignore for later.
+* `<bgsound>`: Both fetching the resource and playing the background sound are easy to ignore for later. (Also, modern browsers do not support it except for the parsing rules, anyhow.)
 
 This is a compromise that means that this will produce the same result as actually loading the document for most cases where the declaration appears before any scripts or body content, while being simple to implement either by combining an HTML tokenizer with a radically simplified parser (since few of the complicated cases, such as foster parenting and template insertion location adjustment, can occur with these limitations), or by running an existing parser while deferring most side effects of tree construction.
 
