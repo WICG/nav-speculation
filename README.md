@@ -77,7 +77,7 @@ One of the simplest things a web developer can do is indicate that their site is
   ],
   "disallow": [
     {
-      "action": "prerender",
+      "action": "prefetch",
       "urls": ["/logout"]
     }
   ]
@@ -85,7 +85,7 @@ One of the simplest things a web developer can do is indicate that their site is
 </script>
 ```
 
-This indicates to the browser that all of the links it sees, except for any to `/logout`, are safe to prerender. The browser can then heuristically perform such prerendering when it has spare resources (bandwidth, CPU cycles, memory, ...). The browser could use any triggers it wanted for this heuristic prerendering, such as:
+This indicates to the browser that all of the links it sees, except for any to `/logout`, are safe to prerender and prefetch. The browser can then heuristically perform such prerendering or prefetching when it has spare resources (bandwidth, CPU cycles, memory, ...). The browser could use any triggers it wanted for these heuristics, such as:
 
 * Historical data from the current user
 * Historical data aggregated over many users via telemetry
