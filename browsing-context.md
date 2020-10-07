@@ -18,7 +18,7 @@ function afterPrerendering() { /* ... */ }
 if (!document.loadingMode || document.loadingMode.type === 'default') {
     afterPrerendering();
 } else {
-    document.addEventListener('loadingmodeechange', () => {
+    document.addEventListener('loadingmodechange', () => {
         if (document.loadingMode.type === 'default')
             afterPrerendering();
     });

@@ -37,7 +37,7 @@ Each of these pieces is connected in various ways. However, we think they're dec
 
 ## Same-origin vs. cross-origin prerendering
 
-When prerendering same-origin content, many fewer constraints are necessary. Because there is no privacy concern, we can use normal fetching modes, and thus do not need an opt-in from the prerendered page. And the prerendering browsing context becomes simpler. Thus, the majority of work for specifying same-origin prerendering is in the prendering triggers, the restrictions on disruptive APIs, and the transition to a normal top-level browsing context.
+When prerendering same-origin content, many fewer constraints are necessary. Because there is no privacy concern, we can use normal fetching modes, and thus do not need an opt-in from the prerendered page. And the prerendering browsing context becomes simpler. Thus, the majority of work for specifying same-origin prerendering is in the prerendering triggers, the restrictions on disruptive APIs, and the transition to a normal top-level browsing context.
 
 This simplicity benefits web developers as well, as they don't need to do the upgrade-from-uncredentialed dance which is necessary in cross-origin cases.
 
@@ -127,7 +127,7 @@ function afterPrerendering() {
 if (!document.loadingMode || document.loadingMode.type === 'default') {
   afterPrerendering();
 } else {
-  document.addEventListener('loadingmodeechange', () => {
+  document.addEventListener('loadingmodechange', () => {
     if (document.loadingMode.type === 'default') {
       afterPrerendering();
     }
