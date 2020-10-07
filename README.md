@@ -58,7 +58,9 @@ Finally, we'll note that browser-initiated prerenders fall somewhere in between 
 
 ## Prefetching
 
-Although these explainers focus largely on prerendering, we expect some of the work they produce to be useful for _prefetching_ as well. TODO more.
+Although these explainers focus largely on prerendering, we expect some of the work they produce to be useful for _prefetching_ as well. Prefetching currently exists in [`<link rel="prefetch">`](https://w3c.github.io/resource-hints/#dfn-prefetch), but as with prerendering, it is underspecified, and its current implementations have potential privacy issues which will require some work to address.
+
+In particular, the [triggers](./triggers.md) and [opt-in](./opt-in.md) can be designed in a generic way, so that they can also be used to trigger and opt-in to prefetching (of documents, in particular). Similarly, the [prerendering fetching infrastructure](./fetch.md) will likely be used for modernized prefetching.
 
 ## Example scenarios
 
