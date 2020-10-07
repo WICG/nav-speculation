@@ -45,6 +45,15 @@ The tradeoff is that we now require opt-in from the referring page. The user age
 
 Cross-origin prerendering, on the other hand, can be done without such triggers, because it is so much more constrained and requires opt-in from the content itself. The tradeoff is that, until the ecosystem starts preparing itself for prerendering via the opt-in and associated upgrade code, such prerenders are unlikely to succeed.
 
+Here's a summary:
+
+|                          |Opt-in location  |Restrictions on disruptive APIs |Restrictions on credentials/storage/etc. |
+|--------------------------|-----------------|--------------------------------|-----------------------------------------|
+|Same-origin prerendering  |Referring page   |Yes                             |No                                       |
+|Cross-origin prerendering |Destination page |Yes                             |Yes                                      |
+
+_Aside: it's probably safe to also allow same-origin prerendering with only a destination-side opt-in, as long as all of the same restrictions are applied (e.g., no credentials or storage access). But, this complicates the model a good deal, for both implementers and web developers. For now, we're concentrating on the model described above._
+
 Finally, we'll note that browser-initiated prerenders fall somewhere in between these cases. In particular, the user typing `https://example.com/` in the URL bar, even before they press <kbd>Enter</kbd>, might serve as a reasonable prerender trigger, and perhaps even the prerendering could be done with credentials. The need to prevent user annoyance is still present, so the prerendering browsing context concept is important. But, what if the user types `https://example.com/logout`? Our thinking is still evolving in this area.
 
 ## Prefetching
