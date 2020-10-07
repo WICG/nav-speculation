@@ -131,6 +131,7 @@ If the opt-in is present, then the resulting document is loaded into a cross-ori
 function afterPrerendering() {
   // grab user data from cookies/IndexedDB
   // update the UI
+  // maybe ask for camera access
 }
 
 if (!document.loadingMode || document.loadingMode.type === 'default') {
@@ -142,6 +143,15 @@ if (!document.loadingMode || document.loadingMode.type === 'default') {
     }
   });
 }
+```
+
+Alternately, if the page only cares about storage access (and not other facets of prerendering, such as ability to autoplay or trigger permission prompts), they could use a [proposed storage access API extension](https://github.com/privacycg/storage-access/issues/55):
+
+```js
+document.storageAccessAvailable.then(() => {
+  // grab user data from cookies/IndexedDB
+  // update the UI
+});
 ```
 
 ### Cross-origin news aggregator with previews
