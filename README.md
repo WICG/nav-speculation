@@ -133,7 +133,7 @@ If the opt-in is present, then the resulting document is loaded into a cross-ori
 function afterPrerendering() {
   // grab user data from cookies/IndexedDB
   // update the UI
-  // maybe ask for camera access
+  // maybe ask for notifications access
 }
 
 if (!document.loadingMode || document.loadingMode.type === 'default') {
@@ -172,6 +172,6 @@ newsArticleLink.onclick = async e => {
 
   e.preventDefault();
   await animateToFullViewport(newsArticlePortal);
-  newsArticlePortal.activate()
+  newsArticlePortal.activate();
 };
 ```
