@@ -7,7 +7,7 @@ The space is full of challenges which have not been comprehensively tackled: mos
 * avoiding user-visible side effects and annoyances from running script on the destination site; and
 * fulfilling the privacy objectives of the user and the referring site.
 
-This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such prerendering and prefetching of content, in an interoperably-implementable way.
+This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such prerendering of content, in an interoperably-implementable way. Each piece is designed to be composable and reusable; for example, [some contribute to prefetching](#prefetching), independent of prerendering, and the [opt-in](./opt-in.md) is designed to be usable by other types of alternate loading modes, such as [fenced frames](https://github.com/shivanigithub/fenced-frame/).
 
 ## Pieces of the solution
 
@@ -58,7 +58,7 @@ Finally, we'll note that browser-initiated prerenders fall somewhere in between 
 
 ## Prefetching
 
-Although these explainers focus largely on prerendering, we expect some of the work they produce to be useful for _prefetching_ as well. Prefetching currently exists in [`<link rel="prefetch">`](https://w3c.github.io/resource-hints/#dfn-prefetch), but as with prerendering, it is underspecified, and its current implementations have potential privacy issues which will require some work to address.
+Although these explainers focus largely on prerendering, we expect some of the work they produce to be useful for _prefetching_ as well. Prefetching currently exists in [`<link rel="prefetch">`](https://w3c.github.io/resource-hints/#dfn-prefetch), but as with prerendering, it is underspecified, and its current implementations have potential privacy issues for cross-origin prefetching, which will require some work to address.
 
 In particular, the [triggers](./triggers.md) and [opt-in](./opt-in.md) can be designed in a generic way, so that they can also be used to trigger and opt-in to prefetching (of documents, in particular). Similarly, the [prerendering fetching infrastructure](./fetch.md) will likely be used for modernized prefetching.
 
