@@ -4,7 +4,7 @@ Because [prerendering fetching modes](./fetch.md) intentionally obscure the user
 
 Similarly, [prerendering browsing contexts](./browsing-context.md) allow HTML parsing, subresource fetching, and script execution, but such actions are restricted to avoid identifying the user or causing user-visible annoyance.
 
-Pages designed with these restrictions in mind can "upgrade" themseles when they load, by personalizing based on data in unpartitioned storage and by fetching personalized content from the server. But existing web pages are unlikely to behave well with these restrictions today. (And, it is impractical for user agents to distinguish such pages.)
+Pages designed with these restrictions in mind can "upgrade" themselves when they load, by personalizing based on data in unpartitioned storage and by fetching personalized content from the server. But existing web pages are unlikely to behave well with these restrictions today. (And, it is impractical for user agents to distinguish such pages.)
 
 As such, we propose a lightweight way for a page to declare that it is prepared for such prerendering, and will, if necessary, upgrade itself when it gains access to unpartitioned storage and other privileges.
 

@@ -23,7 +23,7 @@ We envision prerendering having several related pieces:
 
 * [**Prerendering fetching modes**](./fetch.md), which modify the way in which cross-origin documents and subresources are fetched in order to preserve privacy and avoid side effects.
 
-  Closely related to the previous bullet, this covers the mechanics of how a document is fetched in order to check for the opt-in, and provide it with no identifying information. The most obvious technique here is omitting credentials, but others could include using a proxy server (for IP privacy), or using a previously-fetched response in "memory cache".
+  Closely related to the previous bullet, this covers the mechanics of how a document is fetched in order to check for the opt-in, and provide it with no identifying information. The most obvious technique here is omitting credentials, but one could also consider using a proxy server (for IP privacy), or using a previously-fetched response in "memory cache".
 
 * [**Prerendering browsing contexts**](./browsing-context.md), which are special browsing contexts that are not displayed to the user, and within which content is constrained to not perform disruptive or side-effecting operations.
 
