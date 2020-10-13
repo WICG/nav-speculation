@@ -1,168 +1,177 @@
-# Alternate Loading Modes
+# Prerendering, revamped
 
-(Thanks to @domenic, @kinu, @yoavweiss, @clelland, and others, for their thoughts which contributed to this proposal.)
+In order to making the experience of loading on the web faster, user agents employ prefetching and prerendering techniques. However, they have historically been [underspecified](https://w3c.github.io/resource-hints/#prerender) and [inconsistently implemented](https://caniuse.com/link-rel-prerender).
 
-In order to making the experience of loading on the web faster, user agents employ prefetching and prerendering techniques. However, making cookies and other credentials available to the origin server or script may be inconsistent with the privacy objectives of the user or of the referring site.
+The space is full of challenges which have not been comprehensively tackled: most notably,
 
-First, consider the __fetch__ of the resource. User agents would ideally prefetch the content in a way that does not identify the user. For example, the user agent could:
+* avoiding user-visible side effects and annoyances from running script on the destination site; and
+* fulfilling the privacy objectives of the user and the referring site.
 
-* send a request without credentials (e.g., no `Cookie` or `Authorization` request header)
-* establish the connection from a different client IP address (e.g., using a proxy server or virtual private network, if available)
-* use a previously fetched response, including one previously fetched by a third party if it can be authenticated
+This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such prerendering of content, in an interoperably-implementable way. Each piece is designed to be composable and reusable; for example, [some contribute to prefetching](#prefetching), independent of prerendering, and the [opt-in](./opt-in.md) is designed to be usable by other types of alternate loading modes, such as [fenced frames](https://github.com/shivanigithub/fenced-frame/).
 
-However, because this (intentionally) obscures the user's identity, the response document cannot be personalized for the user. If it is used when the user navigates, the user will notice that they are not logged in (even if they should be), and other surprising behavior. A page designed with this in mind could "upgrade" itself when it loads, by personalizing the page based on data in unpartitioned storage and by fetching personalized content from the server.
+## Pieces of the solution
 
-Second, consider __prerendering__ the page. User agents would ideally allow HTML parsing, subresource fetching, and script execution in a way that does not identify the user or cause user-visible annoyance. For example, the user agent could:
+We envision prerendering having several related pieces:
 
-* apply mitigations as above to subresource and scripted fetches
-* deny scripted access to unpartitioned storage, such as cookies and IndexedDB
-* deny permission to invoke `window.alert`, autoplay audio, and other APIs inappropriate at this time
+* [**Prerender triggers**](./triggers.md), where a referring site indicates to the user agent what content can or should be prerendered.
 
-In this case, not only is the HTML resource not personalized, but script will observe restrictions that would not ordinarily apply until navigation actually occurs. A page designed with this in mind could tolerate this at prerender time, and "upgrade" itself on navigation by accessing storage or fetching from the network.
+  Today, we have the underspecified `<link rel="prerender">` element to provide these indications. Although something like this (probably with a different name, to avoid compatibility issues?) might be a good starting point, there are other points in the design space worth considering. For example, allowing the referring site to provide more blanket permission to prerender lets the user agent use its own heuristics.
 
-Since existing web pages are unlikely to behave well with these restrictions today, and it is impractical for user agents to distinguish such pages, we propose a lightweight way for a page to declare that it is prepared for this and will, if necessary, upgrade itself when it gains access to unpartitioned storage and other privileges.
+* [**Prerendered content opt-in**](./opt-in.md), which allows pages to opt in to being prerendered by other cross-origin pages.
 
-There has been previous discussion along these lines in [w3c/resource-hints#82](https://github.com/w3c/resource-hints/issues/82#issuecomment-536492276). (It also proposes a new `prenavigate` hint; defining triggers for these loading modes is not yet part of this proposal.)
+  In order to preserve privacy and avoid side effects, user agents need to prefetch content in a way that avoids identifying the user (e.g., omitting credentials). However, this means the response document cannot be personalized for the user. Pages need to indicate that they are prepared for this eventuality, and will "upgrade" themselves to personalization when they transition from prerendered to active.
 
-## Table of contents
+* [**Prerendering fetching modes**](./fetch.md), which modify the way in which cross-origin documents and subresources are fetched in order to preserve privacy and avoid side effects.
 
-- [Declaration](#declaration)
-- [JavaScript API](#javascript-api)
-- [Request header](#request-header)
-- [Risks](#risks)
-- [Alternatives considered](#alternatives-considered)
+  Closely related to the previous bullet, this covers the mechanics of how a document is fetched in order to check for the opt-in, and provide it with no identifying information. The most obvious technique here is omitting credentials, but one could also consider using a proxy server (for IP privacy), or using a previously-fetched response in "memory cache".
 
-## Declaration
+* [**Prerendering browsing contexts**](./browsing-context.md), which are special browsing contexts that are not displayed to the user, and within which content is constrained to not perform disruptive or side-effecting operations.
 
+  In all prerendering browsing contexts, side-effecting or disruptive APIs, such as those that could play media, require a permission prompt, or otherwise display UI, will automatically error or no-op. In those tagged as being used for cross-origin prerendering, storage access will not be available (or, perhaps, is partitioned?), and all fetches will need to use the prerendering fetching modes.
+
+  Crucially, prerendering browsing contexts have the ability to transition to becoming normal top-level browsing contexts, so that all of the prerendered content is reused and immediately displayed to the user.
+
+* [**Portals**](https://github.com/WICG/portals/blob/master/README.md), which are a specialization of prerendering browsing contexts which can display a preview of the prerendered content to the user, and which expose a JavaScript API for transitioning to a normal top-level browsing context.
+
+Each of these pieces is connected in various ways. However, we think they're decoupled enough that we will start by developing them as separate explainers and spec documents, cross-linking to each other as appropriate. It's also possible to implement only a subset of these, if a user agent is only interested in certain [scenarios](#example-scenarios).
+
+## Same-origin vs. cross-origin prerendering
+
+When prerendering same-origin content, many fewer constraints are necessary. Because there is no privacy concern, we can use normal fetching modes, and thus do not need an opt-in from the prerendered page. And the prerendering browsing context becomes simpler. Thus, the majority of work for specifying same-origin prerendering is in the prerendering triggers, the restrictions on disruptive APIs, and the transition to a normal top-level browsing context.
+
+This simplicity benefits web developers as well, as they don't need to do the upgrade-from-uncredentialed dance which is necessary in cross-origin cases.
+
+The tradeoff is that we now require opt-in from the referring page. The user agent cannot just heuristically prefetch or prerender any same-origin links that it sees; doing so would have bad consequences for links like `<a href="/logout">`.
+
+Cross-origin prerendering, on the other hand, can be done without such triggers, because it is so much more constrained and requires opt-in from the content itself. The tradeoff is that, until the ecosystem starts preparing itself for prerendering via the opt-in and associated upgrade code, such prerenders are unlikely to succeed.
+
+Here's a summary:
+
+|                          |Opt-in location  |Restrictions on disruptive APIs |Restrictions on credentials/storage/etc. |
+|--------------------------|-----------------|--------------------------------|-----------------------------------------|
+|Same-origin prerendering  |Referring page   |Yes                             |No                                       |
+|Cross-origin prerendering |Destination page |Yes                             |Yes                                      |
+
+_Aside: it's probably safe to also allow same-origin prerendering with only a destination-side opt-in, as long as all of the same restrictions are applied (e.g., no credentials or storage access). But, this complicates the model a good deal, for both implementers and web developers. For now, we're concentrating on the model described above._
+
+Finally, we'll note that browser UI-initiated prerenders fall somewhere in between these cases. In particular, the user typing `https://example.com/` in the URL bar, even before they press <kbd>Enter</kbd>, might serve as a reasonable prerender trigger, and perhaps even the prerendering could be done with credentials. The need to prevent user annoyance is still present, so the prerendering browsing context concept is important. But, what if the user types `https://example.com/logout`? Our thinking is still evolving in this area.
+
+## Prefetching
+
+Although these explainers focus largely on prerendering, we expect some of the work they produce to be useful for _prefetching_ as well. Prefetching currently exists in [`<link rel="prefetch">`](https://w3c.github.io/resource-hints/#dfn-prefetch), but as with prerendering, it is underspecified, and its current implementations have potential privacy issues for cross-origin prefetching, which will require some work to address.
+
+In particular, the [triggers](./triggers.md) and [opt-in](./opt-in.md) can be designed in a generic way, so that they can also be used to trigger and opt-in to prefetching (of documents, in particular). Similarly, the [prerendering fetching infrastructure](./fetch.md) will likely be used for modernized prefetching.
+
+## Example scenarios
+
+### Same-origin drop-in speedup
+
+One of the simplest things a web developer can do is indicate that their site is prepared for the browser to prerender most or all of its content. They would put something like the following in their `<head>`:
+
+```html
+<script type="speculationrules">
+{
+  "allow": [
+    {
+      "action": "prerender",
+      "url_patterns": ["/**"]
+    }
+  ],
+  "disallow": [
+    {
+      "action": "prefetch",
+      "urls": ["/logout"]
+    }
+  ]
+}
+</script>
 ```
-// HTTP response header
-Supports-Loading-Mode: uncredentialed-prefetch, uncredentialed-prerender
 
-// HTML meta tag
-<meta http-equiv="Supports-Loading-Mode"
-      content="uncredentialed-prefetch, uncredentialed-prerender">
-```
+This indicates to the browser that all of the links it sees, except for any to `/logout`, are safe to prerender and prefetch. The browser can then heuristically perform such prerendering or prefetching when it has spare resources (bandwidth, CPU cycles, memory, ...). The browser could use any triggers it wanted for these heuristics, such as:
 
-This is an [HTTP structured header][http-structured-header] which lists tokens indicating the loading modes the content is ready for. They have the following proposed meaning:
+* Historical data from the current user
+* Historical data aggregated over many users via telemetry
+* Behavior patterns for similar sites (e.g., often users click on one of the top N product listings/comments links)
+* Just-in-time behavior patterns (e.g., mouse hover)
 
-<dl>
-  <dt><code>default</code></dt>
-  <dd>Implied, even if not listed. Baseline standard behavior.</dd>
+This can be supplemented via per-page tweaks to increase the strength of the suggestion. For example, the `<script>` block could have
 
-  <dt><code>uncredentialed-prefetch</code></dt>
-  <dd>The resource is suitable for any user who meets the cache conditions. Either it is not personalized, or it includes script to modify the document to reflect credentialed state (e.g., to show the user's logged-in state). However, access to credentials will be available when the document loads and script executes.</dd>
-
-  <dt><code>uncredentialed-prerender</code></dt>
-  <dd>Implies <code>uncredentialed-prefetch</code>. The resource can be loaded without access to its credentials and storage. Access to certain other APIs may be limited in this state. Either it is not personalized based on credentials, or it includes script to modify the document when the loading state changes to permit it.</dd>
-</dl>
-
-The `<meta>` tag is processed only if it appears within the `<head>` element and no `<script>`, `<noscript>` or `<template>` tag appears before it.
-This means that the supported loading modes, if not declared in a response header, can be statically computed with use of an HTML parser without rendering or script execution.
-See [the meta processing model](meta-processing.md) for details.
-
-Blocking subframes which do not make this declaration is likely to make adoption more difficult. Ideally the author would be able to make as few declarations as possible to opt in, as long as this doesn't break too much. Fundamentally, there are three basic options here:
-* subframe load fails
-* subframe load is deferred until navigation
-* subframe load proceeds
-
-And there are several different scenarios:
-* same-origin subframe, declaration present
-* same-origin subframe, declaration absent
-* cross-origin subframe, declaration present
-* cross-origin subframe, declaration absent
-
-> TODO: settle on what to do in each of these cases.
-
-## JavaScript API
-
-Script can observe and react to changes in the loading mode, if applicable. For example, it can observe a change from `uncredentialed-prerender` to `default` when a user navigates to the prerendered document. This can be used to defer personalization and logic which are not necessary for prerendering.
-
-```js
-function afterPrerendering() { /* ... */ }
-
-if (!document.loadingMode || document.loadingMode.type === 'default') {
-    afterPrerendering();
-} else {
-    document.addEventListener('loadingmodeechange', () => {
-        if (document.loadingMode.type === 'default')
-            afterPrerendering();
-    });
+```json
+{
+  "action": "prerender",
+  "selectors": [".high-likelihood-prerender"],
+  "likelihood": "high"
 }
 ```
 
-Script can also observe this by using APIs particular to the behavior they are interested in. For instance, the [`document.hasStorageAccess()`][storage-access] can be used in supporting browsers to observe whether unpartitioned storage is available.
+and then decorate certain `<a>` elements with `class="high-likelihood-prerender"`.
 
-## Request header
+When the browser performs this prerendering, it loads the same-origin document in a same-origin prerendering browsing context. Content there is not allowed to do disruptive, user-visible things, but it has full access to credentials, storage, etc.
 
-If an alternate loading mode is used, the user agent will send a `Sec-Loading-Mode` request header indicating the mode. The server may respond with an error status code (400-599), in which case prefetching/prerendering will be considered to have failed, regardless of the response body.
+### Cross-origin news aggregator
 
-A server could defer non-idempotent behavior such as impression counting,  or it could reject prerender requests altogether without needing to do the full work to generate a response (since it need only inspect the request headers).
+Consider a news aggregator website, which contains many links to different origins providing news articles.
 
-> TODO: Should we also/instead send `Sec-Purpose`? Should `Sec-Fetch-Mode` differ?
+Some such news providers might be prepared to be prerendered. To do so, they would opt in with the HTTP response header
 
-## Risks
+```http
+Supports-Loading-Mode: uncredentialed-prerender
+```
 
-__Credentialed requests__ allow fetching the right resource for the user, but the web is increasingly moving toward a model whereby an origin cannot trigger credentialed requests to another user except as part of a committed action (i.e., a navigation). Forward-looking prerendering should prefer to use uncredentialed requests to reduce the risk of identifying the user when doing so is undesirable, and should also deny access to unpartitioned storage under those circumstances.
+or the HTML `<meta>` element
 
-Requests originating from the same __source IP address__ or otherwise implicitly detectable as the same user (e.g. fingerprinting approaches) may sometimes allow identification of the user even when credentials like cookies are not available. Forward-looking prerendering should allow the user agent to mitigate these risks, for example by obscuring the source IP (with a proxy server or [CDN][ip-blindness] that does not disclose it to the origin server, or by taking advantage of network capabilities to use [multiple IP addresses][ipv6-privacy]) and by making less fingerprintable data available to content during prerendering, if possible.
+```html
+<meta http-equiv="Supports-Loading-Mode"
+      content="uncredentialed-prerender">
+```
 
-If approaches which restrict access to credentials and storage are used, __existing content may be broken__ if prefetched or prerendered in this way. This could be mitigated by user agent heuristics to only load content believed to work correctly (e.g. via reporting from past visitors to that site or from a robot indexer) or by an author declaration whether the resource will function correctly with this modified behavior. This document proposes the latter.
+As in the last example, based on its heuristics or informed by prerender triggers, the browser can attempt to prerender these linked-to news articles. Since they are cross-origin, however, the process is more restricted. The initial fetch, as well as any subresource fetches, are performed without credentials. This means that the target site may get uncredentialed requests even when there are credentials stored in UA. If the initial response that comes back does not have the opt-in, then the result is discarded (without performing any subresource fetches).
 
-Server behavior in response to a GET request __may not be idempotent__. Thus issuing a request early may lead to changes in server state, such as modifying data or recording an ad impression. Unauthenticated requests to servers on the public Internet are believed to be at somewhat lower risk, because the lack of credential likely does not convey significant authority to make destructive changes and because such servers already contend with web crawlers which issue such requests. In the same-origin case, an express signal from the author that the user agent should prerender is also an indication that the request is likely to be idempotent. An alternative future direction for exploration is a capability for an origin to declare that certain URLs can be accessed idempotently, for example by responding to OPTIONS requests or by serving a manifest from a well-known URL, but this suggests a higher barrier to entry.
+If the opt-in is present, then the resulting document is loaded into a cross-origin prerendering browsing context. Content there is restricted more heavily; not only are disruptive APIs prevented from working, but also storage access is initially not available. If the news site intends to personalize itself, e.g. to reflect subscriber status, then it would use code such as the following:
 
-There is a risk that loading the resource may be __resource-intensive__. This is largely out of scope of this document. User agents may cancel prerendering if it has become too resource-intensive and may apply a variety of heuristics to make an educated decision about whether prerendering is likely to be lightweight.
+```js
+function afterPrerendering() {
+  // grab user data from cookies/IndexedDB
+  // update the UI
+  // maybe ask for notifications access
+}
 
-Finally, there is the risk that any proposal is __too arduous for adoption__. Unless the effect on author incentives is extremely strong it will be very difficult to convince them to deploy a complex solution. The simpler and easier to adopt, the more likely adoption will become widespread.
+if (!document.loadingMode || document.loadingMode.type === 'default') {
+  afterPrerendering();
+} else {
+  document.addEventListener('loadingmodechange', () => {
+    if (document.loadingMode.type === 'default') {
+      afterPrerendering();
+    }
+  });
+}
+```
 
-## Alternatives considered
+Alternately, if the page only cares about storage access (and not other facets of prerendering, such as ability to autoplay or trigger permission prompts), they could use a [proposed storage access API extension](https://github.com/privacycg/storage-access/issues/55):
 
-### No declaration
+```js
+document.storageAccessAvailable.then(() => {
+  // grab user data from cookies/IndexedDB
+  // update the UI
+});
+```
 
-Why is a declaration needed at all? Why can't the document be fetched and loaded normally, just without credentials?
+### Cross-origin news aggregator with previews
 
-The origin may already have data in its unpartitioned storage, but from the above, our goal is to provide for prerendering which does not grant access to it until the user actually navigates to the destination site. However, this may cause the content to load and behave differently than it would have with access to its unpartitioned storage. Then, when the prerendered document is preseneted, the user will observe any such differences as brokenness.
+The previous example potentially provides _instant_ loading, for news articles which opt in to being prerendered, and for cases where the browser decides to prerender. [Portals](https://github.com/WICG/portals/blob/master/README.md) allow the news aggregator to take things further, providing _seamless_ transitions between itself and the news content, at the cost of more manual handling of the prerendering work.
 
-For example, an authenticated user or subscriber will observe that on navigation, that state is not reflected (they appear logged out or encounter a paywall). The user is likely to __blame the innocent destination site for this brokenness__. (Naturally, this is unlikely to be an issue if the origin has no existing cookies or other storage.)
+In particular, the news aggregator can create a `<portal>` element for each of its links to news articles, with its `src=""` attribute pointing to the news article URL. This portal can either be displayed directly to the user, to show them a scaled-down preview of the content, or it can be kept hidden initially. Then, when the user clicks the link, the news aggregator could provide a transition effect, by moving and scaling the portal appropriately before activating it:
 
-The user agent could reload the page on navigation, but this would defeat the point of prerendering.
+```js
+newsArticleLink.onclick = async e => {
+  if (newsArticlePortal.state === 'closed') {
+    // The content couldn't be portaled, likely because it didn't opt in.
+    // Let the normal link click go through.
+    return;
+  }
 
-If the user agent could detect brokenness, it could avoid this. However, this seems impossible to do in general, because:
-* the server response could depend on the presence of cookies and other credentials
-* client-side access can be detected, but it is unclear how to infer whether this corresponds to user-visible brokenness
-
-It might be possible for the user agent to augment author declarations with a list of origins or documents known to behave well, as a browser feature. This would depend on identifying such sites in a fairly reliable way and providing a mechanism for users to reload if they observe brokenness. However, such a mechanism would have limitations and would necessarily not behave the same in all browsers. The web platform should provide a way to more predictably get the desired behavior.
-
-### Opt-out only
-
-Could an opt-out suffice? It would seem to make it easier to increase coverage.
-
-In principle, yes. However, this would mean that content may become broken (as described above) and require authors to roll out an opt-out to simply restore the previous level of functionality. This seems problematic, especially since we anticipate a large fraction of the web would be affected.
-
-### HTTP header exchange only
-
-An opt-in solely based on HTTP request and response headers is appealing. It allows the fetch to be terminated before processing the response body, and doesn't require HTML parsing or other complicated logic to handle.
-
-The largest drawback here is one of adoption. In order to make as much content as possible available for uncredentialed prerendering, we would like to make it as easy as possible for authors to mark eligible content. We have heard from developers that many of them find it much easier to deploy changes that only affect content than changes which also require server behavior changes, even relatively straightforward ones. For example, these may be managed by different teams or not be possible at all. One key example here is that GitHub Pages doesn't allow users to set response headers.
-
-This strongly indicates an opt-in in the HTML document, such as a `<meta>` tag, attribute of the `<html>` element, or other affordance entirely within the HTML response body.
-
-### Document policy
-
-[Document policy][document-policy] provides a related mechanism, which allows a document to provide a set of behavior changes and restrictions it wishes to apply to itself in an HTTP response header, `Document-Policy`. The request may contain a `Sec-Required-Document-Policy` header, which indicates the minimum level of strictness for each policy that is required -- otherwise the load will fail.
-
-Document policy does not support a mechanism for setting policy inside the response body, which we believe to be important to ease of deployment by authors. It might be possible to extend document policy to also support this, but there would be significant added complexity in document policy, such as algorithms for combining policy declarations in both places and deferring loads in contexts with a required document policy until it can be determined that the merged policy is suitable. These problems are somewhat similar in the special case this proposal discusses than in the general case of document policy.
-
-`Sec-Required-Document-Policy` would not replace the need for a [request header](#request-header), since this is settable by content that is not genuinely prerendering, e.g. via `<iframe policy>`.
-
-Document policy also defines a strict mechanism for inheritance of strict document policy (always inherited by subframes, declaration is required or load fails), but this is not flexible enough for the preferred behavior above. In particular the option of deferral wouldn't ordinarily make sense for document policy (since required policy and policy both cannot change), but do make sense for prerendering, where the user may eventually navigate.
-
-Document policy is also immutable, so either we would have to introduce a notion of mutable required policy and mutable policy, or we would have to define a policy named something like `initial-unpartitioned-storage` that doesn't change, but which only controls unpartitioned storage "initially". This is somewhat awkward and could lead to an explosion of "initial" vs "always" policies.
-
-We do, however, intend to use common integration points with permissions policy such as the HTML [allowed to use][allowed-to-use] algorithm to minimize the collatoral complexity imposed on other specifications, where possible.
-
-[allowed-to-use]: https://html.spec.whatwg.org/#allowed-to-use
-[document-policy]: https://github.com/w3c/webappsec-permissions-policy/blob/master/document-policy-explainer.md
-[http-structured-header]: https://httpwg.org/http-extensions/draft-ietf-httpbis-header-structure.html
-[ip-blindness]: https://github.com/bslassey/ip-blindness
-[ipv6-privacy]: https://tools.ietf.org/html/rfc4941
-[storage-access]: https://github.com/privacycg/storage-access
+  e.preventDefault();
+  await animateToFullViewport(newsArticlePortal);
+  newsArticlePortal.activate();
+};
+```
