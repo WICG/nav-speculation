@@ -54,7 +54,7 @@ Here's a summary:
 
 _Aside: it's probably safe to also allow same-origin prerendering with only a destination-side opt-in, as long as all of the same restrictions are applied (e.g., no credentials or storage access). But, this complicates the model a good deal, for both implementers and web developers. For now, we're concentrating on the model described above._
 
-Finally, we'll note that browser-initiated prerenders fall somewhere in between these cases. In particular, the user typing `https://example.com/` in the URL bar, even before they press <kbd>Enter</kbd>, might serve as a reasonable prerender trigger, and perhaps even the prerendering could be done with credentials. The need to prevent user annoyance is still present, so the prerendering browsing context concept is important. But, what if the user types `https://example.com/logout`? Our thinking is still evolving in this area.
+Finally, we'll note that browser UI-initiated prerenders fall somewhere in between these cases. In particular, the user typing `https://example.com/` in the URL bar, even before they press <kbd>Enter</kbd>, might serve as a reasonable prerender trigger, and perhaps even the prerendering could be done with credentials. The need to prevent user annoyance is still present, so the prerendering browsing context concept is important. But, what if the user types `https://example.com/logout`? Our thinking is still evolving in this area.
 
 ## Prefetching
 
@@ -125,7 +125,7 @@ or the HTML `<meta>` element
       content="uncredentialed-prerender">
 ```
 
-As in the last example, based on its heuristics or informed by prerender triggers, the browser can attempt to prerender these linked-to news articles. Since they are cross-origin, however, the process is more restricted. The initial fetch, as well as any subresource fetches, are performed without credentials. If the response that comes back does not have the opt-in, then the result is discarded.
+As in the last example, based on its heuristics or informed by prerender triggers, the browser can attempt to prerender these linked-to news articles. Since they are cross-origin, however, the process is more restricted. The initial fetch, as well as any subresource fetches, are performed without credentials. If the initial response that comes back does not have the opt-in, then the result is discarded (without performing any subresource fetches).
 
 If the opt-in is present, then the resulting document is loaded into a cross-origin prerendering browsing context. Content there is restricted more heavily; not only are disruptive APIs prevented from working, but also storage access is initially not available. If the news site intends to personalize itself, e.g. to reflect subscriber status, then it would use code such as the following:
 

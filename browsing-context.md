@@ -25,4 +25,4 @@ if (!document.loadingMode || document.loadingMode.type === 'default') {
 }
 ```
 
-Script can also observe this by using APIs particular to the behavior they are interested in. For instance, the [`document.hasStorageAccess()`][storage-access] can be used in supporting browsers to observe whether unpartitioned storage is available.
+Script can also observe this by using APIs particular to the behavior they are interested in. For instance, the [`document.hasStorageAccess()`][https://github.com/privacycg/storage-access] API can be used in supporting browsers to observe whether unpartitioned storage is available.
