@@ -6,7 +6,7 @@ Prerendering browsing contexts can be _activated_, which causes them to transiti
 
 In general, activation of a prerendering browsing context is done by the user agent, when it notices a navigation that could use the prerendered contents. However, some forms of prerendering, such as [portals](https://github.com/WICG/portals/blob/master/README.md), can provide explicit entry points for navigation.
 
-`Document`s rendered within a prerendering browsing context have the ability to react to activation, which they can use to upgrade themselves once free of the restrictions. For example, they could start using permission-requiring APIs, or get access to unpartitioned storage.
+Documents rendered within a prerendering browsing context have the ability to react to activation, which they can use to upgrade themselves once free of the restrictions. For example, they could start using permission-requiring APIs, or get access to unpartitioned storage.
 
 _Note: a browsing context is the right primitive here, as opposed to a `Window` or `Document`, as we need these restrictions to apply even across navigations. For example, if you prerender `https://a.example/` which contains `<meta http-equiv="refresh" content="0; URL=https://a.example/home">` then we need to continue applying these restrictions while loading the `/home` page._
 
@@ -69,7 +69,7 @@ This completes the journey to a fully-rendered view of `https://b.example/`, in 
 
 Prerendering is intended to comply with the [W3C Target Privacy Threat Model](https://w3cping.github.io/privacy-threat-model/). This section discusses the aspects of that threat model that are particularly relevant to the browsing context part of the story, and how the design satisfies them.
 
-A prerendering browsing context can contain either a same-site or cross-site resource. Same-site prerendered content don't present any privacy risks, but cross-site resources risk enabling [cross-site recognition](https://w3cping.github.io/privacy-threat-model/#model-cross-site-recognition) by creating a messaging channel across otherwise-partitioned domains. For simplicity, when a cross-site channel needs to be blocked, we also block it for same-site cross-origin content. In some cases we event block it for same-origin content.
+A prerendering browsing context can contain either a same-site or cross-site resource. Same-site prerendered content don't present any privacy risks, but cross-site resources risk enabling [cross-site recognition](https://w3cping.github.io/privacy-threat-model/#model-cross-site-recognition) by creating a messaging channel across otherwise-partitioned domains. For simplicity, when a cross-site channel needs to be blocked, we also block it for same-site cross-origin content. In some cases we even block it for same-origin content.
 
 Because prerendered browsing contexts can be activated, they (eventually) live in the first-party [storage shelf](https://storage.spec.whatwg.org/#storage-shelf) of their origin. This means that the usual plan of [storage partitioning](https://github.com/privacycg/storage-partitioning) does not suffice for prerendering browsing contexts as it does for nested browsing contexts (i.e. iframes). Instead, we take the following measures to restrict cross-origin prerendered content:
 
@@ -99,7 +99,7 @@ For a more concrete example, consider `https://aggregator.example/` which wants 
 - Fetches within cross-origin prerendering browsing contexts, including the initial request for the page, do not use credentials. Credentialed fetches could be used for cross-site recognition, for example by:
   - Using the sequence of loads. The referring page could encode a user ID into the order in which a sequence of URLs are prerendered. To prevent the target from correlating this ID with its own user ID without a navigation, a document loaded into a cross-origin prerendering browsing context is fetched without credentials and doesn't have access to storage, as described above.
   - The host creates a prerendering browsing context, and the prerendered site decides between a 204 and a real response based on the user's ID. Or the prerendered site delays the response by an amount of time that depends on the user's ID. Because the prerendering load is done without credentials, the prerendered site can't get its user ID in order to make this sort of decision.
-- Sizing side channels: prerendering browsing contexts always perform layout based on the initial size of their referring browsing context, as its most likely that upon activation, they'll end up with that same size. However, further resizes to the referring browsing context are not used to update the size of the prerendering browsing context, as this could be used to communicate a user ID. For simplicity, this is the case for same-origin portals too.
+- Sizing side channels: prerendering browsing contexts always perform layout based on the initial size of their referring browsing context, as its most likely that upon activation, they'll end up with that same size. However, further resizes to the referring browsing context are not used to update the size of the prerendering browsing context, as this could be used to communicate a user ID. For simplicity, we apply this sizing model to same-origin prerendered content as well.
 
 #### Communications channels that match navigation
 
@@ -154,7 +154,7 @@ Goals:
 
 Nice-to-haves:
 
-- Be general enough to accomodate other "alternate loading modes", such as prefetching or [fenced frames](https://github.com/shivanigithub/fenced-frame/)
+- Be general enough to accomodate other "alternate loading modes", such as [fenced frames](https://github.com/shivanigithub/fenced-frame/)
 
 ### Current proposal
 
@@ -236,6 +236,27 @@ From the developer's perspective, a prerendering browsing context can be thought
 
 This model ensures that users get the expected experience when using the back button, i.e., that they are taken back to the last thing they saw. Once a prerendering browsing context is activated, only a single session history entry gets appended to the joint session history, ignoring any previous navigations that happened within the prerendering browsing context. Then, stepping back one step in the joint session history, e.g. by pressing the back button, takes the user back to the referrer page.
 
+## Navigation
+
+Each prerendering browsing context has an _original URL_, which is the URL it was originally instantiated with. For example, given
+
+```html
+<link rel="prerender2" href="https://a.example/">
+```
+
+the original URL is `https://a.example/`. Once instantiated, the prerendering browsing context might navigate elsewhere, e.g. via server-side redirects, `<meta http-equiv="refresh">`, or calling `.click()` on an `<a>` element. This will perform further with-replacement navigations within the prerendering browsing context, all offscreen. But the original URL stays the same.
+
+Later, the prerendering browsing context can be used to satisfy a navigation, _based on the original URL_, not the prerendering browsing context's current URL. That is, if `https://a.example/` redirects to `https://b.example/`, then given
+
+```html
+<a href="https://a.example/">Click me!</a>
+<a href="https://b.example/">Click me!</a>
+```
+
+only the navigation initiated by clicking on the first of these links could be satisfied by activating the prerendering browsing context.
+
+Another interesting situation to consider is what happens if the user right-clicks on the first link, and chooses "Open in New Tab". The first time they do this, the new tab can be created instantly, by activating the prerendering browsing context. However, if they do it a second time, the prerendering browsing context has been used up; the second navigation will perform a normal, non-instant navigation.
+
 ## Rendering-related behavior
 
 Prerendered content needs to strike a delicate balance, of doing enough rendering to be useful, but not actually displaying any pixels on the user's screen. As such, we want developers to avoid performing expensive work which is not beneficial while being prerendered. And ideally, doing this should require minimal additional coding by the developer of the page being prerendered.
@@ -249,3 +270,21 @@ A prerendered `Document` can apply CSP to itself as normal. Being in a prerender
 Prerendered content will be affected by [`prefetch-src`](https://w3c.github.io/webappsec-csp/#directive-prefetch-src) on the referring page, which provides a way of preventing prefetching in addition to the [triggers](./triggers.md).
 
 The [`navigate-to`](https://w3c.github.io/webappsec-csp/#directive-navigate-to) directive prevents navigations, which means that if prerendered content is prevented from being navigated to via this mechanism, then the corresponding prerendering browsing context will never be activated. This mostly falls out automatically from the CSP spec preventing navigations, but any prerendering APIs that explicitly expose the activation operation (such as [portals](https://github.com/WICG/portals/blob/master/README.md)) will need to account for it in their specification.
+
+Note that `navigate-to` will prohibit navigations based on the URL of the link clicked (or similar), which corresponds to a prerendering browsing context's original URL (discussed [above](#navigation)). This means that given something like
+
+```http
+Content-Security-Policy: navigate-to https://a.example
+```
+
+and markup such as
+
+```html
+<link rel="prerender2" href="https://a.example/redirects-to-another-origin">
+
+<script>
+location.href = 'https://a.example/redirects-to-another-origin';
+</script>
+```
+
+then the navigation will be allowed, _even though_ the prerendering browsing context could be pointing to an origin besides `https://a.example`. In other words, prerendering does not change the behavior of `navigate-to`, despite allowing the browser to know more information about the eventual navigation destination.
