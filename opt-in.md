@@ -13,7 +13,6 @@ There has been previous discussion along these lines in [w3c/resource-hints#82](
 ## Table of contents
 
 - [Declaration](#declaration)
-- [JavaScript API](#javascript-api)
 - [Request header](#request-header)
 - [Risks](#risks)
 - [Alternatives considered](#alternatives-considered)
