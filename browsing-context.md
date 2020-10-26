@@ -1,10 +1,12 @@
 # Prerendering browsing contexts
 
-We envision modernized prerendering to work by loading content into a **prerendering browsing context**. A prerendering browsing context can be thought of as a tab that is not yet shown to the user, and which the user has not yet affirmatively indicated an intention to visit. As such, it has additional restrictions placed on it to ensure the user's privacy and prevent disruptions.
+We envision modernized prerendering to work by loading content into a **prerendering browsing context**, which is a new type of [top-level browsing context](https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context). A prerendering browsing context can be thought of as a tab that is not yet shown to the user, and which the user has not yet affirmatively indicated an intention to visit. As such, it has additional restrictions placed on it to ensure the user's privacy and prevent disruptions.
 
-Prerendering browsing contexts can be _activated_, which causes them to transition to being full top-level browsing contexts (i.e. tabs). From a user experience perspective, activation acts like an instantaneous navigation, since unlike normal navigation it does not require a network round-trip, creation of a `Document`, or running of the web-developer-provided initialization JavaScript. All of that has already been done in the prerendering browsing context. Activation might replace an existing top-level browsing context, for example if the user clicks a normal link whose target has been prerendered. Or it might just cause the a new top-level browsing context to exist, for example if the user clicks on a `target="_blank"` link. Activation lifts the restrictions on the prerendered content, as by that point a user-visible navigation has occurred.
+Prerendering browsing contexts can be _activated_, which causes them to transition to being full top-level browsing contexts (i.e. tabs). From a user experience perspective, activation acts like an instantaneous navigation, since unlike normal navigation it does not require a network round-trip, creation of a `Document`, or running of the web-developer-provided initialization JavaScript. All of that has already been done in the prerendering browsing context. (Or at least, the majority of it; the site might delay some of its initialization until activation, or some of the initialization might not have finished, especially if the browser deprioritizes unactivated browsing contexts.)
 
-In general, activation of a prerendering browsing context is done by the user agent, when it notices a navigation that could use the prerendered contents. However, some forms of prerendering, such as [portals](https://github.com/WICG/portals/blob/master/README.md), can provide explicit entry points for navigation.
+Activation might replace an existing top-level browsing context, for example if the user clicks a normal link whose target has been prerendered. Or it might cause the prerendered context to be shown in a new tab/window, for example if the user clicks on a `target="_blank"` link. Activation lifts the restrictions on the prerendered content, as by that point a user-visible navigation has occurred.
+
+In general, activation of a prerendering browsing context is done by the user agent, when it notices a navigation that could use the prerendered contents. However, some forms of prerendering, such as [portals](https://github.com/WICG/portals/blob/master/README.md), can provide explicit entry points for activation.
 
 Documents rendered within a prerendering browsing context have the ability to react to activation, which they can use to upgrade themselves once free of the restrictions. For example, they could start using permission-requiring APIs, or get access to unpartitioned storage.
 
@@ -26,6 +28,7 @@ _Note: a browsing context is the right primitive here, as opposed to a `Window` 
   - [Current proposal](#current-proposal)
   - [Adjacent APIs](#adjacent-apis)
 - [Session history](#session-history)
+- [Navigation](#navigation)
 - [Rendering-related behavior](#rendering-related-behavior)
 - [CSP integration](#csp-integration)
 
@@ -47,7 +50,7 @@ Upon loading `https://a.example/`, the browser notices the request to prerender 
 
 Within this prerendering browsing context, assuming the opt-in check passes, loading of `https://b.example/` proceeds mostly as normal. This includes any expensive web-developer-provided JavaScript necessary to initialize the web app found there. It could even include server- or client-side redirects to other pages, perhaps even other domains.
 
-However, if `https://b.example/` is one of those sites that requests notification permissions on first load, such a permission prompt will be denied, as if the user had declined. (TODO or should it hang, as if the user refused to respond?) Similarly, if `https://b.example/` performs an `alert()` call, the call will instantly return, without the user seeing anything. Another key difference is that `https://b.example/` will not have any storage access, including to cookies. Thus, the content it initially renders will be a logged-out view of the web app, or perhaps a specially-tailed "prerendering" view which leaves things like logged-in state indeterminate.
+However, if `https://b.example/` is one of those sites that requests notification permissions on first load, such a permission prompt will be denied, as if the user had declined. (TODO or should it defer prompting the user until activation, so that the relevant promise doesn't settle until then?) Similarly, if `https://b.example/` performs an `alert()` call, the call will instantly return, without the user seeing anything. Another key difference is that `https://b.example/` will not have any storage access, including to cookies. Thus, the content it initially renders will be a logged-out view of the web app, or perhaps a specially-tailored "prerendering" view which leaves things like logged-in state indeterminate.
 
 Now, the user clicks on the "Click me!" link. At this point the user agent notices that it has a prerendering browsing context originally created for `https://b.example/`, so it activates it, replacing the one displaying `https://a.example/`. The user observes their browser navigating to `https://b.example/`, e.g., via changes in the URL bar contents and the back/forward UI. And since `https://b.example/` was already loaded in the prerendering browsing context, this navigation occurs seamlessly and instantly, providing a great user experience.
 
@@ -78,7 +81,7 @@ Because prerendered browsing contexts can be activated, they (eventually) live i
 
 If we allowed communication, then the prerendered content could be given the user ID from the host site. Then, after activation gives the prerendered page access to first-party storage, it would join that user ID with information from its own first-party storage to perform cross-site tracking.
 
-If we allowed access to unpartitioned storage, then side channels available pre-activation (e.g., server-side timing correlation) could potentially be used to join two separate user identifiers, one from the referring site and one from the prerendered site's unpartitioned storage.
+If we allowed access to (unpartitioned) storage, then side channels available pre-activation (e.g., server-side timing correlation) could potentially be used to join two separate user identifiers, one from the referring site and one from the prerendered site's unpartitioned storage.
 
 The below subsections explore the implementation of these restrictions in more detail.
 
@@ -144,7 +147,7 @@ If a prerendering browsing context navigates itself to a non-HTTP(S) URL, e.g. v
 
 ## JavaScript API
 
-We're still discussing various options for the API. Here we present the considerations in play, plus our our tentative idea. The latter is mostly so that examples in this and other documents have something to exhibit.
+We're still discussing various options for the API; please join that discussion in [#2](https://github.com/jeremyroman/alternate-loading-modes/issues/2). Here we present the considerations in play, plus our our tentative idea. The latter is mostly so that examples in this and other documents have something to exhibit.
 
 Goals:
 
@@ -169,7 +172,7 @@ Envisioned usage is as follows:
 function afterPrerendering() {
   // grab user data from cookies/IndexedDB
   // ask for a bunch of permission-requiring features
-  // do some alert()s and
+  // do some alert()s
 }
 
 if (!document.loadingMode || document.loadingMode.type === 'default') {
@@ -182,6 +185,8 @@ if (!document.loadingMode || document.loadingMode.type === 'default') {
     });
 }
 ```
+
+In the future, `document.loadingMode` might have additional properties; for example, it might expose the notion that the page was loaded via some proxy, as mentioned in the [fetch integration](./fetch.md).
 
 ### Adjacent APIs
 
