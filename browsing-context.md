@@ -50,7 +50,9 @@ Upon loading `https://a.example/`, the browser notices the request to prerender 
 
 Within this prerendering browsing context, assuming the opt-in check passes, loading of `https://b.example/` proceeds mostly as normal. This includes any expensive web-developer-provided JavaScript necessary to initialize the web app found there. It could even include server- or client-side redirects to other pages, perhaps even other domains.
 
-However, if `https://b.example/` is one of those sites that requests notification permissions on first load, such a permission prompt will be denied, as if the user had declined. (TODO or should it defer prompting the user until activation, so that the relevant promise doesn't settle until then?) Similarly, if `https://b.example/` performs an `alert()` call, the call will instantly return, without the user seeing anything. Another key difference is that `https://b.example/` will not have any storage access, including to cookies. Thus, the content it initially renders will be a logged-out view of the web app, or perhaps a specially-tailored "prerendering" view which leaves things like logged-in state indeterminate.
+However, if `https://b.example/` is one of those sites that requests notification permissions on first load, such a permission prompt will be denied, as if the user had declined. Similarly, if `https://b.example/` performs an `alert()` call, the call will instantly return, without the user seeing anything. Another key difference is that `https://b.example/` will not have any storage access, including to cookies. Thus, the content it initially renders will be a logged-out view of the web app, or perhaps a specially-tailored "prerendering" view which leaves things like logged-in state indeterminate.
+
+(The above describes a conservative plan for the behavior restrictions of prerendered content. See also [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7) and [#8](https://github.com/jeremyroman/alternate-loading-modes/issues/8) for discussion of alternate strategies.)
 
 Now, the user clicks on the "Click me!" link. At this point the user agent notices that it has a prerendering browsing context originally created for `https://b.example/`, so it activates it, replacing the one displaying `https://a.example/`. The user observes their browser navigating to `https://b.example/`, e.g., via changes in the URL bar contents and the back/forward UI. And since `https://b.example/` was already loaded in the prerendering browsing context, this navigation occurs seamlessly and instantly, providing a great user experience.
 
@@ -95,6 +97,8 @@ This means that most existing content will appear "broken" when prerendered by a
 
 For a more concrete example, consider `https://aggregator.example/` which wants to prerender this GitHub repository. To make this work, GitHub would need to add the opt-in to allow the page to be prerendered. Additionally, GitHub should add code to adapt their UI to show the logged-in view upon activation, by removing the "Join GitHub today" banner, and retrieving the user's credentials from storage and using them to replace the signed-out header with the signed-in header. Without such adapter code, activating the prerendering browsing context would show the user a logged-out view of GitHub in the top-level tab that the prerendering browsing context has been activated into. This would be a bad and confusing user experience, since the user is logged in to GitHub in all of their other top-level tabs.
 
+Exactly how storage access is blocked is still under discussion, in [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7). In particular, asynchronous storage operations could either immediately fail, or they could hang until activation, at which point they might succeed. And, for simpler types of storage such as cookies, it might be possible to do a merge from partitioned to unpartitioned storage, so we might want to explore partition-merging alternatives to full blocking.
+
 #### Communications channels that are blocked
 
 - Prerendering browsing contexts have no reference to the `Window`, or other objects, of their referrer. Thus, they cannot communicate using [`postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) or other APIs.
@@ -116,7 +120,9 @@ Note that since a non-activated prerendering browsing context has no storage acc
 
 Apart from the privacy-related restrictions to communications and storage, while prerendered, pages are additionally restricted in various ways due to the fact that the user has not yet expressed any intent to interact. All of these restrictions apply regardless of the same- or cross-origin status of the prerendered content.
 
-- Any features that are controlled by the [Permissions API](https://w3c.github.io/permissions/) ([list](https://w3c.github.io/permissions/#permission-registry)) will be automatically denied without prompting. TODO or deferred until activation?
+Our initial proposal is that these APIs all be uniformly disabled, in the following manner. However, [#8](https://github.com/jeremyroman/alternate-loading-modes/issues/8) explores alternatives, where some of them have their effects delayed. We'll be experimenting with this during the prototyping phase.
+
+- Any features that are controlled by the [Permissions API](https://w3c.github.io/permissions/) ([list](https://w3c.github.io/permissions/#permission-registry)) will be automatically denied without prompting.
 
 - Any features controlled by [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/) ([list](https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md)) will be disabled, unless their default allowlist is `*`. There is no ability for the referring page to delegate these permissions. (In particular, there is no counterpart to `<iframe>`'s `allow=""` attribute.)
 
@@ -232,6 +238,16 @@ document.addEventListener("visibilitychange", () => {
 ```
 
 _An alternative is to reintroduce the `"prerender"` visibility state, which was briefly specified, but never implemented. However, we worry that this would break code like the above, which assumes that there are only two visibility states in existence._
+
+## Page lifecycle and freezing
+
+User agents need to strike a delicate balance with prerendered content. Such content needs enough resources to do its initial setup work, so that loading it is as instant as possible. But it shouldn't consume resources in a way that would detract from a user's experience on the content they're actively viewing on the referring site.
+
+One mechanism user agents will probably use for this is to freeze prerendered pages, in the sense defined by the [Page Lifecycle](https://wicg.github.io/page-lifecycle/) specification. The most important impact of freezing, for our purposes, is that tasks queued by the page will not be run by the event loop. In particular, we envision user agents freezing prerendered pages after some initial setup time, to avoid recurring timers or data transfers.
+
+Another case where freezing might be useful is if the prerendered content performs some prohibited operation. As discussed in [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7) and [#8](https://github.com/jeremyroman/alternate-loading-modes/issues/8), we might make this part of the specified mechanism for enforcing the [restrictions](#restrictions) on prerendered content.
+
+Using the freezing mechanism is a natural fit for prerendered content, since freezing is already performed by user agents for backgrounded content. In particular, content which uses the page lifecycle API (such as the `freeze` and `resume` events) will likely react correctly if it becomes frozen in a prerendering browsing context, just like if it were frozen in any other browsing context.
 
 ## Session history
 
