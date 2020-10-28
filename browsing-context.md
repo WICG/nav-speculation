@@ -103,6 +103,7 @@ Exactly how storage access is blocked is still under discussion, in [#7](https:/
 
 - Prerendering browsing contexts have no reference to the `Window`, or other objects, of their referrer. Thus, they cannot communicate using [`postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) or other APIs.
 - `BroadcastChannel` is disabled within prerendering browsing contexts.
+- TODO service/shared workers?
 - Fetches within cross-origin prerendering browsing contexts, including the initial request for the page, do not use credentials. Credentialed fetches could be used for cross-site recognition, for example by:
   - Using the sequence of loads. The referring page could encode a user ID into the order in which a sequence of URLs are prerendered. To prevent the target from correlating this ID with its own user ID without a navigation, a document loaded into a cross-origin prerendering browsing context is fetched without credentials and doesn't have access to storage, as described above.
   - The host creates a prerendering browsing context, and the prerendered site decides between a 204 and a real response based on the user's ID. Or the prerendered site delays the response by an amount of time that depends on the user's ID. Because the prerendering load is done without credentials, the prerendered site can't get its user ID in order to make this sort of decision.
@@ -136,7 +137,7 @@ _Note: ideally Permissions Policy would become a superset of the Permissions API
 
 ### Restrictions on loaded content
 
-To simplify implementation, specification, and the web-developer facing consequences, prerendering browsing contexts cannot host non-HTTP(S) `Document`s. In particular, they cannot host:
+To simplify implementation, specification, and the web-developer facing consequences, prerendering browsing contexts cannot host non-HTTP(S) top-level `Document`s. In particular, they cannot host:
 
 - `javascript:` URLs
 - `data:` URLs
@@ -150,6 +151,8 @@ In other cases, like `javascript:` URLs or `about:blank`, the problem is that th
 The removal of the script-visible `about:blank` in prerendering browsing contexts also greatly simplifies them; its existence in other browsing contexts causes `Window`s and `Document`s to lose their normally one-to-one relationship.
 
 If a prerendering browsing context navigates itself to a non-HTTP(S) URL, e.g. via `window.location = "data:text/plain,foo"`, then the prerendering browsing context will be immediately discarded, and no longer be used by the user agent for anything.
+
+Note that iframes (nested browsing contexts) inside of a prerendered browsing context have no such restrictions.
 
 ## JavaScript API
 
