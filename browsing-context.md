@@ -27,6 +27,7 @@ _Note: a browsing context is the right primitive here, as opposed to a `Window` 
 - [JavaScript API](#javascript-api)
   - [Current proposal](#current-proposal)
   - [Adjacent APIs](#adjacent-apis)
+- [Page lifecycle and freezing](#page-lifecycle-and-freezing)
 - [Session history](#session-history)
 - [Navigation](#navigation)
 - [Rendering-related behavior](#rendering-related-behavior)
