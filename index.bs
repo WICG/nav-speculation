@@ -88,7 +88,7 @@ Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map<
 
   <!-- The following are copied from the navigate algorithm, and probably could benefit from some refactoring to deduplicate. -->
 
-  1. Cancel and preexisting but not yet [=navigate/mature=] attempts to navigate |predecessorBC|, including canceling any instances of the [=fetch=] algorithm started by those attempts. If one of those attempts has already <a lt="create and initialize a Document object">created and initialized a new `Document` object</a>, [=Document/abort=] that {{Document}} also.
+  1. Cancel any preexisting but not yet [=navigate/mature=] attempts to navigate |predecessorBC|, including canceling any instances of the [=fetch=] algorithm started by those attempts. If one of those attempts has already <a lt="create and initialize a Document object">created and initialized a new `Document` object</a>, [=Document/abort=] that {{Document}} also.
 
   1. [=Prompt to unload=] the [=active document=] of |predecessorBC|. If the user [=refused to allow the document to be unloaded=], then return.
 
