@@ -1901,6 +1901,8 @@ Parts of this work may be from another specification document.  If so, those par
       <p>If all of the following are true:</p>
       <ul>
        <li data-md>
+        <p><var>browsingContext</var> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context③">top-level browsing context</a></p>
+       <li data-md>
         <p><var>historyHandling</var> is "<code>default</code>" or "<code>replace</code>"</p>
        <li data-md>
         <p><var>navigationType</var> is "<code>other</code>"</p>
@@ -1977,7 +1979,7 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <h2 class="heading settled" data-level="3" id="nonsense-behaviors"><span class="secno">3. </span><span class="content">Preventing nonsensical behaviors</span><a class="self-link" href="#nonsense-behaviors"></a></h2>
-   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context③">top-level browsing contexts</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⓪">prerendering browsing contexts</a>. This section enumerates specification patches to enforce such restrictions.</p>
+   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing contexts</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⓪">prerendering browsing contexts</a>. This section enumerates specification patches to enforce such restrictions.</p>
    <h3 class="heading settled" data-level="3.1" id="patch-window-apis"><span class="secno">3.1. </span><span class="content">APIs for creating and navigating browsing contexts by name</span><a class="self-link" href="#patch-window-apis"></a></h3>
    <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①①">prerendering browsing context</a>:</p>
    <p>A <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context②">browsing context</a> is <dfn data-dfn-type="dfn" data-noexport id="script-closable">script-closable<a class="self-link" href="#script-closable"></a></dfn> if either of the following is true:</p>
@@ -1986,7 +1988,7 @@ Parts of this work may be from another specification document.  If so, those par
      <p>it is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#auxiliary-browsing-context" id="ref-for-auxiliary-browsing-context">auxiliary browsing context</a> that was created by script (as opposed to by an action of the user); or</p>
     <li data-md>
      <p>
-      it is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing context</a> 
+      it is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context⑤">top-level browsing context</a> 
       <ins>that is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①②">prerendering browsing context</a></ins>
        and whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history②">session history</a> contains only one <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④">Document</a></code>.
      </p>
@@ -2385,8 +2387,9 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-top-level-browsing-context">1. Prerendering browsing contexts</a> <a href="#ref-for-top-level-browsing-context①">(2)</a> <a href="#ref-for-top-level-browsing-context②">(3)</a>
-    <li><a href="#ref-for-top-level-browsing-context③">3. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-top-level-browsing-context④">3.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-top-level-browsing-context③">2.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-top-level-browsing-context④">3. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-top-level-browsing-context⑤">3.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-traverse-the-history">
