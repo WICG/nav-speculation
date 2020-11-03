@@ -1,17 +1,217 @@
-<pre class='metadata'>
-Title: Alternate Loading Modes
-Shortname: alternate-loading-modes
-Level: 1
-Status: CG-DRAFT
-Group: WICG
-Repository: WICG/alternate-loading-modes
-URL: http://example.com/url-this-spec-will-live-at
-Editor: Jeremy Roman, Google https://www.google.com/, jbroman@chromium.org
-!Tests: <a href=https://github.com/w3c/web-platform-tests/tree/master/alternate-loading-modes>web-platform-tests alternate-loading-modes/</a> (<a href=https://github.com/w3c/web-platform-tests/labels/alternate-loading-modes>ongoing work</a>)
-Abstract: A short description of your spec, one or two sentences.
+<pre class="metadata">
+Title: Prerendering Revamped
+Shortname: prerendering-revamped
+Status: DREAM
+Repository: jeremyroman/alternate-loading-modes
+Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me
+Abstract: This document contains a collection of specification patches for well-specified prerendering.
+Markup Shorthands: css no, markdown yes
+Assume Explicit For: yes
+Complain About: accidental-2119 yes, missing-example-ids yes
+Indent: 2
+Boilerplate: omit conformance
+</pre>
+<pre class="anchors">
+spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
+  type: dfn
+    urlPrefix: browsers.html
+      text: creating a new top-level browsing context; url: creating-a-new-top-level-browsing-context
+    urlPrefix: history.html
+      text: session history; url: session-history
+    urlPrefix: browsing-the-web.html
+      for: session history entry
+        text: document; url: she-document
+      for: navigate
+        text: mature; url: concept-navigate-mature
+      for: navigation params
+        text: request; url: navigation-params-request
+        text: reserved environment; url: navigation-params-reserved-environment
+      text: abort; for: Document; url: abort-a-document
+      text: create and initialize a Document object; url: initialise-the-document-object
+      text: history handling behavior; url: history-handling-behavior
+      text: prompt to unload; url: prompt-to-unload-a-document
+      text: refused to allow the document to be unloaded; url: refused-to-allow-the-document-to-be-unloaded
+      text: traverse the history; url: traverse-the-history
 </pre>
 
-Introduction {#intro}
-=====================
+<h2 id="prerendering-bcs">Prerendering browsing contexts</h2>
 
-See https://github.com/tabatkins/bikeshed to get started.
+<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/#windows">Browsing contexts</a> section.</em>
+
+Every [=browsing context=] has a <dfn for="browsing context">loading mode</dfn>, which is one of the following:
+
+: "`default`"
+:: No special considerations are applied to content loaded in this browsing context
+: "`prerender`"
+:: This browsing context is displaying prerendered content
+: "`uncredentialed-prerender`"
+:: This browsing context is displaying prerendered content, and furthermore that content cannot make credentialed fetches
+
+By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`default`". A browsing context whose [=browsing context/loading mode=] is either "`prerender`" or "`uncredentialed-prerender`" is known as a <dfn>prerendering browsing context</dfn>.
+
+<p class="note">This specification enforces that [=prerendering browsing contexts=] are always [=top-level browsing contexts=], i.e., that a [=nested browsing context=]'s [=browsing context/loading mode=] is always "`default`".
+
+A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
+
+Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of [=URLs=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
+
+<p class="issue">Should this map be scoped to the [=user agent=] instead? Or, allowed to be copied between documents?
+
+<div algorithm="create a prerendering browsing context">
+  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
+
+  1. Assert: |startingURL|'s [=url/scheme=] is a [=HTTP(S) scheme=].
+
+  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] [=map/exists=], then return it.
+
+  1. Let |bc| be the result of [=creating a new top-level browsing context=].
+
+  1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
+
+  1. If |startingURL|'s [=url/origin=] is [=same origin=] with |referrerDoc|'s [=Document/origin=], then set |bc|'s [=browsing context/loading mode=] to "`prerender`".
+
+  1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
+
+  1. [=Navigate=] |bc| to |startingURL| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
+
+  1. Return |bc|.
+</div>
+
+<div algorithm>
+  To <dfn for="prerendering browsing context">activate</dfn> a [=prerendering browsing context=] |successorBC| in place of a [=top-level browsing context=] |predecessorBC| given a [=history handling behavior=] |historyHandling|:
+
+  1. Assert: |historyHandling| is either "`default`" or "`replace`".
+
+  1. Assert: |successorBC| is not [=prerendering browsing context/empty=].
+
+  1. Assert: |predecessorBC| is a [=top-level browsing context=].
+
+  <!-- The following are copied from the navigate algorithm, and probably could benefit from some refactoring to deduplicate. -->
+
+  1. Cancel and preexisting but not yet [=navigate/mature=] attempts to navigate |predecessorBC|, including canceling any instances of the [=fetch=] algorithm started by those attempts. If one of those attempts has already <a lt="create and initialize a Document object">created and initialized a new `Document` object</a>, [=Document/abort=] that {{Document}} also.
+
+  1. [=Prompt to unload=] the [=active document=] of |predecessorBC|. If the user [=refused to allow the document to be unloaded=], then return.
+
+  1. [=Document/Abort=] the [=active document=] of |predecessorBC|.
+
+  <!-- End copied section. -->
+
+  1. TODO prepend the existing session history of |predecessorBC| into |successorBC|? Or, probably better, use the new "browsing session" concept to bridge them? Be sure to respect |historyHandling|.
+
+  1. [=In parallel=]:
+
+    1. Update the user agent's user interface to replace |predecessorBC| with |successorBC|, e.g., by updating the tab/window contents and the browser chrome.
+
+    <!-- TODO is this the right task source? Should we make a new one? -->
+    1. [=Queue a global task=] on the [=networking task source=] given |successorBC|'s [=browsing context/active window=] to perform the following steps
+
+      1. Set |successorBC|'s [=browsing context/loading mode=] to "`default`".
+</div>
+
+<h2 id="navigation">Navigation</h2>
+
+<h3 id="navigate-activation">Allowing activation in place of navigation</h3>
+
+Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/activate|activation=] of a [=prerendering browsing context=] in place of a normal navigation as follows:
+
+<div algorithm="navigate activate patch">
+  In [=navigate=], append the following steps after the fragment navigation handling (currently step 6):
+
+  1. If all of the following are true:
+
+      * |historyHandling| is "`default`" or "`replace`"
+      * <var ignore>navigationType</var> is "`other`"
+      * |resource| is a [=request=] whose [=request/method=] is \``GET`\`
+      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]] [=map/exists=]
+
+    then:
+
+    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]].
+
+    1. If |successorBC| is not [=prerendering browsing context/empty=], then:
+
+      1. [=prerendering browsing context/Activate=] |successorBC| in place of |browsingContext| given |historyHandling|.
+
+      1. Return.
+</div>
+
+<h3 id="always-replacement">Maintaining a trivial session history</h3>
+
+Patch the [=navigate=] algorithm to ensure the [=session history=] of a [=prerendering browsing context=] stays trivial as follows:
+
+<div algorithm="navigate historyHandling patch">
+  In [=navigate=], prepend the following step before all others:
+
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then:
+
+    1. Assert: |historyHandling| is not "`entry update`", since prerendering browsing contexts have trivial session histories and thus will never end up [=traverse the history|traversing=] back to an entry with null [=session history entry/document=].
+
+    1. If |historyHandling| is "`default`", then set |historyHandling| to "`replace`".
+</div>
+
+<h3 id="no-bad-navs">Preventing non-HTTP(S) navigations</h3>
+
+Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerendering browsing context=] as follows:
+
+<p class="issue">Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn't observable anyway?
+
+<div algorithm="process a navigate response patch">
+  In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
+
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], and any of the following hold:
+
+      * |failure| is true;
+      * |navigationParams|'s [=navigation params/request=] is null;
+      * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
+      * |response| has a \``Content-Disposition`\` header specifying the `attachment`
+          disposition type; or
+      * |response|'s [=response/status=] is 204 or 205,
+
+    then:
+
+    1. Run the [=environment discarding steps=] for |navigationParams|'s [=navigation params/reserved environment=].
+
+    1. Return.
+</div>
+
+<div algorithm="process a navigate URL scheme patch">
+  In <a spec=HTML>process a navigate URL scheme</a>, insert the following step before the step
+  which displays inline content:
+
+  1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
+</div>
+
+<h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
+
+Some behaviors might make sense in most [=top-level browsing contexts=], but do not make sense in [=prerendering browsing contexts=]. This section enumerates specification patches to enforce such restrictions.
+
+<h3 id="patch-window-apis">APIs for creating and navigating browsing contexts by name</h3>
+
+Modify the definition of <a spec=HTML>script-closable</a> to prevent window closing while in a [=prerendering browsing context=]:
+
+A [=browsing context=] is <dfn noexport>script-closable</dfn> if either of the following is true:
+
+* it is an [=auxiliary browsing context=] that was created by script (as opposed to by an action of the user); or
+* it is a [=top-level browsing context=] <ins>that is not a [=prerendering browsing context=]</ins> and whose [=session history=] contains only one {{Document}}.
+
+<h2 id="intrusive-behaviors">Preventing intrusive behaviors</h2>
+
+Various behaviors are disallowed in [=prerendering browsing contexts=] because they would be intrusive to the user, since the prerendered content is not being actively interacted with.
+
+<h3 id="patch-downloading">Downloading resources</h3>
+
+Modify the <a spec=HTML>allowed to download</a> algorithm to ensure that prerendered content never performs downloads, by prepending the following steps:
+
+<div algorithm="allowed to download patch">
+  1. If <var ignore>initiator browsing context</var> is a [=prerendering browsing context=], then return false.
+
+  1. If <var ignore>instantiator browsing context</var> is a [=prerendering browsing context=], then return false.
+</div>
+
+<h2 id="todo">TODO</h2>
+
+- Spec all the actual restrictions (storage, intrusive APIs, uncredentialed fetching)
+- Ensure navigations get aborted, and the map emptied, on non-opt-in cases for uncredentialed. Potential race conditions here; maybe we shouldn't fill the map until navigation succeeds.
+- CSP prefetch-src check (should this be done at create time?)
+- CSP navigate-to check
+- JS API
