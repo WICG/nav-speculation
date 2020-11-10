@@ -51,28 +51,30 @@ By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`defa
 
 <p class="note">This specification enforces that [=prerendering browsing contexts=] are always [=top-level browsing contexts=], i.e., that a [=nested browsing context=]'s [=browsing context/loading mode=] is always "`default`".
 
+<p class="issue">Probably we will need more loading modes for handling [=nested browsing contexts=] inside of top-level prerendered ones. Definitely a to-do.</p>
+
 A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
 
-Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of [=URLs=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
+Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of ([=URL=], [=referrer policy=]) [=tuples=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
 
 <p class="issue">Should this map be scoped to the [=user agent=] instead? Or, allowed to be copied between documents?
 
 <div algorithm="create a prerendering browsing context">
-  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
+  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
 
   1. Assert: |startingURL|'s [=url/scheme=] is a [=HTTP(S) scheme=].
 
-  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] [=map/exists=], then return it.
+  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)] [=map/exists=], then return it.
 
   1. Let |bc| be the result of [=creating a new top-level browsing context=].
 
-  1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
-
-  1. If |startingURL|'s [=url/origin=] is [=same origin=] with |referrerDoc|'s [=Document/origin=], then set |bc|'s [=browsing context/loading mode=] to "`prerender`".
+  1. If |startingURL|'s [=url/origin=] is [=same origin=] with |referrerDoc|'s [=Document/origin=], then set |bc|'s [=browsing context/loading mode=] to "`prerender`"; otherwise, "`uncredentialed-prerender`".
 
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
 
-  1. [=Navigate=] |bc| to |startingURL| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
+  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
+
+  1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
 
   1. Return |bc|.
 </div>
@@ -123,11 +125,11 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
       * |historyHandling| is "`default`" or "`replace`"
       * <var ignore>navigationType</var> is "`other`"
       * |resource| is a [=request=] whose [=request/method=] is \``GET`\`
-      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]] [=map/exists=]
+      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])] [=map/exists=]
 
     then:
 
-    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]].
+    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])].
 
     1. If |successorBC| is not [=prerendering browsing context/empty=], then:
 
