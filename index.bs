@@ -108,7 +108,7 @@ Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map<
       1. Set |successorBC|'s [=browsing context/loading mode=] to "`default`".
 </div>
 
-<h2 id="navigation">Navigation</h2>
+<h2 id="navigation">Navigation and session history</h2>
 
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
@@ -138,16 +138,20 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
 
 <h3 id="always-replacement">Maintaining a trivial session history</h3>
 
-Patch the [=navigate=] algorithm to ensure the [=session history=] of a [=prerendering browsing context=] stays trivial as follows:
-
 <div algorithm="navigate historyHandling patch">
-  In [=navigate=], prepend the following step before all others:
+  Patch the [=navigate=] algorithm to ensure the [=session history=] of a [=prerendering browsing context=] stays trivial by prepending the following step before all others:
 
   1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then:
 
     1. Assert: |historyHandling| is not "`entry update`", since prerendering browsing contexts have trivial session histories and thus will never end up [=traverse the history|traversing=] back to an entry with null [=session history entry/document=].
 
     1. If |historyHandling| is "`default`", then set |historyHandling| to "`replace`".
+</div>
+
+<div algorithm="URL and history update steps patch">
+  Patch the <a spec=HTML>URL and history update steps</a> by adding the following step after step 1:
+
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then set <var ignore>isPush</var> to false.
 </div>
 
 <h3 id="no-bad-navs">Preventing non-HTTP(S) navigations</h3>
