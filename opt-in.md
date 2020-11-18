@@ -68,7 +68,7 @@ A server could defer non-idempotent behavior such as impression counting,  or it
 
 ## Risks
 
-__Credentialed requests__ allow fetching the right resource for the user, but the web is increasingly moving toward a model whereby an origin cannot trigger credentialed requests to another user except as part of a committed action (i.e., a navigation). Forward-looking prerendering should prefer to use uncredentialed requests to reduce the risk of identifying the user when doing so is undesirable, and should also deny access to unpartitioned storage under those circumstances.
+__Credentialed requests__ allow fetching the right resource for the user, but the web is increasingly moving toward a model whereby an origin cannot trigger credentialed requests to another origin except as part of a committed action (i.e., a navigation). Forward-looking prerendering should prefer to use uncredentialed requests to reduce the risk of identifying the user when doing so is undesirable, and should also deny access to unpartitioned storage under those circumstances.
 
 Requests originating from the same __source IP address__ or otherwise implicitly detectable as the same user (e.g. fingerprinting approaches) may sometimes allow identification of the user even when credentials like cookies are not available. Forward-looking prerendering should allow the user agent to mitigate these risks, for example by obscuring the source IP (with a proxy server or [CDN][ip-blindness] that does not disclose it to the origin server, or by taking advantage of network capabilities to use [multiple IP addresses][ipv6-privacy]) and by making less fingerprintable data available to content during prerendering, if possible.
 
