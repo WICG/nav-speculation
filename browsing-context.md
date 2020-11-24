@@ -167,7 +167,7 @@ Goals:
 
 Nice-to-haves:
 
-- Be general enough to accomodate other "alternate loading modes", such as [fenced frames](https://github.com/shivanigithub/fenced-frame/)
+- Be general enough to accommodate other "alternate loading modes", such as [fenced frames](https://github.com/shivanigithub/fenced-frame/)
 
 ### Current proposal
 
@@ -177,6 +177,8 @@ The current proposed API is a `document.loadingMode` object with:
 - An event, `"change"`, which fires when `type` changes.
 
 Envisioned usage is as follows:
+
+TODO: This example would likely want to use `document.prerendering` - do we have a example that demonstrates the need for additional granularity?
 
 ```js
 function afterPrerendering() {
@@ -197,6 +199,18 @@ if (!document.loadingMode || document.loadingMode.type === 'default') {
 ```
 
 In the future, `document.loadingMode` might have additional properties; for example, it might expose the notion that the page was loaded via some proxy, as mentioned in the [fetch integration](./fetch.md).
+
+For exposing the semantic notion of prerendering (i.e. the user didn't initiate the load, the page is not interactive), we propose `document.prerendering`:
+
+```js
+if (document.prerendering) {
+    afterPrerendering();
+} else {
+    document.onprerenderingchange = afterPrerendering;
+}
+```
+
+See [prerendering-state](prerendering-state.md) for more details.
 
 ### Adjacent APIs
 
@@ -224,7 +238,7 @@ if (geoPermission.state === "denied") {
 
 _Note: the above code only makes sense if we decide that permissions are denied in prerendering browsing contexts, instead of having them hang until activation. [That plan](#restrictions-on-the-basis-of-being-non-user-visible) is still tentative._
 
-Finally, there's the case of the [page visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API). Our current plan is to treat prerendering browsing contexts as hidden, until activation, in which case code that only wants to run upon the user viewing the page could be done as follows:
+Finally, there's the case of the [page visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API). Our current plan is to treat (non-portal) prerendering browsing contexts as hidden, until activation, in which case code that only wants to run upon the user viewing the page could be done as follows:
 
 ```js
 if (document.visibilityState === "visible") {
@@ -240,8 +254,6 @@ document.addEventListener("visibilitychange", () => {
     }
 });
 ```
-
-_An alternative is to reintroduce the `"prerender"` visibility state, which was briefly specified, but never implemented. However, we worry that this would break code like the above, which assumes that there are only two visibility states in existence._
 
 ## Page lifecycle and freezing
 
@@ -286,7 +298,7 @@ Another interesting situation to consider is what happens if the user right-clic
 
 Prerendered content needs to strike a delicate balance, of doing enough rendering to be useful, but not actually displaying any pixels on the user's screen. As such, we want developers to avoid performing expensive work which is not beneficial while being prerendered. And ideally, doing this should require minimal additional coding by the developer of the page being prerendered.
 
-Generally speaking, our plan is to treat content as if it were in a "background tab": it will still perform layout, using (for [privacy and simplicity reasons](#communications-channels-that-are-blocked)) the creation-time size of the referring page as the viewport. Rendering APIs which communicate visibility information, such as [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) or the [`loading` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading), will indicate that no content is in the viewport. (TODO is this right, or should the initial screenful be counted as in the viewport? How does it compare to background tabs?)
+Generally speaking, our plan is to treat content as if it were in a "background tab": it will still perform layout, using (for [privacy and simplicity reasons](#communications-channels-that-are-blocked)) the creation-time size of the referring page as the viewport. Rendering APIs which communicate visibility information, such as [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) or the [`loading` attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading), will indicate visibility based on the creation-time viewport.
 
 ## CSP integration
 
