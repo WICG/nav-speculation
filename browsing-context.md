@@ -178,7 +178,7 @@ The current proposed API is a `document.loadingMode` object with:
 
 Envisioned usage is as follows:
 
-TODO: This example would likely want to use `document.prerendering` - do we have a example that demonstrates the need for additional granularity?
+TODO: This example would likely want to use `document.prerendering` - even with `document.prerendering`, additional loading-mode information may still be useful for specialized cases where fetching may need to depend on the exact loading mode, can we find any examples/use cases? `document.prerendering` will likely cover the most common use cases without getting into the level of granularity of fetching restrictions.
 
 ```js
 function afterPrerendering() {
@@ -209,6 +209,8 @@ if (document.prerendering) {
     document.onprerenderingchange = afterPrerendering;
 }
 ```
+
+Note: it's possible that `document.prerendering` may be  just syntactic sugar for some subset of `document.loadingMode.type`, e.g. `document.loadingMode.type != 'default'` or `document.loadingMode.type == 'prerender' || document.loadingMode.type == 'uncredentialed-prerender'`.
 
 See [prerendering-state](prerendering-state.md) for more details.
 

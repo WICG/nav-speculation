@@ -92,34 +92,24 @@ a user may not have initiated the page load in the first place.
 | Portal         | true           | 'visible'         |
 | Prerender      | true           | 'hidden'          |
 
-#### `visibilityState` as a termination signal
+<<<<<<< HEAD
+## Open Questions
+
+### `visibilityState` as a termination signal
 
 Authors have been [encouraged](https://www.igvita.com/2015/11/20/dont-lose-user-and-app-state-use-page-visibility/) to
 switch from `unload` and `beforeunload` events to `visibilityState=='hidden'` as a signal that their page may be
 terminated. See also [w3c/PageVisibility#59](https://github.com/w3c/page-visibility/issues/59) for related discussion.
 
-Entering a `prerendering` state, via being put into a portal, is likely a point where such a termination signal should
-be fired; it is analogous to navigating to a new page. However, this means pages would now also have to listen for a
-switch to `prerendering == true`.
+Entering a `prerendering` state by being put into a portal (via portal predecessor adoption), is likely a point where
+such a termination signal should be fired; it is analogous to navigating to a new page. However, this means pages would
+now also have to listen for a switch to `prerendering == true`.
 
 This [background
 doc](https://docs.google.com/document/d/1Xzw0k8DgltI2ohapuDKmjRZLv7NVrRFGusW8IBtiCT0/edit#heading=h.acmnp6zdmcik) deals
 extensively with this issue. An ideal solution would introduce a new event for this use case, rather than implicitly
-tying it to any particular state.
-
-### Relationship to loading-modes
-
-[Alternate-loading-modes](https://github.com/bokand/alternate-loading-modes/blob/main/browsing-context.md#current-proposal)
-proposes explicit APIs to expose the exact loading mode used. Even with `document.prerendering`, this additional
-information may still be useful for specialized cases where fetching may need to depend on the exact loading mode (TODO:
-examples?).
-
-However, we believe `document.prerendering` will cover the most common use cases without getting into the level of
-granularity of fetching restrictions.
-
-Note: it's possible that `document.prerendering` may be  just syntactic sugar for some subset of
-`document.loadingMode.type`, e.g. `document.loadingMode.type != 'default'` or `document.loadingMode.type ==
-'prerender' || document.loadingMode.type == 'uncredentialed-prerender'`.
+tying it to any particular state. In the near term, we don't think this is a critical use case to solve; when portals
+develop closer to shipping, we can revisit whether adding such an event is necessary.
 
 ### Relationship to other states
 
