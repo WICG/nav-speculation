@@ -6,7 +6,7 @@ We propose introducing a boolean property `document.prerendering` and associated
 prerendering browsing contexts from regular ones.
 
 _Note: This is based on the more general discussion in this [background
-doc](https://docs.google.com/document/d/1Xzw0k8DgltI2ohapuDKmjRZLv7NVrRFGusW8IBtiCT0/edit?usp=sharing)_
+doc](https://docs.google.com/document/d/1Xzw0k8DgltI2ohapuDKmjRZLv7NVrRFGusW8IBtiCT0/edit?usp=sharing)._
 
 ## Background
 
@@ -15,30 +15,30 @@ Some examples of divergent behavior:
 
 * Avoid fetching large video resources
 * Avoid measuring ad impressions
-* Avoid running javascript animations
+* Avoid running JavaScript animations
 * Avoid measuring user interactions for analytics
 * Avoid starting server-coordinated behavior (e.g. ticket purchase countdown).
 
-A previous iteration of prerendering used [page-visibility](https://www.w3.org/TR/page-visibility-2) to denote a
+A previous iteration of prerendering used [page-visibility](https://w3c.github.io/page-visibility/) to denote a
 prerendering context. However, this was unimplemented and [removed from the
 specification](https://github.com/w3c/page-visibility/issues/42).
 
 With the re-introduction of prererendering, we need to bring back some form of this API.
 
-## Why not visibilityState=='prerender'?
+## Why not `visibilityState=='prerender'`?
 
-The most straightforward way to do this would be to bring back the previously specified `visibilityState ==
+The most straightforward way to do this would be to bring back the previously specified `document.visibilityState ==
 'prerender'`.  Doing so has a number of drawbacks:
 
 ### Not mutually-exclusive
 
 In actuality, some of the above use cases are interested in visibility rather than prerendering state.  For example, an
-ordinary (i.e. non-prerendering) page that's hidden would likely want to "avoid running javascript animations" and
+ordinary (i.e. non-prerendering) page that's hidden would likely want to "avoid running JavaScript animations" and
 "avoid fetching large video resources". Thus, pages would have to consider both the `hidden` state as well as a
 re-introduced `prerender` to get the desired behavior.
 
 However, the [portals proposal](https://github.com/WICG/portals/) means that `prerender` isn't mutually exclusive
-with `visible` either. In that case, we do want to "run javascript animations" and "fetch large resources" since it'll
+with `visible` either. In that case, we do want to "run JavaScript animations" and "fetch large resources" since it'll
 be visible to the user, despite being in a prerendering browsing context (and all the restrictions that come with that).
 
 ### Web-compatibility
@@ -46,7 +46,7 @@ be visible to the user, despite being in a prerendering browsing context (and al
 Related to the above point, a common pattern on the web is to assume only two visibility states. For example, code such
 as:
 
-```
+```js
 onload = () => {
   if (document.visibilityState == 'visible')
     // Load large images
@@ -63,11 +63,11 @@ of such behavior.
 prerendering-while-visible context) would show static or missing content. A hidden prerender may not have immediate
 user-visible effects, but may use more resources than necessary.
 
-## document.prerendering
+## `document.prerendering`
 
 We propose adding a new state variable:
 
-```
+```webidl
 partial interface Document {
     readonly attribute boolean    prerendering;
     attribute EventHandler        onprerenderingchange;
@@ -81,7 +81,7 @@ A state separate from visibility ensures existing visibility-based states are co
 authors to consider their page's behavior in light of prerendering restrictions and non-interactivity and the fact that
 a user may not have initiated the page load in the first place.
 
-### Relationship to visibilityState
+### Relationship to `visibilityState`
 
 `prerendering` and `visibilityState` are entirely independent and all combinations of states are possible:
 
@@ -92,11 +92,11 @@ a user may not have initiated the page load in the first place.
 | Portal         | true           | 'visible'         |
 | Prerender      | true           | 'hidden'          |
 
-#### VisibilityState as a termination signal
+#### `visibilityState` as a termination signal
 
 Authors have been [encouraged](https://www.igvita.com/2015/11/20/dont-lose-user-and-app-state-use-page-visibility/) to
 switch from `unload` and `beforeunload` events to `visibilityState=='hidden'` as a signal that their page may be
-terminated. See also [PageVisibility#59](https://github.com/w3c/page-visibility/issues/59) for related discussion.
+terminated. See also [w3c/PageVisibility#59](https://github.com/w3c/page-visibility/issues/59) for related discussion.
 
 Entering a `prerendering` state, via being put into a portal, is likely a point where such a termination signal should
 be fired; it is analogous to navigating to a new page. However, this means pages would now also have to listen for a
@@ -145,6 +145,6 @@ sense to call it "prerendering"?
 
 The term "interactive" seems appealing as it captures a major difference between prerendering/portals and regular
 browsing contexts. However, it would be unintuitive to explain how a background tab is considered "interactive". In
-particular, if we want this to solve [PageVisibility#59](https://github.com/w3c/page-visibility/issues/59) we'd have the
+particular, if we want this to solve [w3c/PageVisibility#59](https://github.com/w3c/page-visibility/issues/59) we'd have the
 bizarre case that entering the app switcher would make a page non-interactive, then backgrounding it from there would make
 it interactive.
