@@ -203,7 +203,7 @@ In the future, `document.loadingMode` might have additional properties; for exam
 For exposing the semantic notion of prerendering (i.e. the user didn't initiate the load, the page is not interactive), we propose `document.prerendering`:
 
 ```js
-if (document.prerendering) {
+if (!document.prerendering) {
     afterPrerendering();
 } else {
     document.onprerenderingchange = afterPrerendering;

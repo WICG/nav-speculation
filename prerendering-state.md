@@ -92,7 +92,18 @@ a user may not have initiated the page load in the first place.
 | Portal         | true           | 'visible'         |
 | Prerender      | true           | 'hidden'          |
 
-<<<<<<< HEAD
+### Relationship to BFCache
+
+Some user agents provide a "Back-Forward" cache which keeps recent documents from the session history alive, enabling
+instant history based navigations. While in the cache, these documents are typically put into a frozen state where
+script cannot run and APIs and features with side-effects are blocked (e.g. camera, BroadcastMessage, etc.).
+
+On the surface, this frozen state shares some resemblance with prerendering restrictions, which also aim to limit
+visible side-effects and may, in some circumstances, completely freeze a page. It's likely that some of these mechanisms
+will be shared between prerendering browsing contexts and BFCache implementations; however, we don't anticipate
+BFCache'd documents to be put into a prerendering browsing context. As such, `document.prerendering` would not reflect a
+BFCache'd state. The [Page Lifecycle APIs](https://wicg.github.io/page-lifecycle) remain relevant for this case.
+
 ## Open Questions
 
 ### `visibilityState` as a termination signal
