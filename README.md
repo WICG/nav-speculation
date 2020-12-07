@@ -21,6 +21,8 @@ We envision prerendering having several related pieces:
 
   In order to preserve privacy and avoid side effects, user agents need to prefetch content in a way that avoids identifying the user (e.g., omitting credentials). However, this means the response document cannot be personalized for the user. Pages need to indicate that they are prepared for this eventuality, and will "upgrade" themselves to personalization when they transition from prerendered to active.
 
+* **Privacy enhancing technologies**, such as  [private prefetch proxies](https://github.com/buettner/private-prefetch-proxy), which allow prefetching and prerendering without disclosing potentially identifying information such as the user's IP address.
+
 * [**Prerendering fetching modes**](./fetch.md), which modify the way in which cross-origin documents and subresources are fetched in order to preserve privacy and avoid side effects.
 
   Closely related to the previous bullet, this covers the mechanics of how a document is fetched in order to check for the opt-in, and provide it with no identifying information. The most obvious technique here is omitting credentials, but one could also consider using a proxy server (for IP privacy), or using a previously-fetched response in "memory cache".
