@@ -127,31 +127,13 @@ As in the last example, based on its heuristics or informed by prerender trigger
 If the opt-in is present, then the resulting document is loaded into a cross-origin prerendering browsing context. Content there is restricted more heavily; not only are disruptive APIs prevented from working, but also storage access is initially not available. If the news site intends to personalize itself, e.g. to reflect subscriber status, then it would use code such as the following:
 
 ```js
-function afterPrerendering() {
-  // grab user data from cookies/IndexedDB
-  // update the UI
-  // maybe ask for notifications access
-}
-
-if (!document.loadingMode || document.loadingMode.type === 'default') {
-  afterPrerendering();
-} else {
-  document.loadingMode.addEventListener('change', () => {
-    if (document.loadingMode.type === 'default') {
-      afterPrerendering();
-    }
-  });
-}
-```
-
-Alternately, if the page only cares about storage access (and not other facets of prerendering, such as ability to autoplay or trigger permission prompts), they could use a [proposed storage access API extension](https://github.com/privacycg/storage-access/issues/55):
-
-```js
 document.storageAccessAvailable.then(() => {
   // grab user data from cookies/IndexedDB
   // update the UI
 });
 ```
+
+See [the prerendering browsing context explainer](./browsing-context.md#javascript-apis) for an overview of all the different ways a site could react upon transitioning from prerendered to user-visible.
 
 ### Cross-origin news aggregator with previews
 
