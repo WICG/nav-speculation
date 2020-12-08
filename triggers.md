@@ -108,7 +108,7 @@ Another possible future extension, which would likely need to be restricted to s
 ]}
 ```
 
-#### Proposed Processing Model
+### Proposed Processing Model
 
 Conceptually, the user agent may from time to time execute a task to consider speculation (in practice, it will likely do this only in response to some sort of DOM mutation or other event that indicates the applicable rules have changed, and may limit its attention to the affected parts of the document). Changes to the DOM that are undone within a task cannot therefore be observed by this algorithm.
 
@@ -118,7 +118,7 @@ At any time the user agent may decide to abort any speculation it has started, b
 
 In the case where the URL is cross-origin, actions will be assumed to be versions of those actions that do not reveal user identity (preconnect with a separate socket pool, uncredentialed prefetch, uncredentialed prerender). The exact semantics of those are to be defined elsewhere.
 
-#### Developer Tooling
+### Developer Tooling
 
 It will likely be useful to surface in developer tools what rules and URLs have been found, and what the heuristic probability used for each was. Developer tools should also provide an option to force the user agent to execute a speculation that it may have deemed low probability, so that the developer can reproducibly observe behavior in this case.
 
