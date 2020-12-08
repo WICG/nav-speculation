@@ -73,17 +73,10 @@ One of the simplest things a web developer can do is indicate that their site is
 ```html
 <script type="speculationrules">
 {
-  "allow": [
-    {
-      "action": "prerender",
-      "url_patterns": ["/**"]
-    }
-  ],
-  "disallow": [
-    {
-      "action": "prefetch",
-      "urls": ["/logout"]
-    }
+  "prerender": [
+    {"source": "document",
+     "if_href_matches": ["/**"],
+     "if_not_href_matches": ["/logout"]}
   ]
 }
 </script>
@@ -100,9 +93,11 @@ This can be supplemented via per-page tweaks to increase the strength of the sug
 
 ```json
 {
-  "action": "prerender",
-  "selectors": [".high-likelihood-prerender"],
-  "likelihood": "high"
+  "prerender": [
+    {"source": "document",
+     "if_selector_matches": [".high-likelihood-prerender"],
+     "score": 0.8}
+  ]
 }
 ```
 
