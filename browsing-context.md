@@ -24,9 +24,9 @@ _Note: a browsing context is the right primitive here, as opposed to a `Window` 
     - [Communications channels that match navigation](#communications-channels-that-match-navigation)
   - [Restrictions on the basis of being non-user-visible](#restrictions-on-the-basis-of-being-non-user-visible)
   - [Restrictions on loaded content](#restrictions-on-loaded-content)
-- [JavaScript API](#javascript-api)
-  - [Current proposal](#current-proposal)
-  - [Adjacent APIs](#adjacent-apis)
+- [JavaScript APIs](#javascript-apis)
+  - [Purpose-specific APIs](#purpose-specific-apis)
+  - [Potential primitive API](#potential-primitive-api)
 - [Page lifecycle and freezing](#page-lifecycle-and-freezing)
 - [Session history](#session-history)
 - [Navigation](#navigation)
@@ -155,68 +155,11 @@ If a prerendering browsing context navigates itself to a non-HTTP(S) URL, e.g. v
 
 Note that iframes (nested browsing contexts) inside of a prerendered browsing context have no such restrictions.
 
-## JavaScript API
+## JavaScript APIs
 
-We're still discussing various options for the API; please join that discussion in [#2](https://github.com/jeremyroman/alternate-loading-modes/issues/2). Here we present the considerations in play, plus our our tentative idea. The latter is mostly so that examples in this and other documents have something to exhibit.
+### Purpose-specific APIs
 
-Goals:
-
-- Allow prerendered content to know that it's prerendered.
-- Allow prerendered content to know when it stops being prerendered.
-- Play nicely with existing or related APIs such as [the storage access API](https://github.com/privacycg/storage-access/) or the [page visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API).
-
-Nice-to-haves:
-
-- Be general enough to accommodate other "alternate loading modes", such as [fenced frames](https://github.com/shivanigithub/fenced-frame/)
-
-### Current proposal
-
-The current proposed API is a `document.loadingMode` object with:
-
-- A property, `type`, which is either `"default"`, `"prerender"`, or `"uncredentialed-prerender"`. It could be extended in the future to other types.
-- An event, `"change"`, which fires when `type` changes.
-
-Envisioned usage is as follows:
-
-TODO: This example would likely want to use `document.prerendering` - even with `document.prerendering`, additional loading-mode information may still be useful for specialized cases where fetching may need to depend on the exact loading mode, can we find any examples/use cases? `document.prerendering` will likely cover the most common use cases without getting into the level of granularity of fetching restrictions.
-
-```js
-function afterPrerendering() {
-  // grab user data from cookies/IndexedDB
-  // ask for a bunch of permission-requiring features
-  // do some alert()s
-}
-
-if (!document.loadingMode || document.loadingMode.type === 'default') {
-    afterPrerendering();
-} else {
-    document.loadingMode.addEventListener('change', () => {
-        if (document.loadingMode.type === 'default') {
-            afterPrerendering();
-        }
-    });
-}
-```
-
-In the future, `document.loadingMode` might have additional properties; for example, it might expose the notion that the page was loaded via some proxy, as mentioned in the [fetch integration](./fetch.md).
-
-For exposing the semantic notion of prerendering (i.e. the user didn't initiate the load, the page is not interactive), we propose `document.prerendering`:
-
-```js
-if (!document.prerendering) {
-    afterPrerendering();
-} else {
-    document.onprerenderingchange = afterPrerendering;
-}
-```
-
-Note: it's possible that `document.prerendering` may be  just syntactic sugar for some subset of `document.loadingMode.type`, e.g. `document.loadingMode.type != 'default'` or `document.loadingMode.type == 'prerender' || document.loadingMode.type == 'uncredentialed-prerender'`.
-
-See [prerendering-state](prerendering-state.md) for more details.
-
-### Adjacent APIs
-
-In addition to the loading mode API proposed above, script can use APIs particular to the behavior they are interested in. For example, the [storage access API](https://github.com/privacycg/storage-access) API can be used in supporting browsers to observe whether unpartitioned storage is available. Especially with [a proposed extension](https://github.com/privacycg/storage-access/issues/55), this can be quite ergonomic:
+To react to changes in prerendering state, script can use APIs particular to the behavior they are interested in. For example, the [storage access API](https://github.com/privacycg/storage-access) API can be used in supporting browsers to observe whether unpartitioned storage is available. Especially with [a proposed extension](https://github.com/privacycg/storage-access/issues/55), this can be quite ergonomic:
 
 ```js
 document.storageAccessAvailable.then(() => {
@@ -240,22 +183,36 @@ if (geoPermission.state === "denied") {
 
 _Note: the above code only makes sense if we decide that permissions are denied in prerendering browsing contexts, instead of having them hang until activation. [That plan](#restrictions-on-the-basis-of-being-non-user-visible) is still tentative._
 
-Finally, there's the case of the [page visibility API](https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API). Our current plan is to treat (non-portal) prerendering browsing contexts as hidden, until activation, in which case code that only wants to run upon the user viewing the page could be done as follows:
+Finally, for cases related to rendering behavior, we propose a [dedicated prerendering state API](./prerendering-state.md):
 
 ```js
-if (document.visibilityState === "visible") {
-    videoElement.play();
+function afterPrerendering() {
+  // grab user data from cookies/IndexedDB
+  // update the UI
+  // maybe ask for notifications access
 }
 
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-        videoElement.pause();
-    } else {
-        // visibilityState is "visible"
-        videoElement.play();
-    }
-});
+if (document.prerendering) {
+  document.addEventListener('prerenderingchange', () => {
+    afterPrerendering();
+  }, { once: true });
+} else {
+  afterPrerendering();
+}
 ```
+
+Please read that sibling [explainer](./prerendering-state.md) for more details on the design choices and motivations there.
+
+### Potential primitive API
+
+We are also considering exposing the core primitive which the browser uses, i.e. a browsing context's loading mode. This could look something like a `document.loadingMode` object, with:
+
+- A property, `type`, which is either `"default"`, `"prerender"`, or `"uncredentialed-prerender"`. It could be extended in the future to other types.
+- An event, `"change"`, which fires when `type` changes.
+
+In the future, `document.loadingMode` might have additional properties; for example, it might expose the notion that the page was loaded via some proxy, as mentioned in the [fetch integration](./fetch.md).
+
+However, we currently believe the purpose-specific APIs described above suffice for all known use cases. So although we like the idea of exposing the spec-level primitives directly, we're currently putting that idea on hold. See some discussion in [#2](https://github.com/jeremyroman/alternate-loading-modes/issues/2).
 
 ## Page lifecycle and freezing
 
