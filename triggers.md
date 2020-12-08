@@ -1,8 +1,8 @@
 # Prerendering triggers
 
-A web-facing "trigger" is a mechanism for web content to permit prerendering of certain URLs. It may include additional daata that informs the user agent about prerendering.
+A web-facing "trigger" is a mechanism for web content to permit prerendering of certain URLs. It may include additional data that informs the user agent about prerendering.
 
-This conveys at a minimum the following information necessary for the user agent to prerender:
+They convey at a minimum the following information necessary for the user agent to prerender:
 * the user is reasonably likely to navigate to the URL
 * prefetching the URL is not believed to have undesirable side effects, at least under certain conditions
 * the response body is expected to be eligible for prerendering (i.e., the user agent probably won't need to abort prerendering)
@@ -55,7 +55,7 @@ A rule may include a _score_ between 0.0 and 1.0 (inclusive), defaulting to 0.5,
 
 #### List rules
 
-A list rule must have an express list of the _URLs_ to which the rule applies, even if no link or other reference to the URL exists in the document. This is especially useful in cases where the expected navigation corresponds to a link that will be added dynamically, or to an anticipated script-initiated navigation.
+A list rule has an express list of the _URLs_ to which the rule applies. The list can contain any URLs, even ones for which no link or other reference to the URL exists in the document. This is especially useful in cases where the expected navigation corresponds to a link that will be added dynamically, or to an anticipated script-initiated navigation.
 
 These URLs will be parsed relative to the document base URL (if inline in a document) or relative to the external resource URL (if externally fetched).
 
