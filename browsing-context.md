@@ -183,13 +183,14 @@ if (geoPermission.state === "denied") {
 
 _Note: the above code only makes sense if we decide that permissions are denied in prerendering browsing contexts, instead of having them hang until activation. [That plan](#restrictions-on-the-basis-of-being-non-user-visible) is still tentative._
 
-Finally, for cases related to rendering behavior, we propose a [dedicated prerendering state API](./prerendering-state.md):
+Finally, for cases related to rendering and visibility, we propose a [dedicated prerendering state API](./prerendering-state.md):
 
 ```js
 function afterPrerendering() {
-  // grab user data from cookies/IndexedDB
-  // update the UI
-  // maybe ask for notifications access
+  // start a video/animation
+  // fetch large resources
+  // connect to a chat server
+  // etc.
 }
 
 if (document.prerendering) {
