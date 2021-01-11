@@ -59,6 +59,8 @@ Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map<
 
 <p class="issue">Should this map be scoped to the [=user agent=] instead? Or, allowed to be copied between documents?
 
+Every {{Document}} has a <dfn for="Document">post-activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps.
+
 <div algorithm="create a prerendering browsing context">
   To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
 
@@ -108,6 +110,10 @@ Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map<
     1. [=Queue a global task=] on the [=networking task source=] given |successorBC|'s [=browsing context/active window=] to perform the following steps
 
       1. Set |successorBC|'s [=browsing context/loading mode=] to "`default`".
+
+      1. [=list/For each=] |steps| in |successorBC|'s [=active document=]'s [=Document/post-activation steps list=], run |steps|.
+
+      1. [=list/Empty=] |successorBC|'s [=active document=]'s [=Document/post-activation steps list=].
 </div>
 
 <h2 id="navigation">Navigation and session history</h2>
@@ -188,6 +194,14 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
   1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
 </div>
 
+<h3 id="cleanup-upon-discarding">Cleanup upon discarding a {{Document}}</h3>
+
+Modify the [=discard a document|discard=] algorithm for {{Document}}s by appending the following step:
+
+<div algorithm="discard a Document patch">
+  1. [=list/Empty=] <var ignore>document</var>'s [=Document/post-activation steps list=].
+</div>
+
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
 Some behaviors might make sense in most [=top-level browsing contexts=], but do not make sense in [=prerendering browsing contexts=]. This section enumerates specification patches to enforce such restrictions.
@@ -207,12 +221,10 @@ Various behaviors are disallowed in [=prerendering browsing contexts=] because t
 
 <h3 id="patch-downloading">Downloading resources</h3>
 
-Modify the <a spec=HTML>allowed to download</a> algorithm to ensure that prerendered content never performs downloads, by prepending the following steps:
+Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downloads inside [=prerendering browsing contexts=] are delayed until [=prerendering browsing context/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
 
-<div algorithm="allowed to download patch">
-  1. If <var ignore>initiator browsing context</var> is a [=prerendering browsing context=], then return false.
-
-  1. If <var ignore>instantiator browsing context</var> is a [=prerendering browsing context=], then return false.
+<div algorithm="downloads a hyperlink patch">
+  1. If <var ignore>subject</var>'s [=Node/node document=]'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following step to <var ignore>subject</var>'s [=Node/node document=]'s [=Document/post-activation steps list=] and return.
 </div>
 
 <h2 id="todo">TODO</h2>
