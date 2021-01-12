@@ -29,7 +29,7 @@ We envision prerendering having several related pieces:
 
 * [**Prerendering browsing contexts**](./browsing-context.md), which are special browsing contexts that are not displayed to the user, and within which content is constrained to not perform disruptive or side-effecting operations.
 
-  In all prerendering browsing contexts, side-effecting or disruptive APIs, such as those that could play media, require a permission prompt, or otherwise display UI, will be disabled in API-specific ways. In those tagged as being used for cross-origin prerendering, storage access will not be available, and all fetches will need to use the prerendering fetching modes.
+  In all prerendering browsing contexts, disruptive APIs, such as those that could play media, require a permission prompt, or otherwise display UI, will be disabled in API-specific ways. In those tagged as being used for cross-origin prerendering, storage access will not be available, and all fetches will need to use the prerendering fetching modes.
 
   Crucially, prerendering browsing contexts have the ability to transition to becoming normal top-level browsing contexts, so that all of the prerendered content is reused and immediately displayed to the user.
 
