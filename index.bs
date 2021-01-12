@@ -111,7 +111,7 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
       1. Set |successorBC|'s [=browsing context/loading mode=] to "`default`".
 
-      1. Fire an event named `prerenderingchange`, with its {{Event/cancelable}} and {{Event/bubbles}} attributes initialized to false, at |successorBC|'s [=active document=].
+      1. [=Fire an event=] named {{Document/prerenderingchange}} at |successorBC|'s [=active document=].
 
       1. [=list/For each=] |steps| in |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=]:
 
@@ -122,21 +122,22 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
       1. [=list/Empty=] |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=].
 </div>
 
+<hr>
+
 Amend the {{Document}} interface:
 
-<pre class='idl'>
+<pre class="idl">
   partial interface Document {
       readonly attribute boolean prerendering;
       attribute EventHandler onprerenderingchange;
   };
 </pre>
 
+The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=Document/browsing context=] that is a [=prerendering browsing context=]; otherwise, false.
 
-<p>The {{Document}} {{Document/prerendering}} attribute getter must return true if [=this=] has a non-null [=Document/Browsing Context=] whose [=browsing context/loading mode=] is "`prerender`" or "`uncredentialed-prerender`". Otherwise, returns false.</p>
+<p class="note">This attribute lets pages know when they're being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.
 
-<p class="note">This attribute lets pages know when they're being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.</p>
-
-<p>The {{Document}} {{Document/onprerenderingchange}} attribute is an [=event handler IDL attribute=] corresponding to the `prerenderingchange` [=event handler event type=].</p>
+The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=event handler IDL attribute=] corresponding to the <dfn event for="Document">prerenderingchange</dfn> [=event handler event type=].
 
 
 <h2 id="navigation">Navigation and session history</h2>
