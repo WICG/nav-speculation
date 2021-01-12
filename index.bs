@@ -111,6 +111,8 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
       1. Set |successorBC|'s [=browsing context/loading mode=] to "`default`".
 
+      1. Fire an event named `prerenderingchange`, with its {{Event/cancelable}} and {{Event/bubbles}} attributes initialized to false, at |successorBC|'s [=active document=].
+
       1. [=list/For each=] |steps| in |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=]:
 
         1. Run |steps|.
@@ -119,6 +121,28 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
       1. [=list/Empty=] |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=].
 </div>
+
+Amend the {{Document}} interface:
+
+<pre class='idl'>
+  partial interface Document {
+      readonly attribute boolean prerendering;
+      attribute EventHandler onprerenderingchange;
+  };
+</pre>
+
+<dl dfn-type=attribute dfn-for=Document>
+  <dt>
+    <dfn>prerendering</dfn>
+    <dd>Is true if [=Document=] has a non-null [=Document/Browsing Context=] and its loading mode is "`prerender`" or "`uncredentialed-prerender`", false otherwise.</dd>
+    <p class="note">This attribute lets pages know when they're being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.</p>
+  </dt>
+
+  <dt>
+    <dfn>onprerenderingchange</dfn>
+    <dd>This event handler, of event handler type `prerenderingchange`, MUST be fired whenever the value of the {{Document/prerendering}} attribute changes.</dd>
+  </dt>
+</dl>
 
 <h2 id="navigation">Navigation and session history</h2>
 
