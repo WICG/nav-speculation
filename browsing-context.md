@@ -60,16 +60,16 @@ Now, the user clicks on the "Click me!" link. At this point the user agent notic
 Upon activation, `https://b.example/` gets notified via [the API](#javascript-api). At this point, it now has access to storage and cookies, so it can upgrade itself to a logged-in view if appropriate:
 
 ```js
-document.loadingMode.addEventListener('change', () => {
-    if (document.loadingMode.type === 'default') {
-        document.getElementById('user').textContent = localStorage.getItem('current-user');
-    }
+document.storageAccessAvailable.then(() => {
+  document.getElementById('user').textContent = localStorage.getItem('current-user');
 });
 ```
 
 This completes the journey to a fully-rendered view of `https://b.example/`, in a user-visible top-level browsing context.
 
 ## Restrictions
+
+For an API-by-API analysis of the restrictions in prerendering browsing contexts, including an overview table and alternatives considered, see [this document](https://docs.google.com/document/d/1zY15k_wFTik2EoxBf3_RT7YjYpFMDaeNspy15n0rtww/edit?usp=sharing). The following section outlines the reasoning and threat model behind the proposed restrictions.
 
 ### Privacy-based restrictions
 
@@ -90,7 +90,7 @@ The below subsections explore the implementation of these restrictions in more d
 
 #### Storage access blocking
 
-Prerendered pages that are cross-origin to their referring site will have no access to storage, similar to how an opaque-origin `<iframe>` behaves. (See this [discussion on the spec mechanism](https://github.com/whatwg/storage/issues/18#issuecomment-615336554).)
+Prerendered pages that are cross-origin to their referring site will have no access to storage.
 
 We could attempt to address the threat by providing partitioned or ephemeral storage access, but then it is unclear how to transition to _unpartitioned_ storage upon activation. It would likely require some kind of web-developer-written merging logic. Completely blocking storage access is thus deemed simpler; prerendered pages should not be doing anything which requires persistent storage before activation.
 
@@ -98,13 +98,19 @@ This means that most existing content will appear "broken" when prerendered by a
 
 For a more concrete example, consider `https://aggregator.example/` which wants to prerender this GitHub repository. To make this work, GitHub would need to add the opt-in to allow the page to be prerendered. Additionally, GitHub should add code to adapt their UI to show the logged-in view upon activation, by removing the "Join GitHub today" banner, and retrieving the user's credentials from storage and using them to replace the signed-out header with the signed-in header. Without such adapter code, activating the prerendering browsing context would show the user a logged-out view of GitHub in the top-level tab that the prerendering browsing context has been activated into. This would be a bad and confusing user experience, since the user is logged in to GitHub in all of their other top-level tabs.
 
-Exactly how storage access is blocked is still under discussion, in [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7). In particular, asynchronous storage operations could either immediately fail, or they could hang until activation, at which point they might succeed. And, for simpler types of storage such as cookies, it might be possible to do a merge from partitioned to unpartitioned storage, so we might want to explore partition-merging alternatives to full blocking.
+As for the exact mechanism of this blocking:
+
+- Asynchronous storage access APIs, such as IndexedDB, the Cache API, and File System Access's origin-private file system, will perform no work and have their corresponding promises/events delayed until activation.
+
+- For synchronous storage APIs like `localStorage` and `docuemnt.cookie`, we are currently still discussing the best option, in [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7). The simplest idea would be to have them throw exceptions, but there may be more friendly alternatives that would allow prerendering to work on more pages without code changes.
 
 #### Communications channels that are blocked
 
 - Prerendering browsing contexts have no reference to the `Window`, or other objects, of their referrer. Thus, they cannot communicate using [`postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) or other APIs.
-- `BroadcastChannel` is disabled within prerendering browsing contexts.
-- TODO service/shared workers?
+- `BroadcastChannel` behavior is modified in prerendering browsing contexts. Any messages sent to such a channel are queued up and only delivered after activation. Any messages received on the channel pre-activation are dropped.
+- `SharedWorker` construction is delayed in prerendering browsing contexts. In particular, while the `new SharedWorker()` constructor returns immediately, no worker is started or connected to until after activation. Any messages sent to the `SharedWorker` pre-activation are buffered up and delivered upon activation. (And, since the `SharedWorker` is not connected to an actual shared worker pre-activation, no message can be received on it pre-activation.)
+- Web locks APIs will return promises which wait to settle (and wait to do any lock-related work) until activation.
+- TODO `ServiceWorker`?
 - Fetches within cross-origin prerendering browsing contexts, including the initial request for the page, do not use credentials. Credentialed fetches could be used for cross-site recognition, for example by:
   - Using the sequence of loads. The referring page could encode a user ID into the order in which a sequence of URLs are prerendered. To prevent the target from correlating this ID with its own user ID without a navigation, a document loaded into a cross-origin prerendering browsing context is fetched without credentials and doesn't have access to storage, as described above.
   - The host creates a prerendering browsing context, and the prerendered site decides between a 204 and a real response based on the user's ID. Or the prerendered site delays the response by an amount of time that depends on the user's ID. Because the prerendering load is done without credentials, the prerendered site can't get its user ID in order to make this sort of decision.
@@ -122,19 +128,23 @@ Note that since a non-activated prerendering browsing context has no storage acc
 
 Apart from the privacy-related restrictions to communications and storage, while prerendered, pages are additionally restricted in various ways due to the fact that the user has not yet expressed any intent to interact. All of these restrictions apply regardless of the same- or cross-origin status of the prerendered content.
 
-Our initial proposal is that these APIs all be uniformly disabled, in the following manner. However, [#8](https://github.com/jeremyroman/alternate-loading-modes/issues/8) explores alternatives, where some of them have their effects delayed. We'll be experimenting with this during the prototyping phase.
+- APIs with a clear async boundary will have their work delayed until activation. Thus, their corresponding promises would simply remain pending, or their associated events would not fire. This includes features that are controlled by the [Permissions API](https://w3c.github.io/permissions/) ([list](https://w3c.github.io/permissions/#permission-registry)), some features that are controlled by [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/), pointer lock, and orientation lock (the latter two of which are controlled by `<iframe sandbox="">`).
 
-- Any features that are controlled by the [Permissions API](https://w3c.github.io/permissions/) ([list](https://w3c.github.io/permissions/#permission-registry)) will be automatically denied without prompting.
+- Any feature which requires [user activation](https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation) will not be available, since user activation is not possible in prerendering browsing contexts. This includes APIs like `PresentationRequest` and `PaymentRequest`, as well as the `beforeunload` prompt.
 
-- Any features controlled by [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/) ([list](https://github.com/w3c/webappsec-permissions-policy/blob/master/features.md)) will be disabled, unless their default allowlist is `*`. There is no ability for the referring page to delegate these permissions. (In particular, there is no counterpart to `<iframe>`'s `allow=""` attribute.)
+- The gamepad API will return "no gamepads" pre-activation, and fire `gamepadconnected` as part of activation (after which it will return the usual set of gamepads).
 
-- Popups, pointer lock, orientation lock, the presentation API, downloads, and modal dialogs (`alert()` etc.) all are disabled pre-activation. (These are features which are currently only possible to disable with through [iframe sandboxing](https://html.spec.whatwg.org/multipage/origin.html#sandboxing).)
+- Autoplaying content will not be treated as eligible for autoplay pre-activation, but activation will revisit such content and potentially start it autoplaying if it is eligible.
 
-- Any feature which requires [user activation](https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation) will not be available, since user activation is not possible in prerendering browsing contexts.
+- Downloads will be delayed until after activation.
 
-After activation, these restrictions are lifted: the content is treated like a normal top-level browsing context, and is able to use all these features in the normal way. The [API](#javascript-api) can be used to request permissions upon activation, if necessary. (Although doing so gives a user experience equivalent to requesting permissions on load, and thus is rarely the best design.)
+- `window.open()` will return `null` pre-activation, as if the popup had been blocked by a popup blocker.
 
-_Note: ideally Permissions Policy would become a superset of the Permissions API and iframe sandboxing. Then we could use that infrastructure as the single place to impose and lift these restrictions. Currently that is not the case, so the spec will be more messy._
+- `window.alert()` and `window.print()` will silently do nothing pre-activation.
+
+- `window.confirm()` and `window.prompt()` will silently return their default values (`false` and `""`) pre-activation.
+
+_Note: specifying this will likely be messy, as these different APIs are controlled through different mechanisms, and many specs will need to be patched to include a "pause until activation" step._
 
 ### Restrictions on loaded content
 
@@ -168,20 +178,15 @@ document.storageAccessAvailable.then(() => {
 });
 ```
 
-Another similar case is asking for permissions. For this, the [Permissions API](https://developer.mozilla.org/en-US/docs/Web/API/Permissions_API) can be helpful:
+Another similar case is asking for permissions. Since permission-granting is automatically delayed until activation, the normal permission-requesting code could be used. For example, to prompt for notifications, you'd just write:
 
 ```js
-const geoPermission = await navigator.permissions.query("geolocation");
-if (geoPermission.state === "denied") {
-    geoPermission.onchange = () => {
-        if (geoPermission.state === "prompt") {
-            promptForGeolocation();
-        }
-    };
-}
+Notification.requestPermission().then(state => {
+  // This will be called only after the user grants or denies the permission.
+  // - If the page is rendered normally, that will probably be soon.
+  // - If the page is rendered in a prerendering browsing context, then the prompt will be delayed until activation.
+});
 ```
-
-_Note: the above code only makes sense if we decide that permissions are denied in prerendering browsing contexts, instead of having them hang until activation. [That plan](#restrictions-on-the-basis-of-being-non-user-visible) is still tentative._
 
 Finally, for cases related to rendering and visibility, we propose a [dedicated prerendering state API](./prerendering-state.md):
 
@@ -220,8 +225,6 @@ However, we currently believe the purpose-specific APIs described above suffice 
 User agents need to strike a delicate balance with prerendered content. Such content needs enough resources to do its initial setup work, so that loading it is as instant as possible. But it shouldn't consume resources in a way that would detract from a user's experience on the content they're actively viewing on the referring site.
 
 One mechanism user agents will probably use for this is to freeze prerendered pages, in the sense defined by the [Page Lifecycle](https://wicg.github.io/page-lifecycle/) specification. The most important impact of freezing, for our purposes, is that tasks queued by the page will not be run by the event loop. In particular, we envision user agents freezing prerendered pages after some initial setup time, to avoid recurring timers or data transfers.
-
-Another case where freezing might be useful is if the prerendered content performs some prohibited operation. As discussed in [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7) and [#8](https://github.com/jeremyroman/alternate-loading-modes/issues/8), we might make this part of the specified mechanism for enforcing the [restrictions](#restrictions) on prerendered content.
 
 Using the freezing mechanism is a natural fit for prerendered content, since freezing is already performed by user agents for backgrounded content. In particular, content which uses the page lifecycle API (such as the `freeze` and `resume` events) will likely react correctly if it becomes frozen in a prerendering browsing context, just like if it were frozen in any other browsing context.
 
