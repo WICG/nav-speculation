@@ -131,18 +131,13 @@ Amend the {{Document}} interface:
   };
 </pre>
 
-<dl dfn-type=attribute dfn-for=Document>
-  <dt>
-    <dfn>prerendering</dfn>
-    <dd>Is true if [=Document=] has a non-null [=Document/Browsing Context=] and its loading mode is "`prerender`" or "`uncredentialed-prerender`", false otherwise.</dd>
-    <p class="note">This attribute lets pages know when they're being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.</p>
-  </dt>
 
-  <dt>
-    <dfn>onprerenderingchange</dfn>
-    <dd>This event handler, of event handler type `prerenderingchange`, MUST be fired whenever the value of the {{Document/prerendering}} attribute changes.</dd>
-  </dt>
-</dl>
+<p>The {{Document}} {{Document/prerendering}} attribute getter must return true if [=this=] has a non-null [=Document/Browsing Context=] whose [=browsing context/loading mode=] is "`prerender`" or "`uncredentialed-prerender`". Otherwise, returns false.</p>
+
+<p class="note">This attribute lets pages know when they're being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.</p>
+
+<p>The {{Document}} {{Document/onprerenderingchange}} attribute is an [=event handler IDL attribute=] corresponding to the `prerenderingchange` [=event handler event type=].</p>
+
 
 <h2 id="navigation">Navigation and session history</h2>
 
