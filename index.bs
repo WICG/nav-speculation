@@ -4,6 +4,7 @@ Shortname: prerendering-revamped
 Status: DREAM
 Repository: jeremyroman/alternate-loading-modes
 Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me
+Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com
 Abstract: This document contains a collection of specification patches for well-specified prerendering.
 Markup Shorthands: css no, markdown yes
 Assume Explicit For: yes
@@ -55,18 +56,18 @@ By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`defa
 
 A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
 
-Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of ([=URL=], [=referrer policy=]) [=tuples=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
+Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of [=URL=]s to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
 
-<p class="issue">Should this map be scoped to the [=user agent=] instead? Or, allowed to be copied between documents?
+<p class="note">This spec scopes the [=Document/prerendering browsing contexts map=] to a {{Document}} for simplicity. This is described in more in the <a href="https://docs.google.com/document/d/1E82ZqXibjCvpPdOgMmOfPIatPMEBVAiJ2KQm6r1_E94/edit#heading=h.fvk61aveq6y9">Prerendering activation matching</a> document but is subject to change in the future.
 
 Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps.
 
 <div algorithm="create a prerendering browsing context">
-  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
+  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
 
   1. Assert: |startingURL|'s [=url/scheme=] is a [=HTTP(S) scheme=].
 
-  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)] [=map/exists=], then return it.
+  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] [=map/exists=], then return it.
 
   1. Let |bc| be the result of [=creating a new top-level browsing context=].
 
@@ -74,7 +75,7 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
 
-  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
+  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL|.
 
   1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
 
@@ -155,11 +156,11 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
       * |historyHandling| is "`default`" or "`replace`"
       * <var ignore>navigationType</var> is "`other`"
       * |resource| is a [=request=] whose [=request/method=] is \``GET`\`
-      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])] [=map/exists=]
+      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]] [=map/exists=]
 
     then:
 
-    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])].
+    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]].
 
     1. If |successorBC| is not [=prerendering browsing context/empty=], then:
 
@@ -167,6 +168,8 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
 
       1. Return.
 </div>
+
+<p class="issue">The navigation [=request=] made for a [=prerendering browsing context=] should be modified in the ways described in the <a href="https://github.com/jeremyroman/alternate-loading-modes/blob/main/fetch.md">Prerendering fetching modes</a> draft.
 
 <h3 id="always-replacement">Maintaining a trivial session history</h3>
 
