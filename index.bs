@@ -12,6 +12,9 @@ Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
 Boilerplate: omit conformance
 </pre>
+<pre class="link-defaults">
+spec:html; type:element; text:link
+</pre>
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
@@ -30,14 +33,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: abort; for: Document; url: abort-a-document
       text: create and initialize a Document object; url: initialise-the-document-object
       text: history handling behavior; url: history-handling-behavior
-      text: link; url: the-link-element
       text: prompt to unload; url: prompt-to-unload-a-document
       text: refused to allow the document to be unloaded; url: refused-to-allow-the-document-to-be-unloaded
       text: traverse the history; url: traverse-the-history
-    urlPrefix: semantics.html
-      for: link
-        text: href; url: attr-link-href
-        text: referrerpolicy; url: attr-link-referrerpolicy
     urlPrefix: urls-and-fetching.html
       text: parse a URL; url: parse-a-url
       text: resulting URL record
@@ -45,7 +43,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 
 <h2 id="prerendering-bcs">Prerendering browsing contexts</h2>
 
-<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/#windows">Browsing contexts</a> section.</em>
+<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#windows">Browsing contexts</a> section.</em>
 
 Every [=browsing context=] has a <dfn for="browsing context">loading mode</dfn>, which is one of the following:
 
@@ -86,8 +84,6 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
   1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
 
   1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
-
-  1. Return |bc|.
 </div>
 
 <div algorithm>
@@ -149,22 +145,27 @@ The <dfn attribute for="Document">prerendering</dfn> getter steps are to return 
 The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=event handler IDL attribute=] corresponding to the <dfn event for="Document">prerenderingchange</dfn> [=event handler event type=].
 
 
-<h2 id="prerender-processing-model">Prerender processing model</h2>
+<h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
 
-Add a new link type to the "Link types" section of the HTML Standard, replacing the prerender documentation in the Resource Hints standard.
+<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in the Resource Hints standard</em>
 
-<h3 id="link-rel-prerender">Link type "<dfn data-lt="rel-prerender"><code>prerender</code></dfn>"</h3>
-
-The <a lt="rel-prerender"><code>prerender</code></a> keyword may be used with <a spec=HTML><code>link</code></a> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
-
-To <a lt="process the linked resource" spec=HTML>process this type of linked resource</a> given a <a spec=HTML><code>link</code></a> element <var ignore>el</var>, run these steps:
+The <{link/rel/prerender}> keyword may be used with <{link}> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
 
 <div algorithm="prerender-processing-model">
-  1. If |el|'s [=link/href=] attribute's value is the empty string, then return.
-  1. Let |referrer policy| be  the current state of |el|'s [=link/referrerpolicy=] attribute.
-  1. [=parse a URL|Parse=] the [=URL=] given by |el|'s [=link/href=] attribute, relative to |el|'s [=Node/node document=]. If that fails, then return. Otherwise, let |url| be the [=resulting URL record=].
+  To <a lt="fetch and process the linked resource" spec=HTML>fetch and process this type of linked resource</a> given a <{link}> element <var>el</var>, run these steps:
+
+  1. If |el|'s <{link/href}> attribute's value is the empty string, then return.
+
+  1. Let |referrer policy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
+
+  1. [=Parse a URL=] given by |el|'s <{link/href}> attribute, relative to |el|'s [=Node/node document=]. If that fails, then return. Otherwise, let |url| be the [=resulting URL record=].
+
   1. [=Create a prerendering browsing context=] with |url|, |referrer policy|, and |el|'s [=Node/node document=].
 </div>
+
+A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's <a for=Node>node document</a> for this link type.
+
+<p class="note">Note that this type of link does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other links that create an <a spec=HTML>external resource links</a>.
 
 <p class="issue">TODO: We should define a list of allowable referrer policies to prerender with, and early-return if the above referrer policy is not in this list.
 
