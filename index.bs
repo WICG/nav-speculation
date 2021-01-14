@@ -4,6 +4,7 @@ Shortname: prerendering-revamped
 Status: DREAM
 Repository: jeremyroman/alternate-loading-modes
 Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me
+Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com
 Abstract: This document contains a collection of specification patches for well-specified prerendering.
 Markup Shorthands: css no, markdown yes
 Assume Explicit For: yes
@@ -29,9 +30,17 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: abort; for: Document; url: abort-a-document
       text: create and initialize a Document object; url: initialise-the-document-object
       text: history handling behavior; url: history-handling-behavior
+      text: link; url: the-link-element
       text: prompt to unload; url: prompt-to-unload-a-document
       text: refused to allow the document to be unloaded; url: refused-to-allow-the-document-to-be-unloaded
       text: traverse the history; url: traverse-the-history
+    urlPrefix: semantics.html
+      for: link
+        text: href; url: attr-link-href
+        text: referrerpolicy; url: attr-link-referrerpolicy
+    urlPrefix: urls-and-fetching.html
+      text: parse a URL; url: parse-a-url
+      text: resulting URL record
 </pre>
 
 <h2 id="prerendering-bcs">Prerendering browsing contexts</h2>
@@ -139,6 +148,25 @@ The <dfn attribute for="Document">prerendering</dfn> getter steps are to return 
 
 The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=event handler IDL attribute=] corresponding to the <dfn event for="Document">prerenderingchange</dfn> [=event handler event type=].
 
+
+<h2 id="prerender-processing-model">Prerender processing model</h2>
+
+Add a new link type to the "Link types" section of the HTML Standard, replacing the prerender documentation in the Resource Hints standard.
+
+<h3 id="link-rel-prerender">Link type "<dfn data-lt="rel-prerender"><code>prerender</code></dfn>"</h3>
+
+The <a lt="rel-prerender"><code>prerender</code></a> keyword may be used with <a spec=HTML><code>link</code></a> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
+
+To <a lt="process the linked resource" spec=HTML>process this type of linked resource</a> given a <a spec=HTML><code>link</code></a> element <var ignore>el</var>, run these steps:
+
+<div algorithm="prerender-processing-model">
+  1. If |el|'s [=link/href=] attribute's value is the empty string, then return.
+  1. Let |referrer policy| be  the current state of |el|'s [=link/referrerpolicy=] attribute.
+  1. [=parse a URL|Parse=] the [=URL=] given by |el|'s [=link/href=] attribute, relative to |el|'s [=Node/node document=]. If that fails, then return. Otherwise, let |url| be the [=resulting URL record=].
+  1. [=Create a prerendering browsing context=] with |url|, |referrer policy|, and |el|'s [=Node/node document=].
+</div>
+
+<p class="issue">TODO: We should define a list of allowable referrer policies to prerender with, and early-return if the above referrer policy is not in this list.
 
 <h2 id="navigation">Navigation and session history</h2>
 
