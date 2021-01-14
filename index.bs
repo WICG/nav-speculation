@@ -151,8 +151,16 @@ The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=e
 
 The <{link/rel/prerender}> keyword may be used with <{link}> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
 
+The appropriate times to <a spec=HTML>fetch and process the linked resource</a> for such a link are:
+
+<ul>
+  <li>When the <a spec=HTML>external resource link</a> is created on a <{link}> element that is already <a spec=HTML>browsing-context connected</a>.</li>
+  <li>When the <a spec=HTML>external resource link</a>'s <{link}> element <a spec=HTML>becomes browsing-context connected</a>.</li>
+  <li>When the <{link/href}> attribute of the <{link}> element of an <a spec=HTML>external resource link</a> that is already <a spec=HTML>browsing-context connected</a> is changed.</li>
+</ul>
+
 <div algorithm="prerender-processing-model">
-  To <a lt="fetch and process the linked resource" spec=HTML>fetch and process this type of linked resource</a> given a <{link}> element <var>el</var>, run these steps:
+  The <a spec=HTML>fetch and process the linked resource</a> algorithm for <{link/rel/prerender}> links, given a <{link}> element <var>el</var>, is as follows:
 
   1. If |el|'s <{link/href}> attribute's value is the empty string, then return.
 
