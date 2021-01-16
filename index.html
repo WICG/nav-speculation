@@ -2056,20 +2056,21 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-01-13">13 January 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-01-15">15 January 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
      <dd><a href="https://github.com/jeremyroman/alternate-loading-modes/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
-     <dt class="editor">Editor:
+     <dt class="editor">Editors:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:d@domenic.me">Domenic Denicola</a> (<a class="p-org org" href="https://www.google.com/">Google</a>)
+     <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:domfarolino@gmail.com">Dominic Farolino</a> (<a class="p-org org" href="https://www.google.com/">Google</a>)
     </dl>
    </div>
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 13 January 2021,
+In addition, as of 15 January 2021,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2083,26 +2084,27 @@ Parts of this work may be from another specification document.  If so, those par
   <nav data-fill-with="table-of-contents" id="toc">
    <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
    <ol class="toc" role="directory">
-    <li><a href="#prerendering-bcs"><span class="secno">1</span> <span class="content">Prerendering browsing contexts</span></a>
+    <li><a href="#link-rel-prerender"><span class="secno">1</span> <span class="content">Link type "<span><code>prerender</code></span>"</span></a>
+    <li><a href="#prerendering-bcs"><span class="secno">2</span> <span class="content">Prerendering browsing contexts</span></a>
     <li>
-     <a href="#navigation"><span class="secno">2</span> <span class="content">Navigation and session history</span></a>
+     <a href="#navigation"><span class="secno">3</span> <span class="content">Navigation and session history</span></a>
      <ol class="toc">
-      <li><a href="#navigate-activation"><span class="secno">2.1</span> <span class="content">Allowing activation in place of navigation</span></a>
-      <li><a href="#always-replacement"><span class="secno">2.2</span> <span class="content">Maintaining a trivial session history</span></a>
-      <li><a href="#no-bad-navs"><span class="secno">2.3</span> <span class="content">Preventing non-HTTP(S) navigations</span></a>
-      <li><a href="#cleanup-upon-discarding"><span class="secno">2.4</span> <span class="content">Cleanup upon discarding a <code class="idl"><span>Document</span></code></span></a>
+      <li><a href="#navigate-activation"><span class="secno">3.1</span> <span class="content">Allowing activation in place of navigation</span></a>
+      <li><a href="#always-replacement"><span class="secno">3.2</span> <span class="content">Maintaining a trivial session history</span></a>
+      <li><a href="#no-bad-navs"><span class="secno">3.3</span> <span class="content">Preventing non-HTTP(S) navigations</span></a>
+      <li><a href="#cleanup-upon-discarding"><span class="secno">3.4</span> <span class="content">Cleanup upon discarding a <code class="idl"><span>Document</span></code></span></a>
      </ol>
     <li>
-     <a href="#nonsense-behaviors"><span class="secno">3</span> <span class="content">Preventing nonsensical behaviors</span></a>
+     <a href="#nonsense-behaviors"><span class="secno">4</span> <span class="content">Preventing nonsensical behaviors</span></a>
      <ol class="toc">
-      <li><a href="#patch-window-apis"><span class="secno">3.1</span> <span class="content">APIs for creating and navigating browsing contexts by name</span></a>
+      <li><a href="#patch-window-apis"><span class="secno">4.1</span> <span class="content">APIs for creating and navigating browsing contexts by name</span></a>
      </ol>
     <li>
-     <a href="#intrusive-behaviors"><span class="secno">4</span> <span class="content">Preventing intrusive behaviors</span></a>
+     <a href="#intrusive-behaviors"><span class="secno">5</span> <span class="content">Preventing intrusive behaviors</span></a>
      <ol class="toc">
-      <li><a href="#patch-downloading"><span class="secno">4.1</span> <span class="content">Downloading resources</span></a>
+      <li><a href="#patch-downloading"><span class="secno">5.1</span> <span class="content">Downloading resources</span></a>
      </ol>
-    <li><a href="#todo"><span class="secno">5</span> <span class="content">TODO</span></a>
+    <li><a href="#todo"><span class="secno">6</span> <span class="content">TODO</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
@@ -2113,14 +2115,41 @@ Parts of this work may be from another specification document.  If so, those par
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
      <ol class="toc">
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
      </ol>
     <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
     <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
    </ol>
   </nav>
   <main>
-   <h2 class="heading settled" data-level="1" id="prerendering-bcs"><span class="secno">1. </span><span class="content">Prerendering browsing contexts</span><a class="self-link" href="#prerendering-bcs"></a></h2>
-   <p><em>The following section would be added as a new sub-section of <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/#windows">Browsing contexts</a> section.</em></p>
+   <h2 class="heading settled" data-level="1" id="link-rel-prerender"><span class="secno">1. </span><span class="content">Link type "<dfn class="dfn-paneled" data-dfn-for="link/rel" data-dfn-type="attr-value" data-export id="attr-valuedef-link-rel-prerender"><code>prerender</code></dfn>"</span><a class="self-link" href="#link-rel-prerender"></a></h2>
+   <p><em>The following section would be added as a new sub-section of <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in <a data-link-type="biblio" href="#biblio-resource-hints">[RESOURCE-HINTS]</a></em></p>
+   <p>The <code><a data-link-type="attr-value" href="#attr-valuedef-link-rel-prerender" id="ref-for-attr-valuedef-link-rel-prerender">prerender</a></code> keyword may be used with <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element">link</a></code> elements. This keyword creates an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#external-resource-link" id="ref-for-external-resource-link">external resource link</a>. This keyword is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#body-ok" id="ref-for-body-ok">body-ok</a>.</p>
+   <p>The appropriate times to <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/semantics.html#fetch-and-process-the-linked-resource" id="ref-for-fetch-and-process-the-linked-resource">fetch and process the linked resource</a> for such a link are:</p>
+   <ul>
+    <li>When the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#external-resource-link" id="ref-for-external-resource-link①">external resource link</a> is created on a <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element①">link</a></code> element that is already <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#browsing-context-connected" id="ref-for-browsing-context-connected">browsing-context connected</a>.
+    <li>When the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#external-resource-link" id="ref-for-external-resource-link②">external resource link</a>’s <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element②">link</a></code> element <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#becomes-browsing-context-connected" id="ref-for-becomes-browsing-context-connected">becomes browsing-context connected</a>.
+    <li>When the <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/semantics.html#attr-link-href" id="ref-for-attr-link-href">href</a></code> attribute is changed on the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element③">link</a></code> element of an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#external-resource-link" id="ref-for-external-resource-link③">external resource link</a> that is already <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#browsing-context-connected" id="ref-for-browsing-context-connected①">browsing-context connected</a>.
+    <li>When the <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/semantics.html#attr-link-referrerpolicy" id="ref-for-attr-link-referrerpolicy">referrerpolicy</a></code> attribute’s state is changed on the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element④">link</a></code> element of an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#external-resource-link" id="ref-for-external-resource-link④">external resource link</a> that is already <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#browsing-context-connected" id="ref-for-browsing-context-connected②">browsing-context connected</a>.
+   </ul>
+   <div class="algorithm" data-algorithm="prerender-processing-model">
+     The <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/semantics.html#fetch-and-process-the-linked-resource" id="ref-for-fetch-and-process-the-linked-resource①">fetch and process the linked resource</a> algorithm for <code><a data-link-type="attr-value" href="#attr-valuedef-link-rel-prerender" id="ref-for-attr-valuedef-link-rel-prerender①">prerender</a></code> links, given a <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element⑤">link</a></code> element <var>el</var>, is as follows: 
+    <ol>
+     <li data-md>
+      <p>If <var>el</var>’s <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/semantics.html#attr-link-href" id="ref-for-attr-link-href①">href</a></code> attribute’s value is the empty string, then return.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url" id="ref-for-parse-a-url">Parse a URL</a> given <var>el</var>’s <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/semantics.html#attr-link-href" id="ref-for-attr-link-href②">href</a></code> attribute, relative to <var>el</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document">node document</a>. If that fails, then return. Otherwise, let <var>url</var> be the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#resulting-url-record" id="ref-for-resulting-url-record">resulting URL record</a>.</p>
+     <li data-md>
+      <p>Let <var>referrer policy</var> be  the current state of <var>el</var>’s <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/semantics.html#attr-link-referrerpolicy" id="ref-for-attr-link-referrerpolicy①">referrerpolicy</a></code> attribute.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="#create-a-prerendering-browsing-context" id="ref-for-create-a-prerendering-browsing-context">Create a prerendering browsing context</a> with <var>url</var>, <var>referrer policy</var>, and <var>el</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①">node document</a>.</p>
+    </ol>
+   </div>
+   <p>A user agent must not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/parsing.html#delay-the-load-event" id="ref-for-delay-the-load-event">delay the load event</a> of the <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element⑥">link</a></code> element’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document②">node document</a> for this link type.</p>
+   <p class="note" role="note">Note that this link type does not fire <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-error" id="ref-for-event-error">error</a></code> or <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-load" id="ref-for-event-load">load</a></code> events, unlike many other link types that create <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#external-resource-link" id="ref-for-external-resource-link⑤">external resource links</a>. </p>
+   <p class="issue" id="issue-6343b17c"><a class="self-link" href="#issue-6343b17c"></a>TODO: We should define a list of allowable referrer policies to prerender with, and early-return if the above referrer policy is not in this list. </p>
+   <h2 class="heading settled" data-level="2" id="prerendering-bcs"><span class="secno">2. </span><span class="content">Prerendering browsing contexts</span><a class="self-link" href="#prerendering-bcs"></a></h2>
+   <p><em>The following section would be added as a new sub-section of <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#windows">Browsing contexts</a> section.</em></p>
    <p>Every <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context">browsing context</a> has a <dfn class="dfn-paneled" data-dfn-for="browsing context" data-dfn-type="dfn" data-noexport id="browsing-context-loading-mode">loading mode</dfn>, which is one of the following:</p>
    <dl>
     <dt data-md>"<code>default</code>"
@@ -2141,7 +2170,7 @@ Parts of this work may be from another specification document.  If so, those par
    <p class="issue" id="issue-48059328"><a class="self-link" href="#issue-48059328"></a>Should this map be scoped to the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#user-agent" id="ref-for-user-agent">user agent</a> instead? Or, allowed to be copied between documents? </p>
    <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-post-prerendering-activation-steps-list">post-prerendering activation steps list</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> where each <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item">item</a> is a series of algorithm steps.</p>
    <div class="algorithm" data-algorithm="create a prerendering browsing context">
-     To <dfn data-dfn-type="dfn" data-export id="create-a-prerendering-browsing-context">create a prerendering browsing context<a class="self-link" href="#create-a-prerendering-browsing-context"></a></dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>startingURL</var>, a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, and a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> <var>referrerDoc</var>: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="create-a-prerendering-browsing-context">create a prerendering browsing context</dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>startingURL</var>, a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, and a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> <var>referrerDoc</var>: 
     <ol>
      <li data-md>
       <p class="assertion">Assert: <var>startingURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme">HTTP(S) scheme</a>.</p>
@@ -2157,8 +2186,6 @@ Parts of this work may be from another specification document.  If so, those par
       <p>Let <var>request</var> be a new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">URL</a> is <var>startingURL</var> and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-referrer-policy" id="ref-for-concept-request-referrer-policy">referrer policy</a> is <var>referrerPolicy</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate①">Navigate</a> <var>bc</var> to <var>request</var> with the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-browsing-context" id="ref-for-source-browsing-context">source browsing context</a> set to <var>referrerDoc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc">browsing context</a>.</p>
-     <li data-md>
-      <p>Return <var>bc</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="activate" data-algorithm-for="prerendering browsing context">
@@ -2214,8 +2241,8 @@ Parts of this work may be from another specification document.  If so, those par
    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="attribute" data-export id="dom-document-prerendering"><code>prerendering</code></dfn> getter steps are to return true if <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this">this</a> has a non-null <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc①">browsing context</a> that is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④">prerendering browsing context</a>; otherwise, false.</p>
    <p class="note" role="note">This attribute lets pages know when they’re being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a <code>&lt;portal></code> element, both when loaded into it or via predecessor adoption. </p>
    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="attribute" data-export id="dom-document-onprerenderingchange"><code>onprerenderingchange</code></dfn> attribute is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes" id="ref-for-event-handler-idl-attributes">event handler IDL attribute</a> corresponding to the <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="event" data-export id="eventdef-document-prerenderingchange"><code>prerenderingchange</code></dfn> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-event-type" id="ref-for-event-handler-event-type">event handler event type</a>.</p>
-   <h2 class="heading settled" data-level="2" id="navigation"><span class="secno">2. </span><span class="content">Navigation and session history</span><a class="self-link" href="#navigation"></a></h2>
-   <h3 class="heading settled" data-level="2.1" id="navigate-activation"><span class="secno">2.1. </span><span class="content">Allowing activation in place of navigation</span><a class="self-link" href="#navigate-activation"></a></h3>
+   <h2 class="heading settled" data-level="3" id="navigation"><span class="secno">3. </span><span class="content">Navigation and session history</span><a class="self-link" href="#navigation"></a></h2>
+   <h3 class="heading settled" data-level="3.1" id="navigate-activation"><span class="secno">3.1. </span><span class="content">Allowing activation in place of navigation</span><a class="self-link" href="#navigate-activation"></a></h3>
    <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate②">navigate</a> algorithm to allow the <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate①">activation</a> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑤">prerendering browsing context</a> in place of a normal navigation as follows:</p>
    <div class="algorithm" data-algorithm="navigate activate patch">
      In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate③">navigate</a>, append the following steps after the fragment navigation handling (currently step 6): 
@@ -2249,7 +2276,7 @@ Parts of this work may be from another specification document.  If so, those par
       </ol>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="2.2" id="always-replacement"><span class="secno">2.2. </span><span class="content">Maintaining a trivial session history</span><a class="self-link" href="#always-replacement"></a></h3>
+   <h3 class="heading settled" data-level="3.2" id="always-replacement"><span class="secno">3.2. </span><span class="content">Maintaining a trivial session history</span><a class="self-link" href="#always-replacement"></a></h3>
    <div class="algorithm" data-algorithm="navigate historyHandling patch">
      Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate④">navigate</a> algorithm to ensure the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history①">session history</a> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑥">prerendering browsing context</a> stays trivial by prepending the following step before all others: 
     <ol>
@@ -2270,7 +2297,7 @@ Parts of this work may be from another specification document.  If so, those par
       <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑧">prerendering browsing context</a>, then set <var>isPush</var> to false.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="2.3" id="no-bad-navs"><span class="secno">2.3. </span><span class="content">Preventing non-HTTP(S) navigations</span><a class="self-link" href="#no-bad-navs"></a></h3>
+   <h3 class="heading settled" data-level="3.3" id="no-bad-navs"><span class="secno">3.3. </span><span class="content">Preventing non-HTTP(S) navigations</span><a class="self-link" href="#no-bad-navs"></a></h3>
    <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑤">navigate</a> algorithm to prevent certain navigations in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑨">prerendering browsing context</a> as follows:</p>
    <p class="issue" id="issue-755a1cad"><a class="self-link" href="#issue-755a1cad"></a>Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn’t observable anyway? </p>
    <div class="algorithm" data-algorithm="process a navigate response patch">
@@ -2307,7 +2334,7 @@ Parts of this work may be from another specification document.  If so, those par
       <p>Otherwise, if <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①①">prerendering browsing context</a>, then return.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="2.4" id="cleanup-upon-discarding"><span class="secno">2.4. </span><span class="content">Cleanup upon discarding a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑦">Document</a></code></span><a class="self-link" href="#cleanup-upon-discarding"></a></h3>
+   <h3 class="heading settled" data-level="3.4" id="cleanup-upon-discarding"><span class="secno">3.4. </span><span class="content">Cleanup upon discarding a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑦">Document</a></code></span><a class="self-link" href="#cleanup-upon-discarding"></a></h3>
    <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#discard-a-document" id="ref-for-discard-a-document">discard</a> algorithm for <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑧">Document</a></code>s by appending the following step:</p>
    <div class="algorithm" data-algorithm="discard a Document patch">
     <ol>
@@ -2315,9 +2342,9 @@ Parts of this work may be from another specification document.  If so, those par
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-empty" id="ref-for-list-empty①">Empty</a> <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list②">post-prerendering activation steps list</a>.</p>
     </ol>
    </div>
-   <h2 class="heading settled" data-level="3" id="nonsense-behaviors"><span class="secno">3. </span><span class="content">Preventing nonsensical behaviors</span><a class="self-link" href="#nonsense-behaviors"></a></h2>
+   <h2 class="heading settled" data-level="4" id="nonsense-behaviors"><span class="secno">4. </span><span class="content">Preventing nonsensical behaviors</span><a class="self-link" href="#nonsense-behaviors"></a></h2>
    <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing contexts</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①②">prerendering browsing contexts</a>. This section enumerates specification patches to enforce such restrictions.</p>
-   <h3 class="heading settled" data-level="3.1" id="patch-window-apis"><span class="secno">3.1. </span><span class="content">APIs for creating and navigating browsing contexts by name</span><a class="self-link" href="#patch-window-apis"></a></h3>
+   <h3 class="heading settled" data-level="4.1" id="patch-window-apis"><span class="secno">4.1. </span><span class="content">APIs for creating and navigating browsing contexts by name</span><a class="self-link" href="#patch-window-apis"></a></h3>
    <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①③">prerendering browsing context</a>:</p>
    <p>A <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context②">browsing context</a> is <dfn data-dfn-type="dfn" data-noexport id="script-closable">script-closable<a class="self-link" href="#script-closable"></a></dfn> if either of the following is true:</p>
    <ul>
@@ -2330,17 +2357,17 @@ Parts of this work may be from another specification document.  If so, those par
        and whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history②">session history</a> contains only one <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑨">Document</a></code>.
      </p>
    </ul>
-   <h2 class="heading settled" data-level="4" id="intrusive-behaviors"><span class="secno">4. </span><span class="content">Preventing intrusive behaviors</span><a class="self-link" href="#intrusive-behaviors"></a></h2>
+   <h2 class="heading settled" data-level="5" id="intrusive-behaviors"><span class="secno">5. </span><span class="content">Preventing intrusive behaviors</span><a class="self-link" href="#intrusive-behaviors"></a></h2>
    <p>Various behaviors are disallowed in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑤">prerendering browsing contexts</a> because they would be intrusive to the user, since the prerendered content is not being actively interacted with.</p>
-   <h3 class="heading settled" data-level="4.1" id="patch-downloading"><span class="secno">4.1. </span><span class="content">Downloading resources</span><a class="self-link" href="#patch-downloading"></a></h3>
+   <h3 class="heading settled" data-level="5.1" id="patch-downloading"><span class="secno">5.1. </span><span class="content">Downloading resources</span><a class="self-link" href="#patch-downloading"></a></h3>
    <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks" id="ref-for-downloading-hyperlinks">downloads a hyperlink</a> algorithm to ensure that downloads inside <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑥">prerendering browsing contexts</a> are delayed until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate③">activation</a>, by inserting the following before the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
    <div class="algorithm" data-algorithm="downloads a hyperlink patch">
     <ol>
      <li data-md>
-      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document">node document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑦">prerendering browsing context</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document①">node document</a>'s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list③">post-prerendering activation steps list</a> and return.</p>
+      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document③">node document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑦">prerendering browsing context</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document④">node document</a>'s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list③">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
-   <h2 class="heading settled" data-level="5" id="todo"><span class="secno">5. </span><span class="content">TODO</span><a class="self-link" href="#todo"></a></h2>
+   <h2 class="heading settled" data-level="6" id="todo"><span class="secno">6. </span><span class="content">TODO</span><a class="self-link" href="#todo"></a></h2>
    <ul>
     <li data-md>
      <p>Spec all the actual restrictions (storage, intrusive APIs, uncredentialed fetching)</p>
@@ -2486,396 +2513,476 @@ Parts of this work may be from another specification document.  If so, those par
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#prerendering-browsing-context-activate">activate</a><span>, in §1</span>
-   <li><a href="#create-a-prerendering-browsing-context">create a prerendering browsing context</a><span>, in §1</span>
-   <li><a href="#prerendering-browsing-context-empty">empty</a><span>, in §1</span>
-   <li><a href="#browsing-context-loading-mode">loading mode</a><span>, in §1</span>
-   <li><a href="#dom-document-onprerenderingchange">onprerenderingchange</a><span>, in §1</span>
-   <li><a href="#document-post-prerendering-activation-steps-list">post-prerendering activation steps list</a><span>, in §1</span>
-   <li><a href="#dom-document-prerendering">prerendering</a><span>, in §1</span>
-   <li><a href="#prerendering-browsing-context">prerendering browsing context</a><span>, in §1</span>
-   <li><a href="#document-prerendering-browsing-contexts-map">prerendering browsing contexts map</a><span>, in §1</span>
-   <li><a href="#eventdef-document-prerenderingchange">prerenderingchange</a><span>, in §1</span>
-   <li><a href="#script-closable">script-closable</a><span>, in §3.1</span>
+   <li><a href="#prerendering-browsing-context-activate">activate</a><span>, in §2</span>
+   <li><a href="#create-a-prerendering-browsing-context">create a prerendering browsing context</a><span>, in §2</span>
+   <li><a href="#prerendering-browsing-context-empty">empty</a><span>, in §2</span>
+   <li><a href="#browsing-context-loading-mode">loading mode</a><span>, in §2</span>
+   <li><a href="#dom-document-onprerenderingchange">onprerenderingchange</a><span>, in §2</span>
+   <li><a href="#document-post-prerendering-activation-steps-list">post-prerendering activation steps list</a><span>, in §2</span>
+   <li><a href="#attr-valuedef-link-rel-prerender">prerender</a><span>, in §1</span>
+   <li><a href="#dom-document-prerendering">prerendering</a><span>, in §2</span>
+   <li><a href="#prerendering-browsing-context">prerendering browsing context</a><span>, in §2</span>
+   <li><a href="#document-prerendering-browsing-contexts-map">prerendering browsing contexts map</a><span>, in §2</span>
+   <li><a href="#eventdef-document-prerenderingchange">prerenderingchange</a><span>, in §2</span>
+   <li><a href="#script-closable">script-closable</a><span>, in §4.1</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-document">
    <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-document">1. Prerendering browsing contexts</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a> <a href="#ref-for-document③">(4)</a> <a href="#ref-for-document④">(5)</a> <a href="#ref-for-document⑤">(6)</a> <a href="#ref-for-document⑥">(7)</a>
-    <li><a href="#ref-for-document⑦">2.4. Cleanup upon discarding a Document</a> <a href="#ref-for-document⑧">(2)</a>
-    <li><a href="#ref-for-document⑨">3.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-document">2. Prerendering browsing contexts</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a> <a href="#ref-for-document③">(4)</a> <a href="#ref-for-document④">(5)</a> <a href="#ref-for-document⑤">(6)</a> <a href="#ref-for-document⑥">(7)</a>
+    <li><a href="#ref-for-document⑦">3.4. Cleanup upon discarding a Document</a> <a href="#ref-for-document⑧">(2)</a>
+    <li><a href="#ref-for-document⑨">4.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-event-fire">
    <a href="https://dom.spec.whatwg.org/#concept-event-fire">https://dom.spec.whatwg.org/#concept-event-fire</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-event-fire">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-event-fire">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-node-document">
    <a href="https://dom.spec.whatwg.org/#concept-node-document">https://dom.spec.whatwg.org/#concept-node-document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-node-document">4.1. Downloading resources</a> <a href="#ref-for-concept-node-document①">(2)</a>
+    <li><a href="#ref-for-concept-node-document">1. Link type "prerender"</a> <a href="#ref-for-concept-node-document①">(2)</a> <a href="#ref-for-concept-node-document②">(3)</a>
+    <li><a href="#ref-for-concept-node-document③">5.1. Downloading resources</a> <a href="#ref-for-concept-node-document④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-origin">
    <a href="https://dom.spec.whatwg.org/#concept-document-origin">https://dom.spec.whatwg.org/#concept-document-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document-origin">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-document-origin">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-current-url">
    <a href="https://fetch.spec.whatwg.org/#concept-request-current-url">https://fetch.spec.whatwg.org/#concept-request-current-url</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-current-url">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-concept-request-current-url">3.3. Preventing non-HTTP(S) navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-fetch">
    <a href="https://fetch.spec.whatwg.org/#concept-fetch">https://fetch.spec.whatwg.org/#concept-fetch</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-fetch">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-fetch">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-http-scheme">
    <a href="https://fetch.spec.whatwg.org/#http-scheme">https://fetch.spec.whatwg.org/#http-scheme</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-http-scheme">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-http-scheme①">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-http-scheme">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-http-scheme①">3.3. Preventing non-HTTP(S) navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-method">
    <a href="https://fetch.spec.whatwg.org/#concept-request-method">https://fetch.spec.whatwg.org/#concept-request-method</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-method">2.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-concept-request-method">3.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-referrer-policy">
    <a href="https://fetch.spec.whatwg.org/#concept-request-referrer-policy">https://fetch.spec.whatwg.org/#concept-request-referrer-policy</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-referrer-policy">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-concept-request-referrer-policy①">2.1. Allowing activation in place of navigation</a> <a href="#ref-for-concept-request-referrer-policy②">(2)</a>
+    <li><a href="#ref-for-concept-request-referrer-policy">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-request-referrer-policy①">3.1. Allowing activation in place of navigation</a> <a href="#ref-for-concept-request-referrer-policy②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request">
    <a href="https://fetch.spec.whatwg.org/#concept-request">https://fetch.spec.whatwg.org/#concept-request</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-concept-request①">2.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-concept-request">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-request①">3.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-response-status">
    <a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-response-status">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-concept-response-status">3.3. Preventing non-HTTP(S) navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-url">
    <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-url">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-concept-request-url①">2.1. Allowing activation in place of navigation</a> <a href="#ref-for-concept-request-url②">(2)</a>
+    <li><a href="#ref-for-concept-request-url">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-request-url①">3.1. Allowing activation in place of navigation</a> <a href="#ref-for-concept-request-url②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-eventhandler">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#eventhandler">https://html.spec.whatwg.org/multipage/webappapis.html#eventhandler</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-eventhandler">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-eventhandler">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-abort-a-document">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#abort-a-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#abort-a-document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abort-a-document">1. Prerendering browsing contexts</a> <a href="#ref-for-abort-a-document①">(2)</a>
+    <li><a href="#ref-for-abort-a-document">2. Prerendering browsing contexts</a> <a href="#ref-for-abort-a-document①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-active-document">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#active-document">https://html.spec.whatwg.org/multipage/browsers.html#active-document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-active-document">1. Prerendering browsing contexts</a> <a href="#ref-for-active-document①">(2)</a> <a href="#ref-for-active-document②">(3)</a> <a href="#ref-for-active-document③">(4)</a> <a href="#ref-for-active-document④">(5)</a>
-    <li><a href="#ref-for-active-document⑤">2.1. Allowing activation in place of navigation</a> <a href="#ref-for-active-document⑥">(2)</a>
+    <li><a href="#ref-for-active-document">2. Prerendering browsing contexts</a> <a href="#ref-for-active-document①">(2)</a> <a href="#ref-for-active-document②">(3)</a> <a href="#ref-for-active-document③">(4)</a> <a href="#ref-for-active-document④">(5)</a>
+    <li><a href="#ref-for-active-document⑤">3.1. Allowing activation in place of navigation</a> <a href="#ref-for-active-document⑥">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-active-window">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#active-window">https://html.spec.whatwg.org/multipage/browsers.html#active-window</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-active-window">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-active-window">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-auxiliary-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#auxiliary-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#auxiliary-browsing-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-auxiliary-browsing-context">3.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-auxiliary-browsing-context">4.1. APIs for creating and navigating browsing contexts by name</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-becomes-browsing-context-connected">
+   <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#becomes-browsing-context-connected">https://html.spec.whatwg.org/multipage/infrastructure.html#becomes-browsing-context-connected</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-becomes-browsing-context-connected">1. Link type "prerender"</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-body-ok">
+   <a href="https://html.spec.whatwg.org/multipage/links.html#body-ok">https://html.spec.whatwg.org/multipage/links.html#body-ok</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-body-ok">1. Link type "prerender"</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-bc">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc">https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document-bc">1. Prerendering browsing contexts</a> <a href="#ref-for-concept-document-bc①">(2)</a>
-    <li><a href="#ref-for-concept-document-bc②">4.1. Downloading resources</a>
+    <li><a href="#ref-for-concept-document-bc">2. Prerendering browsing contexts</a> <a href="#ref-for-concept-document-bc①">(2)</a>
+    <li><a href="#ref-for-concept-document-bc②">5.1. Downloading resources</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-browsing-context-connected">
+   <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#browsing-context-connected">https://html.spec.whatwg.org/multipage/infrastructure.html#browsing-context-connected</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-browsing-context-connected">1. Link type "prerender"</a> <a href="#ref-for-browsing-context-connected①">(2)</a> <a href="#ref-for-browsing-context-connected②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-initialise-the-document-object">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#initialise-the-document-object">https://html.spec.whatwg.org/multipage/browsing-the-web.html#initialise-the-document-object</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-initialise-the-document-object">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-initialise-the-document-object">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-creating-a-new-top-level-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-top-level-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-top-level-browsing-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-creating-a-new-top-level-browsing-context">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-creating-a-new-top-level-browsing-context">2. Prerendering browsing contexts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-delay-the-load-event">
+   <a href="https://html.spec.whatwg.org/multipage/parsing.html#delay-the-load-event">https://html.spec.whatwg.org/multipage/parsing.html#delay-the-load-event</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-delay-the-load-event">1. Link type "prerender"</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-discard-a-document">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#discard-a-document">https://html.spec.whatwg.org/multipage/window-object.html#discard-a-document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-discard-a-document">2.4. Cleanup upon discarding a Document</a>
+    <li><a href="#ref-for-discard-a-document">3.4. Cleanup upon discarding a Document</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-she-document">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-she-document">2.2. Maintaining a trivial session history</a>
+    <li><a href="#ref-for-she-document">3.2. Maintaining a trivial session history</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-downloading-hyperlinks">
    <a href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks">https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-downloading-hyperlinks">4.1. Downloading resources</a>
+    <li><a href="#ref-for-downloading-hyperlinks">5.1. Downloading resources</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-environment-discarding-steps">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-discarding-steps">https://html.spec.whatwg.org/multipage/webappapis.html#environment-discarding-steps</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-environment-discarding-steps">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-environment-discarding-steps">3.3. Preventing non-HTTP(S) navigations</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-event-error">
+   <a href="https://html.spec.whatwg.org/multipage/indices.html#event-error">https://html.spec.whatwg.org/multipage/indices.html#event-error</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-event-error">1. Link type "prerender"</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-event-handler-event-type">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-event-type">https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-event-type</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-event-handler-event-type">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-event-handler-event-type">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-event-handler-idl-attributes">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes">https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-event-handler-idl-attributes">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-event-handler-idl-attributes">2. Prerendering browsing contexts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-external-resource-link">
+   <a href="https://html.spec.whatwg.org/multipage/links.html#external-resource-link">https://html.spec.whatwg.org/multipage/links.html#external-resource-link</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-external-resource-link">1. Link type "prerender"</a> <a href="#ref-for-external-resource-link①">(2)</a> <a href="#ref-for-external-resource-link②">(3)</a> <a href="#ref-for-external-resource-link③">(4)</a> <a href="#ref-for-external-resource-link④">(5)</a> <a href="#ref-for-external-resource-link⑤">(6)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-fetch-and-process-the-linked-resource">
+   <a href="https://html.spec.whatwg.org/multipage/semantics.html#fetch-and-process-the-linked-resource">https://html.spec.whatwg.org/multipage/semantics.html#fetch-and-process-the-linked-resource</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-fetch-and-process-the-linked-resource">1. Link type "prerender"</a> <a href="#ref-for-fetch-and-process-the-linked-resource①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-history-handling-behavior">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#history-handling-behavior">https://html.spec.whatwg.org/multipage/browsing-the-web.html#history-handling-behavior</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-history-handling-behavior">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-history-handling-behavior">2. Prerendering browsing contexts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-attr-link-href">
+   <a href="https://html.spec.whatwg.org/multipage/semantics.html#attr-link-href">https://html.spec.whatwg.org/multipage/semantics.html#attr-link-href</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-attr-link-href">1. Link type "prerender"</a> <a href="#ref-for-attr-link-href①">(2)</a> <a href="#ref-for-attr-link-href②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-in-parallel">
    <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-in-parallel">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-in-parallel①">4.1. Downloading resources</a>
+    <li><a href="#ref-for-in-parallel">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-in-parallel①">5.1. Downloading resources</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-the-link-element">
+   <a href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element">https://html.spec.whatwg.org/multipage/semantics.html#the-link-element</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-the-link-element">1. Link type "prerender"</a> <a href="#ref-for-the-link-element①">(2)</a> <a href="#ref-for-the-link-element②">(3)</a> <a href="#ref-for-the-link-element③">(4)</a> <a href="#ref-for-the-link-element④">(5)</a> <a href="#ref-for-the-link-element⑤">(6)</a> <a href="#ref-for-the-link-element⑥">(7)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-event-load">
+   <a href="https://html.spec.whatwg.org/multipage/indices.html#event-load">https://html.spec.whatwg.org/multipage/indices.html#event-load</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-event-load">1. Link type "prerender"</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-navigate-mature">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#concept-navigate-mature">https://html.spec.whatwg.org/multipage/browsing-the-web.html#concept-navigate-mature</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-navigate-mature">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-navigate-mature">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigate">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigate">1. Prerendering browsing contexts</a> <a href="#ref-for-navigate①">(2)</a>
-    <li><a href="#ref-for-navigate②">2.1. Allowing activation in place of navigation</a> <a href="#ref-for-navigate③">(2)</a>
-    <li><a href="#ref-for-navigate④">2.2. Maintaining a trivial session history</a>
-    <li><a href="#ref-for-navigate⑤">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-navigate">2. Prerendering browsing contexts</a> <a href="#ref-for-navigate①">(2)</a>
+    <li><a href="#ref-for-navigate②">3.1. Allowing activation in place of navigation</a> <a href="#ref-for-navigate③">(2)</a>
+    <li><a href="#ref-for-navigate④">3.2. Maintaining a trivial session history</a>
+    <li><a href="#ref-for-navigate⑤">3.3. Preventing non-HTTP(S) navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-nested-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-nested-browsing-context">1. Prerendering browsing contexts</a> <a href="#ref-for-nested-browsing-context①">(2)</a>
+    <li><a href="#ref-for-nested-browsing-context">2. Prerendering browsing contexts</a> <a href="#ref-for-nested-browsing-context①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-networking-task-source">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-networking-task-source">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-networking-task-source">2. Prerendering browsing contexts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-parse-a-url">
+   <a href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url">https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-parse-a-url">1. Link type "prerender"</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-response">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-response">https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-response</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-process-a-navigate-response">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-process-a-navigate-response">3.3. Preventing non-HTTP(S) navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-url-scheme">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-url-scheme">https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-url-scheme</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-process-a-navigate-url-scheme">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-process-a-navigate-url-scheme">3.3. Preventing non-HTTP(S) navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-prompt-to-unload-a-document">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#prompt-to-unload-a-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#prompt-to-unload-a-document</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prompt-to-unload-a-document">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-prompt-to-unload-a-document">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-queue-a-global-task">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task">https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-queue-a-global-task">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-queue-a-global-task">2. Prerendering browsing contexts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-attr-link-referrerpolicy">
+   <a href="https://html.spec.whatwg.org/multipage/semantics.html#attr-link-referrerpolicy">https://html.spec.whatwg.org/multipage/semantics.html#attr-link-referrerpolicy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-attr-link-referrerpolicy">1. Link type "prerender"</a> <a href="#ref-for-attr-link-referrerpolicy①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-refused-to-allow-the-document-to-be-unloaded">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#refused-to-allow-the-document-to-be-unloaded">https://html.spec.whatwg.org/multipage/browsing-the-web.html#refused-to-allow-the-document-to-be-unloaded</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-refused-to-allow-the-document-to-be-unloaded">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-refused-to-allow-the-document-to-be-unloaded">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-request">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigation-params-request">2.3. Preventing non-HTTP(S) navigations</a> <a href="#ref-for-navigation-params-request①">(2)</a>
+    <li><a href="#ref-for-navigation-params-request">3.3. Preventing non-HTTP(S) navigations</a> <a href="#ref-for-navigation-params-request①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-reserved-environment">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigation-params-reserved-environment">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-navigation-params-reserved-environment">3.3. Preventing non-HTTP(S) navigations</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-resulting-url-record">
+   <a href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#resulting-url-record">https://html.spec.whatwg.org/multipage/urls-and-fetching.html#resulting-url-record</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-resulting-url-record">1. Link type "prerender"</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-same-origin">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#same-origin">https://html.spec.whatwg.org/multipage/origin.html#same-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-same-origin">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-same-origin">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-script-closable">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable">https://html.spec.whatwg.org/multipage/window-object.html#script-closable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-script-closable">3.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-script-closable">4.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-session-history">
    <a href="https://html.spec.whatwg.org/multipage/history.html#session-history">https://html.spec.whatwg.org/multipage/history.html#session-history</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-session-history">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-session-history①">2.2. Maintaining a trivial session history</a>
-    <li><a href="#ref-for-session-history②">3.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-session-history">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-session-history①">3.2. Maintaining a trivial session history</a>
+    <li><a href="#ref-for-session-history②">4.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-source-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-browsing-context">https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-browsing-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-source-browsing-context">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-source-browsing-context">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-top-level-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-top-level-browsing-context">1. Prerendering browsing contexts</a> <a href="#ref-for-top-level-browsing-context①">(2)</a> <a href="#ref-for-top-level-browsing-context②">(3)</a>
-    <li><a href="#ref-for-top-level-browsing-context③">2.1. Allowing activation in place of navigation</a>
-    <li><a href="#ref-for-top-level-browsing-context④">3. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-top-level-browsing-context⑤">3.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-top-level-browsing-context">2. Prerendering browsing contexts</a> <a href="#ref-for-top-level-browsing-context①">(2)</a> <a href="#ref-for-top-level-browsing-context②">(3)</a>
+    <li><a href="#ref-for-top-level-browsing-context③">3.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-top-level-browsing-context④">4. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-top-level-browsing-context⑤">4.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-traverse-the-history">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#traverse-the-history">https://html.spec.whatwg.org/multipage/browsing-the-web.html#traverse-the-history</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-traverse-the-history">2.2. Maintaining a trivial session history</a>
+    <li><a href="#ref-for-traverse-the-history">3.2. Maintaining a trivial session history</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-url-and-history-update-steps">
    <a href="https://html.spec.whatwg.org/multipage/history.html#url-and-history-update-steps">https://html.spec.whatwg.org/multipage/history.html#url-and-history-update-steps</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-url-and-history-update-steps">2.2. Maintaining a trivial session history</a>
+    <li><a href="#ref-for-url-and-history-update-steps">3.2. Maintaining a trivial session history</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-empty">
    <a href="https://infra.spec.whatwg.org/#list-empty">https://infra.spec.whatwg.org/#list-empty</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-empty">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-list-empty①">2.4. Cleanup upon discarding a Document</a>
+    <li><a href="#ref-for-list-empty">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-list-empty①">3.4. Cleanup upon discarding a Document</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-map-exists">
    <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-map-exists">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-map-exists①">2.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-map-exists">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-map-exists①">3.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-iterate">
    <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-iterate">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-list-iterate">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-item">
    <a href="https://infra.spec.whatwg.org/#list-item">https://infra.spec.whatwg.org/#list-item</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-item">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-list-item">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list">
    <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-list">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-map">
    <a href="https://infra.spec.whatwg.org/#ordered-map">https://infra.spec.whatwg.org/#ordered-map</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-ordered-map">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-ordered-map">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-tuple">
    <a href="https://infra.spec.whatwg.org/#tuple">https://infra.spec.whatwg.org/#tuple</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-tuple">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-tuple">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-user-agent">
    <a href="https://infra.spec.whatwg.org/#user-agent">https://infra.spec.whatwg.org/#user-agent</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-user-agent">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-user-agent">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-referrer-policy">
    <a href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy">https://w3c.github.io/webappsec-referrer-policy/#referrer-policy</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-referrer-policy">1. Prerendering browsing contexts</a> <a href="#ref-for-referrer-policy①">(2)</a>
+    <li><a href="#ref-for-referrer-policy">2. Prerendering browsing contexts</a> <a href="#ref-for-referrer-policy①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-origin">
    <a href="https://url.spec.whatwg.org/#concept-url-origin">https://url.spec.whatwg.org/#concept-url-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-url-origin">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-url-origin">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
    <a href="https://url.spec.whatwg.org/#concept-url-scheme">https://url.spec.whatwg.org/#concept-url-scheme</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-url-scheme">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-concept-url-scheme①">2.3. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-concept-url-scheme">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-url-scheme①">3.3. Preventing non-HTTP(S) navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url">
    <a href="https://url.spec.whatwg.org/#concept-url">https://url.spec.whatwg.org/#concept-url</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-url">1. Prerendering browsing contexts</a> <a href="#ref-for-concept-url①">(2)</a>
+    <li><a href="#ref-for-concept-url">2. Prerendering browsing contexts</a> <a href="#ref-for-concept-url①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
    <a href="https://heycam.github.io/webidl/#idl-boolean">https://heycam.github.io/webidl/#idl-boolean</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-boolean">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-idl-boolean">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-this">
    <a href="https://heycam.github.io/webidl/#this">https://heycam.github.io/webidl/#this</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-this">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-this">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -2908,28 +3015,41 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-active-document">active document</span>
      <li><span class="dfn-paneled" id="term-for-active-window">active window</span>
      <li><span class="dfn-paneled" id="term-for-auxiliary-browsing-context">auxiliary browsing context</span>
+     <li><span class="dfn-paneled" id="term-for-becomes-browsing-context-connected">become browsing-context connected</span>
+     <li><span class="dfn-paneled" id="term-for-body-ok">body-ok</span>
      <li><span class="dfn-paneled" id="term-for-concept-document-bc">browsing context <small>(for Document)</small></span>
+     <li><span class="dfn-paneled" id="term-for-browsing-context-connected">browsing-context connected</span>
      <li><span class="dfn-paneled" id="term-for-initialise-the-document-object">create and initialize a document object</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context</span>
+     <li><span class="dfn-paneled" id="term-for-delay-the-load-event">delays the load event</span>
      <li><span class="dfn-paneled" id="term-for-discard-a-document">discard a document</span>
      <li><span class="dfn-paneled" id="term-for-she-document">document</span>
      <li><span class="dfn-paneled" id="term-for-downloading-hyperlinks">downloads a hyperlink</span>
      <li><span class="dfn-paneled" id="term-for-environment-discarding-steps">environment discarding steps</span>
+     <li><span class="dfn-paneled" id="term-for-event-error">error</span>
      <li><span class="dfn-paneled" id="term-for-event-handler-event-type">event handler event type</span>
      <li><span class="dfn-paneled" id="term-for-event-handler-idl-attributes">event handler idl attribute</span>
+     <li><span class="dfn-paneled" id="term-for-external-resource-link">external resource link</span>
+     <li><span class="dfn-paneled" id="term-for-fetch-and-process-the-linked-resource">fetch and process the linked resource</span>
      <li><span class="dfn-paneled" id="term-for-history-handling-behavior">history handling behavior</span>
+     <li><span class="dfn-paneled" id="term-for-attr-link-href">href</span>
      <li><span class="dfn-paneled" id="term-for-in-parallel">in parallel</span>
+     <li><span class="dfn-paneled" id="term-for-the-link-element">link</span>
+     <li><span class="dfn-paneled" id="term-for-event-load">load</span>
      <li><span class="dfn-paneled" id="term-for-concept-navigate-mature">mature</span>
      <li><span class="dfn-paneled" id="term-for-navigate">navigate</span>
      <li><span class="dfn-paneled" id="term-for-nested-browsing-context">nested browsing context</span>
      <li><span class="dfn-paneled" id="term-for-networking-task-source">networking task source</span>
+     <li><span class="dfn-paneled" id="term-for-parse-a-url">parse a url</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-response">process a navigate response</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-url-scheme">process a navigate url scheme</span>
      <li><span class="dfn-paneled" id="term-for-prompt-to-unload-a-document">prompt to unload</span>
      <li><span class="dfn-paneled" id="term-for-queue-a-global-task">queue a global task</span>
+     <li><span class="dfn-paneled" id="term-for-attr-link-referrerpolicy">referrerpolicy</span>
      <li><span class="dfn-paneled" id="term-for-refused-to-allow-the-document-to-be-unloaded">refused to allow the document to be unloaded</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-request">request</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-reserved-environment">reserved environment</span>
+     <li><span class="dfn-paneled" id="term-for-resulting-url-record">resulting url record</span>
      <li><span class="dfn-paneled" id="term-for-same-origin">same origin</span>
      <li><span class="dfn-paneled" id="term-for-script-closable">script-closable</span>
      <li><span class="dfn-paneled" id="term-for-session-history">session history</span>
@@ -2987,6 +3107,11 @@ Parts of this work may be from another specification document.  If so, those par
    <dt id="biblio-webidl">[WebIDL]
    <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
   </dl>
+  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-resource-hints">[RESOURCE-HINTS]
+   <dd>Ilya Grigorik. <a href="https://www.w3.org/TR/resource-hints/">Resource Hints</a>. 5 October 2020. WD. URL: <a href="https://www.w3.org/TR/resource-hints/">https://www.w3.org/TR/resource-hints/</a>
+  </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://heycam.github.io/webidl/#idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="boolean" href="#dom-document-prerendering"><c- g>prerendering</c-></a>;
@@ -2996,75 +3121,88 @@ Parts of this work may be from another specification document.  If so, those par
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
+   <div class="issue">TODO: We should define a list of allowable referrer policies to prerender with, and early-return if the above referrer policy is not in this list. <a href="#issue-6343b17c"> ↵ </a></div>
    <div class="issue">Probably we will need more loading modes for handling <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context">nested browsing contexts</a> inside of top-level prerendered ones. Definitely a to-do.<a href="#issue-c1bc22a3"> ↵ </a></div>
    <div class="issue">Should this map be scoped to the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#user-agent">user agent</a> instead? Or, allowed to be copied between documents? <a href="#issue-48059328"> ↵ </a></div>
    <div class="issue">Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn’t observable anyway? <a href="#issue-755a1cad"> ↵ </a></div>
   </div>
+  <aside class="dfn-panel" data-for="attr-valuedef-link-rel-prerender">
+   <b><a href="#attr-valuedef-link-rel-prerender">#attr-valuedef-link-rel-prerender</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-attr-valuedef-link-rel-prerender">1. Link type "prerender"</a> <a href="#ref-for-attr-valuedef-link-rel-prerender①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="browsing-context-loading-mode">
    <b><a href="#browsing-context-loading-mode">#browsing-context-loading-mode</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-browsing-context-loading-mode">1. Prerendering browsing contexts</a> <a href="#ref-for-browsing-context-loading-mode①">(2)</a> <a href="#ref-for-browsing-context-loading-mode②">(3)</a> <a href="#ref-for-browsing-context-loading-mode③">(4)</a> <a href="#ref-for-browsing-context-loading-mode④">(5)</a>
+    <li><a href="#ref-for-browsing-context-loading-mode">2. Prerendering browsing contexts</a> <a href="#ref-for-browsing-context-loading-mode①">(2)</a> <a href="#ref-for-browsing-context-loading-mode②">(3)</a> <a href="#ref-for-browsing-context-loading-mode③">(4)</a> <a href="#ref-for-browsing-context-loading-mode④">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerendering-browsing-context">
    <b><a href="#prerendering-browsing-context">#prerendering-browsing-context</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prerendering-browsing-context">1. Prerendering browsing contexts</a> <a href="#ref-for-prerendering-browsing-context①">(2)</a> <a href="#ref-for-prerendering-browsing-context②">(3)</a> <a href="#ref-for-prerendering-browsing-context③">(4)</a> <a href="#ref-for-prerendering-browsing-context④">(5)</a>
-    <li><a href="#ref-for-prerendering-browsing-context⑤">2.1. Allowing activation in place of navigation</a>
-    <li><a href="#ref-for-prerendering-browsing-context⑥">2.2. Maintaining a trivial session history</a> <a href="#ref-for-prerendering-browsing-context⑦">(2)</a> <a href="#ref-for-prerendering-browsing-context⑧">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context⑨">2.3. Preventing non-HTTP(S) navigations</a> <a href="#ref-for-prerendering-browsing-context①⓪">(2)</a> <a href="#ref-for-prerendering-browsing-context①①">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context①②">3. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-prerendering-browsing-context①③">3.1. APIs for creating and navigating browsing contexts by name</a> <a href="#ref-for-prerendering-browsing-context①④">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context①⑤">4. Preventing intrusive behaviors</a>
-    <li><a href="#ref-for-prerendering-browsing-context①⑥">4.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context①⑦">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context">2. Prerendering browsing contexts</a> <a href="#ref-for-prerendering-browsing-context①">(2)</a> <a href="#ref-for-prerendering-browsing-context②">(3)</a> <a href="#ref-for-prerendering-browsing-context③">(4)</a> <a href="#ref-for-prerendering-browsing-context④">(5)</a>
+    <li><a href="#ref-for-prerendering-browsing-context⑤">3.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-prerendering-browsing-context⑥">3.2. Maintaining a trivial session history</a> <a href="#ref-for-prerendering-browsing-context⑦">(2)</a> <a href="#ref-for-prerendering-browsing-context⑧">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context⑨">3.3. Preventing non-HTTP(S) navigations</a> <a href="#ref-for-prerendering-browsing-context①⓪">(2)</a> <a href="#ref-for-prerendering-browsing-context①①">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context①②">4. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-prerendering-browsing-context①③">4.1. APIs for creating and navigating browsing contexts by name</a> <a href="#ref-for-prerendering-browsing-context①④">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context①⑤">5. Preventing intrusive behaviors</a>
+    <li><a href="#ref-for-prerendering-browsing-context①⑥">5.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context①⑦">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerendering-browsing-context-empty">
    <b><a href="#prerendering-browsing-context-empty">#prerendering-browsing-context-empty</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prerendering-browsing-context-empty">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-prerendering-browsing-context-empty①">2.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-prerendering-browsing-context-empty">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-prerendering-browsing-context-empty①">3.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="document-prerendering-browsing-contexts-map">
    <b><a href="#document-prerendering-browsing-contexts-map">#document-prerendering-browsing-contexts-map</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-document-prerendering-browsing-contexts-map">1. Prerendering browsing contexts</a> <a href="#ref-for-document-prerendering-browsing-contexts-map①">(2)</a>
-    <li><a href="#ref-for-document-prerendering-browsing-contexts-map②">2.1. Allowing activation in place of navigation</a> <a href="#ref-for-document-prerendering-browsing-contexts-map③">(2)</a>
+    <li><a href="#ref-for-document-prerendering-browsing-contexts-map">2. Prerendering browsing contexts</a> <a href="#ref-for-document-prerendering-browsing-contexts-map①">(2)</a>
+    <li><a href="#ref-for-document-prerendering-browsing-contexts-map②">3.1. Allowing activation in place of navigation</a> <a href="#ref-for-document-prerendering-browsing-contexts-map③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="document-post-prerendering-activation-steps-list">
    <b><a href="#document-post-prerendering-activation-steps-list">#document-post-prerendering-activation-steps-list</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-document-post-prerendering-activation-steps-list">1. Prerendering browsing contexts</a> <a href="#ref-for-document-post-prerendering-activation-steps-list①">(2)</a>
-    <li><a href="#ref-for-document-post-prerendering-activation-steps-list②">2.4. Cleanup upon discarding a Document</a>
-    <li><a href="#ref-for-document-post-prerendering-activation-steps-list③">4.1. Downloading resources</a>
+    <li><a href="#ref-for-document-post-prerendering-activation-steps-list">2. Prerendering browsing contexts</a> <a href="#ref-for-document-post-prerendering-activation-steps-list①">(2)</a>
+    <li><a href="#ref-for-document-post-prerendering-activation-steps-list②">3.4. Cleanup upon discarding a Document</a>
+    <li><a href="#ref-for-document-post-prerendering-activation-steps-list③">5.1. Downloading resources</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="create-a-prerendering-browsing-context">
+   <b><a href="#create-a-prerendering-browsing-context">#create-a-prerendering-browsing-context</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-create-a-prerendering-browsing-context">1. Link type "prerender"</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerendering-browsing-context-activate">
    <b><a href="#prerendering-browsing-context-activate">#prerendering-browsing-context-activate</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prerendering-browsing-context-activate">1. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate①">2.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context-activate②">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate③">4.1. Downloading resources</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate">2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate①">3.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context-activate②">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate③">5.1. Downloading resources</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-document-prerendering">
    <b><a href="#dom-document-prerendering">#dom-document-prerendering</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-document-prerendering">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-dom-document-prerendering">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-document-onprerenderingchange">
    <b><a href="#dom-document-onprerenderingchange">#dom-document-onprerenderingchange</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-document-onprerenderingchange">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-dom-document-onprerenderingchange">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="eventdef-document-prerenderingchange">
    <b><a href="#eventdef-document-prerenderingchange">#eventdef-document-prerenderingchange</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-eventdef-document-prerenderingchange">1. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-eventdef-document-prerenderingchange">2. Prerendering browsing contexts</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
