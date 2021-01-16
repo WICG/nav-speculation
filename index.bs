@@ -43,16 +43,17 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 
 <h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
 
-<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in the Resource Hints standard</em>
+<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in [[RESOURCE-HINTS]]</em>
 
 The <{link/rel/prerender}> keyword may be used with <{link}> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
 
 The appropriate times to <a spec=HTML>fetch and process the linked resource</a> for such a link are:
 
 <ul>
-  <li>When the <a spec=HTML>external resource link</a> is created on a <{link}> element that is already <a spec=HTML>browsing-context connected</a>.</li>
-  <li>When the <a spec=HTML>external resource link</a>'s <{link}> element <a spec=HTML>becomes browsing-context connected</a>.</li>
-  <li>When the <{link/href}> attribute of the <{link}> element of an <a spec=HTML>external resource link</a> that is already <a spec=HTML>browsing-context connected</a> is changed.</li>
+  <li>When the <a spec=HTML>external resource link</a> is created on a <{link}> element that is already [=browsing-context connected=]</a>.</li>
+  <li>When the <a spec=HTML>external resource link</a>'s <{link}> element [=becomes browsing-context connected=].</li>
+  <li>When the <{link/href}> attribute is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
+  <li>When the <{link/referrerpolicy}> attribute's state is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
 </ul>
 
 <div algorithm="prerender-processing-model">
