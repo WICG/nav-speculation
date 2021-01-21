@@ -40,6 +40,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: urls-and-fetching.html
       text: parse a URL; url: parse-a-url
       text: resulting URL record
+    urlPrefix: webappapis.html
+      text: script; url: concept-script
 </pre>
 
 <h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
@@ -92,17 +94,32 @@ A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/it
 
 <em>Note</em>: This section contains modifications to the corresponding section of [[HTML]].
 
+To process speculation rules consistently with the existing script types, we make the following changes:
+
+* Add "`speculationrules`" to the list of valid values for <a spec=html>the script's type</a>.
+
+* Rename [=the script's script=] to <dfn>the script's result</dfn>, which can be either a <a spec="html">script</a> or a [=speculation rule set=].
+
+The following algorithms are updated accordingly:
+
+* [=Prepare a script=]: see [[#speculation-rules-prepare-a-script-patch]].
+* <a spec=html>Execute a script block</a>: Add the following case to the switch on <a spec=html>the script's type</a>:
+  <dl>
+    <dt>"`speculationrules`"</dt>
+    <dd>
+      1. [=Assert=]: Never reached.
+    </dd>
+  </dl>
+
 <p class="issue">We should consider whether we also want to make this execute even if scripting is disabled.</p>
 
 <p class="issue">We should also incorporate the case where a {{HTMLScriptElement/src}} attribute is set.</p>
 
 <p class="issue">We could fire {{HTMLElement/error}} and {{HTMLElement/load}} events if we wanted to.</p>
 
-Add "`speculationrules`" to the list of valid values for <a spec=html>the script's type</a>.
+<h3 id="speculation-rules-prepare-a-script-patch">Prepare a script</h3>
 
-Rename [=the script's script=] to <dfn>the script's result</dfn>, which can be either a script or a [=speculation rule set=].
-
-Inside the [=prepare a script=] algorithm:
+Inside the [=prepare a script=] algorithm we make the following changes:
 
 * Insert the following step as the second-last sub-step under "Determine the script's type as follows:":
   * If the script block's type string is an [=ASCII case-insensitive=] match for the string "`speculationrules`", <a spec=html>the script's type</a> is "`speculationrules`".
@@ -129,15 +146,6 @@ Inside the [=prepare a script=] algorithm:
     </dd>
   </dl>
 
-Inside the <a spec=html>execute a script block</a> algorithm:
-
-* Add the following case to the switch on <a spec=html>the script's type</a>:
-  <dl>
-    <dt>"`speculationrules`"</dt>
-    <dd>
-      1. [=Assert=]: Never reached.
-    </dd>
-  </dl>
 
 <h3 id="speculation-rules-parsing">Parsing</h3>
 
