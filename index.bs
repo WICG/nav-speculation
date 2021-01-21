@@ -69,7 +69,7 @@ The appropriate times to <a spec=HTML>fetch and process the linked resource</a> 
   1. [=Create a prerendering browsing context=] with |url|, |referrer policy|, and |el|'s [=Node/node document=].
 </div>
 
-A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's <a for=Node>node document</a> for this link type.
+A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's [=Node/node document=] for this link type.
 
 <p class="note">Note that this link type does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other link types that create <a spec=HTML>external resource links</a>.
 
@@ -125,7 +125,7 @@ Inside the [=prepare a script=] algorithm:
     <dd>
       1. When <a spec=html>the script is ready</a>, run the following steps:
 
-        1. If [=the script's result=] is not null, [=list/append=] it to the element's [=node document=]'s [=document/list of speculation rule sets=].
+        1. If [=the script's result=] is not null, [=list/append=] it to the element's [=Node/node document=]'s [=document/list of speculation rule sets=].
     </dd>
   </dl>
 
@@ -183,7 +183,8 @@ Inside the <a spec=html>execute a script block</a> algorithm:
 
 A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn>, which is an initially empty [=list=].
 
-Periodically, the user agent may [=queue a task=] to the [=DOM manipulation task source=] to [=consider speculation=] for any [=document=].
+<!-- TODO(domfarolino): Get rid of the `data-link-type="interface"` once we fix the dfn in HTML. -->
+Periodically, the user agent may [=queue a task=] to the <a data-link-type="interface">DOM manipulation task source</a> to [=consider speculation=] for any [=document=].
 
 <p class="note">
   The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available.
