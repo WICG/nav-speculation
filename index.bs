@@ -100,7 +100,7 @@ A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/it
 
 Add "`speculationrules`" to the list of valid values for <a spec=html>the script's type</a>.
 
-Rename [=the script's script=] to <dfn>the script's result</dfn>, which can be a [=speculation rule set=] in addition to any other valid type.
+Rename [=the script's script=] to <dfn>the script's result</dfn>, which can be either a script or a [=speculation rule set=].
 
 Inside the [=prepare a script=] algorithm:
 
@@ -113,15 +113,23 @@ Inside the [=prepare a script=] algorithm:
     <dd>
       1. Let |result| be the result of [=parse speculation rules|parsing speculation rules=] given source text and base URL.
 
-      1. If |result| is not null, set [=the script's result=] to |result|.
+      1. Set [=the script's result=] to |result|.
 
       1. <a spec=html>The script is ready</a>.
     </dd>
   </dl>
 
-Inside the <a spec=html>execute a script block</a> algorithm:
+* Insert the following case to the switch in the subsequent step beginning "Then, follow the first of the following options...." after the cases which apply only to "`classic`" and "`module`" scripts:
+  <dl>
+    <dt>If <a spec=html>the script's type</a> is "`speculationrules`"</dt>
+    <dd>
+      1. When <a spec=html>the script is ready</a>, run the following steps:
 
-<p class="issue">Adjust this consistent with the resolution of <a href="https://github.com/WICG/import-maps/issues/243">WICG/import-maps#243</a>.</p>
+        1. If [=the script's result=] is not null, [=list/append=] it to the element's [=node document=]'s [=document/list of speculation rule sets=].
+    </dd>
+  </dl>
+
+Inside the <a spec=html>execute a script block</a> algorithm:
 
 * Add the following case to the switch on <a spec=html>the script's type</a>:
   <dl>
@@ -133,10 +141,9 @@ Inside the <a spec=html>execute a script block</a> algorithm:
 
 <h3 id="speculation-rules-parsing">Parsing</h3>
 
-<div class="note">
+<p class="note">
   The general principle here is to allow the existence of directives which are not understood, but not to accept into the rule set a rule which the user agent does not fully understand.
   This reduces the risk of unintended activity by user agents which are unaware of most recently added directives which might limit the scope of a rule.
-</div>
 
 <div algorithm="parse speculation rules">
   To <dfn export>parse speculation rules</dfn> given a [=string=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule set=] or null.
@@ -174,26 +181,26 @@ Inside the <a spec=html>execute a script block</a> algorithm:
 
 <h3 id="speculation-rules-processing">Processing Model</h3>
 
+A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn>, which is an initially empty [=list=].
+
 Periodically, the user agent may [=queue a task=] to the [=DOM manipulation task source=] to [=consider speculation=] for any [=document=].
 
-<div class="note">
+<p class="note">
   The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available.
-</div>
 
 <div algorithm="consider speculation">
   To <dfn export>consider speculation</dfn> for a [=document=] |document|:
 
-  1. For each <{script}> element [=connected=] to |document| where <a spec=html>the script's type</a> is "`speculationrules`" and [=the script's result=] is a [=speculation rule set=]:
-    1. [=list/For each=] |rule| of [=the script's result=]:
+  1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
+    1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
       1. Let |requiresAnonymousClientIP| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip`", and false otherwise.
-      1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]
+      1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. The user agent MAY prefetch |url| given |requiresAnonymousClientIP|.
-           <div class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the |requiresAnonymousClientIP| flag.</div>
+           <p class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the |requiresAnonymousClientIP| flag.
 </div>
 
-<div class="issue">
+<p class="issue">
   We should also notice removals and consider cancelling speculated actions.
-</div>
 
 <h2 id="prerendering-bcs">Prerendering browsing contexts</h2>
 
