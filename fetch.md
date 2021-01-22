@@ -1,5 +1,3 @@
-# Prerendering fetching modes
-
 # Prerendering Fetching Modes
 
 ## Related Issues and Discussion
