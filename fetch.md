@@ -50,7 +50,7 @@ need to utilize this cache key:
  - Subresources under top-level speculative resources
  - Nested browsing contexts and their subresources
 
-### Cache partitioning after activation
+### Cache Partitioning After Activation
 
 At the point of activation, the various speculative HTTP cache partitions may contain resources that are now
 safe to expose to the "typical" cache partitions that non-speculative pages use, since the user has clearly
@@ -67,7 +67,7 @@ that will work spec-wise.
 
 ### Alternatives Considered
 
-#### Using an out-of-band ephemeral cache
+#### Using an Out-of-Band Ephemeral Cache
 
 One alternative to using a speculative HTTP cache partition in the way described above is to use some
 new of out-of-band ephemeral cache to hold these resources, and potentially discard them after activation.
@@ -88,7 +88,7 @@ usage of this brand new cache, particularly because:
  1. Implementation-defined constraints around fetching speculative resources could lead to these resources
     non-deterministically not being fetched, making it difficult to test the cache
 
-##### Ephepermal cache usage activation
+##### Ephepermal Cache After Activation
 
 All requests originating from a [prerendering browsing context][4] after activation would stop targeting the
 ephemeral resource cache, and use their "typical" HTTP cache partition.
@@ -97,7 +97,7 @@ Like the main proposal, we could potentially provide an optional cache merging s
 in the ephemeral cache could be transferred to the HTTP cache for a more-permanent lifetime. This is not without
 its own difficulties and complexities as previously described.
 
-#### Not storing resources in the HTTP cache at all
+#### Bypassing the HTTP cache entirely
 
 Another approach to this problem would be to force-send all requests that were initiated even indirectly
 by a [prerendering browsing context][4] with the [cache mode][3] value of `"no-store"`. Fetching would behave
@@ -124,7 +124,7 @@ another kind of downgrade that we may want to consider, which is the scenario wh
 constraints, the UA opts not to create a [prerendering browsing context][4], but instead downgrade the whole prerender
 process to a simple prefetch. None of this is set in stone though.
 
-## Fetching with no credentials
+## Fetching With No Credentials
 
 Speculative navigation requests should in no way leak the user's identity to third-party origins. A consequence of
 this is that we must fetch all requests originating from a [prerendering browsing context][4] with no credentials.
@@ -136,11 +136,25 @@ As with the HTTP cache partitioning restrictions, this must apply to all of the 
 Concretely this can be done by overriding the [credentials mode][6] of all requests coming from a
 [prerendering browsing context][4] to the `"omit"` value.
 
+### Credentials After Activation
+
+After a [prerendering browsing context][4] is activated, requests originating from it would no longer have
+their credentials mode overridden, and would be fetched with whatever credentials were present in the user
+agent's cookie store as is typical on the web platform.
+
+> TODO: Discuss the possibility of partitioning the user agent's cookie store. In this proposal, the user
+agent effectively ignores cookies that it already has, for requests initiated from a
+[prerendering browsing context][4]. One downside of this proposal is that new credentials set on resources
+in a [prerendering browsing context][4] will entirely be ignored. If the user agent's cookie store was
+partitioned in a way similar to the HTTP cache, we could use an isolated speculative cookie store for all
+requests in a given [prerendering browsing context][4], and optionally merge cookies in some fashion after
+activation.
+
 ## Stripping Referrer Information
 
 To preserve the user's privacy, there should be a limited amount of referrer information sent along with
 speculative navigation requests. Given the sensitive nature of these requests, we believe it should not
-be possible to expose the full referrer path when these requests are cross-origin. Insted, the total referrer
+be possible to expose the full referrer path when these requests are cross-origin. Instead, the total referrer
 information will be limited to at most the referrer's origin. If a developer supplies the `referrerpolicy`
 attribute on e.g., a `<link rel=prerender>` it should only be used for tightening the referrer policy beyond
 the platform [default][7] of `strict-origin-when-cross-origin`. We can achieve this by defining a list of
@@ -165,9 +179,18 @@ guarantee that there is never a discrepancy between the referrer sent with the r
 of `document.referrer` on the prerender page that may eventually get activated and promoted to using
 first-party storage. For an example of this, see [this issue & comment][8].
 
+### Referrer Information After Activation
+
+This proposal applies the referrer redaction described above only to top-level speculative navigation
+requests. For example, we don't override the referrer policy that would otherwise be set on the top-level
+document in [prerendering browsing contexts][4], because any referrer information exposed from that document
+does not expose any information about the page initiated the prerender. The most that a prerendered page
+could expose about the referrer page is the value of its `document.referrer`, which is subject to the referrer
+redaction described earlier in this section.
+
 ## Using a privacy-preserving proxy
 
-TODO: Touch on the possibility of establishing a connection from a different client IP address (e.g., using a
+> TODO: Touch on the possibility of establishing a connection from a different client IP address (e.g., using a
 proxy server or virtual private network, if available)
 
 [0]: https://fetch.spec.whatwg.org/#determine-the-http-cache-partition
