@@ -154,7 +154,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
   This reduces the risk of unintended activity by user agents which are unaware of most recently added directives which might limit the scope of a rule.
 
 <div algorithm="parse speculation rules">
-  To <dfn export>parse speculation rules</dfn> given a [=string=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule set=] or null.
+  To <dfn>parse speculation rules</dfn> given a [=string=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule set=] or null.
 
   1. Let |parsed| be the result of [=Parse JSON into Infra values|parsing JSON into Infra values=] given |input|.
   1. If |parsed| is not a [=map=], then return null.
@@ -168,7 +168,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
 </div>
 
 <div algorithm="parse a speculation rule">
-  To <dfn export>parse a speculation rule</dfn> given a [=map=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
+  To <dfn>parse a speculation rule</dfn> given a [=map=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
 
   1. If |input| has any [=map/key=] other than "`source`", "`urls`", and "`requires`", then return null.
   1. If |input|["`source`"] does not [=map/exist=] or is not the [=string=] "`list`", then return null.
@@ -198,7 +198,7 @@ Periodically, the user agent may [=queue a task=] to the <a data-link-type="inte
   The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available.
 
 <div algorithm="consider speculation">
-  To <dfn export>consider speculation</dfn> for a [=document=] |document|:
+  To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
   1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
     1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
