@@ -128,7 +128,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
   <dl>
     <dt>"`speculationrules`"</dt>
     <dd>
-      1. Let |result| be the result of [=parse speculation rules|parsing speculation rules=] given source text and base URL.
+      1. Let |result| be the result of [=parsing speculation rules=] given source text and base URL.
 
       1. Set [=the script's result=] to |result|.
 
@@ -161,7 +161,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
   1. Let |result| be an empty [=speculation rule set=].
   1. If |parsed|["`prefetch`"] [=map/exists=] and is a [=list=], then [=list/for each=] |prefetchRule| of |parsed|["`prefetch`"]:
     1. If |prefetchRule| is not a [=map=], then [=iteration/continue=].
-    1. Let |rule| be the result of [=parse a speculation rule|parsing a speculation rule=] given |prefetchRule| and |baseURL|.
+    1. Let |rule| be the result of [=parsing a speculation rule=] given |prefetchRule| and |baseURL|.
     1. If |rule| is null, then [=iteration/continue=].
     1. [=list/Append=] |rule| to |result|'s [=speculation rule set/prefetch rules=].
   1. Return |result|.
