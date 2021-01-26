@@ -288,6 +288,20 @@ Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downl
   1. If <var ignore>subject</var>'s [=Node/node document=]'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following step to <var ignore>subject</var>'s [=Node/node document=]'s [=Document/post-prerendering activation steps list=] and return.
 </div>
 
+<h3 id="patch-modals">User prompts</h3>
+
+<div algorithm="cannot show simple dialogs patch">
+  Modify the <a spec=HTML>cannot show simple dialogs</a> algorithm, given a {{Window}} |window|, by prepending the following step:
+
+  1. If |window|'s [=Window/browsing context=] is a [=prerendering browsing context=], then return true.
+</div>
+
+<div algorithm="window print() patch">
+  Modify the {{Window/print()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
+</div>
+
 <h2 id="todo">TODO</h2>
 
 - Spec all the actual restrictions (storage, intrusive APIs, uncredentialed fetching)
