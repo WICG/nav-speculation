@@ -130,15 +130,13 @@ Apart from the privacy-related restrictions to communications and storage, while
 
 - APIs with a clear async boundary will have their work delayed until activation. Thus, their corresponding promises would simply remain pending, or their associated events would not fire. This includes features that are controlled by the [Permissions API](https://w3c.github.io/permissions/) ([list](https://w3c.github.io/permissions/#permission-registry)), some features that are controlled by [Permissions Policy](https://w3c.github.io/webappsec-permissions-policy/), pointer lock, and orientation lock (the latter two of which are controlled by `<iframe sandbox="">`).
 
-- Any feature which requires [user activation](https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation) will not be available, since user activation is not possible in prerendering browsing contexts. This includes APIs like `PresentationRequest` and `PaymentRequest`, as well as the `beforeunload` prompt.
+- Any feature which requires [user activation](https://html.spec.whatwg.org/multipage/interaction.html#tracking-user-activation) will not be available, since user activation is not possible in prerendering browsing contexts. This includes APIs like `PresentationRequest` and `PaymentRequest`, as well as the `beforeunload` prompt and `window.open()`.
 
 - The gamepad API will return "no gamepads" pre-activation, and fire `gamepadconnected` as part of activation (after which it will return the usual set of gamepads).
 
 - Autoplaying content will not be treated as eligible for autoplay pre-activation, but activation will revisit such content and potentially start it autoplaying if it is eligible.
 
 - Downloads will be delayed until after activation.
-
-- `window.open()` will return `null` pre-activation, as if the popup had been blocked by a popup blocker.
 
 - `window.alert()` and `window.print()` will silently do nothing pre-activation.
 
