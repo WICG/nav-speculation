@@ -156,7 +156,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
 <div algorithm="parse speculation rules">
   To <dfn>parse speculation rules</dfn> given a [=string=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule set=] or null.
 
-  1. Let |parsed| be the result of [=Parse JSON into Infra values|parsing JSON into Infra values=] given |input|.
+  1. Let |parsed| be the result of [=parsing a JSON string to an Infra value=] given |input|.
   1. If |parsed| is not a [=map=], then return null.
   1. Let |result| be an empty [=speculation rule set=].
   1. If |parsed|["`prefetch`"] [=map/exists=] and is a [=list=], then [=list/for each=] |prefetchRule| of |parsed|["`prefetch`"]:
@@ -187,12 +187,12 @@ Inside the [=prepare a script=] algorithm we make the following changes:
   1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls| and [=speculation rule/requirements=] |requirements|.
 </div>
 
-<h3 id="speculation-rules-processing">Processing Model</h3>
+<h3 id="speculation-rules-processing">Processing model</h3>
 
 A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn>, which is an initially empty [=list=].
 
 <!-- TODO(domfarolino): Get rid of the `data-link-type="interface"` once we fix the dfn in HTML. -->
-Periodically, the user agent may [=queue a task=] to the <a data-link-type="interface">DOM manipulation task source</a> to [=consider speculation=] for any [=document=].
+Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
 <p class="note">
   The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available.
