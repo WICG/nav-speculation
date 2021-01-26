@@ -280,6 +280,19 @@ A [=browsing context=] is <dfn noexport>script-closable</dfn> if either of the f
 
 Various behaviors are disallowed in [=prerendering browsing contexts=] because they would be intrusive to the user, since the prerendered content is not being actively interacted with.
 
+<h3 id="patch-popups">Creating popups with {{Window/open(url, target, features)|window.open()}}</h3>
+
+We modify <a spec=HTML>the rules for choosing a browsing context</a> to ensure that when {{Window/open(url, target, features)|window.open()}} would result in opening a new popup window, instead it does nothing and returns null. This is done by inserting the following new case into the switch in the step that begins "Otherwise, a new browsing context is being requested..":
+
+<div algorithm="rules for choosing a browsing context patch">
+  <dl class="switch">
+    <dt>If <var ignore>current</var> is a [=prerendering browsing context=]
+    <dd>The user agent may report to a developer console that popups cannot be opened while prerendering.
+  </dl>
+</div>
+
+<p class="note">The use of {{Window/open(url, target, features)|window.open()}} to navigate existing browsing contexts, or itself, is unaffected.
+
 <h3 id="patch-downloading">Downloading resources</h3>
 
 Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downloads inside [=prerendering browsing contexts=] are delayed until [=prerendering browsing context/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
