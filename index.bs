@@ -200,6 +200,8 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
+  1. If |document| is not [=Document/fully active=], then return.
+     <p class="issue">It's likely that we should also handle prerendered and back-forward cached documents.
   1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
     1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
       1. Let |requiresAnonymousClientIP| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip`", and false otherwise.
