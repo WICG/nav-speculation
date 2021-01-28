@@ -149,9 +149,9 @@ After a [prerendering browsing context][4] is activated, requests originating fr
 their credentials mode overridden, and would be fetched with whatever credentials were present in the user
 agent's cookie store as is typical on the web platform.
 
-> TODO: Discuss the possibility of partitioning the user agent's cookie store. In this proposal, the user
-agent effectively ignores cookies that it already has, for requests initiated from a
-[prerendering browsing context][4]. One downside of this proposal is that new credentials set on resources
+> TODO: Discuss the possibility of partitioning the user agent's cookie store. In the proposal above, the
+user agent effectively ignores cookies that it already has, for requests initiated from a
+[prerendering browsing context][4]. One downside of that proposal is that new credentials set on resources
 in a [prerendering browsing context][4] will entirely be ignored. If the user agent's cookie store was
 partitioned in a way similar to the HTTP cache, we could use an isolated speculative cookie store for all
 requests in a given [prerendering browsing context][4], and optionally merge cookies in some fashion after
