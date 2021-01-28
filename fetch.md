@@ -179,14 +179,17 @@ guarantee that there is never a discrepancy between the referrer sent with the r
 of `document.referrer` on the prerender page that may eventually get activated and promoted to using
 first-party storage. For an example of this, see [this issue & comment][8].
 
-### Referrer information after activation
+### Referrer information on subresource requests
 
 This proposal applies the referrer redaction described above only to top-level speculative navigation
 requests. For example, we don't override the referrer policy that would otherwise be set on the top-level
 document in [prerendering browsing contexts][4], because any referrer information exposed from that document
-does not expose any information about the page initiated the prerender. The most that a prerendered page
-could expose about the referrer page is the value of its `document.referrer`, which is subject to the referrer
-redaction described earlier in this section.
+does not expose any information about the page that initiated the speculative navigation request.
+
+The corollary to this that there is no referrer redaction applied to any other requests initiated from a
+[prerendering browsing context][4] irrespective of activation. The most that a prerendered page could expose
+about the referrer page is the value of its `document.referrer`, which is subject to the same referrer redaction
+described earlier in this section.
 
 ## Using a privacy-preserving proxy
 
