@@ -195,7 +195,7 @@ requests. For example, we don't override the referrer policy that would otherwis
 document in [prerendering browsing contexts][4], because any referrer information exposed from that document
 does not expose any information about the page's referrer document. The most that a speculative page in a 
 [prerendering browsing context][4] could expose about its referrer page is the value of its `document.referrer`,
-which is subject to the same redaction described earlier in this section, because it is set to the referrering
+which is subject to the same redaction described earlier in this section, because it is set to the referrer
 page's `Referer` header.
 
 The corollary to this that there is no referrer redaction applied to any other requests initiated from a
