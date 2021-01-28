@@ -169,7 +169,7 @@ following policies:
  - `no-referrer`
 
 A speculative navigation request supplied with a referrer policy outside of this list will be silently
-cancelled.
+ignored.
 
 > TODO: We can also consider dispatching a console warning or firing the element's error event in these
 cases to let developers know that the request was not able to be dispatched.
