@@ -1,6 +1,6 @@
-# Prerendering Fetching Modes
+# Prerendering fetching modes
 
-## Related Issues and Discussion
+## Related issues and discussion
 
 There is a long history of standards and implementation discussion around some of the problems that parts of
 this document aim to bring clarity to, namely, the fetching of speculative resources intended to be used by
@@ -30,7 +30,7 @@ In addition to the above restrictions, `<link rel=prefetch>` requests will have 
  - The request is fetched with a low implementation-defined [priority][5]
 </details>
 
-## HTTP Cache Partitioning
+## HTTP cache partitioning
 
 For privacy reasons, speculative navigation requests require the ability to fetch a resource while having
 no side effects on HTTP cache partitions observable to any other pages. For example, if `a.com` prerenders
@@ -50,7 +50,7 @@ need to utilize this cache key:
  - Subresources under top-level speculative resources
  - Nested browsing contexts and their subresources
 
-### Cache Partitioning After Activation
+### Cache partitioning after activation
 
 At the point of activation, the various speculative HTTP cache partitions may contain resources that are now
 safe to expose to the "typical" cache partitions that non-speculative pages use, since the user has clearly
@@ -65,9 +65,9 @@ not be useful to reference from this point on? This could use some more thought.
 >TODO: It's more likely that an implementation will merge cookies so I should probably figure out how
 that will work spec-wise.
 
-### Alternatives Considered
+### Alternatives considered
 
-#### Using an Out-of-Band Ephemeral Cache
+#### Using an out-of-band ephemeral cache
 
 One alternative to using a speculative HTTP cache partition in the way described above is to use some
 new of out-of-band ephemeral cache to hold these resources, and potentially discard them after activation.
@@ -88,7 +88,7 @@ usage of this brand new cache, particularly because:
  1. Implementation-defined constraints around fetching speculative resources could lead to these resources
     non-deterministically not being fetched, making it difficult to test the cache
 
-##### Ephepermal Cache After Activation
+##### Ephepermal cache after activation
 
 All requests originating from a [prerendering browsing context][4] after activation would stop targeting the
 ephemeral resource cache, and use their "typical" HTTP cache partition.
@@ -124,7 +124,7 @@ another kind of downgrade that we may want to consider, which is the scenario wh
 constraints, the UA opts not to create a [prerendering browsing context][4], but instead downgrade the whole prerender
 process to a simple prefetch. None of this is set in stone though.
 
-## Fetching With No Credentials
+## Fetching with no credentials
 
 Speculative navigation requests should in no way leak the user's identity to third-party origins. A consequence of
 this is that we must fetch all requests originating from a [prerendering browsing context][4] with no credentials.
@@ -136,7 +136,7 @@ As with the HTTP cache partitioning restrictions, this must apply to all of the 
 Concretely this can be done by overriding the [credentials mode][6] of all requests coming from a
 [prerendering browsing context][4] to the `"omit"` value.
 
-### Credentials After Activation
+### Credentials after activation
 
 After a [prerendering browsing context][4] is activated, requests originating from it would no longer have
 their credentials mode overridden, and would be fetched with whatever credentials were present in the user
@@ -150,7 +150,7 @@ partitioned in a way similar to the HTTP cache, we could use an isolated specula
 requests in a given [prerendering browsing context][4], and optionally merge cookies in some fashion after
 activation.
 
-## Stripping Referrer Information
+## Stripping referrer information
 
 To preserve the user's privacy, there should be a limited amount of referrer information sent along with
 speculative navigation requests. Given the sensitive nature of these requests, we believe it should not
@@ -179,7 +179,7 @@ guarantee that there is never a discrepancy between the referrer sent with the r
 of `document.referrer` on the prerender page that may eventually get activated and promoted to using
 first-party storage. For an example of this, see [this issue & comment][8].
 
-### Referrer Information After Activation
+### Referrer information after activation
 
 This proposal applies the referrer redaction described above only to top-level speculative navigation
 requests. For example, we don't override the referrer policy that would otherwise be set on the top-level
