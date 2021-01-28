@@ -30,6 +30,7 @@ In addition to the above restrictions, `<link rel=prefetch>` requests will have 
  - The request is fetched with a low implementation-defined [priority][5]
 </details>
 
+
 ## HTTP cache partitioning
 
 For privacy reasons, speculative navigation requests require the ability to fetch a resource while having
@@ -50,6 +51,7 @@ need to utilize this cache key:
  - Subresources under top-level speculative resources
  - Nested browsing contexts and their subresources
 
+
 ### Cache partitioning after activation
 
 At the point of activation, the various speculative HTTP cache partitions may contain resources that are now
@@ -64,6 +66,7 @@ not be useful to reference from this point on? This could use some more thought.
 
 >TODO: It's more likely that an implementation will merge cookies so I should probably figure out how
 that will work spec-wise.
+
 
 ### Alternatives considered
 
@@ -88,6 +91,7 @@ usage of this brand new cache, particularly because:
  1. Implementation-defined constraints around fetching speculative resources could lead to these resources
     non-deterministically not being fetched, making it difficult to test the cache
 
+
 ##### Ephepermal cache after activation
 
 All requests originating from a [prerendering browsing context][4] after activation would stop targeting the
@@ -96,6 +100,7 @@ ephemeral resource cache, and use their "typical" HTTP cache partition.
 Like the main proposal, we could potentially provide an optional cache merging step in which resources stored
 in the ephemeral cache could be transferred to the HTTP cache for a more-permanent lifetime. This is not without
 its own difficulties and complexities as previously described.
+
 
 #### Bypassing the HTTP cache entirely
 
@@ -124,6 +129,7 @@ another kind of downgrade that we may want to consider, which is the scenario wh
 constraints, the UA opts not to create a [prerendering browsing context][4], but instead downgrade the whole prerender
 process to a simple prefetch. None of this is set in stone though.
 
+
 ## Fetching with no credentials
 
 Speculative navigation requests should in no way leak the user's identity to third-party origins. A consequence of
@@ -135,6 +141,7 @@ As with the HTTP cache partitioning restrictions, this must apply to all of the 
 
 Concretely this can be done by overriding the [credentials mode][6] of all requests coming from a
 [prerendering browsing context][4] to the `"omit"` value.
+
 
 ### Credentials after activation
 
@@ -149,6 +156,7 @@ in a [prerendering browsing context][4] will entirely be ignored. If the user ag
 partitioned in a way similar to the HTTP cache, we could use an isolated speculative cookie store for all
 requests in a given [prerendering browsing context][4], and optionally merge cookies in some fashion after
 activation.
+
 
 ## Stripping referrer information
 
@@ -179,17 +187,20 @@ guarantee that there is never a discrepancy between the referrer sent with the r
 of `document.referrer` on the prerender page that may eventually get activated and promoted to using
 first-party storage. For an example of this, see [this issue & comment][8].
 
+
 ### Referrer information on subresource requests
 
 This proposal applies the referrer redaction described above only to top-level speculative navigation
 requests. For example, we don't override the referrer policy that would otherwise be set on the top-level
 document in [prerendering browsing contexts][4], because any referrer information exposed from that document
-does not expose any information about the page that initiated the speculative navigation request.
+does not expose any information about the page's referrer document. The most that a speculative page in a 
+[prerendering browsing context][4] could expose about its referrer page is the value of its `document.referrer`,
+which is subject to the same redaction described earlier in this section, because it is set to the referrering
+page's `Referer` header.
 
 The corollary to this that there is no referrer redaction applied to any other requests initiated from a
-[prerendering browsing context][4] irrespective of activation. The most that a prerendered page could expose
-about the referrer page is the value of its `document.referrer`, which is subject to the same referrer redaction
-described earlier in this section.
+[prerendering browsing context][4], irrespective of activation.
+
 
 ## Using a privacy-preserving proxy
 
