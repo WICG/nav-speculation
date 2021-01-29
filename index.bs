@@ -14,6 +14,7 @@ Boilerplate: omit conformance
 </pre>
 <pre class="link-defaults">
 spec:html; type:element; text:link
+spec:html; type:element; text:script
 </pre>
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
@@ -39,6 +40,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: urls-and-fetching.html
       text: parse a URL; url: parse-a-url
       text: resulting URL record
+    urlPrefix: webappapis.html
+      text: script; url: concept-script
 </pre>
 
 <h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
@@ -68,12 +71,147 @@ The appropriate times to <a spec=HTML>fetch and process the linked resource</a> 
   1. [=Create a prerendering browsing context=] with |url|, |referrer policy|, and |el|'s [=Node/node document=].
 </div>
 
-A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's <a for=Node>node document</a> for this link type.
+A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's [=Node/node document=] for this link type.
 
 <p class="note">Note that this link type does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other link types that create <a spec=HTML>external resource links</a>.
 
 <p class="issue">TODO: We should define a list of allowable referrer policies to prerender with, and early-return if the above referrer policy is not in this list.
 
+<h2 id="speculation-rules">Speculation rules</h2>
+
+<h3 id="speculation-rules-dfns">Definitions</h3>
+
+A <dfn>speculation rule</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="speculation rule">URLs</dfn>, an [=ordered set=] of [=URLs=]
+* <dfn for="speculation rule">requirements</dfn>, an [=ordered set=] of [=strings=]
+
+The only valid string for [=speculation rule/requirements=] to contain is "`anonymous-client-ip`".
+
+A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="speculation rule set">prefetch rules</dfn>, a [=list=] of [=speculation rules=]
+
+<h3 id="speculation-rules-script">The <{script}> element</h3>
+
+<em>Note</em>: This section contains modifications to the corresponding section of [[HTML]].
+
+To process speculation rules consistently with the existing script types, we make the following changes:
+
+* Add "`speculationrules`" to the list of valid values for <a spec=html>the script's type</a>.
+
+* Rename [=the script's script=] to <dfn>the script's result</dfn>, which can be either a <a spec="html">script</a> or a [=speculation rule set=].
+
+The following algorithms are updated accordingly:
+
+* [=Prepare a script=]: see [[#speculation-rules-prepare-a-script-patch]].
+* <a spec=html>Execute a script block</a>: Add the following case to the switch on <a spec=html>the script's type</a>:
+  <dl>
+    <dt>"`speculationrules`"</dt>
+    <dd>
+      1. [=Assert=]: Never reached.
+    </dd>
+  </dl>
+
+<p class="issue">We should consider whether we also want to make this execute even if scripting is disabled.</p>
+
+<p class="issue">We should also incorporate the case where a {{HTMLScriptElement/src}} attribute is set.</p>
+
+<p class="issue">We could fire {{HTMLElement/error}} and {{HTMLElement/load}} events if we wanted to.</p>
+
+<h3 id="speculation-rules-prepare-a-script-patch">Prepare a script</h3>
+
+Inside the [=prepare a script=] algorithm we make the following changes:
+
+* Insert the following step as the second-last sub-step under "Determine the script's type as follows:":
+  * If the script block's type string is an [=ASCII case-insensitive=] match for the string "`speculationrules`", <a spec=html>the script's type</a> is "`speculationrules`".
+
+* Insert the following case in the switch on <a spec=html>the script's type</a> within the step which begins "If the element does not have a {{HTMLScriptElement/src}} content attribute..."
+  <dl>
+    <dt>"`speculationrules`"</dt>
+    <dd>
+      1. Let |result| be the result of [=parsing speculation rules=] given source text and base URL.
+
+      1. Set [=the script's result=] to |result|.
+
+      1. <a spec=html>The script is ready</a>.
+    </dd>
+  </dl>
+
+* Insert the following case to the switch in the subsequent step beginning "Then, follow the first of the following options...." after the cases which apply only to "`classic`" and "`module`" scripts:
+  <dl>
+    <dt>If <a spec=html>the script's type</a> is "`speculationrules`"</dt>
+    <dd>
+      1. When <a spec=html>the script is ready</a>, run the following steps:
+
+        1. If [=the script's result=] is not null, [=list/append=] it to the element's [=Node/node document=]'s [=document/list of speculation rule sets=].
+    </dd>
+  </dl>
+
+
+<h3 id="speculation-rules-parsing">Parsing</h3>
+
+<p class="note">
+  The general principle here is to allow the existence of directives which are not understood, but not to accept into the rule set a rule which the user agent does not fully understand.
+  This reduces the risk of unintended activity by user agents which are unaware of most recently added directives which might limit the scope of a rule.
+
+<div algorithm="parse speculation rules">
+  To <dfn>parse speculation rules</dfn> given a [=string=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule set=] or null.
+
+  1. Let |parsed| be the result of [=parsing a JSON string to an Infra value=] given |input|.
+  1. If |parsed| is not a [=map=], then return null.
+  1. Let |result| be an empty [=speculation rule set=].
+  1. If |parsed|["`prefetch`"] [=map/exists=] and is a [=list=], then [=list/for each=] |prefetchRule| of |parsed|["`prefetch`"]:
+    1. If |prefetchRule| is not a [=map=], then [=iteration/continue=].
+    1. Let |rule| be the result of [=parsing a speculation rule=] given |prefetchRule| and |baseURL|.
+    1. If |rule| is null, then [=iteration/continue=].
+    1. [=list/Append=] |rule| to |result|'s [=speculation rule set/prefetch rules=].
+  1. Return |result|.
+</div>
+
+<div algorithm="parse a speculation rule">
+  To <dfn>parse a speculation rule</dfn> given a [=map=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
+
+  1. If |input| has any [=map/key=] other than "`source`", "`urls`", and "`requires`", then return null.
+  1. If |input|["`source`"] does not [=map/exist=] or is not the [=string=] "`list`", then return null.
+  1. Let |urls| be an empty [=list=].
+  1. If |input|["`urls`"] does not [=map/exist=], is not a [=list=], or has any element which is not a [=string=], then return null.
+  1. [=list/For each=] |urlString| of |input|["`urls`"]:
+    1. Let |parsedURL| be the result of [=basic URL parser|parsing=] |urlString| with |baseURL|.
+    1. If |parsedURL| is failure, then [=iteration/continue=].
+    1. If |parsedURL|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then [=iteration/continue=].
+    1. [=list/Append=] |parsedURL| to |urls|.
+  1. Let |requirements| be an empty [=ordered set=].
+  1. If |input|["`requires`"] [=map/exists=], but is not a [=list=], then return null.
+  1. [=list/For each=] |requirement| of |input|["`requires`"]:
+    1. If |requirement| is not the [=string=] "`anonymous-client-ip`", then return null.
+    1. [=set/Append=] |requirement| to |requirements|.
+  1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls| and [=speculation rule/requirements=] |requirements|.
+</div>
+
+<h3 id="speculation-rules-processing">Processing model</h3>
+
+A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn>, which is an initially empty [=list=].
+
+<!-- TODO(domfarolino): Get rid of the `data-link-type="interface"` once we fix the dfn in HTML. -->
+Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
+
+<p class="note">
+  The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available.
+
+<div algorithm="consider speculation">
+  To <dfn>consider speculation</dfn> for a [=document=] |document|:
+
+  1. If |document| is not [=Document/fully active=], then return.
+     <p class="issue">It's likely that we should also handle prerendered and back-forward cached documents.
+  1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
+    1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
+      1. Let |requiresAnonymousClientIP| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip`", and false otherwise.
+      1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+        1. The user agent may prefetch |url| given |requiresAnonymousClientIP|.
+           <p class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the |requiresAnonymousClientIP| flag. We may wish to include language about when the UA should deduplicate requests.
+</div>
+
+<p class="issue">
+  We should also notice removals and consider cancelling speculated actions.
 
 <h2 id="prerendering-bcs">Prerendering browsing contexts</h2>
 
