@@ -2171,6 +2171,8 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="speculation rule set" data-dfn-type="dfn" data-noexport id="speculation-rule-set-prefetch-rules">prefetch rules</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> of <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule">speculation rules</a></p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="speculation rule set" data-dfn-type="dfn" data-noexport id="speculation-rule-set-prefetch-with-subresources-rules">prefetch-with-subresources rules</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule①">speculation rules</a></p>
    </ul>
    <h3 class="heading settled" data-level="2.2" id="speculation-rules-script"><span class="secno">2.2. </span><span class="content">The <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script" id="ref-for-script">script</a></code> element</span><a class="self-link" href="#speculation-rules-script"></a></h3>
    <p><em>Note</em>: This section contains modifications to the corresponding section of <a data-link-type="biblio" href="#biblio-html">[HTML]</a>.</p>
@@ -2250,7 +2252,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md>
       <p>Let <var>result</var> be an empty <a data-link-type="dfn" href="#speculation-rule-set" id="ref-for-speculation-rule-set②">speculation rule set</a>.</p>
      <li data-md>
-      <p>If <var>parsed</var>["<code>prefetch</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a> and is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">for each</a> <var>prefetchRule</var> of <var>parsed</var>["<code>prefetch</code>"]:</p>
+      <p>If <var>parsed</var>["<code>prefetch</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a> and is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate">for each</a> <var>prefetchRule</var> of <var>parsed</var>["<code>prefetch</code>"]:</p>
       <ol>
        <li data-md>
         <p>If <var>prefetchRule</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map①">map</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue">continue</a>.</p>
@@ -2262,38 +2264,50 @@ Parts of this work may be from another specification document.  If so, those par
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①">Append</a> <var>rule</var> to <var>result</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-rules" id="ref-for-speculation-rule-set-prefetch-rules">prefetch rules</a>.</p>
       </ol>
      <li data-md>
+      <p>If <var>parsed</var>["<code>prefetch_with_subresources</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a> and is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">for each</a> <var>pwsRule</var> of <var>parsed</var>["<code>prefetch_with_subresources</code>"]:</p>
+      <ol>
+       <li data-md>
+        <p>If <var>pwsRule</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map②">map</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue②">continue</a>.</p>
+       <li data-md>
+        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule①">parsing a speculation rule</a> given <var>pwsRule</var> and <var>baseURL</var>.</p>
+       <li data-md>
+        <p>If <var>rule</var> is null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue③">continue</a>.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">Append</a> <var>rule</var> to <var>result</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-with-subresources-rules" id="ref-for-speculation-rule-set-prefetch-with-subresources-rules">prefetch-with-subresources rules</a>.</p>
+      </ol>
+     <li data-md>
       <p>Return <var>result</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="parse a speculation rule">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-speculation-rule">parse a speculation rule</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map②">map</a> <var>input</var> and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule①">speculation rule</a> or null. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-speculation-rule">parse a speculation rule</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">map</a> <var>input</var> and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule②">speculation rule</a> or null. 
     <ol>
      <li data-md>
       <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key">key</a> other than "<code>source</code>", "<code>urls</code>", and "<code>requires</code>", then return null.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>source</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exist</a> or is not the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a> "<code>list</code>", then return null.</p>
+      <p>If <var>input</var>["<code>source</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exist</a> or is not the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a> "<code>list</code>", then return null.</p>
      <li data-md>
-      <p>Let <var>urls</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a>.</p>
+      <p>Let <var>urls</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a>.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exist</a>, is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>, or has any element which is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a>, then return null.</p>
+      <p>If <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exist</a>, is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a>, or has any element which is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a>, then return null.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> <var>urlString</var> of <var>input</var>["<code>urls</code>"]:</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">For each</a> <var>urlString</var> of <var>input</var>["<code>urls</code>"]:</p>
       <ol>
        <li data-md>
         <p>Let <var>parsedURL</var> be the result of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-basic-url-parser" id="ref-for-concept-basic-url-parser">parsing</a> <var>urlString</var> with <var>baseURL</var>.</p>
        <li data-md>
-        <p>If <var>parsedURL</var> is failure, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue②">continue</a>.</p>
+        <p>If <var>parsedURL</var> is failure, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue④">continue</a>.</p>
        <li data-md>
-        <p>If <var>parsedURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme">HTTP(S) scheme</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue③">continue</a>.</p>
+        <p>If <var>parsedURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme">HTTP(S) scheme</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑤">continue</a>.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">Append</a> <var>parsedURL</var> to <var>urls</var>.</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append③">Append</a> <var>parsedURL</var> to <var>urls</var>.</p>
       </ol>
      <li data-md>
       <p>Let <var>requirements</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set②">ordered set</a>.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a>, then return null.</p>
+      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a>, then return null.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">For each</a> <var>requirement</var> of <var>input</var>["<code>requires</code>"]:</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">For each</a> <var>requirement</var> of <var>input</var>["<code>requires</code>"]:</p>
       <ol>
        <li data-md>
         <p>If <var>requirement</var> is not the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">string</a> "<code>anonymous-client-ip</code>", then return null.</p>
@@ -2301,11 +2315,11 @@ Parts of this work may be from another specification document.  If so, those par
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append">Append</a> <var>requirement</var> to <var>requirements</var>.</p>
       </ol>
      <li data-md>
-      <p>Return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule②">speculation rule</a> with <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls">URLs</a> <var>urls</var> and <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements①">requirements</a> <var>requirements</var>.</p>
+      <p>Return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule③">speculation rule</a> with <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls">URLs</a> <var>urls</var> and <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements①">requirements</a> <var>requirements</var>.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="2.5" id="speculation-rules-processing"><span class="secno">2.5. </span><span class="content">Processing model</span><a class="self-link" href="#speculation-rules-processing"></a></h3>
-   <p>A <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document">document</a> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-export id="document-list-of-speculation-rule-sets">list of speculation rule sets</dfn>, which is an initially empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a>.</p>
+   <p>A <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document">document</a> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-export id="document-list-of-speculation-rule-sets">list of speculation rule sets</dfn>, which is an initially empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a>.</p>
    <p>Periodically, for any <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document①">document</a> <var>document</var>, the user agent may <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task">queue a global task</a> on the <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#dom-manipulation-task-source" id="ref-for-dom-manipulation-task-source">DOM manipulation task source</a> with <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> to <a data-link-type="dfn" href="#consider-speculation" id="ref-for-consider-speculation">consider speculation</a> for <var>document</var>.</p>
    <p class="note" role="note"> The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available. </p>
    <div class="algorithm" data-algorithm="consider speculation">
@@ -2318,12 +2332,25 @@ Parts of this work may be from another specification document.  If so, those par
       <p>For each <var>ruleSet</var> of <var>document</var>’s <a data-link-type="dfn" href="#document-list-of-speculation-rule-sets" id="ref-for-document-list-of-speculation-rule-sets①">list of speculation rule sets</a>:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-rules" id="ref-for-speculation-rule-set-prefetch-rules①">prefetch rules</a>:</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-with-subresources-rules" id="ref-for-speculation-rule-set-prefetch-with-subresources-rules①">prefetch-with-subresources rules</a>:</p>
         <ol>
          <li data-md>
           <p>Let <var>requiresAnonymousClientIP</var> be true if <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements②">requirements</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> "<code>anonymous-client-ip</code>", and false otherwise.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls①">URLs</a>:</p>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑤">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls①">URLs</a>:</p>
+          <ol>
+           <li data-md>
+            <p>The user agent may prefetch <var>url</var> given <var>requiresAnonymousClientIP</var>, including subresources identified by <a href="https://github.com/whatwg/html/pull/5959">speculative HTML parsing</a>.</p>
+            <p class="issue" id="issue-81bee6f0"><a class="self-link" href="#issue-81bee6f0"></a>TODO: expand this along with prefetch more generally. </p>
+          </ol>
+        </ol>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑥">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-rules" id="ref-for-speculation-rule-set-prefetch-rules①">prefetch rules</a>:</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>requiresAnonymousClientIP</var> be true if <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements③">requirements</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain①">contains</a> "<code>anonymous-client-ip</code>", and false otherwise.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑦">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls②">URLs</a>:</p>
           <ol>
            <li data-md>
             <p>The user agent may prefetch <var>url</var> given <var>requiresAnonymousClientIP</var>.</p>
@@ -2352,15 +2379,15 @@ Parts of this work may be from another specification document.  If so, those par
    <p class="note" role="note">This specification enforces that <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context">prerendering browsing contexts</a> are always <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context">top-level browsing contexts</a>, i.e., that a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context" id="ref-for-nested-browsing-context">nested browsing context</a>'s <a data-link-type="dfn" href="#browsing-context-loading-mode" id="ref-for-browsing-context-loading-mode②">loading mode</a> is always "<code>default</code>". </p>
    <p class="issue" id="issue-c1bc22a3"><a class="self-link" href="#issue-c1bc22a3"></a>Probably we will need more loading modes for handling <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context" id="ref-for-nested-browsing-context①">nested browsing contexts</a> inside of top-level prerendered ones. Definitely a to-do.</p>
    <p>A <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①">prerendering browsing context</a> is <dfn class="dfn-paneled" data-dfn-for="prerendering browsing context" data-dfn-type="dfn" data-noexport id="prerendering-browsing-context-empty">empty</dfn> if the only entry in its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history">session history</a> is the initial <code>about:blank</code> <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code>.</p>
-   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-prerendering-browsing-contexts-map">prerendering browsing contexts map</dfn>, which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">ordered map</a> of (<a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a>, <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy">referrer policy</a>) <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#tuple" id="ref-for-tuple">tuples</a> to <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②">prerendering browsing contexts</a>. This is used to fulfill <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">navigations</a> to a given URL by instead <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate">activating</a> the corresponding prerendering browsing context.</p>
-   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-post-prerendering-activation-steps-list">post-prerendering activation steps list</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a> where each <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item">item</a> is a series of algorithm steps.</p>
+   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-prerendering-browsing-contexts-map">prerendering browsing contexts map</dfn>, which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">ordered map</a> of (<a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a>, <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy">referrer policy</a>) <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#tuple" id="ref-for-tuple">tuples</a> to <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②">prerendering browsing contexts</a>. This is used to fulfill <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">navigations</a> to a given URL by instead <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate">activating</a> the corresponding prerendering browsing context.</p>
+   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-post-prerendering-activation-steps-list">post-prerendering activation steps list</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a> where each <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item">item</a> is a series of algorithm steps.</p>
    <div class="algorithm" data-algorithm="create a prerendering browsing context">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="create-a-prerendering-browsing-context">create a prerendering browsing context</dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url④">URL</a> <var>startingURL</var>, a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, and a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> <var>referrerDoc</var>: 
     <ol>
      <li data-md>
       <p class="assertion">Assert: <var>startingURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme①">scheme</a> is a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme①">HTTP(S) scheme</a>.</p>
      <li data-md>
-      <p>If <var>referrerDoc</var>’s <a data-link-type="dfn" href="#document-prerendering-browsing-contexts-map" id="ref-for-document-prerendering-browsing-contexts-map">prerendering browsing contexts map</a>[(<var>startingURL</var>, <var>referrerPolicy</var>)] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exists</a>, then return it.</p>
+      <p>If <var>referrerDoc</var>’s <a data-link-type="dfn" href="#document-prerendering-browsing-contexts-map" id="ref-for-document-prerendering-browsing-contexts-map">prerendering browsing contexts map</a>[(<var>startingURL</var>, <var>referrerPolicy</var>)] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a>, then return it.</p>
      <li data-md>
       <p>Let <var>bc</var> be the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-top-level-browsing-context" id="ref-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context</a>.</p>
      <li data-md>
@@ -2403,7 +2430,7 @@ Parts of this work may be from another specification document.  If so, those par
          <li data-md>
           <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-fire" id="ref-for-concept-event-fire">Fire an event</a> named <code class="idl"><a data-link-type="idl" href="#eventdef-document-prerenderingchange" id="ref-for-eventdef-document-prerenderingchange">prerenderingchange</a></code> at <var>successorBC</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document②">active document</a>.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑤">For each</a> <var>steps</var> in <var>successorBC</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document③">active document</a>'s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list">post-prerendering activation steps list</a>:</p>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑧">For each</a> <var>steps</var> in <var>successorBC</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document③">active document</a>'s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list">post-prerendering activation steps list</a>:</p>
           <ol>
            <li data-md>
             <p>Run <var>steps</var>.</p>
@@ -2444,7 +2471,7 @@ Parts of this work may be from another specification document.  If so, those par
        <li data-md>
         <p><var>resource</var> is a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①">request</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-method" id="ref-for-concept-request-method">method</a> is `<code>GET</code>`</p>
        <li data-md>
-        <p><var>browsingContext</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑤">active document</a>'s <a data-link-type="dfn" href="#document-prerendering-browsing-contexts-map" id="ref-for-document-prerendering-browsing-contexts-map②">prerendering browsing contexts map</a>[(<var>resource</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">URL</a>, <var>resource</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-referrer-policy" id="ref-for-concept-request-referrer-policy①">referrer policy</a>)] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a></p>
+        <p><var>browsingContext</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑤">active document</a>'s <a data-link-type="dfn" href="#document-prerendering-browsing-contexts-map" id="ref-for-document-prerendering-browsing-contexts-map②">prerendering browsing contexts map</a>[(<var>resource</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">URL</a>, <var>resource</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-referrer-policy" id="ref-for-concept-request-referrer-policy①">referrer policy</a>)] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a></p>
       </ul>
       <p>then:</p>
       <ol>
@@ -2709,6 +2736,7 @@ Parts of this work may be from another specification document.  If so, those par
    <li><a href="#parse-speculation-rules">parse speculation rules</a><span>, in §2.4</span>
    <li><a href="#document-post-prerendering-activation-steps-list">post-prerendering activation steps list</a><span>, in §3</span>
    <li><a href="#speculation-rule-set-prefetch-rules">prefetch rules</a><span>, in §2.1</span>
+   <li><a href="#speculation-rule-set-prefetch-with-subresources-rules">prefetch-with-subresources rules</a><span>, in §2.1</span>
    <li><a href="#attr-valuedef-link-rel-prerender">prerender</a><span>, in §1</span>
    <li><a href="#dom-document-prerendering">prerendering</a><span>, in §3</span>
    <li><a href="#prerendering-browsing-context">prerendering browsing context</a><span>, in §3</span>
@@ -3188,13 +3216,13 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-list-contain">
    <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-contain">2.5. Processing model</a>
+    <li><a href="#ref-for-list-contain">2.5. Processing model</a> <a href="#ref-for-list-contain①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-iteration-continue">
    <a href="https://infra.spec.whatwg.org/#iteration-continue">https://infra.spec.whatwg.org/#iteration-continue</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-iteration-continue">2.4. Parsing</a> <a href="#ref-for-iteration-continue①">(2)</a> <a href="#ref-for-iteration-continue②">(3)</a> <a href="#ref-for-iteration-continue③">(4)</a>
+    <li><a href="#ref-for-iteration-continue">2.4. Parsing</a> <a href="#ref-for-iteration-continue①">(2)</a> <a href="#ref-for-iteration-continue②">(3)</a> <a href="#ref-for-iteration-continue③">(4)</a> <a href="#ref-for-iteration-continue④">(5)</a> <a href="#ref-for-iteration-continue⑤">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-empty">
@@ -3207,17 +3235,17 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-map-exists">
    <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-map-exists">2.4. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a>
-    <li><a href="#ref-for-map-exists④">3. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-map-exists⑤">4.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-map-exists">2.4. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a> <a href="#ref-for-map-exists④">(5)</a>
+    <li><a href="#ref-for-map-exists⑤">3. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-map-exists⑥">4.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-iterate">
    <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-iterate">2.4. Parsing</a> <a href="#ref-for-list-iterate①">(2)</a> <a href="#ref-for-list-iterate②">(3)</a>
-    <li><a href="#ref-for-list-iterate③">2.5. Processing model</a> <a href="#ref-for-list-iterate④">(2)</a>
-    <li><a href="#ref-for-list-iterate⑤">3. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-list-iterate">2.4. Parsing</a> <a href="#ref-for-list-iterate①">(2)</a> <a href="#ref-for-list-iterate②">(3)</a> <a href="#ref-for-list-iterate③">(4)</a>
+    <li><a href="#ref-for-list-iterate④">2.5. Processing model</a> <a href="#ref-for-list-iterate⑤">(2)</a> <a href="#ref-for-list-iterate⑥">(3)</a> <a href="#ref-for-list-iterate⑦">(4)</a>
+    <li><a href="#ref-for-list-iterate⑧">3. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-struct-item">
@@ -3235,24 +3263,24 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-list">
    <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list">2.1. Definitions</a>
-    <li><a href="#ref-for-list①">2.4. Parsing</a> <a href="#ref-for-list②">(2)</a> <a href="#ref-for-list③">(3)</a> <a href="#ref-for-list④">(4)</a>
-    <li><a href="#ref-for-list⑤">2.5. Processing model</a>
-    <li><a href="#ref-for-list⑥">3. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-list">2.1. Definitions</a> <a href="#ref-for-list①">(2)</a>
+    <li><a href="#ref-for-list②">2.4. Parsing</a> <a href="#ref-for-list③">(2)</a> <a href="#ref-for-list④">(3)</a> <a href="#ref-for-list⑤">(4)</a> <a href="#ref-for-list⑥">(5)</a>
+    <li><a href="#ref-for-list⑦">2.5. Processing model</a>
+    <li><a href="#ref-for-list⑧">3. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-map">
    <a href="https://infra.spec.whatwg.org/#ordered-map">https://infra.spec.whatwg.org/#ordered-map</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-ordered-map">2.4. Parsing</a> <a href="#ref-for-ordered-map①">(2)</a> <a href="#ref-for-ordered-map②">(3)</a>
-    <li><a href="#ref-for-ordered-map③">3. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-ordered-map">2.4. Parsing</a> <a href="#ref-for-ordered-map①">(2)</a> <a href="#ref-for-ordered-map②">(3)</a> <a href="#ref-for-ordered-map③">(4)</a>
+    <li><a href="#ref-for-ordered-map④">3. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-map">
    <a href="https://infra.spec.whatwg.org/#ordered-map">https://infra.spec.whatwg.org/#ordered-map</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-ordered-map">2.4. Parsing</a> <a href="#ref-for-ordered-map①">(2)</a> <a href="#ref-for-ordered-map②">(3)</a>
-    <li><a href="#ref-for-ordered-map③">3. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-ordered-map">2.4. Parsing</a> <a href="#ref-for-ordered-map①">(2)</a> <a href="#ref-for-ordered-map②">(3)</a> <a href="#ref-for-ordered-map③">(4)</a>
+    <li><a href="#ref-for-ordered-map④">3. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-set">
@@ -3496,6 +3524,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="issue">We should also incorporate the case where a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src">src</a></code> attribute is set.<a href="#issue-bb120c28"> ↵ </a></div>
    <div class="issue">We could fire <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-error">error</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-load">load</a></code> events if we wanted to.<a href="#issue-9cd39e70"> ↵ </a></div>
    <div class="issue">It’s likely that we should also handle prerendered and back-forward cached documents. <a href="#issue-30bcda38"> ↵ </a></div>
+   <div class="issue">TODO: expand this along with prefetch more generally. <a href="#issue-81bee6f0"> ↵ </a></div>
    <div class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the <var>requiresAnonymousClientIP</var> flag. We may wish to include language about when the UA should deduplicate requests. <a href="#issue-ce6650cd"> ↵ </a></div>
    <div class="issue"> We should also notice removals and consider cancelling speculated actions. <a href="#issue-ba67a3f6"> ↵ </a></div>
    <div class="issue">Probably we will need more loading modes for handling <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context">nested browsing contexts</a> inside of top-level prerendered ones. Definitely a to-do.<a href="#issue-c1bc22a3"> ↵ </a></div>
@@ -3510,15 +3539,15 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="speculation-rule">
    <b><a href="#speculation-rule">#speculation-rule</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-speculation-rule">2.1. Definitions</a>
-    <li><a href="#ref-for-speculation-rule①">2.4. Parsing</a> <a href="#ref-for-speculation-rule②">(2)</a>
+    <li><a href="#ref-for-speculation-rule">2.1. Definitions</a> <a href="#ref-for-speculation-rule①">(2)</a>
+    <li><a href="#ref-for-speculation-rule②">2.4. Parsing</a> <a href="#ref-for-speculation-rule③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="speculation-rule-urls">
    <b><a href="#speculation-rule-urls">#speculation-rule-urls</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-speculation-rule-urls">2.4. Parsing</a>
-    <li><a href="#ref-for-speculation-rule-urls①">2.5. Processing model</a>
+    <li><a href="#ref-for-speculation-rule-urls①">2.5. Processing model</a> <a href="#ref-for-speculation-rule-urls②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="speculation-rule-requirements">
@@ -3526,7 +3555,7 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-speculation-rule-requirements">2.1. Definitions</a>
     <li><a href="#ref-for-speculation-rule-requirements①">2.4. Parsing</a>
-    <li><a href="#ref-for-speculation-rule-requirements②">2.5. Processing model</a>
+    <li><a href="#ref-for-speculation-rule-requirements②">2.5. Processing model</a> <a href="#ref-for-speculation-rule-requirements③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="speculation-rule-set">
@@ -3541,6 +3570,13 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-speculation-rule-set-prefetch-rules">2.4. Parsing</a>
     <li><a href="#ref-for-speculation-rule-set-prefetch-rules①">2.5. Processing model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="speculation-rule-set-prefetch-with-subresources-rules">
+   <b><a href="#speculation-rule-set-prefetch-with-subresources-rules">#speculation-rule-set-prefetch-with-subresources-rules</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-speculation-rule-set-prefetch-with-subresources-rules">2.4. Parsing</a>
+    <li><a href="#ref-for-speculation-rule-set-prefetch-with-subresources-rules①">2.5. Processing model</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="the-scripts-result">
@@ -3558,7 +3594,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="parse-a-speculation-rule">
    <b><a href="#parse-a-speculation-rule">#parse-a-speculation-rule</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-parse-a-speculation-rule">2.4. Parsing</a>
+    <li><a href="#ref-for-parse-a-speculation-rule">2.4. Parsing</a> <a href="#ref-for-parse-a-speculation-rule①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="document-list-of-speculation-rule-sets">
