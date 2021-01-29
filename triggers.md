@@ -40,8 +40,7 @@ The following example illustrates the basic idea:
 }
 </script>
 ```
-
-The rules are divided into sections by the action, such as "dns-prefetch", "preconnect", "prefetch" or "prerender", that they authorize. A user agent may always choose to stop early, for instance by prefetching where prerendering was permitted.
+The rules are divided into sections by the action, such as "dns-prefetch", "preconnect", "prefetch", "prefetch\_with\_subresources" or "prerender", that they authorize. A user agent may always choose to stop early, for instance by prefetching where prerendering was permitted.
 
 Since these are rules for optional behavior (the UA is always free not to speculate), parsing of these can be somewhat conservative. If a UA sees a rule it does not understand, that rule is discarded. Because a rule always authorizes additional speculation (but does not confine speculation allowed by other rules), discarding rules never authorizes more speculation than the author intended, only less.
 
