@@ -85,7 +85,7 @@ A <dfn>speculation rule</dfn> is a [=struct=] with the following [=struct/items=
 * <dfn for="speculation rule">URLs</dfn>, an [=ordered set=] of [=URLs=]
 * <dfn for="speculation rule">requirements</dfn>, an [=ordered set=] of [=strings=]
 
-The only valid string for [=speculation rule/requirements=] to contain is "`anonymous-client-ip`".
+The only valid string for [=speculation rule/requirements=] to contain is "`anonymous-client-ip-when-cross-origin`".
 
 A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule set">prefetch rules</dfn>, a [=list=] of [=speculation rules=]
@@ -188,7 +188,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
   1. Let |requirements| be an empty [=ordered set=].
   1. If |input|["`requires`"] [=map/exists=], but is not a [=list=], then return null.
   1. [=list/For each=] |requirement| of |input|["`requires`"]:
-    1. If |requirement| is not the [=string=] "`anonymous-client-ip`", then return null.
+    1. If |requirement| is not the [=string=] "`anonymous-client-ip-when-cross-origin`", then return null.
     1. [=set/Append=] |requirement| to |requirements|.
   1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls| and [=speculation rule/requirements=] |requirements|.
 </div>
@@ -210,15 +210,15 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
      <p class="issue">It's likely that we should also handle prerendered and back-forward cached documents.
   1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
     1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch-with-subresources rules=]:
-      1. Let |requiresAnonymousClientIP| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip`", and false otherwise.
+      1. Let |requiresAnonymousClientIPWhenCrossOrigin| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", and false otherwise.
       1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. The user agent may prefetch |url| given |requiresAnonymousClientIP|, including subresources identified by <a href="https://github.com/whatwg/html/pull/5959">speculative HTML parsing</a>.
+        1. The user agent may prefetch |url| given |requiresAnonymousClientIPWhenCrossOrigin|, including subresources identified by <a href="https://github.com/whatwg/html/pull/5959">speculative HTML parsing</a>.
            <p class="issue">TODO: expand this along with prefetch more generally.
     1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
-      1. Let |requiresAnonymousClientIP| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip`", and false otherwise.
+      1. Let |requiresAnonymousClientIPWhenCrossOrigin| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", and false otherwise.
       1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. The user agent may prefetch |url| given |requiresAnonymousClientIP|.
-           <p class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the |requiresAnonymousClientIP| flag. We may wish to include language about when the UA should deduplicate requests.
+        1. The user agent may prefetch |url| given |requiresAnonymousClientIPWhenCrossOrigin|.
+           <p class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the |requiresAnonymousClientIPWhenCrossOrigin| flag. We may wish to include language about when the UA should deduplicate requests.
 </div>
 
 <p class="issue">
