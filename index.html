@@ -2056,7 +2056,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-01-29">29 January 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="subtitle"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-02-01">1 February 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -2070,7 +2070,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" src="https://licensebuttons.net/p/zero/1.0/80x15.png"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 29 January 2021,
+In addition, as of 1 February 2021,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2112,6 +2112,7 @@ Parts of this work may be from another specification document.  If so, those par
      <a href="#intrusive-behaviors"><span class="secno">6</span> <span class="content">Preventing intrusive behaviors</span></a>
      <ol class="toc">
       <li><a href="#patch-downloading"><span class="secno">6.1</span> <span class="content">Downloading resources</span></a>
+      <li><a href="#patch-modals"><span class="secno">6.2</span> <span class="content">User prompts</span></a>
      </ol>
     <li><a href="#todo"><span class="secno">7</span> <span class="content">TODO</span></a>
     <li>
@@ -2579,6 +2580,21 @@ Parts of this work may be from another specification document.  If so, those par
       <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document④">node document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑦">prerendering browsing context</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑤">node document</a>'s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list③">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
+   <h3 class="heading settled" data-level="6.2" id="patch-modals"><span class="secno">6.2. </span><span class="content">User prompts</span><a class="self-link" href="#patch-modals"></a></h3>
+   <div class="algorithm" data-algorithm="cannot show simple dialogs patch">
+     Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs" id="ref-for-cannot-show-simple-dialogs">cannot show simple dialogs</a> algorithm, given a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window">Window</a></code> <var>window</var>, by prepending the following step: 
+    <ol>
+     <li data-md>
+      <p>If <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑧">prerendering browsing context</a>, then return true.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="window print() patch">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print" id="ref-for-dom-print">print()</a></code> method steps by prepending the following step: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑨">prerendering browsing context</a>, then return.</p>
+    </ol>
+   </div>
    <h2 class="heading settled" data-level="7" id="todo"><span class="secno">7. </span><span class="content">TODO</span><a class="self-link" href="#todo"></a></h2>
    <ul>
     <li data-md>
@@ -2848,6 +2864,12 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-eventhandler">3. Prerendering browsing contexts</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-window">
+   <a href="https://html.spec.whatwg.org/multipage/window-object.html#window">https://html.spec.whatwg.org/multipage/window-object.html#window</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-window">6.2. User prompts</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-abort-a-document">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#abort-a-document">https://html.spec.whatwg.org/multipage/browsing-the-web.html#abort-a-document</a><b>Referenced in:</b>
    <ul>
@@ -2885,17 +2907,22 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-body-ok">1. Link type "prerender"</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-document-bc">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc">https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-window-bc">
+   <a href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc">https://html.spec.whatwg.org/multipage/window-object.html#window-bc</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-document-bc">3. Prerendering browsing contexts</a> <a href="#ref-for-concept-document-bc①">(2)</a>
-    <li><a href="#ref-for-concept-document-bc②">6.1. Downloading resources</a>
+    <li><a href="#ref-for-window-bc">6.2. User prompts</a> <a href="#ref-for-window-bc①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-browsing-context-connected">
    <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#browsing-context-connected">https://html.spec.whatwg.org/multipage/infrastructure.html#browsing-context-connected</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-browsing-context-connected">1. Link type "prerender"</a> <a href="#ref-for-browsing-context-connected①">(2)</a> <a href="#ref-for-browsing-context-connected②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-cannot-show-simple-dialogs">
+   <a href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs">https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-cannot-show-simple-dialogs">6.2. User prompts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-initialise-the-document-object">
@@ -3053,6 +3080,12 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-prepare-a-script">2.2. The script element</a>
     <li><a href="#ref-for-prepare-a-script①">2.3. Prepare a script</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-print">
+   <a href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print">https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-print">6.2. User prompts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-response">
@@ -3359,6 +3392,7 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://heycam.github.io/webidl/#this">https://heycam.github.io/webidl/#this</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-this">3. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-this①">6.2. User prompts</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -3389,14 +3423,16 @@ Parts of this work may be from another specification document.  If so, those par
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-manipulation-task-source">DOM manipulation task source</span>
      <li><span class="dfn-paneled" id="term-for-eventhandler">EventHandler</span>
+     <li><span class="dfn-paneled" id="term-for-window">Window</span>
      <li><span class="dfn-paneled" id="term-for-abort-a-document">abort</span>
      <li><span class="dfn-paneled" id="term-for-active-document">active document</span>
      <li><span class="dfn-paneled" id="term-for-active-window">active window</span>
      <li><span class="dfn-paneled" id="term-for-auxiliary-browsing-context">auxiliary browsing context</span>
      <li><span class="dfn-paneled" id="term-for-becomes-browsing-context-connected">become browsing-context connected</span>
      <li><span class="dfn-paneled" id="term-for-body-ok">body-ok</span>
-     <li><span class="dfn-paneled" id="term-for-concept-document-bc">browsing context <small>(for Document)</small></span>
+     <li><span class="dfn-paneled" id="term-for-window-bc">browsing context <small>(for Window)</small></span>
      <li><span class="dfn-paneled" id="term-for-browsing-context-connected">browsing-context connected</span>
+     <li><span class="dfn-paneled" id="term-for-cannot-show-simple-dialogs">cannot show simple dialogs</span>
      <li><span class="dfn-paneled" id="term-for-initialise-the-document-object">create and initialize a document object</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context</span>
      <li><span class="dfn-paneled" id="term-for-delay-the-load-event">delays the load event</span>
@@ -3422,6 +3458,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-networking-task-source">networking task source</span>
      <li><span class="dfn-paneled" id="term-for-parse-a-url">parse a url</span>
      <li><span class="dfn-paneled" id="term-for-prepare-a-script">prepare a script</span>
+     <li><span class="dfn-paneled" id="term-for-dom-print">print()</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-response">process a navigate response</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-url-scheme">process a navigate url scheme</span>
      <li><span class="dfn-paneled" id="term-for-prompt-to-unload-a-document">prompt to unload</span>
@@ -3627,6 +3664,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-prerendering-browsing-context①③">5.1. APIs for creating and navigating browsing contexts by name</a> <a href="#ref-for-prerendering-browsing-context①④">(2)</a>
     <li><a href="#ref-for-prerendering-browsing-context①⑤">6. Preventing intrusive behaviors</a>
     <li><a href="#ref-for-prerendering-browsing-context①⑥">6.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context①⑦">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context①⑧">6.2. User prompts</a> <a href="#ref-for-prerendering-browsing-context①⑨">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerendering-browsing-context-empty">
