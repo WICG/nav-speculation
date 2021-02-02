@@ -216,7 +216,7 @@ referrer policy to something other than what the developer intended (by capping 
 and developer confusion. Consider the following example:
 
 ```html
-<link rel=prerender referrerpolicy=unsafe-url https="...">
+<link rel=prerender referrerpolicy=unsafe-url href="...">
 
 ...
 
