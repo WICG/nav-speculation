@@ -202,6 +202,33 @@ The corollary to this that there is no referrer redaction applied to any other r
 [prerendering browsing context][4], irrespective of activation.
 
 
+### Alternatives considered
+
+#### Capping the referrer policy to `strict-origin-when-cross-origin`
+
+One alternative to our referrer redaction proposal above that has been considered is capping the referrer policy
+of all speculative navigation requests to `strict-origin-when-cross-origin`. This is a pretty good alternative
+especially in simplicity, but the major downside of this proposal is the confusion it may lead to mismatches when
+attempting to activate a [prerendering browsing context][4].
+
+Note that prerender activations are keyed on the prerender request's referrer policy, so changing the prerender's
+referrer policy to something other than what the developer intended (by capping it) could lead to activation mismatches
+and developer confusion. Consider the following example.
+
+```html
+<link rel=prerender referrerpolicy=unsafe-url https="...">
+
+...
+
+<a referrerpolicy=unsafe-url href="...">
+```
+
+While the example above looks reasonable, if we cap the referrer policy of the prerender request to
+`strict-origin-when-cross-origin` while not capping the referrer policy of the navigation request
+that takes place when clicking on the anchor element we, the navigation request will not match the
+prerender, resulting in wasted bytes and likely causing developer confusion.
+
+
 ## Using a privacy-preserving proxy
 
 > TODO: Touch on the possibility of establishing a connection from a different client IP address (e.g., using a
