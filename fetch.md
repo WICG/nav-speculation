@@ -213,7 +213,7 @@ especially in terms of simplicity, but the major downside of this proposal is th
 
 Note that prerender activations are keyed on the prerender request's referrer policy, so changing the prerender's
 referrer policy to something other than what the developer intended (by capping it) could lead to activation mismatches
-and developer confusion. Consider the following example.
+and developer confusion. Consider the following example:
 
 ```html
 <link rel=prerender referrerpolicy=unsafe-url https="...">
