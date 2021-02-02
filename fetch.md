@@ -225,8 +225,8 @@ and developer confusion. Consider the following example:
 
 While the example above looks reasonable, if we cap the referrer policy of the prerender request to
 `strict-origin-when-cross-origin` while not capping the referrer policy of the navigation request
-that takes place when clicking on the anchor element we, the navigation request will not match the
-prerender, resulting in wasted bytes and likely causing developer confusion.
+that takes place when clicking on the anchor element, the navigation request will not match the prerender,
+resulting in wasted bytes and likely causing developer confusion.
 
 
 ## Using a privacy-preserving proxy
