@@ -371,7 +371,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
 Patch the redirect-handling portion of the [=process a navigate fetch=] algorithm to update certain properties of a [=prerendering browsing context=] upon cross-origin redirects as follows:
 
 <div algorithm="navigate activate patch redirect handling">
-  In [=process a navigate fetch=], append the following steps after the step 9 sub-step 1, in order to handle redirects correctly;
+  In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly;
 
   1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var> is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
 
@@ -386,7 +386,7 @@ Patch the redirect-handling portion of the [=process a navigate fetch=] algorith
 
       1. Set |response| to a [=network error=] and [=iteration/break=].
 
-<p class="issue">As per recent conversation about <a href="https://github.com/jeremyroman/alternate-loading-modes/issues/17">Issue 17</a>, we should support activating a prerender during a navigation redirect.
+<p class="issue">As per recent conversation about <a href="https://github.com/jeremyroman/alternate-loading-modes/issues/17">Issue 17</a>, we should also support activating a prerender during a navigation redirect.
 </div>
 
 <h3 id="always-replacement">Maintaining a trivial session history</h3>
