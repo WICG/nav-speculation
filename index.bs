@@ -373,7 +373,7 @@ Patch the redirect-handling portion of the [=process a navigate fetch=] algorith
 <div algorithm="navigate activate patch redirect handling">
   In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly;
 
-  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var> is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
+  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
 
     1. Set |browsingContext|'s [=browsing context/loading mode=] to `uncredentialed-prerender`.
 
