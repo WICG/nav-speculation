@@ -81,7 +81,7 @@ A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> elem
 
 <p class="note">Note that this link type does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other link types that create <a spec=HTML>external resource links</a>.
 
-The <dfn>list of sufficiently-strict referrer policies</dfn> is a [=list=] containing the following subset of [=referrer policies=]: the empty string, "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
+The <dfn>list of sufficiently-strict speculative navigation referrer policies</dfn> is a [=list=] containing the following subset of [=referrer policies=]: the empty string, "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
 <h2 id="speculation-rules">Speculation rules</h2>
 
@@ -270,7 +270,7 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
     1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
 
-    1. [=Assert=]: The [=list of sufficiently-strict referrer policies=] [=list/contains=] |referrerPolicy|.
+    1. [=Assert=]: The [=list of sufficiently-strict speculative navigation referrer policies=] [=list/contains=] |referrerPolicy|.
 
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
 
