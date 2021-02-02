@@ -252,9 +252,9 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 <div algorithm="create a prerendering browsing context">
   To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
 
-  1. Assert: |startingURL|'s [=url/scheme=] is a [=HTTP(S) scheme=].
+  1. If |startingURL|'s [=url/scheme=] is not a [=HTTP(S) scheme=], then return.
 
-  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)] [=map/exists=], then return it.
+  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)] [=map/exists=], then return.
 
   1. Let |bc| be the result of [=creating a new top-level browsing context=].
 
