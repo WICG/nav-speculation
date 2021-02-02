@@ -68,9 +68,13 @@ The appropriate times to <a spec=HTML>fetch and process the linked resource</a> 
 
   1. If |url|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then return.
 
-  1. Let |referrer policy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
+  1. Let |referrerPolicy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
 
-  1. [=Create a prerendering browsing context=] with |url|, |referrer policy|, and |el|'s [=Node/node document=].
+  1. If |url| is not [=same origin=] with [=Node/node document=]'s [=Document/url=], then:
+
+    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] |referrerPolicy|, then return.
+
+  1. [=Create a prerendering browsing context=] with |url|, |referrerPolicy|, and |el|'s [=Node/node document=].
 </div>
 
 A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's [=Node/node document=] for this link type.
@@ -264,9 +268,9 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
   1. If |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
 
-    1. If the [=list of sufficiently-strict referrer policies=] does not [=list/contain=] |referrerPolicy|, then return.
-
     1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
+
+    1. [=Assert=]: The [=list of sufficiently-strict referrer policies=] [=list/contains=] |referrerPolicy|.
 
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
 
