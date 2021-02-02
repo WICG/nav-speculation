@@ -68,16 +68,20 @@ The appropriate times to <a spec=HTML>fetch and process the linked resource</a> 
 
   1. If |url|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then return.
 
-  1. Let |referrer policy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
+  1. Let |referrerPolicy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
 
-  1. [=Create a prerendering browsing context=] with |url|, |referrer policy|, and |el|'s [=Node/node document=].
+  1. If |url|'s [=url/origin=] is not [=same origin=] with |el|'s [=Node/node document=]'s [=Document/origin=], then:
+
+    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] |referrerPolicy|, then return.
+
+  1. [=Create a prerendering browsing context=] with |url|, |referrerPolicy|, and |el|'s [=Node/node document=].
 </div>
 
 A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's [=Node/node document=] for this link type.
 
 <p class="note">Note that this link type does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other link types that create <a spec=HTML>external resource links</a>.
 
-<p class="issue">TODO: We should define a list of allowable referrer policies to prerender with, and early-return if the above referrer policy is not in this list.
+The <dfn>list of sufficiently-strict speculative navigation referrer policies</dfn> is a [=list=] containing the following subset of [=referrer policies=]: the empty string, "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
 <h2 id="speculation-rules">Speculation rules</h2>
 
@@ -260,7 +264,13 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
   1. Let |bc| be the result of [=creating a new top-level browsing context=].
 
-  1. If |startingURL|'s [=url/origin=] is [=same origin=] with |referrerDoc|'s [=Document/origin=], then set |bc|'s [=browsing context/loading mode=] to "`prerender`"; otherwise, "`uncredentialed-prerender`".
+  1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
+
+  1. If |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
+
+    1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
+
+    1. [=Assert=]: The [=list of sufficiently-strict speculative navigation referrer policies=] [=list/contains=] |referrerPolicy|.
 
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
 
