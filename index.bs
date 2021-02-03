@@ -344,34 +344,53 @@ The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=e
 
 Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/activate|activation=] of a [=prerendering browsing context=] in place of a normal navigation as follows:
 
-<div algorithm="navigate activate patch">
-  In [=navigate=], append the following steps after the fragment navigation handling (currently step 6):
+<div algorithm="can activate a prerender">
+  The <dfn>can activate a prerender</dfn> algorithm takes in a [=browsing context=] |browsingContext|, a [=history handling behavior=] |historyHandling|, a string |navigationType|, and a [=request=] |request| is as follows:
 
   1. If all of the following are true:
 
       * |browsingContext| is a [=top-level browsing context=]
       * |historyHandling| is "`default`" or "`replace`"
-      * <var ignore>navigationType</var> is "`other`"
-      * |resource| is a [=request=] whose [=request/method=] is \``GET`\`
-      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])] [=map/exists=]
+      * |navigationType| is "`other`"
+      * |request|'s [=request/method=] is \``GET`\`
+      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|request|'s [=request/URL=], |request|'s [=request/referrer policy=])] [=map/exists=] and is not [=prerendering browsing context/empty=]
 
     then:
 
-    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])].
+    1. Return true.
 
-    1. If |successorBC| is not [=prerendering browsing context/empty=], then:
+  1. Otherwise, return false.
 
-      1. [=prerendering browsing context/Activate=] |successorBC| in place of |browsingContext| given |historyHandling|.
-
-      1. Return.
 </div>
+
+<div algorithm="navigate activate patch">
+  In [=navigate=], append the following steps after the fragment navigation handling (currently step 6):
+
+  1. If |resource| is a [=request=] and [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource| returns true, then:
+
+    1. [=prerendering browsing context/Activate=] <var ignore>successorBC</var> in place of |browsingContext| given |historyHandling|.
+
+    1. Return.
+</div>
+
+Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#redirect-handling]] section.
 
 <h3 id="redirect-handling">Redirect handling</h3>
 
-Patch the redirect-handling portion of the [=process a navigate fetch=] algorithm to update certain properties of a [=prerendering browsing context=] upon cross-origin redirects as follows:
+This section contains two types of changes to the navigation redirect handling portion of the [=process a navigate fetch=] algorithm:
+ * Logic allowing navigation redirects that are not inside of a [=prerendering browsing context=] to [=prerendering browsing context/activate=] a [=prerendering browsing context=].
+ * Logic that updates specific state of a [=prerendering browsing context=] when it redirects coss-origin.
+
+Patch the redirect-handling portion of the [=process a navigate fetch=] algorithm like so:
 
 <div algorithm="navigate activate patch redirect handling">
-  In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly;
+  In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly:
+
+  1. If |browsingContext| is not a [=prerendering browsing context=] and [=can activate a prerender=] given |browsingContext| |historyHandling|, <var ignore>navigationType</var>, and <var ignore>request</var> returns true, then:
+
+    1. [=prerendering browsing context/Activate=] |browsingContext| in place of <var ignore>sourceBrowsingContext</var> given |historyHandling|.
+
+    1. Return.
 
   1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
 
