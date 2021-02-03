@@ -381,7 +381,7 @@ This section contains two types of changes to the navigation redirect handling p
  * Logic allowing navigation redirects that are not inside of a [=prerendering browsing context=] to [=prerendering browsing context/activate=] a [=prerendering browsing context=].
  * Logic that updates specific state of a [=prerendering browsing context=] when it redirects coss-origin.
 
-Patch the redirect-handling portion of the [=process a navigate fetch=] algorithm like so:
+Patch the [=process a navigate fetch=] algorithm like so:
 
 <div algorithm="navigate activate patch redirect handling">
   In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly:
@@ -403,8 +403,6 @@ Patch the redirect-handling portion of the [=process a navigate fetch=] algorith
       1. [=Assert=]: |response|'s [=response/location URL=] is a [=URL=] whose [=url/scheme=] is a [=HTTP(S) scheme=].
 
       1. Set |response| to a [=network error=] and [=iteration/break=].
-
-<p class="issue">As per recent conversation about <a href="https://github.com/jeremyroman/alternate-loading-modes/issues/17">Issue 17</a>, we should also support activating a prerender during a navigation redirect.
 </div>
 
 <h3 id="always-replacement">Maintaining a trivial session history</h3>
