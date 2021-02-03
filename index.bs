@@ -342,10 +342,8 @@ The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=e
 
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
-Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/activate|activation=] of a [=prerendering browsing context=] in place of a normal navigation as follows:
-
 <div algorithm="can activate a prerender">
-  The <dfn>can activate a prerender</dfn> algorithm takes in a [=browsing context=] |browsingContext|, a [=history handling behavior=] |historyHandling|, a string |navigationType|, and a [=request=] |request| is as follows:
+  The <dfn>can activate a prerender</dfn> algorithm takes a [=browsing context=] |browsingContext|, a [=history handling behavior=] |historyHandling|, a string |navigationType|, and a [=request=] |request|, and runs the following steps:
 
   1. If all of the following are true:
 
@@ -362,6 +360,8 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
   1. Otherwise, return false.
 
 </div>
+
+Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/activate|activation=] of a [=prerendering browsing context=] in place of a normal navigation as follows:
 
 <div algorithm="navigate activate patch">
   In [=navigate=], append the following steps after the fragment navigation handling (currently step 6):
