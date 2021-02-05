@@ -343,19 +343,16 @@ The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=e
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
 <div algorithm="can activate a prerender">
-  The <dfn>can activate a prerender</dfn> algorithm takes a [=browsing context=] |browsingContext|, a [=history handling behavior=] |historyHandling|, a string |navigationType|, and a [=request=] |request|, and runs the following steps:
+  We <dfn>can activate a prerender</dfn> given a [=browsing context=] |browsingContext|, a [=history handling behavior=] |historyHandling|, a string |navigationType|, and a [=request=] |request|, if the following steps return true:
 
-  1. If all of the following are true:
+  1. Return true if all of the following are true:
 
       * |browsingContext| is a [=top-level browsing context=]
+      * |browsingContext| is not a [=prerendering browsing context=]
       * |historyHandling| is "`default`" or "`replace`"
       * |navigationType| is "`other`"
       * |request|'s [=request/method=] is \``GET`\`
       * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|request|'s [=request/URL=], |request|'s [=request/referrer policy=])] [=map/exists=] and is not [=prerendering browsing context/empty=]
-
-    then:
-
-    1. Return true.
 
   1. Otherwise, return false.
 
@@ -366,7 +363,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
 <div algorithm="navigate activate patch">
   In [=navigate=], append the following steps after the fragment navigation handling (currently step 6):
 
-  1. If |resource| is a [=request=] and [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource| returns true, then:
+  1. If |resource| is a [=request=] and we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource|, then:
 
     1. [=prerendering browsing context/Activate=] <var ignore>successorBC</var> in place of |browsingContext| given |historyHandling|.
 
@@ -386,7 +383,7 @@ Patch the [=process a navigate fetch=] algorithm like so:
 <div algorithm="navigate activate patch redirect handling">
   In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly:
 
-  1. If |browsingContext| is not a [=prerendering browsing context=] and [=can activate a prerender=] given |browsingContext| |historyHandling|, <var ignore>navigationType</var>, and <var ignore>request</var> returns true, then:
+  1. If we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and <var ignore>request</var>, then:
 
     1. [=prerendering browsing context/Activate=] |browsingContext| in place of <var ignore>sourceBrowsingContext</var> given |historyHandling|.
 
