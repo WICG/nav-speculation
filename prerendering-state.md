@@ -74,7 +74,7 @@ partial interface Document {
 };
 ```
 
-`document.prerendering` returns true if the document is currently hosted in a [prerendering browsing
+`document.prerendering` returns true if the document's top-level browsing context is a [prerendering browsing
 context](browsing-context.md). The `prerenderingchange` event is fired whenever this value changes.
 
 A state separate from visibility ensures existing visibility-based states are correctly accounted for. It also forces
