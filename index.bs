@@ -311,7 +311,11 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
       1. Let |d| be |successorBC|'s [=active document=].
 
-      1. [=Fire an event=] named {{Document/prerenderingchange}} at |d| and at each [=active document=] of each of |d|'s [=list of the descendant browsing contexts=].
+      1. [=Fire an event=] named {{Document/prerenderingchange}} at |d|.
+
+      1. [=list/For each=] |descendantBC| of |d|'s <a spec="HTML">list of the descendant browsing contexts</a>, [=queue a global task=] on the [=networking task source=], given |descendantBC|'s [=browsing context/active window=], with steps:
+
+        1. Fire an event named {{Document/prerenderingchange}} at |descendantBC|'s [=active document=].
 
       1. [=list/For each=] |steps| in |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=]:
 
