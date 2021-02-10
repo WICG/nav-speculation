@@ -1,3 +1,5 @@
+# Privacy Questionnaire For `document.prerendering`
+
 #### 2.1 What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
 This feature exposes to a page that it is being loaded and run in a prerendering context, that is, it is not yet interactive and hasn't been intentionally navigated to by the user.
@@ -30,7 +32,7 @@ No
 
 #### 2.8 What data does this specification expose to an origin? Please also document what data is identical to data exposed by other features, in the same or different contexts.
 
-None explicitly. Implicitly, it exposes the fact that the user agent is capable of prerendering a page - though this would be known via UA-checks and the prerendering features are intended to be feature detectable. It also exposes the time at which the user intentionally navigates to a page, but this would be known in a non-prerendering context as well.
+Whether or not the document is being prerendered. Also, the time at which a user navigates, which would be visible in a normal navigation as well.
 
 #### 2.9 Does this specification enable new script execution/loading mechanisms?
 
@@ -46,7 +48,7 @@ No - this API is read-only
 
 #### 2.12 What temporary identifiers might this this specification create or expose to the web?
 
-None - as mentioned, it identifies the UA as implementing this feature but that is intended.
+None.
 
 #### 2.13 How does this specification distinguish between behavior in first-party and third-party contexts?
 
@@ -61,7 +63,9 @@ Unchanged from regular mode
 
 #### 2.15 Does this specification have a "Security Considerations" and "Privacy Considerations" section?
 
-No - the larger prerendering effort is likely to have these. `document.prerendering` specifically seems small enough not to require them.
+This specification is part of the larger revamped prerendering effort, which will have dedicated security and privacy sections dealing with the larger questions raised there. Currently those discussions are in the explainer, but they will move into the specification as the larger effort continues to get more rigorous.
+
+This particular part of the prerendering effort will likely not be mentioned in the eventual security and privacy sections, as none of the larger feature's security and privacy concerns manifest in the exposure of this API.
 
 #### 2.16 Does this specification allow downgrading default security characteristics?
 
