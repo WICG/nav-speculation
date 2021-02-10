@@ -309,7 +309,9 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
       1. Set |successorBC|'s [=browsing context/loading mode=] to "`default`".
 
-      1. [=Fire an event=] named {{Document/prerenderingchange}} at |successorBC|'s [=active document=].
+      1. Let |d| be |successorBC|'s [=active document=].
+
+      1. [=Fire an event=] named {{Document/prerenderingchange}} at |d| and at each [=active document=] of each of |d|'s [=list of the descendant browsing contexts=].
 
       1. [=list/For each=] |steps| in |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=]:
 
@@ -331,7 +333,7 @@ Amend the {{Document}} interface:
   };
 </pre>
 
-The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=Document/browsing context=] that is a [=prerendering browsing context=]; otherwise, false.
+The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=Document/browsing context=] whose [=top-level browsing context=] is a [=prerendering browsing context=]; otherwise, false.
 
 <p class="note">This attribute lets pages know when they're being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.
 
