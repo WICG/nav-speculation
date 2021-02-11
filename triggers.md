@@ -18,7 +18,6 @@ The existence of web-facing triggers doesn't necessarily preclude the user agent
 
 - [Goals](#goals)
 - [Non-goals](#non-goals)
-- [Alternatives considered](#alternatives-considered)
 - [Speculation rules](#speculation-rules)
   - [Rules](#rules)
     - [List rules](#list-rules)
@@ -27,6 +26,7 @@ The existence of web-facing triggers doesn't necessarily preclude the user agent
     - [Extension: Handler URLs](#extension-handler-urls)
   - [Proposed Processing Model](#proposed-processing-model)
   - [Developer Tooling](#developer-tooling)
+- [Alternatives considered](#alternatives-considered)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -49,19 +49,6 @@ Accordingly, we need a trigger that is flexible enough to accommodate these and 
 While we intend to better specify the behavior of "prefetch", "prerender" and similar speculated actions, these specifications are largely separable from the trigger API itself. In fact, this specified behavior should be shared as much as possible between existing resource hints, those proposed in this document, and browser features for prefetching and prerendering.
 
 This proposal doesn't aim to address concerns about any particular provider, service or software a browser may use to provide IP anonymization. Feedback on [private prefetch proxies](https://github.com/buettner/private-prefetch-proxy/issues) is welcome, but tracked separately.
-
-## Alternatives considered
-
-The obvious alternative is to extend the `<link>` element.
-
-Extending `<link>` to meet all of these needs is awkward, and somewhat inconsistent with other uses of `<link>` (which is designed to be a single non-rendered hypertext reference). In particular, adding support for requiring an anonymous client IP in a way that didn't cause existing browsers to prefetch it without such anonymization (the behavior for an unrecognized attribute is to ignore it) would take particular care.
-
-```html
-<!-- existing browsers would prefetch this directly -->
-<link rel="prefetch" href="//example.org/" mustanonymize>
-```
-
-`<link>` also doesn't lend itself to reducing duplication with anchors alread in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
 
 ## Speculation rules
 
@@ -173,6 +160,18 @@ It will likely be useful to surface in developer tools what rules and URLs have 
 
 This information and control is important because otherwise it may be difficult to validate correct behavior as it would otherwise depend on heuristics unknown to the author. Similarly testing tools such as [WebDriver][webdriver] should likely permit overriding the user agent's selection of which valid speculations to execute.
 
+## Alternatives considered
+
+The obvious alternative is to extend the `<link>` element.
+
+Extending `<link>` to meet all of these needs is awkward, and somewhat inconsistent with other uses of `<link>` (which is designed to be a single non-rendered hypertext reference). In particular, adding support for requiring an anonymous client IP in a way that didn't cause existing browsers to prefetch it without such anonymization (the behavior for an unrecognized attribute is to ignore it) would take particular care.
+
+```html
+<!-- existing browsers would prefetch this directly -->
+<link rel="prefetch" href="//example.org/" mustanonymize>
+```
+
+`<link>` also doesn't lend itself to reducing duplication with anchors alread in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
 
 [import-maps]: https://github.com/WICG/import-maps
 [resource-hints]: https://github.com/w3c/resource-hints
