@@ -52,7 +52,7 @@ This proposal doesn't aim to address concerns about any particular provider, ser
 
 ## Alternatives considered
 
-The obvious alternative is to extent the `<link>` element.
+The obvious alternative is to extend the `<link>` element.
 
 Extending `<link>` to meet all of these needs is awkward, and somewhat inconsistent with other uses of `<link>` (which is designed to be a single non-rendered hypertext reference). In particular, adding support for requiring an anonymous client IP in a way that didn't cause existing browsers to prefetch it without such anonymization (the behavior for an unrecognized attribute is to ignore it) would take particular care.
 
