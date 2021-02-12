@@ -566,10 +566,13 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
 <div algorithm="Serial getPorts patch">
   Modify the {{Serial/getPorts()}} method steps by inserting the following steps after the initial creation of |promise|:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
-</div>
+  <!-- TODO link owner document once https://github.com/whatwg/html/pull/6379 lands -->
+  1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=], if [=this=]'s [=relevant global object=] is a {{Window}}, or [=this=]'s [=relevant global object=]'s owner document, if [=this=]'s [=relevant global object=] is a {{DedicatedWorkerGlobalScope}}.
 
-TODO: this is broken for workers.
+  1. If |document| is null, then return [=a promise rejected with=] a "{{SecurityError}}" {{DOMException}}.
+
+  1. If |document|'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following steps to |document|'s [=Document/post-prerendering activation steps list=] and return |promise|.
+</div>
 
 <h4 id="patch-notifications">Notifications API</h4>
 
