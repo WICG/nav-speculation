@@ -56,6 +56,9 @@ spec: serial; urlPrefix: https://wicg.github.io/serial/
 spec: presentationrequest; urlPrefix: https://w3c.github.io/presentation-api/
   type: method; for: PresentationRequest
     text: start(); url: dom-presentationrequest-start
+spec: webmidi; urlPrefix: https://webaudio.github.io/web-midi-api/
+  type: method; for: Navigator
+    text: requestMIDIAccess(); url: dom-navigator-requestmidiaccess
 </pre>
 
 <h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
@@ -583,6 +586,14 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
 </div>
 
 TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
+
+<h4 id="patch-midi">Web MIDI API</h4>
+
+<div algorithm="requestMIDIAccess patch">
+  Modify the {{Navigator/requestMIDIAccess()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+</div>
 
 <h4 id="activation-gated">Activation-gated APIs</h4>
 
