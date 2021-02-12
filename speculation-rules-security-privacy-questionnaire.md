@@ -12,7 +12,7 @@ The feature allows the user agent to use its discretion about which outgoing hyp
 * any information remaining in the request headers which may identify the user agent
 * the client IP address, if it is not anonymized
 
-This is necessary in order to issue an HTTP request to fetch the resource(s).
+This is necessary in order to issue an HTTP request to fetch the resource(s); this information is also sent with a scripted `fetch()` or similar.
 
 To the extent that the user agent uses heuristics to determine whether prefetching, prerendering, or similar actions are worthwhile, whether a prefetch occurs may be observable by the origin server and may reveal some information about the inputs to those heuristics, such as models of predicted user activity (i.e., is the user likely to select this link) and of the expense associated with the speculated activity (e.g., device class, battery level, network connection quality).
 
@@ -36,7 +36,7 @@ The prefetches/prerenders themselves may include PII if a site includes them in 
 
 The fact that a prefetch or prerender occurs is visible to its origin server. Accordingly, user agents should avoid basing this decision on personal information not already known to the site. For example, if a user agent prefetched a link based on a profile of the user's interests from their browsing activity across the web, the fact that a prefetch was executed may reveal information about those interests that would not have otherwise been exposed.
 
-To the extent that the user agent modifies the path taken by network traffic in order to accommodate a request to anonymize the client IP address, encrypted traffic that may be derived from PII may be visible to parties along the revised network path, including the proxy operator To mitigate this, traffic should be encrypted with TLS and not include cookies or other identifiers.
+To the extent that the user agent modifies the path taken by network traffic in order to accommodate a request to anonymize the client IP address, encrypted traffic that may be derived from PII may be visible to parties along the revised network path, including the proxy operator. To mitigate this, traffic should be encrypted with TLS and [not include cookies or other identifiers](fetch.md#fetching-with-no-credentials).
 
 ### How do the features in your specification deal with sensitive information?
 
