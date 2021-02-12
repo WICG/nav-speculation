@@ -64,6 +64,23 @@ spec: file-system-access; urlPrefix: https://wicg.github.io/file-system-access/
     text: showOpenFilePicker(); url: dom-window-showopenfilepicker
     text: showSaveFilePicker(); url: dom-window-showsavefilepicker
     text: showDirectoryPicker(); url: dom-window-showdirectorypicker
+spec: idle-detection; urlPrefix: https://wicg.github.io/idle-detection/
+  type: method; for: IdleDetector
+    text: requestPermission(); url: api-idledetector-requestpermission
+    text: start(); url: api-idledetector-start
+</pre>
+<pre class="biblio">
+{
+  "IDLE-DETECTION": {
+    "authors": [
+      "Reilly Grant"
+    ],
+    "href": "https://wicg.github.io/idle-detection/",
+    "title": "Idle Detection API",
+    "status": "CG-DRAFT",
+    "publisher": "W3C"
+  }
+}
 </pre>
 
 <h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
@@ -600,6 +617,16 @@ TODO: what about the service worker API? Depends on what we're doing for service
   1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
 </div>
 
+<h4 id="patch-idle-detection">Idle Detection API</h4>
+
+<div algorithm="IdleDetector start patch">
+  Modify the {{IdleDetector/start()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+<p class="note">The other interesting method, {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}}, is gated on [=transient activation=]. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering.
+
 <h4 id="activation-gated">Activation-gated APIs</h4>
 
 The following APIs do not need modifications, because they will automatically fail or no-op without [=transient activation=] or [=sticky activation=], which a [=prerendering browsing context=]'s [=browsing context/active window=] will never have. We list them here for completeness, to show which API surfaces we've audited.
@@ -610,6 +637,7 @@ The following APIs do not need modifications, because they will automatically fa
 - {{PaymentRequest/show()|paymentRequest.show()}} [[PAYMENT-REQUEST]]
 - {{PresentationRequest/start()|presentationRequest.start()}} [[PRESENTATION-API]]
 - {{Window/showOpenFilePicker()}}, {{Window/showSaveFilePicker()}}, and {{Window/showDirectoryPicker()}} [[FILE-SYSTEM-ACCESS]]
+- {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}} [[IDLE-DETECTION]]
 
 <h2 id="todo">TODO</h2>
 
