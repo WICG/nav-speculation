@@ -1,4 +1,4 @@
-# Triggers
+# Triggers for Prefetching, Prerendering, etc.
 
 A web-facing "trigger" is a mechanism for web content to permit prefetching or prerendering of certain URLs.
 
