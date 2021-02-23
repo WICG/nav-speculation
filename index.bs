@@ -80,6 +80,10 @@ spec: clipboard-apis; urlPrefix: https://w3c.github.io/clipboard-apis/
 spec: screen-wake-lock; urlPrefix: https://w3c.github.io/screen-wake-lock/
   type: method; for: WakeLock
     text: request(); url: the-request-method
+spec: web-nfc; urlPrefix: https://w3c.github.io/web-nfc/
+  type: method; for: NDEFReader
+    text: write(); url: dom-ndefreader-write
+    text: scan(); url: dom-ndefreader-scan
 </pre>
 <pre class="biblio">
 {
@@ -672,6 +676,20 @@ TODO: what about the service worker API? Depends on what we're doing for service
   1. If [=this=].{{Sensor/[[state]]}} is "`idle`", then return.
 
       <p class="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime {{Sensor/stop()}} was called, we do nothing upon activating the prerender.
+</div>
+
+<h4 id="patch-web-nfc">Web NFC</h4>
+
+<div algorithm="NDEFReader write patch">
+  Modify the {{NDEFReader/write()}} method steps by inserting the following steps after the initial creation of |p|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
+</div>
+
+<div algorithm="NDEFReader scan patch">
+  Modify the {{NDEFReader/scan()}} method steps by inserting the following steps after the initial creation of |p|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
 </div>
 
 <h4 id="activation-gated">Activation-gated APIs</h4>
