@@ -84,6 +84,11 @@ spec: web-nfc; urlPrefix: https://w3c.github.io/web-nfc/
   type: method; for: NDEFReader
     text: write(); url: dom-ndefreader-write
     text: scan(); url: dom-ndefreader-scan
+spec: battery; urlPrefix: https://w3c.github.io/battery/
+  type: method; for: Navigator
+    text: getBattery(); url: dom-navigator-getbattery
+  type: dfn
+    text: battery promise; url: dfn-battery-promise
 </pre>
 <pre class="biblio">
 {
@@ -564,7 +569,7 @@ Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downl
   1. If [=this=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
 </div>
 
-<h3 id="permissions">Waiting before permissions checks</h3>
+<h3 id="delay-async-apis">Delaying async API results</h3>
 
 Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering browsing context=], most of its work is deferred until the browsing context is [=prerendering browsing context/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
 
@@ -692,7 +697,15 @@ TODO: what about the service worker API? Depends on what we're doing for service
   1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
 </div>
 
-<h4 id="activation-gated">Activation-gated APIs</h4>
+<h4 id="patch-battery">Battery Status API</h4>
+
+<div algorithm="Navigator getBattery patch">
+  Modify the {{Navigator/getBattery()}} method steps by inserting the following after the initial secure context check:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return [=this=]'s [=battery promise=].
+</div>
+
+<h3 id="activation-gated">Activation-gated APIs</h3>
 
 The following APIs do not need modifications, because they will automatically fail or no-op without [=transient activation=] or [=sticky activation=], which a [=prerendering browsing context=]'s [=browsing context/active window=] will never have. We list them here for completeness, to show which API surfaces we've audited.
 
