@@ -1,17 +1,54 @@
-# Prerendering triggers
+# Triggers for Prefetching, Prerendering, etc.
 
-A web-facing "trigger" is a mechanism for web content to permit prerendering of certain URLs. It may include additional data that informs the user agent about prerendering.
+A web-facing "trigger" is a mechanism for web content to permit prefetching or prerendering of certain URLs.
 
-They convey at a minimum the following information necessary for the user agent to prerender:
-* the user is reasonably likely to navigate to the URL
-* prefetching the URL is not believed to have undesirable side effects, at least under certain conditions
-* the response body is expected to be eligible for prerendering (i.e., the user agent probably won't need to abort prerendering)
+For example, a prerendering trigger conveys to the browser:
+* the user is reasonably **likely to navigate** to the URL
+* prefetching the URL is not believed to have undesirable **side effects**, at least under certain conditions
+* the response body is expected to be **compatible** with prerendering (i.e., the browser probably won't need to abort prerendering)
 
-Assertions made about cross-origin URLs are not trusted completely, but primarily serve to reduce waste of resources from the user agent fetching resources that will not be useful for prerendering.
+The browser need not fully trust these assertions about cross-origin URLs (those relevant for security and privacy should be verified), but having them lets the browser focus on work likely to improve navigation performance.
 
-The existence of web-facing prerendering triggers doesn't necessarily preclude the user agent from triggering prerendering at other times, such as prerendering a user's most frequently visited sites.
+The existence of web-facing triggers doesn't necessarily preclude the user agent from triggering prerendering at other times, such as prerendering a user's most frequently visited sites.
 
 [Resource Hints][resource-hints] defines the current web-facing trigger, a family of relations usable in a `<link>` element or `Link` response header. A more flexible alternative is proposed below.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Goals](#goals)
+- [Non-goals](#non-goals)
+- [Speculation rules](#speculation-rules)
+  - [Rules](#rules)
+    - [List rules](#list-rules)
+    - [Document rules](#document-rules)
+    - [Extension: Requirements](#extension-requirements)
+    - [Extension: Handler URLs](#extension-handler-urls)
+  - [Proposed Processing Model](#proposed-processing-model)
+  - [Developer Tooling](#developer-tooling)
+- [Alternatives considered](#alternatives-considered)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Goals
+
+Authors must currently **duplicate** the URLs they wish to prefetch: a `<link>` in the head of the document and an `<a>` in the body, or use script to synchronize these at runtime. Ideally, authors should be able to centrally declare which links are eligible for prefetching and prerendering without needing to rewrite the logic for emitting links into their document or write script to work around the issue.
+
+The success of libraries like [Quicklink](https://getquick.link/) demonstrates that even relatively simple heuristics can bring significant improvements to navigation preformance and engagement. The browser is well-positioned to efficiently provide these and improve them over time, but the current scheme leaves authors to **decide for themselves**, in part by not offering wildcard matching and similar tools to identify the links which can safely be fetched.
+
+More sophisticated authors often have aggregate **analytics**, user history on their origin, search ranking signal, or other data which provides a useful signal *in combination with* heuristics that apply in general, like the viewport-based heuristic. For best results, the browser needs a way to accept this information to make the best prediction possible.
+
+Some sites would like to prefetch outgoing links to untrusted third-party origins **without disclosing the user's client IP address**. Browsers which can achieve this, such as through the use of a virtual private network or [private prefetch proxy](https://github.com/buettner/private-prefetch-proxy) need to be told that prefetching is acceptable *only if this mechanism is employed*, and browsers that cannot achieve this (or where the user prefers not to use it) need to understand that prefetching should not occur.
+
+Another anticipated direction of exploration is "template" or "handler" pages which can substantially prepare for a navigation to a number of **similar pages** (e.g., a blank product detail page on an e-commerce site), without knowing which product will ultimately be selected. This would allow common markup, script and other subresources to be ready.
+
+Accordingly, we need a trigger that is flexible enough to accommodate these and other, unanticipated, future needs. It should also **fail safe**, meaning that if new complications are added in the future, it should default to *not* making requests which may not be intended, rather thaan failing open (e.g., erroneously issuing fetches due to having ignored unsupported syntax).
+
+## Non-goals
+
+While we intend to better specify the behavior of "prefetch", "prerender" and similar speculated actions, these specifications are largely separable from the trigger API itself. In fact, this specified behavior should be shared as much as possible between existing resource hints, those proposed in this document, and browser features for prefetching and prerendering.
+
+This proposal doesn't aim to address concerns about any particular provider, service or software a browser may use to provide IP anonymization. Feedback on [private prefetch proxies](https://github.com/buettner/private-prefetch-proxy/issues) is welcome, but tracked separately.
 
 ## Speculation rules
 
@@ -80,7 +117,7 @@ The link element itself can also be [matched][selector-match] using [CSS selecto
 <dd>requires that the link element not match any selector from the list</dd>
 </dl>
 
-#### Possible future extension: Requirements
+#### Extension: Requirements
 
 This feature is designed to allow future extension, such as a notion of requirements: assertions in rules about the capabilities of the user agent while executing them. Since user agents disregard rules they do not understand, this can be safely added later on without violating the requirements listed.
 
@@ -95,7 +132,7 @@ For example, an "anonymous-client-ip-when-cross-origin" requirement might mean t
 ```
 This would be defined to discard any rules with requirements that are not recognized or are not supported in the current configuration. Due to the conservative parsing rules, any UA which did not support requirements at all would discard all rules with requirements.
 
-#### Possible future extension: Handler URLs
+#### Extension: Handler URLs
 
 Another possible future extension, which would likely need to be restricted to same-origin URLs, could allow the actual URL to be prerendered to be different from the navigation URL (but on the same origin), until the navigation actually occurs. This could allow multiple possible destinations with a common "template" (e.g., product detail pages) to prerender just the template. This prerendered page could then be used regardless of which product the user selects.
 
@@ -123,6 +160,18 @@ It will likely be useful to surface in developer tools what rules and URLs have 
 
 This information and control is important because otherwise it may be difficult to validate correct behavior as it would otherwise depend on heuristics unknown to the author. Similarly testing tools such as [WebDriver][webdriver] should likely permit overriding the user agent's selection of which valid speculations to execute.
 
+## Alternatives considered
+
+The obvious alternative is to extend the `<link>` element.
+
+Extending `<link>` to meet all of these needs is awkward, and somewhat inconsistent with other uses of `<link>` (which is designed to be a single non-rendered hypertext reference). In particular, adding support for requiring an anonymous client IP in a way that didn't cause existing browsers to prefetch it without such anonymization (the behavior for an unrecognized attribute is to ignore it) would take particular care.
+
+```html
+<!-- existing browsers would prefetch this directly -->
+<link rel="prefetch" href="//example.org/" mustanonymize>
+```
+
+`<link>` also doesn't lend itself to reducing duplication with anchors alread in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
 
 [import-maps]: https://github.com/WICG/import-maps
 [resource-hints]: https://github.com/w3c/resource-hints

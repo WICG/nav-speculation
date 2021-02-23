@@ -42,6 +42,45 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: resulting URL record
     urlPrefix: webappapis.html
       text: script; url: concept-script
+spec: geolocation; urlPrefix: https://w3c.github.io/geolocation-api/
+  type: method; for: Geolocation
+    text: getCurrentPosition(successCallback, errorCallback, options); url: getcurrentposition-method
+    text: watchPosition(successCallback, errorCallback, options); url: watchposition-method
+    text: clearWatch(watchId); url: clearwatch-method
+  type: dfn
+    text: watch process; url: dfn-watch-process
+spec: serial; urlPrefix: https://wicg.github.io/serial/
+  type: method; for: Serial
+    text: getPorts(); url: dom-serial-getports
+    text: requestPort(options); url: dom-serial-requestPort
+spec: presentation-api; urlPrefix: https://w3c.github.io/presentation-api/
+  type: method; for: PresentationRequest
+    text: start(); url: dom-presentationrequest-start
+spec: webmidi; urlPrefix: https://webaudio.github.io/web-midi-api/
+  type: method; for: Navigator
+    text: requestMIDIAccess(); url: dom-navigator-requestmidiaccess
+spec: file-system-access; urlPrefix: https://wicg.github.io/file-system-access/
+  type: method; for: Window
+    text: showOpenFilePicker(); url: dom-window-showopenfilepicker
+    text: showSaveFilePicker(); url: dom-window-showsavefilepicker
+    text: showDirectoryPicker(); url: dom-window-showdirectorypicker
+spec: idle-detection; urlPrefix: https://wicg.github.io/idle-detection/
+  type: method; for: IdleDetector
+    text: requestPermission(); url: api-idledetector-requestpermission
+    text: start(); url: api-idledetector-start
+</pre>
+<pre class="biblio">
+{
+  "IDLE-DETECTION": {
+    "authors": [
+      "Reilly Grant"
+    ],
+    "href": "https://wicg.github.io/idle-detection/",
+    "title": "Idle Detection API",
+    "status": "CG-DRAFT",
+    "publisher": "W3C"
+  }
+}
 </pre>
 
 <style>
@@ -310,7 +349,15 @@ A [=prerendering browsing context=] is <dfn for="prerendering browsing context">
 
 Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of ([=URL=], [=referrer policy=]) [=tuples=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
 
-Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps.
+Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
+
+<dl class="switch">
+  : If |platformObject| is a [=node=]
+  :: 1. Return |platformObject|'s [=Node/node document=]'s [=Document/post-prerendering activation steps list=].
+  : Otherwise
+  :: 1. Assert: |platformObject|'s [=relevant global object=] is a {{Window}} object.
+  :: 1. Return |platformObject|'s [=relevant global object=]'s [=associated Document=]'s [=Document/post-prerendering activation steps list=].
+</dl>
 
 <div algorithm="create a prerendering browsing context">
   To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
@@ -384,6 +431,8 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
   1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
 
     1. Run |steps|.
+
+        <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
 
     1. Assert: running |steps| did not throw an exception.
 </div>
@@ -540,7 +589,7 @@ Various behaviors are disallowed in [=prerendering browsing contexts=] because t
 Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downloads inside [=prerendering browsing contexts=] are delayed until [=prerendering browsing context/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
 
 <div algorithm="downloads a hyperlink patch">
-  1. If <var ignore>subject</var>'s [=Node/node document=]'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following step to <var ignore>subject</var>'s [=Node/node document=]'s [=Document/post-prerendering activation steps list=] and return.
+  1. If <var ignore>subject</var>'s [=Node/node document=]'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following step to <var ignore>subject</var>'s [=platform object/post-prerendering activation steps list=] and return.
 </div>
 
 <h3 id="patch-modals">User prompts</h3>
@@ -556,6 +605,97 @@ Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downl
 
   1. If [=this=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
 </div>
+
+<h3 id="permissions">Waiting before permissions checks</h3>
+
+Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering browsing context=], most of its work is deferred until the browsing context is [=prerendering browsing context/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
+
+<h4 id="patch-geolocation">Geolocation API</h4>
+
+<div algorithm="Geolocation getCurrentPosition patch">
+  Modify the {{Geolocation/getCurrentPosition()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+</div>
+
+<div algorithm="Geolocation watchPosition patch">
+  Modify the {{Geolocation/watchPosition()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+
+    1. Let |watchProcessId| be a new unique <a spec=GEOLOCATION>watch process</a> ID, and note it as a <dfn>post-prerendering activation geolocation watch process ID</dfn>.
+
+    1. Append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=], with the modification that the <a spec=GEOLOCATION>watch process</a> generated must use |watchProcessId| as its ID, and return |watchProcessId|.
+</div>
+
+<div algorithm="Geolocation clearWatch patch">
+  Modify the {{Geolocation/clearWatch(watchId)}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+
+    1. If <var ignore>watchId</var> is a [=post-prerendering activation geolocation watch process ID=], then remove its corresponding steps from [=this=]'s [=platform object/post-prerendering activation steps list=].
+
+    1. Return.
+</div>
+
+<h4 id="patch-serial">Web Serial API</h4>
+
+<div algorithm="Serial requestPort patch">
+  Modify the {{Serial/requestPort()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+<div algorithm="Serial getPorts patch">
+  Modify the {{Serial/getPorts()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  <!-- TODO link owner document once https://github.com/whatwg/html/pull/6379 lands -->
+  1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=], if [=this=]'s [=relevant global object=] is a {{Window}}, or [=this=]'s [=relevant global object=]'s owner document, if [=this=]'s [=relevant global object=] is a {{DedicatedWorkerGlobalScope}}.
+
+  1. If |document| is null, then return [=a promise rejected with=] a "{{SecurityError}}" {{DOMException}}.
+
+  1. If |document|'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following steps to |document|'s [=Document/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+<h4 id="patch-notifications">Notifications API</h4>
+
+<div algorithm="Notification requestPermission patch">
+  Modify the {{Notification/requestPermission()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
+
+<h4 id="patch-midi">Web MIDI API</h4>
+
+<div algorithm="requestMIDIAccess patch">
+  Modify the {{Navigator/requestMIDIAccess()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+<h4 id="patch-idle-detection">Idle Detection API</h4>
+
+<div algorithm="IdleDetector start patch">
+  Modify the {{IdleDetector/start()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+<p class="note">The other interesting method, {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}}, is gated on [=transient activation=]. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering.
+
+<h4 id="activation-gated">Activation-gated APIs</h4>
+
+The following APIs do not need modifications, because they will automatically fail or no-op without [=transient activation=] or [=sticky activation=], which a [=prerendering browsing context=]'s [=browsing context/active window=] will never have. We list them here for completeness, to show which API surfaces we've audited.
+
+- {{Window/open(url, name, features)|window.open()}} [[HTML]]
+- The prompt generated by the {{Window/beforeunload}} event [[HTML]]
+- {{Element/requestFullscreen()|element.requestFullscreen()}} [[FULLSCREEN]]
+- {{PaymentRequest/show()|paymentRequest.show()}} [[PAYMENT-REQUEST]]
+- {{PresentationRequest/start()|presentationRequest.start()}} [[PRESENTATION-API]]
+- {{Window/showOpenFilePicker()}}, {{Window/showSaveFilePicker()}}, and {{Window/showDirectoryPicker()}} [[FILE-SYSTEM-ACCESS]]
+- {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}} [[IDLE-DETECTION]]
 
 <h2 id="todo">TODO</h2>
 
