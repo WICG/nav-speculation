@@ -408,33 +408,24 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
     1. Update the user agent's user interface to replace |predecessorBC| with |successorBC|, e.g., by updating the tab/window contents and the browser chrome.
 
+    1. Let |inclusiveDescendants| be « |successorBC| » [=list/extended=] with |successorBC|'s [=active document=]'s <a spec="HTML">list of the descendant browsing contexts</a>.
+
     <!-- TODO is this the right task source? Should we make a new one? -->
-    1. [=Queue a global task=] on the [=networking task source=] given |successorBC|'s [=browsing context/active window=] to perform the following steps:
+    1. [=list/For each=] |bc| of |inclusiveDescendants|, [=queue a global task=] on the [=networking task source=], given |bc|'s [=browsing context/active window=], to perform the following steps:
 
-      1. [=prerendering browsing context/Stop prerendering=] |successorBC|.
+      1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
 
-      <!-- TODO as above -->
-      1. [=list/For each=] |descendantBC| of |successorBC|'s [=active document=]'s <a spec="HTML">list of the descendant browsing contexts</a>:
+      1. Let |doc| be |bc|'s [=active document=].
 
-        1. [=Queue a global task=] on the [=networking task source=], given |descendantBC|'s [=browsing context/active window=], to [=prerendering browsing context/stop prerendering=] |descendantBC|.
-</div>
+      1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
-<div algorithm>
-  To <dfn for="prerendering browsing context">stop prerendering</dfn> a [=prerendering browsing context=] |bc|:
+      1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
 
-  1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
+        1. Run |steps|.
 
-  1. Let |doc| be |bc|'s [=active document=].
+            <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
 
-  1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
-
-  1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
-
-    1. Run |steps|.
-
-        <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
-
-    1. Assert: running |steps| did not throw an exception.
+        1. Assert: running |steps| did not throw an exception.
 </div>
 
 <h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
