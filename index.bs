@@ -426,6 +426,8 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
             <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
 
         1. Assert: running |steps| did not throw an exception.
+
+       <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
 </div>
 
 <h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
