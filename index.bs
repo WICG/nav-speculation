@@ -42,6 +42,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: resulting URL record
     urlPrefix: webappapis.html
       text: script; url: concept-script
+spec: page-visibility; urlPrefix: https://w3c.github.io/page-visibility/
+  type: dfn
+    text: hidden; for: Document; url: dfn-hidden
 spec: geolocation; urlPrefix: https://w3c.github.io/geolocation-api/
   type: method; for: Geolocation
     text: getCurrentPosition(successCallback, errorCallback, options); url: getcurrentposition-method
@@ -68,6 +71,24 @@ spec: idle-detection; urlPrefix: https://wicg.github.io/idle-detection/
   type: method; for: IdleDetector
     text: requestPermission(); url: api-idledetector-requestpermission
     text: start(); url: api-idledetector-start
+spec: clipboard-apis; urlPrefix: https://w3c.github.io/clipboard-apis/
+  type: method; for: Clipboard
+    text: read(); url: dom-clipboard-read
+    text: readText(); url: dom-clipboard-readtext
+    text: write(); url: dom-clipboard-write
+    text: writeText(); url: dom-clipboard-writetext
+spec: screen-wake-lock; urlPrefix: https://w3c.github.io/screen-wake-lock/
+  type: method; for: WakeLock
+    text: request(); url: the-request-method
+spec: web-nfc; urlPrefix: https://w3c.github.io/web-nfc/
+  type: method; for: NDEFReader
+    text: write(); url: dom-ndefreader-write
+    text: scan(); url: dom-ndefreader-scan
+spec: battery; urlPrefix: https://w3c.github.io/battery/
+  type: method; for: Navigator
+    text: getBattery(); url: dom-navigator-getbattery
+  type: dfn
+    text: battery promise; url: dfn-battery-promise
 </pre>
 <pre class="biblio">
 {
@@ -599,7 +620,7 @@ Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downl
   1. If [=this=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
 </div>
 
-<h3 id="permissions">Waiting before permissions checks</h3>
+<h3 id="delay-async-apis">Delaying async API results</h3>
 
 Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering browsing context=], most of its work is deferred until the browsing context is [=prerendering browsing context/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
 
@@ -678,7 +699,68 @@ TODO: what about the service worker API? Depends on what we're doing for service
 
 <p class="note">The other interesting method, {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}}, is gated on [=transient activation=]. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering.
 
-<h4 id="activation-gated">Activation-gated APIs</h4>
+<h4 id="patch-clipboard-apis">Clipboard APIs</h4>
+
+<div algorithm="Clipboard write patch">
+  Modify the {{Clipboard/write()}} method steps by inserting the following steps after the initial creation of |p|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
+</div>
+
+<div algorithm="Clipboard writeText patch">
+  Modify the {{Clipboard/writeText()}} method steps by inserting the following steps after the initial creation of |p|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
+</div>
+
+<h4 id="patch-wake-lock">Screen Wake Lock API</h4>
+
+<div algorithm="WakeLock request patch">
+  Modify the {{WakeLock/request()}} method steps by inserting the following steps after the mid-algorithm creation of |promise|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+<p class="note">Prerendered documents do <em>not</em> count as [=Document/hidden=], so the part of the method steps which throw an exception in that case will not trigger.</p>
+
+<h4 id="patch-generic-sensor">Generic Sensor API</h4>
+
+<div algorithm="Sensor start patch">
+  Modify the {{Sensor/start()}} method steps by inserting the following steps after the state is set to "`activating`":
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+  1. If [=this=].{{Sensor/[[state]]}} is "`idle`", then return.
+
+      <p class="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime {{Sensor/stop()}} was called, we do nothing upon activating the prerender.
+
+  1. Assert: [=this=].{{Sensor/[[state]]}} is "`activating`".
+</div>
+
+<h4 id="patch-web-nfc">Web NFC</h4>
+
+<div algorithm="NDEFReader write patch">
+  Modify the {{NDEFReader/write()}} method steps by inserting the following steps after the initial creation of |p|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
+</div>
+
+<div algorithm="NDEFReader scan patch">
+  Modify the {{NDEFReader/scan()}} method steps by inserting the following steps after the initial creation of |p|:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
+</div>
+
+<h4 id="patch-battery">Battery Status API</h4>
+
+<div algorithm="Navigator getBattery patch">
+  First, we need <a href="https://github.com/w3c/battery/pull/30">w3c/battery#30</a> to be merged, so that the [=battery promise=] is never null.
+
+  Once that's done, modify the {{Navigator/getBattery()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return [=this=]'s [=battery promise=].
+</div>
+
+<h3 id="activation-gated">Activation-gated APIs</h3>
 
 The following APIs do not need modifications, because they will automatically fail or no-op without [=transient activation=] or [=sticky activation=], which a [=prerendering browsing context=]'s [=browsing context/active window=] will never have. We list them here for completeness, to show which API surfaces we've audited.
 
@@ -689,6 +771,8 @@ The following APIs do not need modifications, because they will automatically fa
 - {{PresentationRequest/start()|presentationRequest.start()}} [[PRESENTATION-API]]
 - {{Window/showOpenFilePicker()}}, {{Window/showSaveFilePicker()}}, and {{Window/showDirectoryPicker()}} [[FILE-SYSTEM-ACCESS]]
 - {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}} [[IDLE-DETECTION]]
+- Firing of clipboard events, as well as {{Clipboard/read()|navigator.clipboard.read()}} and {{Clipboard/readText()|navigator.clipboard.readText()}} [[CLIPBOARD-APIS]]
+- {{Navigator/share()|navigator.share()}} [[WEB-SHARE]]
 
 <h2 id="todo">TODO</h2>
 
