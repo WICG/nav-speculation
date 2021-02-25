@@ -83,6 +83,38 @@ spec: idle-detection; urlPrefix: https://wicg.github.io/idle-detection/
 }
 </pre>
 
+<style>
+/* domintro from https://resources.whatwg.org/standard.css */
+.domintro {
+  position: relative;
+  color: green;
+  background: #DDFFDD;
+  margin: 2.5em 0 2em 0;
+  padding: 1.5em 1em 0.5em 2em;
+}
+
+.domintro dt, .domintro dt * {
+  color: black;
+  font-size: inherit;
+}
+.domintro dd {
+  margin: 0.5em 0 1em 2em; padding: 0;
+}
+.domintro dd p {
+  margin: 0.5em 0;
+}
+.domintro::before {
+  content: 'For web developers (non-normative)';
+  background: green;
+  color: white;
+  padding: 0.15em 0.25em;
+  font-style: normal;
+  position: absolute;
+  top: -0.8em;
+  left: -0.8em;
+}
+</style>
+
 <h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
 
 <em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in [[RESOURCE-HINTS]]</em>
@@ -269,7 +301,26 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
 <p class="issue">
   We should also notice removals and consider cancelling speculated actions.
 
-<h2 id="prerendering-bcs">Prerendering browsing contexts</h2>
+<h2 id="prerendering-bcs">Prerendering browsing context infrastructure</h2>
+
+<h3 id="document-prerendering">Extensions to the {{Document}} interface</h3>
+
+We'd modify [[HTML]]'s centralized definition of {{Document}} as follows:
+
+<pre class="idl">
+  partial interface Document {
+      readonly attribute boolean prerendering;
+
+      // Under "special event handler IDL attributes that only apply to Document objects"
+      attribute EventHandler onprerenderingchange;
+  };
+</pre>
+
+The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=event handler IDL attribute=] corresponding to the <dfn event for="Document">prerenderingchange</dfn> [=event handler event type=]. (We would update the corresponding table in [[HTML]], which currently only contains {{Document/onreadystatechange}}.)
+
+As is customary for [[HTML]], the definition of {{Document/prerendering}} would be located in another section of the spec; we'd place it in the new section introduced below:
+
+<h3 id="prerendering-bcs-subsection">Prerendering browsing contexts</h3>
 
 <em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#windows">Browsing contexts</a> section.</em>
 
@@ -284,9 +335,15 @@ Every [=browsing context=] has a <dfn for="browsing context">loading mode</dfn>,
 
 By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`default`". A browsing context whose [=browsing context/loading mode=] is either "`prerender`" or "`uncredentialed-prerender`" is known as a <dfn>prerendering browsing context</dfn>.
 
-<p class="note">This specification enforces that [=prerendering browsing contexts=] are always [=top-level browsing contexts=], i.e., that a [=nested browsing context=]'s [=browsing context/loading mode=] is always "`default`".
+<dl class="domintro">
+  <dt><code>document . {{Document/prerendering}}</code></dt>
 
-<p class="issue">Probably we will need more loading modes for handling [=nested browsing contexts=] inside of top-level prerendered ones. Definitely a to-do.</p>
+  <dd>Returns true if the page is being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.
+</dl>
+
+The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=Document/browsing context=] that is a [=prerendering browsing context=]; otherwise, false.
+
+<hr>
 
 A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
 
@@ -351,41 +408,35 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
     1. Update the user agent's user interface to replace |predecessorBC| with |successorBC|, e.g., by updating the tab/window contents and the browser chrome.
 
+    1. Let |inclusiveDescendants| be « |successorBC| » [=list/extended=] with |successorBC|'s [=active document=]'s <a spec="HTML">list of the descendant browsing contexts</a>.
+
     <!-- TODO is this the right task source? Should we make a new one? -->
-    1. [=Queue a global task=] on the [=networking task source=] given |successorBC|'s [=browsing context/active window=] to perform the following steps
+    1. [=list/For each=] |bc| of |inclusiveDescendants|, [=queue a global task=] on the [=networking task source=], given |bc|'s [=browsing context/active window=], to perform the following steps:
 
-      1. Set |successorBC|'s [=browsing context/loading mode=] to "`default`".
+      1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
 
-      1. [=Fire an event=] named {{Document/prerenderingchange}} at |successorBC|'s [=active document=].
+      1. Let |doc| be |bc|'s [=active document=].
 
-      1. [=list/For each=] |steps| in |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=]:
+      1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
+
+      1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
 
         1. Run |steps|.
 
-           <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
+            <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
 
         1. Assert: running |steps| did not throw an exception.
 
-      1. [=list/Empty=] |successorBC|'s [=active document=]'s [=Document/post-prerendering activation steps list=].
+       <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
 </div>
 
-<hr>
+<h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
 
-Amend the {{Document}} interface:
+<div algorithm="create a new nested browsing context patch">
+  To ensure that any [=nested browsing contexts=] inherit their parent's [=browsing context/loading mode=], modify <a spec=HTML>create a new nested browsing context</a> by appending the following step:
 
-<pre class="idl">
-  partial interface Document {
-      readonly attribute boolean prerendering;
-      attribute EventHandler onprerenderingchange;
-  };
-</pre>
-
-The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=Document/browsing context=] that is a [=prerendering browsing context=]; otherwise, false.
-
-<p class="note">This attribute lets pages know when they're being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.
-
-The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=event handler IDL attribute=] corresponding to the <dfn event for="Document">prerenderingchange</dfn> [=event handler event type=].
-
+  1. Set <var ignore>browsingContext</var>'s [=browsing context/loading mode=] to <var ignore>element</var>'s [=Node/node document=]'s [=Document/browsing context=]'s [=browsing context/loading mode=].
+</div>
 
 <h2 id="navigation">Navigation and session history</h2>
 
