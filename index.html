@@ -2152,15 +2152,20 @@ Parts of this work may be from another specification document.  If so, those par
       <li><a href="#patch-downloading"><span class="secno">6.1</span> <span class="content">Downloading resources</span></a>
       <li><a href="#patch-modals"><span class="secno">6.2</span> <span class="content">User prompts</span></a>
       <li>
-       <a href="#permissions"><span class="secno">6.3</span> <span class="content">Waiting before permissions checks</span></a>
+       <a href="#delay-async-apis"><span class="secno">6.3</span> <span class="content">Delaying async API results</span></a>
        <ol class="toc">
         <li><a href="#patch-geolocation"><span class="secno">6.3.1</span> <span class="content">Geolocation API</span></a>
         <li><a href="#patch-serial"><span class="secno">6.3.2</span> <span class="content">Web Serial API</span></a>
         <li><a href="#patch-notifications"><span class="secno">6.3.3</span> <span class="content">Notifications API</span></a>
         <li><a href="#patch-midi"><span class="secno">6.3.4</span> <span class="content">Web MIDI API</span></a>
         <li><a href="#patch-idle-detection"><span class="secno">6.3.5</span> <span class="content">Idle Detection API</span></a>
-        <li><a href="#activation-gated"><span class="secno">6.3.6</span> <span class="content">Activation-gated APIs</span></a>
+        <li><a href="#patch-clipboard-apis"><span class="secno">6.3.6</span> <span class="content">Clipboard APIs</span></a>
+        <li><a href="#patch-wake-lock"><span class="secno">6.3.7</span> <span class="content">Screen Wake Lock API</span></a>
+        <li><a href="#patch-generic-sensor"><span class="secno">6.3.8</span> <span class="content">Generic Sensor API</span></a>
+        <li><a href="#patch-web-nfc"><span class="secno">6.3.9</span> <span class="content">Web NFC</span></a>
+        <li><a href="#patch-battery"><span class="secno">6.3.10</span> <span class="content">Battery Status API</span></a>
        </ol>
+      <li><a href="#activation-gated"><span class="secno">6.4</span> <span class="content">Activation-gated APIs</span></a>
      </ol>
     <li><a href="#todo"><span class="secno">7</span> <span class="content">TODO</span></a>
     <li>
@@ -2739,7 +2744,7 @@ Parts of this work may be from another specification document.  If so, those par
       <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②④">prerendering browsing context</a>, then return.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="6.3" id="permissions"><span class="secno">6.3. </span><span class="content">Waiting before permissions checks</span><a class="self-link" href="#permissions"></a></h3>
+   <h3 class="heading settled" data-level="6.3" id="delay-async-apis"><span class="secno">6.3. </span><span class="content">Delaying async API results</span><a class="self-link" href="#delay-async-apis"></a></h3>
    <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑤">prerendering browsing context</a>, most of its work is deferred until the browsing context is <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑦">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
    <h4 class="heading settled" data-level="6.3.1" id="patch-geolocation"><span class="secno">6.3.1. </span><span class="content">Geolocation API</span><a class="self-link" href="#patch-geolocation"></a></h4>
    <div class="algorithm" data-algorithm="Geolocation getCurrentPosition patch">
@@ -2820,8 +2825,69 @@ Parts of this work may be from another specification document.  If so, those par
     </ol>
    </div>
    <p class="note" role="note">The other interesting method, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission" id="ref-for-api-idledetector-requestpermission">IdleDetector.requestPermission()</a></code>, is gated on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation">transient activation</a>. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering. </p>
-   <h4 class="heading settled" data-level="6.3.6" id="activation-gated"><span class="secno">6.3.6. </span><span class="content">Activation-gated APIs</span><a class="self-link" href="#activation-gated"></a></h4>
-   <p>The following APIs do not need modifications, because they will automatically fail or no-op without <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation">sticky activation</a>, which a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③④">prerendering browsing context</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a> will never have. We list them here for completeness, to show which API surfaces we’ve audited.</p>
+   <h4 class="heading settled" data-level="6.3.6" id="patch-clipboard-apis"><span class="secno">6.3.6. </span><span class="content">Clipboard APIs</span><a class="self-link" href="#patch-clipboard-apis"></a></h4>
+   <div class="algorithm" data-algorithm="Clipboard write patch">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/clipboard-apis/#dom-clipboard-write" id="ref-for-dom-clipboard-write">write()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑨">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③④">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②①">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑧">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="Clipboard writeText patch">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext" id="ref-for-dom-clipboard-writetext">writeText()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⓪">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑤">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑨">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+    </ol>
+   </div>
+   <h4 class="heading settled" data-level="6.3.7" id="patch-wake-lock"><span class="secno">6.3.7. </span><span class="content">Screen Wake Lock API</span><a class="self-link" href="#patch-wake-lock"></a></h4>
+   <div class="algorithm" data-algorithm="WakeLock request patch">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-wake-lock/#the-request-method" id="ref-for-the-request-method">request()</a></code> method steps by inserting the following steps after the mid-algorithm creation of <var>promise</var>: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑥">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⓪">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+    </ol>
+   </div>
+   <p class="note" role="note">Prerendered documents do <em>not</em> count as <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-hidden" id="ref-for-dfn-hidden">hidden</a>, so the part of the method steps which throw an exception in that case will not trigger.</p>
+   <h4 class="heading settled" data-level="6.3.8" id="patch-generic-sensor"><span class="secno">6.3.8. </span><span class="content">Generic Sensor API</span><a class="self-link" href="#patch-generic-sensor"></a></h4>
+   <div class="algorithm" data-algorithm="Sensor start patch">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-start" id="ref-for-dom-sensor-start">start()</a></code> method steps by inserting the following steps after the state is set to "<code>activating</code>": 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑦">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑦">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①①">post-prerendering activation steps list</a> and return.</p>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑧">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot">[[state]]</a></code> is "<code>idle</code>", then return.</p>
+      <p class="note" role="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-stop" id="ref-for-dom-sensor-stop">stop()</a></code> was called, we do nothing upon activating the prerender. </p>
+     <li data-md>
+      <p class="assertion">Assert: <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑨">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot①">[[state]]</a></code> is "<code>activating</code>".</p>
+    </ol>
+   </div>
+   <h4 class="heading settled" data-level="6.3.9" id="patch-web-nfc"><span class="secno">6.3.9. </span><span class="content">Web NFC</span><a class="self-link" href="#patch-web-nfc"></a></h4>
+   <div class="algorithm" data-algorithm="NDEFReader write patch">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-nfc/#dom-ndefreader-write" id="ref-for-dom-ndefreader-write">write()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑧">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑧">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③①">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①②">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="NDEFReader scan patch">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-nfc/#dom-ndefreader-scan" id="ref-for-dom-ndefreader-scan">scan()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑨">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑨">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①③">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+    </ol>
+   </div>
+   <h4 class="heading settled" data-level="6.3.10" id="patch-battery"><span class="secno">6.3.10. </span><span class="content">Battery Status API</span><a class="self-link" href="#patch-battery"></a></h4>
+   <div class="algorithm" data-algorithm="Navigator getBattery patch">
+     First, we need <a href="https://github.com/w3c/battery/pull/30">w3c/battery#30</a> to be merged, so that the <a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-battery-promise" id="ref-for-dfn-battery-promise">battery promise</a> is never null. 
+    <p>Once that’s done, modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/battery/#dom-navigator-getbattery" id="ref-for-dom-navigator-getbattery">getBattery()</a></code> method steps by prepending the following step:</p>
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②⓪">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⓪">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①④">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑥">this</a>'s <a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-battery-promise" id="ref-for-dfn-battery-promise①">battery promise</a>.</p>
+    </ol>
+   </div>
+   <h3 class="heading settled" data-level="6.4" id="activation-gated"><span class="secno">6.4. </span><span class="content">Activation-gated APIs</span><a class="self-link" href="#activation-gated"></a></h3>
+   <p>The following APIs do not need modifications, because they will automatically fail or no-op without <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation">sticky activation</a>, which a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④①">prerendering browsing context</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a> will never have. We list them here for completeness, to show which API surfaces we’ve audited.</p>
    <ul>
     <li data-md>
      <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-document-open-window" id="ref-for-dom-document-open-window">window.open()</a></code> <a data-link-type="biblio" href="#biblio-html">[HTML]</a></p>
@@ -2837,6 +2903,10 @@ Parts of this work may be from another specification document.  If so, those par
      <p><code class="idl"><a data-link-type="idl" href="https://wicg.github.io/file-system-access/#dom-window-showopenfilepicker" id="ref-for-dom-window-showopenfilepicker">showOpenFilePicker()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/file-system-access/#dom-window-showsavefilepicker" id="ref-for-dom-window-showsavefilepicker">showSaveFilePicker()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker" id="ref-for-dom-window-showdirectorypicker">showDirectoryPicker()</a></code> <a data-link-type="biblio" href="#biblio-file-system-access">[FILE-SYSTEM-ACCESS]</a></p>
     <li data-md>
      <p><code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission" id="ref-for-api-idledetector-requestpermission①">IdleDetector.requestPermission()</a></code> <a data-link-type="biblio" href="#biblio-idle-detection">[IDLE-DETECTION]</a></p>
+    <li data-md>
+     <p>Firing of clipboard events, as well as <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/clipboard-apis/#dom-clipboard-read" id="ref-for-dom-clipboard-read">navigator.clipboard.read()</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/clipboard-apis/#dom-clipboard-readtext" id="ref-for-dom-clipboard-readtext">navigator.clipboard.readText()</a></code> <a data-link-type="biblio" href="#biblio-clipboard-apis">[CLIPBOARD-APIS]</a></p>
+    <li data-md>
+     <p><code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/web-share/#dom-navigator-share" id="ref-for-dom-navigator-share">navigator.share()</a></code> <a data-link-type="biblio" href="#biblio-web-share">[WEB-SHARE]</a></p>
    </ul>
    <h2 class="heading settled" data-level="7" id="todo"><span class="secno">7. </span><span class="content">TODO</span><a class="self-link" href="#todo"></a></h2>
    <ul>
@@ -3016,6 +3086,42 @@ Parts of this work may be from another specification document.  If so, those par
    <li><a href="#the-scripts-result">the script’s result</a><span>, in §2.2</span>
    <li><a href="#speculation-rule-urls">URLs</a><span>, in §2.1</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-dfn-battery-promise">
+   <a href="https://w3c.github.io/battery/#dfn-battery-promise">https://w3c.github.io/battery/#dfn-battery-promise</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-battery-promise">6.3.10. Battery Status API</a> <a href="#ref-for-dfn-battery-promise①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-navigator-getbattery">
+   <a href="https://w3c.github.io/battery/#dom-navigator-getbattery">https://w3c.github.io/battery/#dom-navigator-getbattery</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-navigator-getbattery">6.3.10. Battery Status API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-clipboard-read">
+   <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-read">https://w3c.github.io/clipboard-apis/#dom-clipboard-read</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-clipboard-read">6.4. Activation-gated APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-clipboard-readtext">
+   <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-readtext">https://w3c.github.io/clipboard-apis/#dom-clipboard-readtext</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-clipboard-readtext">6.4. Activation-gated APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-clipboard-write">
+   <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-write">https://w3c.github.io/clipboard-apis/#dom-clipboard-write</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-clipboard-write">6.3.6. Clipboard APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-clipboard-writetext">
+   <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext">https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-clipboard-writetext">6.3.6. Clipboard APIs</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-document">
    <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
@@ -3130,25 +3236,43 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dom-window-showdirectorypicker">
    <a href="https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker">https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-showdirectorypicker">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-window-showdirectorypicker">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-window-showopenfilepicker">
    <a href="https://wicg.github.io/file-system-access/#dom-window-showopenfilepicker">https://wicg.github.io/file-system-access/#dom-window-showopenfilepicker</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-showopenfilepicker">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-window-showopenfilepicker">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-window-showsavefilepicker">
    <a href="https://wicg.github.io/file-system-access/#dom-window-showsavefilepicker">https://wicg.github.io/file-system-access/#dom-window-showsavefilepicker</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-showsavefilepicker">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-window-showsavefilepicker">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-element-requestfullscreen">
    <a href="https://fullscreen.spec.whatwg.org/#dom-element-requestfullscreen">https://fullscreen.spec.whatwg.org/#dom-element-requestfullscreen</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-element-requestfullscreen">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-element-requestfullscreen">6.4. Activation-gated APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-sensor-state-slot">
+   <a href="https://w3c.github.io/sensors/#dom-sensor-state-slot">https://w3c.github.io/sensors/#dom-sensor-state-slot</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-sensor-state-slot">6.3.8. Generic Sensor API</a> <a href="#ref-for-dom-sensor-state-slot①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-sensor-start">
+   <a href="https://w3c.github.io/sensors/#dom-sensor-start">https://w3c.github.io/sensors/#dom-sensor-start</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-sensor-start">6.3.8. Generic Sensor API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-sensor-stop">
+   <a href="https://w3c.github.io/sensors/#dom-sensor-stop">https://w3c.github.io/sensors/#dom-sensor-stop</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-sensor-stop">6.3.8. Generic Sensor API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-clearwatch-method">
@@ -3218,7 +3342,7 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#active-window">https://html.spec.whatwg.org/multipage/browsers.html#active-window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-active-window">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-active-window①">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-active-window①">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-window">
@@ -3243,7 +3367,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-event-beforeunload">
    <a href="https://html.spec.whatwg.org/multipage/indices.html#event-beforeunload">https://html.spec.whatwg.org/multipage/indices.html#event-beforeunload</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-event-beforeunload">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-event-beforeunload">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-body-ok">
@@ -3261,6 +3385,11 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-window-bc⑥">6.3.3. Notifications API</a>
     <li><a href="#ref-for-window-bc⑦">6.3.4. Web MIDI API</a>
     <li><a href="#ref-for-window-bc⑧">6.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-window-bc⑨">6.3.6. Clipboard APIs</a> <a href="#ref-for-window-bc①⓪">(2)</a>
+    <li><a href="#ref-for-window-bc①①">6.3.7. Screen Wake Lock API</a>
+    <li><a href="#ref-for-window-bc①②">6.3.8. Generic Sensor API</a>
+    <li><a href="#ref-for-window-bc①③">6.3.9. Web NFC</a> <a href="#ref-for-window-bc①④">(2)</a>
+    <li><a href="#ref-for-window-bc①⑤">6.3.10. Battery Status API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-browsing-context-connected">
@@ -3447,7 +3576,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dom-document-open-window">
    <a href="https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-document-open-window">https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-document-open-window</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-document-open-window">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-document-open-window">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-parse-a-url">
@@ -3522,6 +3651,11 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-concept-relevant-global①①">6.3.3. Notifications API</a>
     <li><a href="#ref-for-concept-relevant-global①②">6.3.4. Web MIDI API</a>
     <li><a href="#ref-for-concept-relevant-global①③">6.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-concept-relevant-global①④">6.3.6. Clipboard APIs</a> <a href="#ref-for-concept-relevant-global①⑤">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global①⑥">6.3.7. Screen Wake Lock API</a>
+    <li><a href="#ref-for-concept-relevant-global①⑦">6.3.8. Generic Sensor API</a>
+    <li><a href="#ref-for-concept-relevant-global①⑧">6.3.9. Web NFC</a> <a href="#ref-for-concept-relevant-global①⑨">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global②⓪">6.3.10. Battery Status API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-request">
@@ -3586,7 +3720,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-sticky-activation">
    <a href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation">https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sticky-activation">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-sticky-activation">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-the-script-is-ready">
@@ -3621,7 +3755,7 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation">https://html.spec.whatwg.org/multipage/interaction.html#transient-activation</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-transient-activation">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-transient-activation①">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-transient-activation①">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-traverse-the-history">
@@ -3640,7 +3774,7 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission">https://wicg.github.io/idle-detection/#api-idledetector-requestpermission</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-api-idledetector-requestpermission">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-api-idledetector-requestpermission①">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-api-idledetector-requestpermission①">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-api-idledetector-start">
@@ -3792,16 +3926,22 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-dom-notification-requestpermission">6.3.3. Notifications API</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-hidden">
+   <a href="https://w3c.github.io/page-visibility/#dfn-hidden">https://w3c.github.io/page-visibility/#dfn-hidden</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-hidden">6.3.7. Screen Wake Lock API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-paymentrequest-show">
    <a href="https://www.w3.org/TR/payment-request/#dom-paymentrequest-show">https://www.w3.org/TR/payment-request/#dom-paymentrequest-show</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-paymentrequest-show">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-paymentrequest-show">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-presentationrequest-start">
    <a href="https://w3c.github.io/presentation-api/#dom-presentationrequest-start">https://w3c.github.io/presentation-api/#dom-presentationrequest-start</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-presentationrequest-start">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-presentationrequest-start">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-referrer-policy">
@@ -3810,6 +3950,12 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-referrer-policy">1. Link type "prerender"</a>
     <li><a href="#ref-for-referrer-policy①">3.2. Prerendering browsing contexts</a> <a href="#ref-for-referrer-policy②">(2)</a>
     <li><a href="#ref-for-referrer-policy③">4.2. Redirect handling</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-the-request-method">
+   <a href="https://w3c.github.io/screen-wake-lock/#the-request-method">https://w3c.github.io/screen-wake-lock/#the-request-method</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-the-request-method">6.3.7. Screen Wake Lock API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-serial-getports">
@@ -3857,6 +4003,24 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-concept-url⑤">4.2. Redirect handling</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-ndefreader-scan">
+   <a href="https://w3c.github.io/web-nfc/#dom-ndefreader-scan">https://w3c.github.io/web-nfc/#dom-ndefreader-scan</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-ndefreader-scan">6.3.9. Web NFC</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-ndefreader-write">
+   <a href="https://w3c.github.io/web-nfc/#dom-ndefreader-write">https://w3c.github.io/web-nfc/#dom-ndefreader-write</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-ndefreader-write">6.3.9. Web NFC</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-navigator-share">
+   <a href="https://www.w3.org/TR/web-share/#dom-navigator-share">https://www.w3.org/TR/web-share/#dom-navigator-share</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-navigator-share">6.4. Activation-gated APIs</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMException">
    <a href="https://heycam.github.io/webidl/#idl-DOMException">https://heycam.github.io/webidl/#idl-DOMException</a><b>Referenced in:</b>
    <ul>
@@ -3897,6 +4061,11 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-this①④">6.3.3. Notifications API</a> <a href="#ref-for-this①⑤">(2)</a>
     <li><a href="#ref-for-this①⑥">6.3.4. Web MIDI API</a> <a href="#ref-for-this①⑦">(2)</a>
     <li><a href="#ref-for-this①⑧">6.3.5. Idle Detection API</a> <a href="#ref-for-this①⑨">(2)</a>
+    <li><a href="#ref-for-this②⓪">6.3.6. Clipboard APIs</a> <a href="#ref-for-this②①">(2)</a> <a href="#ref-for-this②②">(3)</a> <a href="#ref-for-this②③">(4)</a>
+    <li><a href="#ref-for-this②④">6.3.7. Screen Wake Lock API</a> <a href="#ref-for-this②⑤">(2)</a>
+    <li><a href="#ref-for-this②⑥">6.3.8. Generic Sensor API</a> <a href="#ref-for-this②⑦">(2)</a> <a href="#ref-for-this②⑧">(3)</a> <a href="#ref-for-this②⑨">(4)</a>
+    <li><a href="#ref-for-this③⓪">6.3.9. Web NFC</a> <a href="#ref-for-this③①">(2)</a> <a href="#ref-for-this③②">(3)</a> <a href="#ref-for-this③③">(4)</a>
+    <li><a href="#ref-for-this③④">6.3.10. Battery Status API</a> <a href="#ref-for-this③⑤">(2)</a> <a href="#ref-for-this③⑥">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-requestmidiaccess">
@@ -3907,6 +4076,20 @@ Parts of this work may be from another specification document.  If so, those par
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
+   <li>
+    <a data-link-type="biblio">[battery]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dfn-battery-promise">battery promise</span>
+     <li><span class="dfn-paneled" id="term-for-dom-navigator-getbattery">getBattery()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[CLIPBOARD-APIS]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-clipboard-read">read()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-clipboard-readtext">readText()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-clipboard-write">write()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-clipboard-writetext">writeText()</span>
+    </ul>
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
@@ -3942,6 +4125,13 @@ Parts of this work may be from another specification document.  If so, those par
     <a data-link-type="biblio">[FULLSCREEN]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-element-requestfullscreen">requestFullscreen()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[generic-sensor]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-sensor-state-slot">[[state]]</span>
+     <li><span class="dfn-paneled" id="term-for-dom-sensor-start">start()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-sensor-stop">stop()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[geolocation]</a> defines the following terms:
@@ -4062,6 +4252,11 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-dom-notification-requestpermission">requestPermission()</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[page-visibility]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dfn-hidden">hidden</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[PAYMENT-REQUEST]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-paymentrequest-show">show()</span>
@@ -4077,6 +4272,11 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-referrer-policy">referrer policy</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[screen-wake-lock]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-the-request-method">request()</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[serial]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-serial-getports">getPorts()</span>
@@ -4089,6 +4289,17 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-concept-url-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-concept-url-scheme">scheme</span>
      <li><span class="dfn-paneled" id="term-for-concept-url">url</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[web-nfc]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-ndefreader-scan">scan()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-ndefreader-write">write()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[WEB-SHARE]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-navigator-share">share()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WebIDL]</a> defines the following terms:
@@ -4109,6 +4320,8 @@ Parts of this work may be from another specification document.  If so, those par
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-clipboard-apis">[CLIPBOARD-APIS]
+   <dd>Gary Kacmarcik; Grisha Lyukshin. <a href="https://www.w3.org/TR/clipboard-apis/">Clipboard API and events</a>. 3 February 2021. WD. URL: <a href="https://www.w3.org/TR/clipboard-apis/">https://www.w3.org/TR/clipboard-apis/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-fetch">[FETCH]
@@ -4117,6 +4330,8 @@ Parts of this work may be from another specification document.  If so, those par
    <dd><a href="https://wicg.github.io/file-system-access/">File System Access</a>. cg-draft. URL: <a href="https://wicg.github.io/file-system-access/">https://wicg.github.io/file-system-access/</a>
    <dt id="biblio-fullscreen">[FULLSCREEN]
    <dd>Philip Jägenstedt. <a href="https://fullscreen.spec.whatwg.org/">Fullscreen API Standard</a>. Living Standard. URL: <a href="https://fullscreen.spec.whatwg.org/">https://fullscreen.spec.whatwg.org/</a>
+   <dt id="biblio-generic-sensor">[GENERIC-SENSOR]
+   <dd>Rick Waldron. <a href="https://www.w3.org/TR/generic-sensor/">Generic Sensor API</a>. 12 December 2019. CR. URL: <a href="https://www.w3.org/TR/generic-sensor/">https://www.w3.org/TR/generic-sensor/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/">HTML Standard</a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-idle-detection">[IDLE-DETECTION]
@@ -4131,8 +4346,14 @@ Parts of this work may be from another specification document.  If so, those par
    <dd>Mark Foltz; Dominik Röttsches. <a href="https://www.w3.org/TR/presentation-api/">Presentation API</a>. 5 November 2020. CR. URL: <a href="https://www.w3.org/TR/presentation-api/">https://www.w3.org/TR/presentation-api/</a>
    <dt id="biblio-referrer-policy">[REFERRER-POLICY]
    <dd>Jochen Eisinger; Emily Stark. <a href="https://www.w3.org/TR/referrer-policy/">Referrer Policy</a>. 26 January 2017. CR. URL: <a href="https://www.w3.org/TR/referrer-policy/">https://www.w3.org/TR/referrer-policy/</a>
+   <dt id="biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]
+   <dd>Kenneth Christiansen; Marcos Caceres; Raphael Kubo da Costa. <a href="https://www.w3.org/TR/screen-wake-lock/">Screen Wake Lock API</a>. 29 September 2020. WD. URL: <a href="https://www.w3.org/TR/screen-wake-lock/">https://www.w3.org/TR/screen-wake-lock/</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/">URL Standard</a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
+   <dt id="biblio-web-nfc">[WEB-NFC]
+   <dd><a href="https://w3c.github.io/web-nfc/">Web NFC API</a>. ED. URL: <a href="https://w3c.github.io/web-nfc/">https://w3c.github.io/web-nfc/</a>
+   <dt id="biblio-web-share">[WEB-SHARE]
+   <dd>Matt Giuca; Eric Willigers. <a href="https://www.w3.org/TR/web-share/">Web Share API</a>. 20 January 2021. WD. URL: <a href="https://www.w3.org/TR/web-share/">https://www.w3.org/TR/web-share/</a>
    <dt id="biblio-webidl">[WebIDL]
    <dd>Boris Zbarsky. <a href="https://heycam.github.io/webidl/">Web IDL</a>. 15 December 2016. ED. URL: <a href="https://heycam.github.io/webidl/">https://heycam.github.io/webidl/</a>
    <dt id="biblio-webmidi">[WEBMIDI]
@@ -4140,6 +4361,8 @@ Parts of this work may be from another specification document.  If so, those par
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
+   <dt id="biblio-page-visibility">[PAGE-VISIBILITY]
+   <dd>Jatinder Mann; Arvind Jain. <a href="https://www.w3.org/TR/page-visibility/">Page Visibility (Second Edition)</a>. 29 October 2013. REC. URL: <a href="https://www.w3.org/TR/page-visibility/">https://www.w3.org/TR/page-visibility/</a>
    <dt id="biblio-resource-hints">[RESOURCE-HINTS]
    <dd>Ilya Grigorik. <a href="https://www.w3.org/TR/resource-hints/">Resource Hints</a>. 5 October 2020. WD. URL: <a href="https://www.w3.org/TR/resource-hints/">https://www.w3.org/TR/resource-hints/</a>
   </dl>
@@ -4284,13 +4507,18 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-prerendering-browsing-context②⓪">6. Preventing intrusive behaviors</a>
     <li><a href="#ref-for-prerendering-browsing-context②①">6.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context②②">(2)</a>
     <li><a href="#ref-for-prerendering-browsing-context②③">6.2. User prompts</a> <a href="#ref-for-prerendering-browsing-context②④">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⑤">6.3. Waiting before permissions checks</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑤">6.3. Delaying async API results</a>
     <li><a href="#ref-for-prerendering-browsing-context②⑥">6.3.1. Geolocation API</a> <a href="#ref-for-prerendering-browsing-context②⑦">(2)</a> <a href="#ref-for-prerendering-browsing-context②⑧">(3)</a>
     <li><a href="#ref-for-prerendering-browsing-context②⑨">6.3.2. Web Serial API</a> <a href="#ref-for-prerendering-browsing-context③⓪">(2)</a>
     <li><a href="#ref-for-prerendering-browsing-context③①">6.3.3. Notifications API</a>
     <li><a href="#ref-for-prerendering-browsing-context③②">6.3.4. Web MIDI API</a>
     <li><a href="#ref-for-prerendering-browsing-context③③">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-prerendering-browsing-context③④">6.3.6. Activation-gated APIs</a>
+    <li><a href="#ref-for-prerendering-browsing-context③④">6.3.6. Clipboard APIs</a> <a href="#ref-for-prerendering-browsing-context③⑤">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑥">6.3.7. Screen Wake Lock API</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑦">6.3.8. Generic Sensor API</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑧">6.3.9. Web NFC</a> <a href="#ref-for-prerendering-browsing-context③⑨">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⓪">6.3.10. Battery Status API</a>
+    <li><a href="#ref-for-prerendering-browsing-context④①">6.4. Activation-gated APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-document-prerendering">
@@ -4331,6 +4559,11 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑤">6.3.3. Notifications API</a>
     <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑥">6.3.4. Web MIDI API</a>
     <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑦">6.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑧">6.3.6. Clipboard APIs</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑨">(2)</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⓪">6.3.7. Screen Wake Lock API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①①">6.3.8. Generic Sensor API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①②">6.3.9. Web NFC</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list①③">(2)</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①④">6.3.10. Battery Status API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-prerendering-browsing-context">
@@ -4346,7 +4579,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-prerendering-browsing-context-activate①">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context-activate②">(2)</a> <a href="#ref-for-prerendering-browsing-context-activate③">(3)</a>
     <li><a href="#ref-for-prerendering-browsing-context-activate④">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context-activate⑤">(2)</a>
     <li><a href="#ref-for-prerendering-browsing-context-activate⑥">6.1. Downloading resources</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate⑦">6.3. Waiting before permissions checks</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate⑦">6.3. Delaying async API results</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="can-activate-a-prerender">
