@@ -681,6 +681,8 @@ TODO: what about the service worker API? Depends on what we're doing for service
   1. If [=this=].{{Sensor/[[state]]}} is "`idle`", then return.
 
       <p class="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime {{Sensor/stop()}} was called, we do nothing upon activating the prerender.
+
+  1. Assert: [=this=].{{Sensor/[[state]]}} is "`activating`".
 </div>
 
 <h4 id="patch-web-nfc">Web NFC</h4>
@@ -700,7 +702,9 @@ TODO: what about the service worker API? Depends on what we're doing for service
 <h4 id="patch-battery">Battery Status API</h4>
 
 <div algorithm="Navigator getBattery patch">
-  Modify the {{Navigator/getBattery()}} method steps by inserting the following after the initial secure context check:
+  First, we need <a href="https://github.com/w3c/battery/pull/30">w3c/battery#30</a> to be merged, so that the [=battery promise=] is never null.
+
+  Once that's done, modify the {{Navigator/getBattery()}} method steps by prepending the following step:
 
   1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return [=this=]'s [=battery promise=].
 </div>
