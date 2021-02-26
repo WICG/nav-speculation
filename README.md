@@ -9,6 +9,8 @@ The space is full of challenges which have not been comprehensively tackled: mos
 
 This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such prerendering of content, in an interoperably-implementable way. Each piece is designed to be composable and reusable; for example, [some contribute to prefetching](#prefetching), independent of prerendering, and the [opt-in](./opt-in.md) is designed to be usable by other types of alternate loading modes, such as [fenced frames](https://github.com/shivanigithub/fenced-frame/).
 
+See the draft specification: [Prerendering Revamped](https://jeremyroman.github.io/alternate-loading-modes/).
+
 ## Pieces of the solution
 
 We envision prerendering having several related pieces:
