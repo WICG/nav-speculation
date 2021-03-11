@@ -89,6 +89,27 @@ spec: battery; urlPrefix: https://w3c.github.io/battery/
     text: getBattery(); url: dom-navigator-getbattery
   type: dfn
     text: battery promise; url: dfn-battery-promise
+spec: pointerlock; urlPrefix: https://w3c.github.io/pointerlock/
+  type: method; for: Element
+    text: requestPointerLock(options); url: #dfn-requestpointerlock-pointerlockoptions-options
+spec: screen-orientation; urlPrefix: https://w3c.github.io/screen-orientation/
+  type: dfn
+    text: apply an orientation lock; url: dfn-apply-an-orientation-lock
+    text: pre-lock conditions; url: dfn-pre-lock-conditions
+  type: method; for: ScreenOrientation
+    text: lock(); url: dom-screenorientation-lock
+    text: unlock(); url: dom-screenorientation-unlock
+spec: gamepad; urlPrefix: https://w3c.github.io/gamepad/
+  type: method; for: Navigator
+    text: getGamepads(); url: dom-navigator-getgamepads
+  type: event; for: Window
+    text: gamepadconnected; url: dfn-gamepadconnected
+    text: gamepaddisconnected; url: dfn-gamepaddisconnected
+  type: interface
+    text: Gamepad; url: dom-gamepad
+    text: GamepadEvent; url: dom-gamepadevent
+  type: attribute; for: GamepadEvent
+    text: gamepad; url: dom-gamepadevent-gamepad
 </pre>
 <pre class="biblio">
 {
@@ -600,9 +621,9 @@ Various behaviors are disallowed in [=prerendering browsing contexts=] because t
 
 <h3 id="patch-downloading">Downloading resources</h3>
 
-Modify the <a spec=HTML>downloads a hyperlink</a> algorithm to ensure that downloads inside [=prerendering browsing contexts=] are delayed until [=prerendering browsing context/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
+Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that downloads inside [=prerendering browsing contexts=] are delayed until [=prerendering browsing context/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
 
-<div algorithm="downloads a hyperlink patch">
+<div algorithm="download the hyperlink patch">
   1. If <var ignore>subject</var>'s [=Node/node document=]'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following step to <var ignore>subject</var>'s [=platform object/post-prerendering activation steps list=] and return.
 </div>
 
@@ -753,11 +774,51 @@ TODO: what about the service worker API? Depends on what we're doing for service
 <h4 id="patch-battery">Battery Status API</h4>
 
 <div algorithm="Navigator getBattery patch">
-  First, we need <a href="https://github.com/w3c/battery/pull/30">w3c/battery#30</a> to be merged, so that the [=battery promise=] is never null.
-
-  Once that's done, modify the {{Navigator/getBattery()}} method steps by prepending the following step:
+  Modify the {{Navigator/getBattery()}} method steps by prepending the following step:
 
   1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return [=this=]'s [=battery promise=].
+</div>
+
+<h4 id="patch-orientation-lock">Screen Orientation API</h4>
+
+<div algorithm="apply an orientation lock patch">
+  Modify the [=apply an orientation lock=] algorithm steps by overwriting the first few steps, before it goes [=in parallel=], as follows:
+
+  1. Let |promise| be a new promise.
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+
+  1. If the [=user agent=] does not support locking the screen orientation, then [=reject=] |promise| with a "{{NotSupportedError}}" {{DOMException}} and return |promise|.
+
+  1. If the [=document=]'s [=Document/active sandboxing flag set=] has the [=sandboxed orientation lock browsing context flag=] set, or the [=user agent=] doesn't meet the [=pre-lock conditions=] to perform an orientation change, then [=reject=] |promise| with a "{{SecurityError}}" {{DOMException}} and return |promise|.
+
+  1. Set the [=document=]'s \[[orientationPendingPromise]] to |promise|.
+</div>
+
+<div algorithm="ScreenOrientation unlock patch">
+  Modify the {{ScreenOrientation/unlock()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+
+  <p class="note">This modification is necessary to ensure that code that calls {{ScreenOrientation/lock()|screen.orientation.lock()}} followed by {{ScreenOrientation/unlock()|screen.orientation.unlock()}} produces the expected results.
+</div>
+
+<h4 id="patch-gamepads">Gamepad</h4>
+
+<div algorithm="getGamepads patch">
+  Modify the {{Navigator/getGamepads()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return an empty sequence.
+</div>
+
+<div algorithm="gamepad events patch">
+  Modify the discussion of the {{Window/gamepadconnected}} and {{Window/gamepaddisconnected}} events to specify that the user agent must not dispatch these events if the {{Window}} object's [=Window/browsing context=] is a [=prerendering browsing context=].
+</div>
+
+<div algorithm="gamepadconnected post-prerendering">
+  Modify the {{Window/gamepadconnected}} section to indicate that every {{Document}} |document|'s [=Document/post-prerendering activation steps list=] should gain the following steps:
+
+  1. If |document| is [=allowed to use=] the "`gamepad`" feature, and |document|'s [=relevant settings object=] is a [=secure context=], and any gamepads are connected, then for each connected gamepad, [=fire an event=] named {{Window/gamepadconnected}} at |document|'s [=relevant global object=] using {{GamepadEvent}}, with its {{GamepadEvent/gamepad}} attribute initialized to a new {{Gamepad}} object representing the connected gamepad.
 </div>
 
 <h3 id="activation-gated">Activation-gated APIs</h3>
@@ -773,3 +834,4 @@ The following APIs do not need modifications, because they will automatically fa
 - {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}} [[IDLE-DETECTION]]
 - Firing of clipboard events, as well as {{Clipboard/read()|navigator.clipboard.read()}} and {{Clipboard/readText()|navigator.clipboard.readText()}} [[CLIPBOARD-APIS]]
 - {{Navigator/share()|navigator.share()}} [[WEB-SHARE]]
+- {{Element/requestPointerLock()|element.requestPointerLock()}} [[POINTERLOCK]]
