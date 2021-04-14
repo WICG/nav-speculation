@@ -700,6 +700,24 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
   1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
 </div>
 
+<div algorithm="Notification constructor patch">
+  Modify the {{Notification/Notification()}} constructor steps by replacing the step which goes [=in parallel=] with the following:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append these steps to [=this=]'s [=platform object/post-prerendering activation steps list=]. Otherwise, run these steps [=in parallel=].
+</div>
+
+<div algorithm="Notification permission patch">
+  Modify the {{Notification/permission}} static getter steps by replacing them with the following:
+
+  1. If the [=current global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return "`default`".
+
+     <p class="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of [=prerendering browsing contexts=]. Web developers can then call {{Notification/requestPermission()|Notification.requestPermission()}}, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "`granted`" or "`denied`", so the browser might not actually ask the user like would normally be the case with "`default`". But that's OK: it's not observable to web developer code.</p>
+
+  1. Otherwise, return the [=current settings object=]'s [=environment settings object/origin=]'s <a spec="NOTIFICATIONS">permission</a>.
+
+  <p class="issue">This uses [=current settings object=] under the assumption that <a href="https://github.com/whatwg/notifications/issues/86">whatwg/notifications#86</a> gets resolved.</p>
+</div>
+
 TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
 
 <h4 id="patch-midi">Web MIDI API</h4>
