@@ -17,6 +17,9 @@ spec:html; type:element; text:link
 spec:html; type:element; text:script
 </pre>
 <pre class="anchors">
+spec: ecma262; urlPrefix: https://tc39.es/ecma262/
+  type: dfn
+    text: current Realm; url: current-realm
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
@@ -694,6 +697,26 @@ Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that down
 
 Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering browsing context=], most of its work is deferred until the browsing context is [=prerendering browsing context/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
 
+<h4 id="delay-while-prerendering">The {{[DelayWhilePrerendering]}} extended attribute</h4>
+
+To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until [=prerendering browsing context/activated|activation=], we introduce the <dfn extended-attribute>[DelayWhilePrerendering]</dfn> Web IDL extended attribute. It indicates that when a given method is called in a [=prerendering browsing context=], it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.
+
+The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and must only appear on a <a lt="regular operation" spec="WEBIDL">regular</a> or <a spec="WEBIDL">static operation</a> whose <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a> and whose <a spec="WEBIDL">exposure set</a> contains {{Window}}.
+
+<div algorithm="DelayWhilePrerendering method steps">
+  The method steps for any operation annotated with the {{[DelayWhilePrerendering]}} extended attribute are replaced with the following:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+    1. Let |realm| be the [=current Realm=].
+    1. If the operation in question is a <a spec="WEBIDL">regular operation</a>, then set |realm| to the [=relevant Realm=] of [=this=].
+    1. Let |promise| be [=a new promise=], created in |realm|.
+    1. Append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=]:
+      1. Let |result| be the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
+      1. [=Resolve=] |promise| with |result|.
+    1. Return |promise|.
+  1. Otherwise, return the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
+</div>
+
 <h4 id="patch-geolocation">Geolocation API</h4>
 
 <div algorithm="Geolocation getCurrentPosition patch">
@@ -724,11 +747,9 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
 
 <h4 id="patch-serial">Web Serial API</h4>
 
-<div algorithm="Serial requestPort patch">
-  Modify the {{Serial/requestPort()}} method steps by inserting the following steps after the initial creation of |promise|:
+Add {{[DelayWhilePrerendering]}} to {{Serial/requestPort()}}.
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
-</div>
+TODO: the below could probably be done by generalizing {{[DelayWhilePrerendering]}} to use owner document while in dedicated workers.
 
 <div algorithm="Serial getPorts patch">
   Modify the {{Serial/getPorts()}} method steps by inserting the following steps after the initial creation of |promise|:
@@ -743,11 +764,7 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
 
 <h4 id="patch-notifications">Notifications API</h4>
 
-<div algorithm="Notification requestPermission patch">
-  Modify the {{Notification/requestPermission()}} method steps by inserting the following steps after the initial creation of |promise|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
-</div>
+Add {{[DelayWhilePrerendering]}} to {{Notification/requestPermission()}}.
 
 <div algorithm="Notification constructor patch">
   Modify the {{Notification/Notification()}} constructor steps by replacing the step which goes [=in parallel=] with the following:
@@ -763,27 +780,17 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
      <p class="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of [=prerendering browsing contexts=]. Web developers can then call {{Notification/requestPermission()|Notification.requestPermission()}}, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "`granted`" or "`denied`", so the browser might not actually ask the user like would normally be the case with "`default`". But that's OK: it's not observable to web developer code.</p>
 
   1. Otherwise, return the [=current settings object=]'s [=environment settings object/origin=]'s <a spec="NOTIFICATIONS">permission</a>.
-
-  <p class="issue">This uses [=current settings object=] under the assumption that <a href="https://github.com/whatwg/notifications/issues/86">whatwg/notifications#86</a> gets resolved.</p>
 </div>
 
 TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
 
 <h4 id="patch-midi">Web MIDI API</h4>
 
-<div algorithm="requestMIDIAccess patch">
-  Modify the {{Navigator/requestMIDIAccess()}} method steps by inserting the following steps after the initial creation of |promise|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
-</div>
+Add {{[DelayWhilePrerendering]}} to {{Navigator/requestMIDIAccess()}}.
 
 <h4 id="patch-idle-detection">Idle Detection API</h4>
 
-<div algorithm="IdleDetector start patch">
-  Modify the {{IdleDetector/start()}} method steps by inserting the following steps after the initial creation of |promise|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
-</div>
+Add {{[DelayWhilePrerendering]}} to {{IdleDetector/start()}}.
 
 <p class="note">The other interesting method, {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}}, is gated on [=transient activation=]. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering.
 
@@ -802,17 +809,7 @@ TODO: what about the service worker API? Depends on what we're doing for service
 
 <h4 id="patch-web-nfc">Web NFC</h4>
 
-<div algorithm="NDEFReader write patch">
-  Modify the {{NDEFReader/write()}} method steps by inserting the following steps after the initial creation of |p|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
-</div>
-
-<div algorithm="NDEFReader scan patch">
-  Modify the {{NDEFReader/scan()}} method steps by inserting the following steps after the initial creation of |p|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
-</div>
+Add {{[DelayWhilePrerendering]}} to {{NDEFReader/write()}} and {{NDEFReader/scan()}}.
 
 <h4 id="patch-battery">Battery Status API</h4>
 
@@ -838,13 +835,9 @@ TODO: what about the service worker API? Depends on what we're doing for service
   1. Set the [=document=]'s \[[orientationPendingPromise]] to |promise|.
 </div>
 
-<div algorithm="ScreenOrientation unlock patch">
-  Modify the {{ScreenOrientation/unlock()}} method steps by prepending the following step:
+Add {{[DelayWhilePrerendering]}} to {{ScreenOrientation/unlock()}}.
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
-
-  <p class="note">This modification is necessary to ensure that code that calls {{ScreenOrientation/lock()|screen.orientation.lock()}} followed by {{ScreenOrientation/unlock()|screen.orientation.unlock()}} produces the expected results.
-</div>
+<p class="note">This latter modification is necessary to ensure that code that calls {{ScreenOrientation/lock()|screen.orientation.lock()}} followed by {{ScreenOrientation/unlock()|screen.orientation.unlock()}} produces the expected results.
 
 <h4 id="patch-gamepads">Gamepad</h4>
 
