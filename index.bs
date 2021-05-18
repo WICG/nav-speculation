@@ -619,6 +619,8 @@ Modify the [=discard a document|discard=] algorithm for {{Document}}s by appendi
 
 Documents in [=prerendering browsing contexts=] are [=Document/hidden=].
 
+<p class="issue">What about portals? Portals might not be hidden, and portals are envisioned to be a type of prerendering browsing context.</p>
+
 <h3 id="interaction-with-system-focus">Interaction with system focus</h3>
 
 [=Prerendering browsing contexts=] never have [=system focus=].
@@ -872,7 +874,7 @@ APIs that require [=transient activation=] or [=sticky activation=]:
 - {{Element/requestPointerLock()|element.requestPointerLock()}} [[POINTERLOCK]]
 
 APIs that require the [=Document/visible=] [=Document/visibility state=]:
-- {{WakeLock/request()}} [[WAKE-LOCK]]
+- {{WakeLock/request()|navigator.wakeLock.request()}} [[SCREEN-WAKE-LOCK]]
 
 More complicated cases:
 - [=Request Picture-in-Picture=] as invoked due to {{HTMLVideoElement/requestPictureInPicture()|video.requestPictureInPicture()}} or {{HTMLVideoElement/autoPictureInPicture}} requires either [=transient activation=], or the [=Document/visibility state=] to have been [=Document/visible=]. [[PICTURE-IN-PICTURE]]
