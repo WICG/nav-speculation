@@ -37,6 +37,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: prompt to unload; url: prompt-to-unload-a-document
       text: refused to allow the document to be unloaded; url: refused-to-allow-the-document-to-be-unloaded
       text: traverse the history; url: traverse-the-history
+    urlPrefix: interaction.html
+      text: system focus; url: tlbc-system-focus
     urlPrefix: urls-and-fetching.html
       text: parse a URL; url: parse-a-url
       text: resulting URL record
@@ -45,6 +47,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 spec: page-visibility; urlPrefix: https://w3c.github.io/page-visibility/
   type: dfn
     text: hidden; for: Document; url: dfn-hidden
+    text: visible; for: Document; url: dfn-visible
+    text: visibility state; for: Document; url: dfn-visibility-states
 spec: geolocation; urlPrefix: https://w3c.github.io/geolocation-api/
   type: method; for: Geolocation
     text: getCurrentPosition(successCallback, errorCallback, options); url: getcurrentposition-method
@@ -110,6 +114,13 @@ spec: gamepad; urlPrefix: https://w3c.github.io/gamepad/
     text: GamepadEvent; url: dom-gamepadevent
   type: attribute; for: GamepadEvent
     text: gamepad; url: dom-gamepadevent-gamepad
+spec: picture-in-picture; urlPrefix: https://w3c.github.io/picture-in-picture/
+  type: dfn
+    text: request Picture-in-Picture; url: request-picture-in-picture-algorithm
+  type: attribute; for: HTMLVideoElement
+    text: autoPictureInPicture; url: dom-htmlvideoelement-requestpictureinpicture
+  type: method; for: HTMLVideoElement
+    text: requestPictureInPicture(); url: dom-htmlvideoelement-autopictureinpicture
 </pre>
 <pre class="biblio">
 {
@@ -602,6 +613,18 @@ Modify the [=discard a document|discard=] algorithm for {{Document}}s by appendi
   1. [=list/Empty=] <var ignore>document</var>'s [=Document/post-prerendering activation steps list=].
 </div>
 
+<h2 id="interaction-with-other-specs">Interaction with other specifications and concepts</h2>
+
+<h3 id="interaction-with-visibility-state">Interaction with Page Visibility</h3>
+
+Documents in [=prerendering browsing contexts=] are [=Document/hidden=].
+
+<p class="issue">What about portals? Portals might not be hidden, and portals are envisioned to be a type of prerendering browsing context.</p>
+
+<h3 id="interaction-with-system-focus">Interaction with system focus</h3>
+
+[=Prerendering browsing contexts=] never have [=system focus=].
+
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
 Some behaviors might make sense in most [=top-level browsing contexts=], but do not make sense in [=prerendering browsing contexts=]. This section enumerates specification patches to enforce such restrictions.
@@ -752,16 +775,6 @@ TODO: what about the service worker API? Depends on what we're doing for service
   1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
 </div>
 
-<h4 id="patch-wake-lock">Screen Wake Lock API</h4>
-
-<div algorithm="WakeLock request patch">
-  Modify the {{WakeLock/request()}} method steps by inserting the following steps after the mid-algorithm creation of |promise|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
-</div>
-
-<p class="note">Prerendered documents do <em>not</em> count as [=Document/hidden=], so the part of the method steps which throw an exception in that case will not trigger.</p>
-
 <h4 id="patch-generic-sensor">Generic Sensor API</h4>
 
 <div algorithm="Sensor start patch">
@@ -839,10 +852,16 @@ TODO: what about the service worker API? Depends on what we're doing for service
   1. If |document| is [=allowed to use=] the "`gamepad`" feature, and |document|'s [=relevant settings object=] is a [=secure context=], and any gamepads are connected, then for each connected gamepad, [=fire an event=] named {{Window/gamepadconnected}} at |document|'s [=relevant global object=] using {{GamepadEvent}}, with its {{GamepadEvent/gamepad}} attribute initialized to a new {{Gamepad}} object representing the connected gamepad.
 </div>
 
-<h3 id="activation-gated">Activation-gated APIs</h3>
+<h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 
-The following APIs do not need modifications, because they will automatically fail or no-op without [=transient activation=] or [=sticky activation=], which a [=prerendering browsing context=]'s [=browsing context/active window=] will never have. We list them here for completeness, to show which API surfaces we've audited.
+Some APIs do not need modifications because they will automatically fail or no-op without a property that a [=prerendering browsing context=], its [=browsing context/active window=], or its [=active document=] will never have. These properties include:
+- [=transient activation=] or [=sticky activation=]
+- [=system focus=]
+- the [=Document/visible=] [=Document/visibility state=]
 
+We list known APIs here for completeness, to show which API surfaces we've audited.
+
+APIs that require [=transient activation=] or [=sticky activation=]:
 - {{Window/open(url, name, features)|window.open()}} [[HTML]]
 - The prompt generated by the {{Window/beforeunload}} event [[HTML]]
 - {{Element/requestFullscreen()|element.requestFullscreen()}} [[FULLSCREEN]]
@@ -853,3 +872,9 @@ The following APIs do not need modifications, because they will automatically fa
 - Firing of clipboard events, as well as {{Clipboard/read()|navigator.clipboard.read()}} and {{Clipboard/readText()|navigator.clipboard.readText()}} [[CLIPBOARD-APIS]]
 - {{Navigator/share()|navigator.share()}} [[WEB-SHARE]]
 - {{Element/requestPointerLock()|element.requestPointerLock()}} [[POINTERLOCK]]
+
+APIs that require the [=Document/visible=] [=Document/visibility state=]:
+- {{WakeLock/request()|navigator.wakeLock.request()}} [[SCREEN-WAKE-LOCK]]
+
+More complicated cases:
+- [=Request Picture-in-Picture=] as invoked due to {{HTMLVideoElement/requestPictureInPicture()|video.requestPictureInPicture()}} or {{HTMLVideoElement/autoPictureInPicture}} requires either [=transient activation=], or the [=Document/visibility state=] to have been [=Document/visible=]. [[PICTURE-IN-PICTURE]]
