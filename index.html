@@ -2091,7 +2091,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-05-18">18 May 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-05-19">19 May 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -2105,7 +2105,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 18 May 2021,
+In addition, as of 19 May 2021,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2146,32 +2146,37 @@ Parts of this work may be from another specification document.  If so, those par
       <li><a href="#cleanup-upon-discarding"><span class="secno">4.5</span> <span class="content">Cleanup upon discarding a <code class="idl"><span>Document</span></code></span></a>
      </ol>
     <li>
-     <a href="#nonsense-behaviors"><span class="secno">5</span> <span class="content">Preventing nonsensical behaviors</span></a>
+     <a href="#interaction-with-other-specs"><span class="secno">5</span> <span class="content">Interaction with other specifications and concepts</span></a>
      <ol class="toc">
-      <li><a href="#patch-window-apis"><span class="secno">5.1</span> <span class="content">APIs for creating and navigating browsing contexts by name</span></a>
+      <li><a href="#interaction-with-visibility-state"><span class="secno">5.1</span> <span class="content">Interaction with Page Visibility</span></a>
+      <li><a href="#interaction-with-system-focus"><span class="secno">5.2</span> <span class="content">Interaction with system focus</span></a>
      </ol>
     <li>
-     <a href="#intrusive-behaviors"><span class="secno">6</span> <span class="content">Preventing intrusive behaviors</span></a>
+     <a href="#nonsense-behaviors"><span class="secno">6</span> <span class="content">Preventing nonsensical behaviors</span></a>
      <ol class="toc">
-      <li><a href="#patch-downloading"><span class="secno">6.1</span> <span class="content">Downloading resources</span></a>
-      <li><a href="#patch-modals"><span class="secno">6.2</span> <span class="content">User prompts</span></a>
+      <li><a href="#patch-window-apis"><span class="secno">6.1</span> <span class="content">APIs for creating and navigating browsing contexts by name</span></a>
+     </ol>
+    <li>
+     <a href="#intrusive-behaviors"><span class="secno">7</span> <span class="content">Preventing intrusive behaviors</span></a>
+     <ol class="toc">
+      <li><a href="#patch-downloading"><span class="secno">7.1</span> <span class="content">Downloading resources</span></a>
+      <li><a href="#patch-modals"><span class="secno">7.2</span> <span class="content">User prompts</span></a>
       <li>
-       <a href="#delay-async-apis"><span class="secno">6.3</span> <span class="content">Delaying async API results</span></a>
+       <a href="#delay-async-apis"><span class="secno">7.3</span> <span class="content">Delaying async API results</span></a>
        <ol class="toc">
-        <li><a href="#patch-geolocation"><span class="secno">6.3.1</span> <span class="content">Geolocation API</span></a>
-        <li><a href="#patch-serial"><span class="secno">6.3.2</span> <span class="content">Web Serial API</span></a>
-        <li><a href="#patch-notifications"><span class="secno">6.3.3</span> <span class="content">Notifications API</span></a>
-        <li><a href="#patch-midi"><span class="secno">6.3.4</span> <span class="content">Web MIDI API</span></a>
-        <li><a href="#patch-idle-detection"><span class="secno">6.3.5</span> <span class="content">Idle Detection API</span></a>
-        <li><a href="#patch-clipboard-apis"><span class="secno">6.3.6</span> <span class="content">Clipboard APIs</span></a>
-        <li><a href="#patch-wake-lock"><span class="secno">6.3.7</span> <span class="content">Screen Wake Lock API</span></a>
-        <li><a href="#patch-generic-sensor"><span class="secno">6.3.8</span> <span class="content">Generic Sensor API</span></a>
-        <li><a href="#patch-web-nfc"><span class="secno">6.3.9</span> <span class="content">Web NFC</span></a>
-        <li><a href="#patch-battery"><span class="secno">6.3.10</span> <span class="content">Battery Status API</span></a>
-        <li><a href="#patch-orientation-lock"><span class="secno">6.3.11</span> <span class="content">Screen Orientation API</span></a>
-        <li><a href="#patch-gamepads"><span class="secno">6.3.12</span> <span class="content">Gamepad</span></a>
+        <li><a href="#patch-geolocation"><span class="secno">7.3.1</span> <span class="content">Geolocation API</span></a>
+        <li><a href="#patch-serial"><span class="secno">7.3.2</span> <span class="content">Web Serial API</span></a>
+        <li><a href="#patch-notifications"><span class="secno">7.3.3</span> <span class="content">Notifications API</span></a>
+        <li><a href="#patch-midi"><span class="secno">7.3.4</span> <span class="content">Web MIDI API</span></a>
+        <li><a href="#patch-idle-detection"><span class="secno">7.3.5</span> <span class="content">Idle Detection API</span></a>
+        <li><a href="#patch-clipboard-apis"><span class="secno">7.3.6</span> <span class="content">Clipboard APIs</span></a>
+        <li><a href="#patch-generic-sensor"><span class="secno">7.3.7</span> <span class="content">Generic Sensor API</span></a>
+        <li><a href="#patch-web-nfc"><span class="secno">7.3.8</span> <span class="content">Web NFC</span></a>
+        <li><a href="#patch-battery"><span class="secno">7.3.9</span> <span class="content">Battery Status API</span></a>
+        <li><a href="#patch-orientation-lock"><span class="secno">7.3.10</span> <span class="content">Screen Orientation API</span></a>
+        <li><a href="#patch-gamepads"><span class="secno">7.3.11</span> <span class="content">Gamepad</span></a>
        </ol>
-      <li><a href="#activation-gated"><span class="secno">6.4</span> <span class="content">Activation-gated APIs</span></a>
+      <li><a href="#implicitly-restricted"><span class="secno">7.4</span> <span class="content">Implicitly restricted APIs</span></a>
      </ol>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
@@ -2709,10 +2714,16 @@ Parts of this work may be from another specification document.  If so, those par
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-empty" id="ref-for-list-empty">Empty</a> <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list③">post-prerendering activation steps list</a>.</p>
     </ol>
    </div>
-   <h2 class="heading settled" data-level="5" id="nonsense-behaviors"><span class="secno">5. </span><span class="content">Preventing nonsensical behaviors</span><a class="self-link" href="#nonsense-behaviors"></a></h2>
-   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context③">top-level browsing contexts</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑦">prerendering browsing contexts</a>. This section enumerates specification patches to enforce such restrictions.</p>
-   <h3 class="heading settled" data-level="5.1" id="patch-window-apis"><span class="secno">5.1. </span><span class="content">APIs for creating and navigating browsing contexts by name</span><a class="self-link" href="#patch-window-apis"></a></h3>
-   <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑧">prerendering browsing context</a>:</p>
+   <h2 class="heading settled" data-level="5" id="interaction-with-other-specs"><span class="secno">5. </span><span class="content">Interaction with other specifications and concepts</span><a class="self-link" href="#interaction-with-other-specs"></a></h2>
+   <h3 class="heading settled" data-level="5.1" id="interaction-with-visibility-state"><span class="secno">5.1. </span><span class="content">Interaction with Page Visibility</span><a class="self-link" href="#interaction-with-visibility-state"></a></h3>
+   <p>Documents in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑦">prerendering browsing contexts</a> are <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-hidden" id="ref-for-dfn-hidden">hidden</a>.</p>
+   <p class="issue" id="issue-1c569c2c"><a class="self-link" href="#issue-1c569c2c"></a>What about portals? Portals might not be hidden, and portals are envisioned to be a type of prerendering browsing context.</p>
+   <h3 class="heading settled" data-level="5.2" id="interaction-with-system-focus"><span class="secno">5.2. </span><span class="content">Interaction with system focus</span><a class="self-link" href="#interaction-with-system-focus"></a></h3>
+   <p><a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑧">Prerendering browsing contexts</a> never have <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#tlbc-system-focus" id="ref-for-tlbc-system-focus">system focus</a>.</p>
+   <h2 class="heading settled" data-level="6" id="nonsense-behaviors"><span class="secno">6. </span><span class="content">Preventing nonsensical behaviors</span><a class="self-link" href="#nonsense-behaviors"></a></h2>
+   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context③">top-level browsing contexts</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑨">prerendering browsing contexts</a>. This section enumerates specification patches to enforce such restrictions.</p>
+   <h3 class="heading settled" data-level="6.1" id="patch-window-apis"><span class="secno">6.1. </span><span class="content">APIs for creating and navigating browsing contexts by name</span><a class="self-link" href="#patch-window-apis"></a></h3>
+   <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⓪">prerendering browsing context</a>:</p>
    <p>A <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context④">browsing context</a> is <dfn data-dfn-type="dfn" data-noexport id="script-closable">script-closable<a class="self-link" href="#script-closable"></a></dfn> if either of the following is true:</p>
    <ul>
     <li data-md>
@@ -2720,50 +2731,50 @@ Parts of this work may be from another specification document.  If so, those par
     <li data-md>
      <p>
       it is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing context</a> 
-      <ins>that is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑨">prerendering browsing context</a></ins>
+      <ins>that is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②①">prerendering browsing context</a></ins>
        and whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history②">session history</a> contains only one <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⓪">Document</a></code>.
      </p>
    </ul>
-   <h2 class="heading settled" data-level="6" id="intrusive-behaviors"><span class="secno">6. </span><span class="content">Preventing intrusive behaviors</span><a class="self-link" href="#intrusive-behaviors"></a></h2>
-   <p>Various behaviors are disallowed in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⓪">prerendering browsing contexts</a> because they would be intrusive to the user, since the prerendered content is not being actively interacted with.</p>
-   <h3 class="heading settled" data-level="6.1" id="patch-downloading"><span class="secno">6.1. </span><span class="content">Downloading resources</span><a class="self-link" href="#patch-downloading"></a></h3>
-   <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks" id="ref-for-downloading-hyperlinks">download the hyperlink</a> algorithm to ensure that downloads inside <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②①">prerendering browsing contexts</a> are delayed until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑥">activation</a>, by inserting the following before the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
+   <h2 class="heading settled" data-level="7" id="intrusive-behaviors"><span class="secno">7. </span><span class="content">Preventing intrusive behaviors</span><a class="self-link" href="#intrusive-behaviors"></a></h2>
+   <p>Various behaviors are disallowed in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②②">prerendering browsing contexts</a> because they would be intrusive to the user, since the prerendered content is not being actively interacted with.</p>
+   <h3 class="heading settled" data-level="7.1" id="patch-downloading"><span class="secno">7.1. </span><span class="content">Downloading resources</span><a class="self-link" href="#patch-downloading"></a></h3>
+   <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks" id="ref-for-downloading-hyperlinks">download the hyperlink</a> algorithm to ensure that downloads inside <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②③">prerendering browsing contexts</a> are delayed until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑥">activation</a>, by inserting the following before the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
    <div class="algorithm" data-algorithm="download the hyperlink patch">
     <ol>
      <li data-md>
-      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑦">node document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②②">prerendering browsing context</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</a> and return.</p>
+      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑦">node document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②④">prerendering browsing context</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="6.2" id="patch-modals"><span class="secno">6.2. </span><span class="content">User prompts</span><a class="self-link" href="#patch-modals"></a></h3>
+   <h3 class="heading settled" data-level="7.2" id="patch-modals"><span class="secno">7.2. </span><span class="content">User prompts</span><a class="self-link" href="#patch-modals"></a></h3>
    <div class="algorithm" data-algorithm="cannot show simple dialogs patch">
      Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs" id="ref-for-cannot-show-simple-dialogs">cannot show simple dialogs</a> algorithm, given a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window①">Window</a></code> <var>window</var>, by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②③">prerendering browsing context</a>, then return true.</p>
+      <p>If <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑤">prerendering browsing context</a>, then return true.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="window print() patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print" id="ref-for-dom-print">print()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②④">prerendering browsing context</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑥">prerendering browsing context</a>, then return.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="6.3" id="delay-async-apis"><span class="secno">6.3. </span><span class="content">Delaying async API results</span><a class="self-link" href="#delay-async-apis"></a></h3>
-   <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑤">prerendering browsing context</a>, most of its work is deferred until the browsing context is <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑦">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
-   <h4 class="heading settled" data-level="6.3.1" id="patch-geolocation"><span class="secno">6.3.1. </span><span class="content">Geolocation API</span><a class="self-link" href="#patch-geolocation"></a></h4>
+   <h3 class="heading settled" data-level="7.3" id="delay-async-apis"><span class="secno">7.3. </span><span class="content">Delaying async API results</span><a class="self-link" href="#delay-async-apis"></a></h3>
+   <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑦">prerendering browsing context</a>, most of its work is deferred until the browsing context is <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑦">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
+   <h4 class="heading settled" data-level="7.3.1" id="patch-geolocation"><span class="secno">7.3.1. </span><span class="content">Geolocation API</span><a class="self-link" href="#patch-geolocation"></a></h4>
    <div class="algorithm" data-algorithm="Geolocation getCurrentPosition patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#getcurrentposition-method" id="ref-for-getcurrentposition-method">getCurrentPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑥">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①">post-prerendering activation steps list</a> and return.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑧">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Geolocation watchPosition patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#watchposition-method" id="ref-for-watchposition-method">watchPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑦">prerendering browsing context</a>, then:</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑨">prerendering browsing context</a>, then:</p>
       <ol>
        <li data-md>
         <p>Let <var>watchProcessId</var> be a new unique <a data-link-type="dfn" href="https://w3c.github.io/geolocation-api/#dfn-watch-process" id="ref-for-dfn-watch-process">watch process</a> ID, and note it as a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</dfn>.</p>
@@ -2776,7 +2787,7 @@ Parts of this work may be from another specification document.  If so, those par
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#clearwatch-method" id="ref-for-clearwatch-method">clearWatch(watchId)</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑧">prerendering browsing context</a>, then:</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⓪">prerendering browsing context</a>, then:</p>
       <ol>
        <li data-md>
         <p>If <var>watchId</var> is a <a data-link-type="dfn" href="#post-prerendering-activation-geolocation-watch-process-id" id="ref-for-post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</a>, then remove its corresponding steps from <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list③">post-prerendering activation steps list</a>.</p>
@@ -2785,12 +2796,12 @@ Parts of this work may be from another specification document.  If so, those par
       </ol>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="6.3.2" id="patch-serial"><span class="secno">6.3.2. </span><span class="content">Web Serial API</span><a class="self-link" href="#patch-serial"></a></h4>
+   <h4 class="heading settled" data-level="7.3.2" id="patch-serial"><span class="secno">7.3.2. </span><span class="content">Web Serial API</span><a class="self-link" href="#patch-serial"></a></h4>
    <div class="algorithm" data-algorithm="Serial requestPort patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/serial/#dom-serial-requestPort" id="ref-for-dom-serial-requestPort">requestPort()</a></code> method steps by inserting the following steps after the initial creation of <var>promise</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑨">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③①">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Serial getPorts patch">
@@ -2801,121 +2812,112 @@ Parts of this work may be from another specification document.  If so, those par
      <li data-md>
       <p>If <var>document</var> is null, then return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
      <li data-md>
-      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⓪">prerendering browsing context</a>, then append the following steps to <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③②">prerendering browsing context</a>, then append the following steps to <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="6.3.3" id="patch-notifications"><span class="secno">6.3.3. </span><span class="content">Notifications API</span><a class="self-link" href="#patch-notifications"></a></h4>
+   <h4 class="heading settled" data-level="7.3.3" id="patch-notifications"><span class="secno">7.3.3. </span><span class="content">Notifications API</span><a class="self-link" href="#patch-notifications"></a></h4>
    <div class="algorithm" data-algorithm="Notification requestPermission patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission">requestPermission()</a></code> method steps by inserting the following steps after the initial creation of <var>promise</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑥">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③①">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑥">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③③">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Notification constructor patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-notification" id="ref-for-dom-notification-notification">Notification()</a></code> constructor steps by replacing the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel②">in parallel</a> with the following: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑦">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③②">prerendering browsing context</a>, then append these steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑥">post-prerendering activation steps list</a>. Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel③">in parallel</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑦">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③④">prerendering browsing context</a>, then append these steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑥">post-prerendering activation steps list</a>. Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel③">in parallel</a>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Notification permission patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-permission" id="ref-for-dom-notification-permission">permission</a></code> static getter steps by replacing them with the following: 
     <ol>
      <li data-md>
-      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object">current global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑧">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③③">prerendering browsing context</a>, then return "<code>default</code>".</p>
-      <p class="note" role="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③④">prerendering browsing contexts</a>. Web developers can then call <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission①">Notification.requestPermission()</a></code>, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "<code>granted</code>" or "<code>denied</code>", so the browser might not actually ask the user like would normally be the case with "<code>default</code>". But that’s OK: it’s not observable to web developer code.</p>
+      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object">current global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑧">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑤">prerendering browsing context</a>, then return "<code>default</code>".</p>
+      <p class="note" role="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑥">prerendering browsing contexts</a>. Web developers can then call <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission①">Notification.requestPermission()</a></code>, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "<code>granted</code>" or "<code>denied</code>", so the browser might not actually ask the user like would normally be the case with "<code>default</code>". But that’s OK: it’s not observable to web developer code.</p>
      <li data-md>
       <p>Otherwise, return the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a>'s <a data-link-type="dfn" href="https://notifications.spec.whatwg.org/#permission" id="ref-for-permission">permission</a>.</p>
     </ol>
     <p class="issue" id="issue-93214870"><a class="self-link" href="#issue-93214870"></a>This uses <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object①">current settings object</a> under the assumption that <a href="https://github.com/whatwg/notifications/issues/86">whatwg/notifications#86</a> gets resolved.</p>
    </div>
    <p>TODO: what about the service worker API? Depends on what we’re doing for service workers in prerendering BCs...</p>
-   <h4 class="heading settled" data-level="6.3.4" id="patch-midi"><span class="secno">6.3.4. </span><span class="content">Web MIDI API</span><a class="self-link" href="#patch-midi"></a></h4>
+   <h4 class="heading settled" data-level="7.3.4" id="patch-midi"><span class="secno">7.3.4. </span><span class="content">Web MIDI API</span><a class="self-link" href="#patch-midi"></a></h4>
    <div class="algorithm" data-algorithm="requestMIDIAccess patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://webaudio.github.io/web-midi-api/#dom-navigator-requestmidiaccess" id="ref-for-dom-navigator-requestmidiaccess">requestMIDIAccess()</a></code> method steps by inserting the following steps after the initial creation of <var>promise</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑨">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑤">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑨">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑦">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="6.3.5" id="patch-idle-detection"><span class="secno">6.3.5. </span><span class="content">Idle Detection API</span><a class="self-link" href="#patch-idle-detection"></a></h4>
+   <h4 class="heading settled" data-level="7.3.5" id="patch-idle-detection"><span class="secno">7.3.5. </span><span class="content">Idle Detection API</span><a class="self-link" href="#patch-idle-detection"></a></h4>
    <div class="algorithm" data-algorithm="IdleDetector start patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#api-idledetector-start" id="ref-for-api-idledetector-start">start()</a></code> method steps by inserting the following steps after the initial creation of <var>promise</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⓪">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑥">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②①">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑧">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⓪">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑧">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②①">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑧">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
     </ol>
    </div>
    <p class="note" role="note">The other interesting method, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission" id="ref-for-api-idledetector-requestpermission">IdleDetector.requestPermission()</a></code>, is gated on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation">transient activation</a>. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering. </p>
-   <h4 class="heading settled" data-level="6.3.6" id="patch-clipboard-apis"><span class="secno">6.3.6. </span><span class="content">Clipboard APIs</span><a class="self-link" href="#patch-clipboard-apis"></a></h4>
+   <h4 class="heading settled" data-level="7.3.6" id="patch-clipboard-apis"><span class="secno">7.3.6. </span><span class="content">Clipboard APIs</span><a class="self-link" href="#patch-clipboard-apis"></a></h4>
    <div class="algorithm" data-algorithm="Clipboard write patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/clipboard-apis/#dom-clipboard-write" id="ref-for-dom-clipboard-write">write()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑦">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑨">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑨">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑨">post-prerendering activation steps list</a> and return <var>p</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Clipboard writeText patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext" id="ref-for-dom-clipboard-writetext">writeText()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑧">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⓪">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⓪">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⓪">post-prerendering activation steps list</a> and return <var>p</var>.</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="6.3.7" id="patch-wake-lock"><span class="secno">6.3.7. </span><span class="content">Screen Wake Lock API</span><a class="self-link" href="#patch-wake-lock"></a></h4>
-   <div class="algorithm" data-algorithm="WakeLock request patch">
-     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-wake-lock/#the-request-method" id="ref-for-the-request-method">request()</a></code> method steps by inserting the following steps after the mid-algorithm creation of <var>promise</var>: 
-    <ol>
-     <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑦">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑨">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①①">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
-    </ol>
-   </div>
-   <p class="note" role="note">Prerendered documents do <em>not</em> count as <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-hidden" id="ref-for-dfn-hidden">hidden</a>, so the part of the method steps which throw an exception in that case will not trigger.</p>
-   <h4 class="heading settled" data-level="6.3.8" id="patch-generic-sensor"><span class="secno">6.3.8. </span><span class="content">Generic Sensor API</span><a class="self-link" href="#patch-generic-sensor"></a></h4>
+   <h4 class="heading settled" data-level="7.3.7" id="patch-generic-sensor"><span class="secno">7.3.7. </span><span class="content">Generic Sensor API</span><a class="self-link" href="#patch-generic-sensor"></a></h4>
    <div class="algorithm" data-algorithm="Sensor start patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-start" id="ref-for-dom-sensor-start">start()</a></code> method steps by inserting the following steps after the state is set to "<code>activating</code>": 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑧">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⓪">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑨">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①②">post-prerendering activation steps list</a> and return.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑦">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④①">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①①">post-prerendering activation steps list</a> and return.</p>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⓪">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot">[[state]]</a></code> is "<code>idle</code>", then return.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑧">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot">[[state]]</a></code> is "<code>idle</code>", then return.</p>
       <p class="note" role="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-stop" id="ref-for-dom-sensor-stop">stop()</a></code> was called, we do nothing upon activating the prerender. </p>
      <li data-md>
-      <p class="assertion">Assert: <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③①">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot①">[[state]]</a></code> is "<code>activating</code>".</p>
+      <p class="assertion">Assert: <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this②⑨">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot①">[[state]]</a></code> is "<code>activating</code>".</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="6.3.9" id="patch-web-nfc"><span class="secno">6.3.9. </span><span class="content">Web NFC</span><a class="self-link" href="#patch-web-nfc"></a></h4>
+   <h4 class="heading settled" data-level="7.3.8" id="patch-web-nfc"><span class="secno">7.3.8. </span><span class="content">Web NFC</span><a class="self-link" href="#patch-web-nfc"></a></h4>
    <div class="algorithm" data-algorithm="NDEFReader write patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-nfc/#dom-ndefreader-write" id="ref-for-dom-ndefreader-write">write()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑨">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④①">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①③">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑧">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③①">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①②">post-prerendering activation steps list</a> and return <var>p</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="NDEFReader scan patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-nfc/#dom-ndefreader-scan" id="ref-for-dom-ndefreader-scan">scan()</a></code> method steps by inserting the following steps after the initial creation of <var>p</var>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②⓪">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑥">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①④">post-prerendering activation steps list</a> and return <var>p</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑨">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④③">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①③">post-prerendering activation steps list</a> and return <var>p</var>.</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="6.3.10" id="patch-battery"><span class="secno">6.3.10. </span><span class="content">Battery Status API</span><a class="self-link" href="#patch-battery"></a></h4>
+   <h4 class="heading settled" data-level="7.3.9" id="patch-battery"><span class="secno">7.3.9. </span><span class="content">Battery Status API</span><a class="self-link" href="#patch-battery"></a></h4>
    <div class="algorithm" data-algorithm="Navigator getBattery patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/battery/#dom-navigator-getbattery" id="ref-for-dom-navigator-getbattery">getBattery()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑦">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④③">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⑤">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑧">this</a>'s <a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-battery-promise" id="ref-for-dfn-battery-promise">battery promise</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③④">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②⓪">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑥">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④④">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑤">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①④">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑥">this</a>'s <a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-battery-promise" id="ref-for-dfn-battery-promise">battery promise</a>.</p>
     </ol>
    </div>
-   <h4 class="heading settled" data-level="6.3.11" id="patch-orientation-lock"><span class="secno">6.3.11. </span><span class="content">Screen Orientation API</span><a class="self-link" href="#patch-orientation-lock"></a></h4>
+   <h4 class="heading settled" data-level="7.3.10" id="patch-orientation-lock"><span class="secno">7.3.10. </span><span class="content">Screen Orientation API</span><a class="self-link" href="#patch-orientation-lock"></a></h4>
    <div class="algorithm" data-algorithm="apply an orientation lock patch">
      Modify the <a data-link-type="dfn" href="https://w3c.github.io/screen-orientation/#dfn-apply-an-orientation-lock" id="ref-for-dfn-apply-an-orientation-lock">apply an orientation lock</a> algorithm steps by overwriting the first few steps, before it goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel④">in parallel</a>, as follows: 
     <ol>
      <li data-md>
       <p>Let <var>promise</var> be a new promise.</p>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑧">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④④">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④⓪">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⑥">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑦">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑤">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑧">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⑤">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
      <li data-md>
       <p>If the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#user-agent" id="ref-for-user-agent">user agent</a> does not support locking the screen orientation, then <a data-link-type="dfn" href="https://heycam.github.io/webidl/#reject" id="ref-for-reject">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#notsupportederror" id="ref-for-notsupportederror">NotSupportedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://heycam.github.io/webidl/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code> and return <var>promise</var>.</p>
      <li data-md>
@@ -2928,28 +2930,38 @@ Parts of this work may be from another specification document.  If so, those par
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-orientation/#dom-screenorientation-unlock" id="ref-for-dom-screenorientation-unlock">unlock()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑨">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑤">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④②">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⑦">post-prerendering activation steps list</a> and return.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this③⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑧">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑥">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④⓪">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list①⑥">post-prerendering activation steps list</a> and return.</p>
     </ol>
     <p class="note" role="note">This modification is necessary to ensure that code that calls <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-orientation/#dom-screenorientation-lock" id="ref-for-dom-screenorientation-lock">screen.orientation.lock()</a></code> followed by <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-orientation/#dom-screenorientation-unlock" id="ref-for-dom-screenorientation-unlock①">screen.orientation.unlock()</a></code> produces the expected results. </p>
    </div>
-   <h4 class="heading settled" data-level="6.3.12" id="patch-gamepads"><span class="secno">6.3.12. </span><span class="content">Gamepad</span><a class="self-link" href="#patch-gamepads"></a></h4>
+   <h4 class="heading settled" data-level="7.3.11" id="patch-gamepads"><span class="secno">7.3.11. </span><span class="content">Gamepad</span><a class="self-link" href="#patch-gamepads"></a></h4>
    <div class="algorithm" data-algorithm="getGamepads patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-navigator-getgamepads" id="ref-for-dom-navigator-getgamepads">getGamepads()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④③">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc②⓪">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑥">prerendering browsing context</a>, then return an empty sequence.</p>
+      <p>If <a data-link-type="dfn" href="https://heycam.github.io/webidl/#this" id="ref-for-this④①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⑨">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑦">prerendering browsing context</a>, then return an empty sequence.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="gamepad events patch"> Modify the discussion of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected">gamepadconnected</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepaddisconnected" id="ref-for-dfn-gamepaddisconnected">gamepaddisconnected</a></code> events to specify that the user agent must not dispatch these events if the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window③">Window</a></code> object’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc②①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑦">prerendering browsing context</a>. </div>
+   <div class="algorithm" data-algorithm="gamepad events patch"> Modify the discussion of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected">gamepadconnected</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepaddisconnected" id="ref-for-dfn-gamepaddisconnected">gamepaddisconnected</a></code> events to specify that the user agent must not dispatch these events if the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window③">Window</a></code> object’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc②⓪">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑧">prerendering browsing context</a>. </div>
    <div class="algorithm" data-algorithm="gamepadconnected post-prerendering">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected①">gamepadconnected</a></code> section to indicate that every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①①">Document</a></code> <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a> should gain the following steps: 
     <ol>
      <li data-md>
-      <p>If <var>document</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use">allowed to use</a> the "<code>gamepad</code>" feature, and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context">secure context</a>, and any gamepads are connected, then for each connected gamepad, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-fire" id="ref-for-concept-event-fire①">fire an event</a> named <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected②">gamepadconnected</a></code> at <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②⑤">relevant global object</a> using <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepadevent" id="ref-for-dom-gamepadevent">GamepadEvent</a></code>, with its <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepadevent-gamepad" id="ref-for-dom-gamepadevent-gamepad">gamepad</a></code> attribute initialized to a new <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepad" id="ref-for-dom-gamepad">Gamepad</a></code> object representing the connected gamepad.</p>
+      <p>If <var>document</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use">allowed to use</a> the "<code>gamepad</code>" feature, and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context">secure context</a>, and any gamepads are connected, then for each connected gamepad, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-fire" id="ref-for-concept-event-fire①">fire an event</a> named <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected②">gamepadconnected</a></code> at <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②④">relevant global object</a> using <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepadevent" id="ref-for-dom-gamepadevent">GamepadEvent</a></code>, with its <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepadevent-gamepad" id="ref-for-dom-gamepadevent-gamepad">gamepad</a></code> attribute initialized to a new <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepad" id="ref-for-dom-gamepad">Gamepad</a></code> object representing the connected gamepad.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="6.4" id="activation-gated"><span class="secno">6.4. </span><span class="content">Activation-gated APIs</span><a class="self-link" href="#activation-gated"></a></h3>
-   <p>The following APIs do not need modifications, because they will automatically fail or no-op without <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation">sticky activation</a>, which a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑧">prerendering browsing context</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a> will never have. We list them here for completeness, to show which API surfaces we’ve audited.</p>
+   <h3 class="heading settled" data-level="7.4" id="implicitly-restricted"><span class="secno">7.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
+   <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑨">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑤">active document</a> will never have. These properties include:</p>
+   <ul>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation">sticky activation</a></p>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#tlbc-system-focus" id="ref-for-tlbc-system-focus①">system focus</a></p>
+    <li data-md>
+     <p>the <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visible" id="ref-for-dfn-visible">visible</a> <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visibility-states" id="ref-for-dfn-visibility-states">visibility state</a></p>
+   </ul>
+   <p>We list known APIs here for completeness, to show which API surfaces we’ve audited.</p>
+   <p>APIs that require <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation②">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation①">sticky activation</a>:</p>
    <ul>
     <li data-md>
      <p><code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-document-open-window" id="ref-for-dom-document-open-window">window.open()</a></code> <a data-link-type="biblio" href="#biblio-html">[HTML]</a></p>
@@ -2971,6 +2983,16 @@ Parts of this work may be from another specification document.  If so, those par
      <p><code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/web-share/#dom-navigator-share" id="ref-for-dom-navigator-share">navigator.share()</a></code> <a data-link-type="biblio" href="#biblio-web-share">[WEB-SHARE]</a></p>
     <li data-md>
      <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/pointerlock/#dfn-requestpointerlock-pointerlockoptions-options" id="ref-for-dfn-requestpointerlock-pointerlockoptions-options">element.requestPointerLock()</a></code> <a data-link-type="biblio" href="#biblio-pointerlock">[POINTERLOCK]</a></p>
+   </ul>
+   <p>APIs that require the <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visible" id="ref-for-dfn-visible①">visible</a> <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visibility-states" id="ref-for-dfn-visibility-states①">visibility state</a>:</p>
+   <ul>
+    <li data-md>
+     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-wake-lock/#the-request-method" id="ref-for-the-request-method">navigator.wakeLock.request()</a></code> <a data-link-type="biblio" href="#biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]</a></p>
+   </ul>
+   <p>More complicated cases:</p>
+   <ul>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm" id="ref-for-request-picture-in-picture-algorithm">Request Picture-in-Picture</a> as invoked due to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-autopictureinpicture" id="ref-for-dom-htmlvideoelement-autopictureinpicture">video.requestPictureInPicture()</a></code> or <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture" id="ref-for-dom-htmlvideoelement-requestpictureinpicture">autoPictureInPicture</a></code> requires either <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation③">transient activation</a>, or the <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visibility-states" id="ref-for-dfn-visibility-states②">visibility state</a> to have been <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visible" id="ref-for-dfn-visible②">visible</a>. <a data-link-type="biblio" href="#biblio-picture-in-picture">[PICTURE-IN-PICTURE]</a></p>
    </ul>
   </main>
 <script>
@@ -3116,7 +3138,7 @@ Parts of this work may be from another specification document.  If so, those par
    <li><a href="#dom-document-onprerenderingchange">onprerenderingchange</a><span>, in §3.1</span>
    <li><a href="#parse-a-speculation-rule">parse a speculation rule</a><span>, in §2.4</span>
    <li><a href="#parse-speculation-rules">parse speculation rules</a><span>, in §2.4</span>
-   <li><a href="#post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</a><span>, in §6.3.1</span>
+   <li><a href="#post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</a><span>, in §7.3.1</span>
    <li>
     post-prerendering activation steps list
     <ul>
@@ -3131,7 +3153,7 @@ Parts of this work may be from another specification document.  If so, those par
    <li><a href="#document-prerendering-browsing-contexts-map">prerendering browsing contexts map</a><span>, in §3.2</span>
    <li><a href="#eventdef-document-prerenderingchange">prerenderingchange</a><span>, in §3.1</span>
    <li><a href="#speculation-rule-requirements">requirements</a><span>, in §2.1</span>
-   <li><a href="#script-closable">script-closable</a><span>, in §5.1</span>
+   <li><a href="#script-closable">script-closable</a><span>, in §6.1</span>
    <li><a href="#speculation-rule">speculation rule</a><span>, in §2.1</span>
    <li><a href="#speculation-rule-set">speculation rule set</a><span>, in §2.1</span>
    <li><a href="#the-scripts-result">the script’s result</a><span>, in §2.2</span>
@@ -3140,37 +3162,37 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dfn-battery-promise">
    <a href="https://w3c.github.io/battery/#dfn-battery-promise">https://w3c.github.io/battery/#dfn-battery-promise</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-battery-promise">6.3.10. Battery Status API</a>
+    <li><a href="#ref-for-dfn-battery-promise">7.3.9. Battery Status API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-getbattery">
    <a href="https://w3c.github.io/battery/#dom-navigator-getbattery">https://w3c.github.io/battery/#dom-navigator-getbattery</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-navigator-getbattery">6.3.10. Battery Status API</a>
+    <li><a href="#ref-for-dom-navigator-getbattery">7.3.9. Battery Status API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-clipboard-read">
    <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-read">https://w3c.github.io/clipboard-apis/#dom-clipboard-read</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-clipboard-read">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-clipboard-read">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-clipboard-readtext">
    <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-readtext">https://w3c.github.io/clipboard-apis/#dom-clipboard-readtext</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-clipboard-readtext">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-clipboard-readtext">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-clipboard-write">
    <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-write">https://w3c.github.io/clipboard-apis/#dom-clipboard-write</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-clipboard-write">6.3.6. Clipboard APIs</a>
+    <li><a href="#ref-for-dom-clipboard-write">7.3.6. Clipboard APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-clipboard-writetext">
    <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext">https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-clipboard-writetext">6.3.6. Clipboard APIs</a>
+    <li><a href="#ref-for-dom-clipboard-writetext">7.3.6. Clipboard APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-document">
@@ -3179,22 +3201,22 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-document">3.1. Extensions to the Document interface</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a>
     <li><a href="#ref-for-document③">3.2. Prerendering browsing contexts</a> <a href="#ref-for-document④">(2)</a> <a href="#ref-for-document⑤">(3)</a> <a href="#ref-for-document⑥">(4)</a> <a href="#ref-for-document⑦">(5)</a>
     <li><a href="#ref-for-document⑧">4.5. Cleanup upon discarding a Document</a> <a href="#ref-for-document⑨">(2)</a>
-    <li><a href="#ref-for-document①⓪">5.1. APIs for creating and navigating browsing contexts by name</a>
-    <li><a href="#ref-for-document①①">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-document①⓪">6.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-document①①">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document">
    <a href="https://dom.spec.whatwg.org/#concept-document">https://dom.spec.whatwg.org/#concept-document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-document">2.5. Processing model</a> <a href="#ref-for-concept-document①">(2)</a> <a href="#ref-for-concept-document②">(3)</a>
-    <li><a href="#ref-for-concept-document③">6.3.11. Screen Orientation API</a> <a href="#ref-for-concept-document④">(2)</a>
+    <li><a href="#ref-for-concept-document③">7.3.10. Screen Orientation API</a> <a href="#ref-for-concept-document④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-event-fire">
    <a href="https://dom.spec.whatwg.org/#concept-event-fire">https://dom.spec.whatwg.org/#concept-event-fire</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-event-fire">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-concept-event-fire①">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-concept-event-fire①">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-node-document">
@@ -3204,7 +3226,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-concept-node-document④">2.3. Prepare a script</a>
     <li><a href="#ref-for-concept-node-document⑤">3.2. Prerendering browsing contexts</a>
     <li><a href="#ref-for-concept-node-document⑥">3.3. Modifications to creating browsing contexts</a>
-    <li><a href="#ref-for-concept-node-document⑦">6.1. Downloading resources</a>
+    <li><a href="#ref-for-concept-node-document⑦">7.1. Downloading resources</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-node">
@@ -3290,103 +3312,103 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dom-window-showdirectorypicker">
    <a href="https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker">https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-showdirectorypicker">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-window-showdirectorypicker">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-window-showopenfilepicker">
    <a href="https://wicg.github.io/file-system-access/#dom-window-showopenfilepicker">https://wicg.github.io/file-system-access/#dom-window-showopenfilepicker</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-showopenfilepicker">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-window-showopenfilepicker">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-window-showsavefilepicker">
    <a href="https://wicg.github.io/file-system-access/#dom-window-showsavefilepicker">https://wicg.github.io/file-system-access/#dom-window-showsavefilepicker</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-window-showsavefilepicker">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-window-showsavefilepicker">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-element-requestfullscreen">
    <a href="https://fullscreen.spec.whatwg.org/#dom-element-requestfullscreen">https://fullscreen.spec.whatwg.org/#dom-element-requestfullscreen</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-element-requestfullscreen">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-element-requestfullscreen">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-gamepad">
    <a href="https://w3c.github.io/gamepad/#dom-gamepad">https://w3c.github.io/gamepad/#dom-gamepad</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-gamepad">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-dom-gamepad">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-gamepadevent">
    <a href="https://w3c.github.io/gamepad/#dom-gamepadevent">https://w3c.github.io/gamepad/#dom-gamepadevent</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-gamepadevent">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-dom-gamepadevent">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-gamepadevent-gamepad">
    <a href="https://w3c.github.io/gamepad/#dom-gamepadevent-gamepad">https://w3c.github.io/gamepad/#dom-gamepadevent-gamepad</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-gamepadevent-gamepad">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-dom-gamepadevent-gamepad">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-gamepadconnected">
    <a href="https://w3c.github.io/gamepad/#dfn-gamepadconnected">https://w3c.github.io/gamepad/#dfn-gamepadconnected</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-gamepadconnected">6.3.12. Gamepad</a> <a href="#ref-for-dfn-gamepadconnected①">(2)</a> <a href="#ref-for-dfn-gamepadconnected②">(3)</a>
+    <li><a href="#ref-for-dfn-gamepadconnected">7.3.11. Gamepad</a> <a href="#ref-for-dfn-gamepadconnected①">(2)</a> <a href="#ref-for-dfn-gamepadconnected②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-gamepaddisconnected">
    <a href="https://w3c.github.io/gamepad/#dfn-gamepaddisconnected">https://w3c.github.io/gamepad/#dfn-gamepaddisconnected</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-gamepaddisconnected">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-dfn-gamepaddisconnected">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-getgamepads">
    <a href="https://w3c.github.io/gamepad/#dom-navigator-getgamepads">https://w3c.github.io/gamepad/#dom-navigator-getgamepads</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-navigator-getgamepads">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-dom-navigator-getgamepads">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-sensor-state-slot">
    <a href="https://w3c.github.io/sensors/#dom-sensor-state-slot">https://w3c.github.io/sensors/#dom-sensor-state-slot</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-sensor-state-slot">6.3.8. Generic Sensor API</a> <a href="#ref-for-dom-sensor-state-slot①">(2)</a>
+    <li><a href="#ref-for-dom-sensor-state-slot">7.3.7. Generic Sensor API</a> <a href="#ref-for-dom-sensor-state-slot①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-sensor-start">
    <a href="https://w3c.github.io/sensors/#dom-sensor-start">https://w3c.github.io/sensors/#dom-sensor-start</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-sensor-start">6.3.8. Generic Sensor API</a>
+    <li><a href="#ref-for-dom-sensor-start">7.3.7. Generic Sensor API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-sensor-stop">
    <a href="https://w3c.github.io/sensors/#dom-sensor-stop">https://w3c.github.io/sensors/#dom-sensor-stop</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-sensor-stop">6.3.8. Generic Sensor API</a>
+    <li><a href="#ref-for-dom-sensor-stop">7.3.7. Generic Sensor API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-clearwatch-method">
    <a href="https://w3c.github.io/geolocation-api/#clearwatch-method">https://w3c.github.io/geolocation-api/#clearwatch-method</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-clearwatch-method">6.3.1. Geolocation API</a>
+    <li><a href="#ref-for-clearwatch-method">7.3.1. Geolocation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-getcurrentposition-method">
    <a href="https://w3c.github.io/geolocation-api/#getcurrentposition-method">https://w3c.github.io/geolocation-api/#getcurrentposition-method</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-getcurrentposition-method">6.3.1. Geolocation API</a>
+    <li><a href="#ref-for-getcurrentposition-method">7.3.1. Geolocation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-watch-process">
    <a href="https://w3c.github.io/geolocation-api/#dfn-watch-process">https://w3c.github.io/geolocation-api/#dfn-watch-process</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-watch-process">6.3.1. Geolocation API</a> <a href="#ref-for-dfn-watch-process①">(2)</a>
+    <li><a href="#ref-for-dfn-watch-process">7.3.1. Geolocation API</a> <a href="#ref-for-dfn-watch-process①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-watchposition-method">
    <a href="https://w3c.github.io/geolocation-api/#watchposition-method">https://w3c.github.io/geolocation-api/#watchposition-method</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-watchposition-method">6.3.1. Geolocation API</a>
+    <li><a href="#ref-for-watchposition-method">7.3.1. Geolocation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-manipulation-task-source">
@@ -3398,7 +3420,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dedicatedworkerglobalscope">
    <a href="https://html.spec.whatwg.org/multipage/workers.html#dedicatedworkerglobalscope">https://html.spec.whatwg.org/multipage/workers.html#dedicatedworkerglobalscope</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dedicatedworkerglobalscope">6.3.2. Web Serial API</a>
+    <li><a href="#ref-for-dedicatedworkerglobalscope">7.3.2. Web Serial API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-eventhandler">
@@ -3411,9 +3433,9 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#window">https://html.spec.whatwg.org/multipage/window-object.html#window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-window">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-window①">6.2. User prompts</a>
-    <li><a href="#ref-for-window②">6.3.2. Web Serial API</a>
-    <li><a href="#ref-for-window③">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-window①">7.2. User prompts</a>
+    <li><a href="#ref-for-window②">7.3.2. Web Serial API</a>
+    <li><a href="#ref-for-window③">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-abort-a-document">
@@ -3427,38 +3449,39 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-active-document">3.2. Prerendering browsing contexts</a> <a href="#ref-for-active-document①">(2)</a> <a href="#ref-for-active-document②">(3)</a> <a href="#ref-for-active-document③">(4)</a>
     <li><a href="#ref-for-active-document④">4.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-active-document⑤">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-active-sandboxing-flag-set">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#active-sandboxing-flag-set">https://html.spec.whatwg.org/multipage/origin.html#active-sandboxing-flag-set</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-active-sandboxing-flag-set">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-active-sandboxing-flag-set">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-active-window">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#active-window">https://html.spec.whatwg.org/multipage/browsers.html#active-window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-active-window">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-active-window①">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-active-window①">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-allowed-to-use">
    <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use">https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-allowed-to-use">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-allowed-to-use">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-window">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window">https://html.spec.whatwg.org/multipage/window-object.html#concept-document-window</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-document-window">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-concept-document-window①">6.3.2. Web Serial API</a>
+    <li><a href="#ref-for-concept-document-window①">7.3.2. Web Serial API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-auxiliary-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#auxiliary-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#auxiliary-browsing-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-auxiliary-browsing-context">5.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-auxiliary-browsing-context">6.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-becomes-browsing-context-connected">
@@ -3470,7 +3493,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-event-beforeunload">
    <a href="https://html.spec.whatwg.org/multipage/indices.html#event-beforeunload">https://html.spec.whatwg.org/multipage/indices.html#event-beforeunload</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-event-beforeunload">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-event-beforeunload">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-body-ok">
@@ -3482,19 +3505,18 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-window-bc">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc">https://html.spec.whatwg.org/multipage/window-object.html#window-bc</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-window-bc">6.2. User prompts</a> <a href="#ref-for-window-bc①">(2)</a>
-    <li><a href="#ref-for-window-bc②">6.3.1. Geolocation API</a> <a href="#ref-for-window-bc③">(2)</a> <a href="#ref-for-window-bc④">(3)</a>
-    <li><a href="#ref-for-window-bc⑤">6.3.2. Web Serial API</a>
-    <li><a href="#ref-for-window-bc⑥">6.3.3. Notifications API</a> <a href="#ref-for-window-bc⑦">(2)</a> <a href="#ref-for-window-bc⑧">(3)</a>
-    <li><a href="#ref-for-window-bc⑨">6.3.4. Web MIDI API</a>
-    <li><a href="#ref-for-window-bc①⓪">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-window-bc①①">6.3.6. Clipboard APIs</a> <a href="#ref-for-window-bc①②">(2)</a>
-    <li><a href="#ref-for-window-bc①③">6.3.7. Screen Wake Lock API</a>
-    <li><a href="#ref-for-window-bc①④">6.3.8. Generic Sensor API</a>
-    <li><a href="#ref-for-window-bc①⑤">6.3.9. Web NFC</a> <a href="#ref-for-window-bc①⑥">(2)</a>
-    <li><a href="#ref-for-window-bc①⑦">6.3.10. Battery Status API</a>
-    <li><a href="#ref-for-window-bc①⑧">6.3.11. Screen Orientation API</a> <a href="#ref-for-window-bc①⑨">(2)</a>
-    <li><a href="#ref-for-window-bc②⓪">6.3.12. Gamepad</a> <a href="#ref-for-window-bc②①">(2)</a>
+    <li><a href="#ref-for-window-bc">7.2. User prompts</a> <a href="#ref-for-window-bc①">(2)</a>
+    <li><a href="#ref-for-window-bc②">7.3.1. Geolocation API</a> <a href="#ref-for-window-bc③">(2)</a> <a href="#ref-for-window-bc④">(3)</a>
+    <li><a href="#ref-for-window-bc⑤">7.3.2. Web Serial API</a>
+    <li><a href="#ref-for-window-bc⑥">7.3.3. Notifications API</a> <a href="#ref-for-window-bc⑦">(2)</a> <a href="#ref-for-window-bc⑧">(3)</a>
+    <li><a href="#ref-for-window-bc⑨">7.3.4. Web MIDI API</a>
+    <li><a href="#ref-for-window-bc①⓪">7.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-window-bc①①">7.3.6. Clipboard APIs</a> <a href="#ref-for-window-bc①②">(2)</a>
+    <li><a href="#ref-for-window-bc①③">7.3.7. Generic Sensor API</a>
+    <li><a href="#ref-for-window-bc①④">7.3.8. Web NFC</a> <a href="#ref-for-window-bc①⑤">(2)</a>
+    <li><a href="#ref-for-window-bc①⑥">7.3.9. Battery Status API</a>
+    <li><a href="#ref-for-window-bc①⑦">7.3.10. Screen Orientation API</a> <a href="#ref-for-window-bc①⑧">(2)</a>
+    <li><a href="#ref-for-window-bc①⑨">7.3.11. Gamepad</a> <a href="#ref-for-window-bc②⓪">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-browsing-context-connected">
@@ -3506,7 +3528,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-cannot-show-simple-dialogs">
    <a href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs">https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-cannot-show-simple-dialogs">6.2. User prompts</a>
+    <li><a href="#ref-for-cannot-show-simple-dialogs">7.2. User prompts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-creating-a-new-nested-browsing-context">
@@ -3530,13 +3552,13 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-current-global-object">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-current-global-object">6.3.3. Notifications API</a>
+    <li><a href="#ref-for-current-global-object">7.3.3. Notifications API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-current-settings-object">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-current-settings-object">6.3.3. Notifications API</a> <a href="#ref-for-current-settings-object①">(2)</a>
+    <li><a href="#ref-for-current-settings-object">7.3.3. Notifications API</a> <a href="#ref-for-current-settings-object①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-delay-the-load-event">
@@ -3560,7 +3582,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-downloading-hyperlinks">
    <a href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks">https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-downloading-hyperlinks">6.1. Downloading resources</a>
+    <li><a href="#ref-for-downloading-hyperlinks">7.1. Downloading resources</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-environment-discarding-steps">
@@ -3635,9 +3657,9 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel">https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-in-parallel">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-in-parallel①">6.1. Downloading resources</a>
-    <li><a href="#ref-for-in-parallel②">6.3.3. Notifications API</a> <a href="#ref-for-in-parallel③">(2)</a>
-    <li><a href="#ref-for-in-parallel④">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-in-parallel①">7.1. Downloading resources</a>
+    <li><a href="#ref-for-in-parallel②">7.3.3. Notifications API</a> <a href="#ref-for-in-parallel③">(2)</a>
+    <li><a href="#ref-for-in-parallel④">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-the-link-element">
@@ -3695,13 +3717,13 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dom-document-open-window">
    <a href="https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-document-open-window">https://html.spec.whatwg.org/multipage/dynamic-markup-insertion.html#dom-document-open-window</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-document-open-window">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-document-open-window">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-settings-object-origin">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-settings-object-origin">6.3.3. Notifications API</a>
+    <li><a href="#ref-for-concept-settings-object-origin">7.3.3. Notifications API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-parse-a-url">
@@ -3720,7 +3742,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dom-print">
    <a href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print">https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-print">6.2. User prompts</a>
+    <li><a href="#ref-for-dom-print">7.2. User prompts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-fetch">
@@ -3771,24 +3793,23 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-concept-relevant-global">2.5. Processing model</a>
     <li><a href="#ref-for-concept-relevant-global①">3.2. Prerendering browsing contexts</a> <a href="#ref-for-concept-relevant-global②">(2)</a>
-    <li><a href="#ref-for-concept-relevant-global③">6.3.1. Geolocation API</a> <a href="#ref-for-concept-relevant-global④">(2)</a> <a href="#ref-for-concept-relevant-global⑤">(3)</a>
-    <li><a href="#ref-for-concept-relevant-global⑥">6.3.2. Web Serial API</a> <a href="#ref-for-concept-relevant-global⑦">(2)</a> <a href="#ref-for-concept-relevant-global⑧">(3)</a> <a href="#ref-for-concept-relevant-global⑨">(4)</a> <a href="#ref-for-concept-relevant-global①⓪">(5)</a>
-    <li><a href="#ref-for-concept-relevant-global①①">6.3.3. Notifications API</a> <a href="#ref-for-concept-relevant-global①②">(2)</a>
-    <li><a href="#ref-for-concept-relevant-global①③">6.3.4. Web MIDI API</a>
-    <li><a href="#ref-for-concept-relevant-global①④">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-concept-relevant-global①⑤">6.3.6. Clipboard APIs</a> <a href="#ref-for-concept-relevant-global①⑥">(2)</a>
-    <li><a href="#ref-for-concept-relevant-global①⑦">6.3.7. Screen Wake Lock API</a>
-    <li><a href="#ref-for-concept-relevant-global①⑧">6.3.8. Generic Sensor API</a>
-    <li><a href="#ref-for-concept-relevant-global①⑨">6.3.9. Web NFC</a> <a href="#ref-for-concept-relevant-global②⓪">(2)</a>
-    <li><a href="#ref-for-concept-relevant-global②①">6.3.10. Battery Status API</a>
-    <li><a href="#ref-for-concept-relevant-global②②">6.3.11. Screen Orientation API</a> <a href="#ref-for-concept-relevant-global②③">(2)</a>
-    <li><a href="#ref-for-concept-relevant-global②④">6.3.12. Gamepad</a> <a href="#ref-for-concept-relevant-global②⑤">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global③">7.3.1. Geolocation API</a> <a href="#ref-for-concept-relevant-global④">(2)</a> <a href="#ref-for-concept-relevant-global⑤">(3)</a>
+    <li><a href="#ref-for-concept-relevant-global⑥">7.3.2. Web Serial API</a> <a href="#ref-for-concept-relevant-global⑦">(2)</a> <a href="#ref-for-concept-relevant-global⑧">(3)</a> <a href="#ref-for-concept-relevant-global⑨">(4)</a> <a href="#ref-for-concept-relevant-global①⓪">(5)</a>
+    <li><a href="#ref-for-concept-relevant-global①①">7.3.3. Notifications API</a> <a href="#ref-for-concept-relevant-global①②">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global①③">7.3.4. Web MIDI API</a>
+    <li><a href="#ref-for-concept-relevant-global①④">7.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-concept-relevant-global①⑤">7.3.6. Clipboard APIs</a> <a href="#ref-for-concept-relevant-global①⑥">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global①⑦">7.3.7. Generic Sensor API</a>
+    <li><a href="#ref-for-concept-relevant-global①⑧">7.3.8. Web NFC</a> <a href="#ref-for-concept-relevant-global①⑨">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global②⓪">7.3.9. Battery Status API</a>
+    <li><a href="#ref-for-concept-relevant-global②①">7.3.10. Screen Orientation API</a> <a href="#ref-for-concept-relevant-global②②">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global②③">7.3.11. Gamepad</a> <a href="#ref-for-concept-relevant-global②④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-relevant-settings-object">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-relevant-settings-object">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-relevant-settings-object">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-request">
@@ -3820,7 +3841,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-sandboxed-orientation-lock-browsing-context-flag">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#sandboxed-orientation-lock-browsing-context-flag">https://html.spec.whatwg.org/multipage/origin.html#sandboxed-orientation-lock-browsing-context-flag</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sandboxed-orientation-lock-browsing-context-flag">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-sandboxed-orientation-lock-browsing-context-flag">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-script">
@@ -3832,13 +3853,13 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-script-closable">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable">https://html.spec.whatwg.org/multipage/window-object.html#script-closable</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-script-closable">5.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-script-closable">6.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-secure-context">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context">https://html.spec.whatwg.org/multipage/webappapis.html#secure-context</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-secure-context">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-secure-context">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-session-history">
@@ -3846,7 +3867,7 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-session-history">3.2. Prerendering browsing contexts</a>
     <li><a href="#ref-for-session-history①">4.3. Maintaining a trivial session history</a>
-    <li><a href="#ref-for-session-history②">5.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-session-history②">6.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-source-browsing-context">
@@ -3865,7 +3886,14 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-sticky-activation">
    <a href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation">https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-sticky-activation">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-sticky-activation">7.4. Implicitly restricted APIs</a> <a href="#ref-for-sticky-activation①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-tlbc-system-focus">
+   <a href="https://html.spec.whatwg.org/multipage/interaction.html#tlbc-system-focus">https://html.spec.whatwg.org/multipage/interaction.html#tlbc-system-focus</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-tlbc-system-focus">5.2. Interaction with system focus</a>
+    <li><a href="#ref-for-tlbc-system-focus①">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-the-script-is-ready">
@@ -3892,15 +3920,15 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-top-level-browsing-context">3.2. Prerendering browsing contexts</a> <a href="#ref-for-top-level-browsing-context①">(2)</a>
     <li><a href="#ref-for-top-level-browsing-context②">4.1. Allowing activation in place of navigation</a>
-    <li><a href="#ref-for-top-level-browsing-context③">5. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-top-level-browsing-context④">5.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-top-level-browsing-context③">6. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-top-level-browsing-context④">6.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-transient-activation">
    <a href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation">https://html.spec.whatwg.org/multipage/interaction.html#transient-activation</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-transient-activation">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-transient-activation①">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-transient-activation">7.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-transient-activation①">7.4. Implicitly restricted APIs</a> <a href="#ref-for-transient-activation②">(2)</a> <a href="#ref-for-transient-activation③">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-traverse-the-history">
@@ -3918,14 +3946,14 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-api-idledetector-requestpermission">
    <a href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission">https://wicg.github.io/idle-detection/#api-idledetector-requestpermission</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-api-idledetector-requestpermission">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-api-idledetector-requestpermission①">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-api-idledetector-requestpermission">7.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-api-idledetector-requestpermission①">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-api-idledetector-start">
    <a href="https://wicg.github.io/idle-detection/#api-idledetector-start">https://wicg.github.io/idle-detection/#api-idledetector-start</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-api-idledetector-start">6.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-api-idledetector-start">7.3.5. Idle Detection API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-set-append">
@@ -4068,49 +4096,79 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-user-agent">
    <a href="https://infra.spec.whatwg.org/#user-agent">https://infra.spec.whatwg.org/#user-agent</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-user-agent">6.3.11. Screen Orientation API</a> <a href="#ref-for-user-agent①">(2)</a>
+    <li><a href="#ref-for-user-agent">7.3.10. Screen Orientation API</a> <a href="#ref-for-user-agent①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-notification-notification">
    <a href="https://notifications.spec.whatwg.org/#dom-notification-notification">https://notifications.spec.whatwg.org/#dom-notification-notification</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-notification-notification">6.3.3. Notifications API</a>
+    <li><a href="#ref-for-dom-notification-notification">7.3.3. Notifications API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-notification-permission">
    <a href="https://notifications.spec.whatwg.org/#dom-notification-permission">https://notifications.spec.whatwg.org/#dom-notification-permission</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-notification-permission">6.3.3. Notifications API</a>
+    <li><a href="#ref-for-dom-notification-permission">7.3.3. Notifications API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-notification-requestpermission">
    <a href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission">https://notifications.spec.whatwg.org/#dom-notification-requestpermission</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-notification-requestpermission">6.3.3. Notifications API</a> <a href="#ref-for-dom-notification-requestpermission①">(2)</a>
+    <li><a href="#ref-for-dom-notification-requestpermission">7.3.3. Notifications API</a> <a href="#ref-for-dom-notification-requestpermission①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-hidden">
    <a href="https://w3c.github.io/page-visibility/#dfn-hidden">https://w3c.github.io/page-visibility/#dfn-hidden</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-hidden">6.3.7. Screen Wake Lock API</a>
+    <li><a href="#ref-for-dfn-hidden">5.1. Interaction with Page Visibility</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-visibility-states">
+   <a href="https://w3c.github.io/page-visibility/#dfn-visibility-states">https://w3c.github.io/page-visibility/#dfn-visibility-states</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-visibility-states">7.4. Implicitly restricted APIs</a> <a href="#ref-for-dfn-visibility-states①">(2)</a> <a href="#ref-for-dfn-visibility-states②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-visible">
+   <a href="https://w3c.github.io/page-visibility/#dfn-visible">https://w3c.github.io/page-visibility/#dfn-visible</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-visible">7.4. Implicitly restricted APIs</a> <a href="#ref-for-dfn-visible①">(2)</a> <a href="#ref-for-dfn-visible②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-paymentrequest-show">
    <a href="https://www.w3.org/TR/payment-request/#dom-paymentrequest-show">https://www.w3.org/TR/payment-request/#dom-paymentrequest-show</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-paymentrequest-show">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-paymentrequest-show">7.4. Implicitly restricted APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-htmlvideoelement-requestpictureinpicture">
+   <a href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture">https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-htmlvideoelement-requestpictureinpicture">7.4. Implicitly restricted APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-request-picture-in-picture-algorithm">
+   <a href="https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm">https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-request-picture-in-picture-algorithm">7.4. Implicitly restricted APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-htmlvideoelement-autopictureinpicture">
+   <a href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-autopictureinpicture">https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-autopictureinpicture</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-htmlvideoelement-autopictureinpicture">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-requestpointerlock-pointerlockoptions-options">
    <a href="https://w3c.github.io/pointerlock/#dfn-requestpointerlock-pointerlockoptions-options">https://w3c.github.io/pointerlock/#dfn-requestpointerlock-pointerlockoptions-options</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-requestpointerlock-pointerlockoptions-options">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dfn-requestpointerlock-pointerlockoptions-options">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-presentationrequest-start">
    <a href="https://w3c.github.io/presentation-api/#dom-presentationrequest-start">https://w3c.github.io/presentation-api/#dom-presentationrequest-start</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-presentationrequest-start">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-presentationrequest-start">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-referrer-policy">
@@ -4124,43 +4182,43 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dfn-apply-an-orientation-lock">
    <a href="https://w3c.github.io/screen-orientation/#dfn-apply-an-orientation-lock">https://w3c.github.io/screen-orientation/#dfn-apply-an-orientation-lock</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-apply-an-orientation-lock">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-dfn-apply-an-orientation-lock">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-screenorientation-lock">
    <a href="https://w3c.github.io/screen-orientation/#dom-screenorientation-lock">https://w3c.github.io/screen-orientation/#dom-screenorientation-lock</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-screenorientation-lock">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-dom-screenorientation-lock">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-pre-lock-conditions">
    <a href="https://w3c.github.io/screen-orientation/#dfn-pre-lock-conditions">https://w3c.github.io/screen-orientation/#dfn-pre-lock-conditions</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-pre-lock-conditions">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-dfn-pre-lock-conditions">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-screenorientation-unlock">
    <a href="https://w3c.github.io/screen-orientation/#dom-screenorientation-unlock">https://w3c.github.io/screen-orientation/#dom-screenorientation-unlock</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-screenorientation-unlock">6.3.11. Screen Orientation API</a> <a href="#ref-for-dom-screenorientation-unlock①">(2)</a>
+    <li><a href="#ref-for-dom-screenorientation-unlock">7.3.10. Screen Orientation API</a> <a href="#ref-for-dom-screenorientation-unlock①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-the-request-method">
    <a href="https://w3c.github.io/screen-wake-lock/#the-request-method">https://w3c.github.io/screen-wake-lock/#the-request-method</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-the-request-method">6.3.7. Screen Wake Lock API</a>
+    <li><a href="#ref-for-the-request-method">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-serial-getports">
    <a href="https://wicg.github.io/serial/#dom-serial-getports">https://wicg.github.io/serial/#dom-serial-getports</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-serial-getports">6.3.2. Web Serial API</a>
+    <li><a href="#ref-for-dom-serial-getports">7.3.2. Web Serial API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-serial-requestPort">
    <a href="https://wicg.github.io/serial/#dom-serial-requestPort">https://wicg.github.io/serial/#dom-serial-requestPort</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-serial-requestPort">6.3.2. Web Serial API</a>
+    <li><a href="#ref-for-dom-serial-requestPort">7.3.2. Web Serial API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-basic-url-parser">
@@ -4199,32 +4257,32 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-dom-ndefreader-scan">
    <a href="https://w3c.github.io/web-nfc/#dom-ndefreader-scan">https://w3c.github.io/web-nfc/#dom-ndefreader-scan</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-ndefreader-scan">6.3.9. Web NFC</a>
+    <li><a href="#ref-for-dom-ndefreader-scan">7.3.8. Web NFC</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-ndefreader-write">
    <a href="https://w3c.github.io/web-nfc/#dom-ndefreader-write">https://w3c.github.io/web-nfc/#dom-ndefreader-write</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-ndefreader-write">6.3.9. Web NFC</a>
+    <li><a href="#ref-for-dom-ndefreader-write">7.3.8. Web NFC</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-share">
    <a href="https://www.w3.org/TR/web-share/#dom-navigator-share">https://www.w3.org/TR/web-share/#dom-navigator-share</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-navigator-share">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-dom-navigator-share">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMException">
    <a href="https://heycam.github.io/webidl/#idl-DOMException">https://heycam.github.io/webidl/#idl-DOMException</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-idl-DOMException">6.3.2. Web Serial API</a>
-    <li><a href="#ref-for-idl-DOMException①">6.3.11. Screen Orientation API</a> <a href="#ref-for-idl-DOMException②">(2)</a>
+    <li><a href="#ref-for-idl-DOMException">7.3.2. Web Serial API</a>
+    <li><a href="#ref-for-idl-DOMException①">7.3.10. Screen Orientation API</a> <a href="#ref-for-idl-DOMException②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-notsupportederror">
    <a href="https://heycam.github.io/webidl/#notsupportederror">https://heycam.github.io/webidl/#notsupportederror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-notsupportederror">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-notsupportederror">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-promise">
@@ -4236,14 +4294,14 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-securityerror">
    <a href="https://heycam.github.io/webidl/#securityerror">https://heycam.github.io/webidl/#securityerror</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-securityerror">6.3.2. Web Serial API</a>
-    <li><a href="#ref-for-securityerror①">6.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-securityerror">7.3.2. Web Serial API</a>
+    <li><a href="#ref-for-securityerror①">7.3.10. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-a-promise-rejected-with">
    <a href="https://heycam.github.io/webidl/#a-promise-rejected-with">https://heycam.github.io/webidl/#a-promise-rejected-with</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-a-promise-rejected-with">6.3.2. Web Serial API</a>
+    <li><a href="#ref-for-a-promise-rejected-with">7.3.2. Web Serial API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-boolean">
@@ -4255,32 +4313,31 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-reject">
    <a href="https://heycam.github.io/webidl/#reject">https://heycam.github.io/webidl/#reject</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-reject">6.3.11. Screen Orientation API</a> <a href="#ref-for-reject①">(2)</a>
+    <li><a href="#ref-for-reject">7.3.10. Screen Orientation API</a> <a href="#ref-for-reject①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-this">
    <a href="https://heycam.github.io/webidl/#this">https://heycam.github.io/webidl/#this</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-this">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-this①">6.2. User prompts</a>
-    <li><a href="#ref-for-this②">6.3.1. Geolocation API</a> <a href="#ref-for-this③">(2)</a> <a href="#ref-for-this④">(3)</a> <a href="#ref-for-this⑤">(4)</a> <a href="#ref-for-this⑥">(5)</a> <a href="#ref-for-this⑦">(6)</a>
-    <li><a href="#ref-for-this⑧">6.3.2. Web Serial API</a> <a href="#ref-for-this⑨">(2)</a> <a href="#ref-for-this①⓪">(3)</a> <a href="#ref-for-this①①">(4)</a> <a href="#ref-for-this①②">(5)</a> <a href="#ref-for-this①③">(6)</a>
-    <li><a href="#ref-for-this①④">6.3.3. Notifications API</a> <a href="#ref-for-this①⑤">(2)</a> <a href="#ref-for-this①⑥">(3)</a> <a href="#ref-for-this①⑦">(4)</a>
-    <li><a href="#ref-for-this①⑧">6.3.4. Web MIDI API</a> <a href="#ref-for-this①⑨">(2)</a>
-    <li><a href="#ref-for-this②⓪">6.3.5. Idle Detection API</a> <a href="#ref-for-this②①">(2)</a>
-    <li><a href="#ref-for-this②②">6.3.6. Clipboard APIs</a> <a href="#ref-for-this②③">(2)</a> <a href="#ref-for-this②④">(3)</a> <a href="#ref-for-this②⑤">(4)</a>
-    <li><a href="#ref-for-this②⑥">6.3.7. Screen Wake Lock API</a> <a href="#ref-for-this②⑦">(2)</a>
-    <li><a href="#ref-for-this②⑧">6.3.8. Generic Sensor API</a> <a href="#ref-for-this②⑨">(2)</a> <a href="#ref-for-this③⓪">(3)</a> <a href="#ref-for-this③①">(4)</a>
-    <li><a href="#ref-for-this③②">6.3.9. Web NFC</a> <a href="#ref-for-this③③">(2)</a> <a href="#ref-for-this③④">(3)</a> <a href="#ref-for-this③⑤">(4)</a>
-    <li><a href="#ref-for-this③⑥">6.3.10. Battery Status API</a> <a href="#ref-for-this③⑦">(2)</a> <a href="#ref-for-this③⑧">(3)</a>
-    <li><a href="#ref-for-this③⑨">6.3.11. Screen Orientation API</a> <a href="#ref-for-this④⓪">(2)</a> <a href="#ref-for-this④①">(3)</a> <a href="#ref-for-this④②">(4)</a>
-    <li><a href="#ref-for-this④③">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-this①">7.2. User prompts</a>
+    <li><a href="#ref-for-this②">7.3.1. Geolocation API</a> <a href="#ref-for-this③">(2)</a> <a href="#ref-for-this④">(3)</a> <a href="#ref-for-this⑤">(4)</a> <a href="#ref-for-this⑥">(5)</a> <a href="#ref-for-this⑦">(6)</a>
+    <li><a href="#ref-for-this⑧">7.3.2. Web Serial API</a> <a href="#ref-for-this⑨">(2)</a> <a href="#ref-for-this①⓪">(3)</a> <a href="#ref-for-this①①">(4)</a> <a href="#ref-for-this①②">(5)</a> <a href="#ref-for-this①③">(6)</a>
+    <li><a href="#ref-for-this①④">7.3.3. Notifications API</a> <a href="#ref-for-this①⑤">(2)</a> <a href="#ref-for-this①⑥">(3)</a> <a href="#ref-for-this①⑦">(4)</a>
+    <li><a href="#ref-for-this①⑧">7.3.4. Web MIDI API</a> <a href="#ref-for-this①⑨">(2)</a>
+    <li><a href="#ref-for-this②⓪">7.3.5. Idle Detection API</a> <a href="#ref-for-this②①">(2)</a>
+    <li><a href="#ref-for-this②②">7.3.6. Clipboard APIs</a> <a href="#ref-for-this②③">(2)</a> <a href="#ref-for-this②④">(3)</a> <a href="#ref-for-this②⑤">(4)</a>
+    <li><a href="#ref-for-this②⑥">7.3.7. Generic Sensor API</a> <a href="#ref-for-this②⑦">(2)</a> <a href="#ref-for-this②⑧">(3)</a> <a href="#ref-for-this②⑨">(4)</a>
+    <li><a href="#ref-for-this③⓪">7.3.8. Web NFC</a> <a href="#ref-for-this③①">(2)</a> <a href="#ref-for-this③②">(3)</a> <a href="#ref-for-this③③">(4)</a>
+    <li><a href="#ref-for-this③④">7.3.9. Battery Status API</a> <a href="#ref-for-this③⑤">(2)</a> <a href="#ref-for-this③⑥">(3)</a>
+    <li><a href="#ref-for-this③⑦">7.3.10. Screen Orientation API</a> <a href="#ref-for-this③⑧">(2)</a> <a href="#ref-for-this③⑨">(3)</a> <a href="#ref-for-this④⓪">(4)</a>
+    <li><a href="#ref-for-this④①">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-requestmidiaccess">
    <a href="https://webaudio.github.io/web-midi-api/#dom-navigator-requestmidiaccess">https://webaudio.github.io/web-midi-api/#dom-navigator-requestmidiaccess</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-navigator-requestmidiaccess">6.3.4. Web MIDI API</a>
+    <li><a href="#ref-for-dom-navigator-requestmidiaccess">7.3.4. Web MIDI API</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -4435,6 +4492,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-source-browsing-context">source browsing context</span>
      <li><span class="dfn-paneled" id="term-for-dom-script-src">src</span>
      <li><span class="dfn-paneled" id="term-for-sticky-activation">sticky activation</span>
+     <li><span class="dfn-paneled" id="term-for-tlbc-system-focus">system focus</span>
      <li><span class="dfn-paneled" id="term-for-the-script-is-ready">the script is ready</span>
      <li><span class="dfn-paneled" id="term-for-concept-script-script">the script's script</span>
      <li><span class="dfn-paneled" id="term-for-concept-script-type">the script's type</span>
@@ -4485,11 +4543,20 @@ Parts of this work may be from another specification document.  If so, those par
     <a data-link-type="biblio">[page-visibility]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dfn-hidden">hidden</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-visibility-states">visibility state</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-visible">visible</span>
     </ul>
    <li>
     <a data-link-type="biblio">[PAYMENT-REQUEST]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-paymentrequest-show">show()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[PICTURE-IN-PICTURE]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-htmlvideoelement-requestpictureinpicture">autoPictureInPicture</span>
+     <li><span class="dfn-paneled" id="term-for-request-picture-in-picture-algorithm">request picture-in-picture</span>
+     <li><span class="dfn-paneled" id="term-for-dom-htmlvideoelement-autopictureinpicture">requestPictureInPicture()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[POINTERLOCK]</a> defines the following terms:
@@ -4515,7 +4582,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-dom-screenorientation-unlock">unlock()</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[screen-wake-lock]</a> defines the following terms:
+    <a data-link-type="biblio">[SCREEN-WAKE-LOCK]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-the-request-method">request()</span>
     </ul>
@@ -4587,8 +4654,12 @@ Parts of this work may be from another specification document.  If so, those par
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-notifications">[NOTIFICATIONS]
    <dd>Anne van Kesteren. <a href="https://notifications.spec.whatwg.org/">Notifications API Standard</a>. Living Standard. URL: <a href="https://notifications.spec.whatwg.org/">https://notifications.spec.whatwg.org/</a>
+   <dt id="biblio-page-visibility">[PAGE-VISIBILITY]
+   <dd>Jatinder Mann; Arvind Jain. <a href="https://www.w3.org/TR/page-visibility/">Page Visibility (Second Edition)</a>. 29 October 2013. REC. URL: <a href="https://www.w3.org/TR/page-visibility/">https://www.w3.org/TR/page-visibility/</a>
    <dt id="biblio-payment-request">[PAYMENT-REQUEST]
    <dd>Marcos Caceres; et al. <a href="https://www.w3.org/TR/payment-request/">Payment Request API</a>. 3 December 2020. CR. URL: <a href="https://www.w3.org/TR/payment-request/">https://www.w3.org/TR/payment-request/</a>
+   <dt id="biblio-picture-in-picture">[PICTURE-IN-PICTURE]
+   <dd>Francois Beaufort; Mounir Lamouri. <a href="https://www.w3.org/TR/picture-in-picture/">Picture-in-Picture</a>. 5 May 2021. WD. URL: <a href="https://www.w3.org/TR/picture-in-picture/">https://www.w3.org/TR/picture-in-picture/</a>
    <dt id="biblio-pointerlock">[POINTERLOCK]
    <dd>Vincent Scheib. <a href="https://www.w3.org/TR/pointerlock/">Pointer Lock</a>. 27 October 2016. REC. URL: <a href="https://www.w3.org/TR/pointerlock/">https://www.w3.org/TR/pointerlock/</a>
    <dt id="biblio-presentation-api">[PRESENTATION-API]
@@ -4612,8 +4683,6 @@ Parts of this work may be from another specification document.  If so, those par
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
-   <dt id="biblio-page-visibility">[PAGE-VISIBILITY]
-   <dd>Jatinder Mann; Arvind Jain. <a href="https://www.w3.org/TR/page-visibility/">Page Visibility (Second Edition)</a>. 29 October 2013. REC. URL: <a href="https://www.w3.org/TR/page-visibility/">https://www.w3.org/TR/page-visibility/</a>
    <dt id="biblio-resource-hints">[RESOURCE-HINTS]
    <dd>Ilya Grigorik. <a href="https://www.w3.org/TR/resource-hints/">Resource Hints</a>. 5 October 2020. WD. URL: <a href="https://www.w3.org/TR/resource-hints/">https://www.w3.org/TR/resource-hints/</a>
   </dl>
@@ -4636,6 +4705,7 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the <var>requiresAnonymousClientIPWhenCrossOrigin</var> flag. We may wish to include language about when the UA should deduplicate requests. <a href="#issue-8088bc6e"> ↵ </a></div>
    <div class="issue"> We should also notice removals and consider cancelling speculated actions. <a href="#issue-ba67a3f6"> ↵ </a></div>
    <div class="issue">Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn’t observable anyway? <a href="#issue-755a1cad"> ↵ </a></div>
+   <div class="issue">What about portals? Portals might not be hidden, and portals are envisioned to be a type of prerendering browsing context.<a href="#issue-1c569c2c"> ↵ </a></div>
    <div class="issue">This uses <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object">current settings object</a> under the assumption that <a href="https://github.com/whatwg/notifications/issues/86">whatwg/notifications#86</a> gets resolved.<a href="#issue-93214870"> ↵ </a></div>
   </div>
   <aside class="dfn-panel" data-for="attr-valuedef-link-rel-prerender">
@@ -4754,25 +4824,26 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-prerendering-browsing-context⑦">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context⑧">(2)</a> <a href="#ref-for-prerendering-browsing-context⑨">(3)</a> <a href="#ref-for-prerendering-browsing-context①⓪">(4)</a>
     <li><a href="#ref-for-prerendering-browsing-context①①">4.3. Maintaining a trivial session history</a> <a href="#ref-for-prerendering-browsing-context①②">(2)</a> <a href="#ref-for-prerendering-browsing-context①③">(3)</a>
     <li><a href="#ref-for-prerendering-browsing-context①④">4.4. Preventing non-HTTP(S) navigations</a> <a href="#ref-for-prerendering-browsing-context①⑤">(2)</a> <a href="#ref-for-prerendering-browsing-context①⑥">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context①⑦">5. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-prerendering-browsing-context①⑧">5.1. APIs for creating and navigating browsing contexts by name</a> <a href="#ref-for-prerendering-browsing-context①⑨">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⓪">6. Preventing intrusive behaviors</a>
-    <li><a href="#ref-for-prerendering-browsing-context②①">6.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context②②">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②③">6.2. User prompts</a> <a href="#ref-for-prerendering-browsing-context②④">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⑤">6.3. Delaying async API results</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⑥">6.3.1. Geolocation API</a> <a href="#ref-for-prerendering-browsing-context②⑦">(2)</a> <a href="#ref-for-prerendering-browsing-context②⑧">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⑨">6.3.2. Web Serial API</a> <a href="#ref-for-prerendering-browsing-context③⓪">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context③①">6.3.3. Notifications API</a> <a href="#ref-for-prerendering-browsing-context③②">(2)</a> <a href="#ref-for-prerendering-browsing-context③③">(3)</a> <a href="#ref-for-prerendering-browsing-context③④">(4)</a>
-    <li><a href="#ref-for-prerendering-browsing-context③⑤">6.3.4. Web MIDI API</a>
-    <li><a href="#ref-for-prerendering-browsing-context③⑥">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-prerendering-browsing-context③⑦">6.3.6. Clipboard APIs</a> <a href="#ref-for-prerendering-browsing-context③⑧">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context③⑨">6.3.7. Screen Wake Lock API</a>
-    <li><a href="#ref-for-prerendering-browsing-context④⓪">6.3.8. Generic Sensor API</a>
-    <li><a href="#ref-for-prerendering-browsing-context④①">6.3.9. Web NFC</a> <a href="#ref-for-prerendering-browsing-context④②">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context④③">6.3.10. Battery Status API</a>
-    <li><a href="#ref-for-prerendering-browsing-context④④">6.3.11. Screen Orientation API</a> <a href="#ref-for-prerendering-browsing-context④⑤">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context④⑥">6.3.12. Gamepad</a> <a href="#ref-for-prerendering-browsing-context④⑦">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context④⑧">6.4. Activation-gated APIs</a>
+    <li><a href="#ref-for-prerendering-browsing-context①⑦">5.1. Interaction with Page Visibility</a>
+    <li><a href="#ref-for-prerendering-browsing-context①⑧">5.2. Interaction with system focus</a>
+    <li><a href="#ref-for-prerendering-browsing-context①⑨">6. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⓪">6.1. APIs for creating and navigating browsing contexts by name</a> <a href="#ref-for-prerendering-browsing-context②①">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context②②">7. Preventing intrusive behaviors</a>
+    <li><a href="#ref-for-prerendering-browsing-context②③">7.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context②④">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑤">7.2. User prompts</a> <a href="#ref-for-prerendering-browsing-context②⑥">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑦">7.3. Delaying async API results</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑧">7.3.1. Geolocation API</a> <a href="#ref-for-prerendering-browsing-context②⑨">(2)</a> <a href="#ref-for-prerendering-browsing-context③⓪">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③①">7.3.2. Web Serial API</a> <a href="#ref-for-prerendering-browsing-context③②">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③③">7.3.3. Notifications API</a> <a href="#ref-for-prerendering-browsing-context③④">(2)</a> <a href="#ref-for-prerendering-browsing-context③⑤">(3)</a> <a href="#ref-for-prerendering-browsing-context③⑥">(4)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑦">7.3.4. Web MIDI API</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑧">7.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑨">7.3.6. Clipboard APIs</a> <a href="#ref-for-prerendering-browsing-context④⓪">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context④①">7.3.7. Generic Sensor API</a>
+    <li><a href="#ref-for-prerendering-browsing-context④②">7.3.8. Web NFC</a> <a href="#ref-for-prerendering-browsing-context④③">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context④④">7.3.9. Battery Status API</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⑤">7.3.10. Screen Orientation API</a> <a href="#ref-for-prerendering-browsing-context④⑥">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⑦">7.3.11. Gamepad</a> <a href="#ref-for-prerendering-browsing-context④⑧">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⑨">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-document-prerendering">
@@ -4801,25 +4872,24 @@ Parts of this work may be from another specification document.  If so, those par
    <ul>
     <li><a href="#ref-for-document-post-prerendering-activation-steps-list">3.2. Prerendering browsing contexts</a> <a href="#ref-for-document-post-prerendering-activation-steps-list①">(2)</a> <a href="#ref-for-document-post-prerendering-activation-steps-list②">(3)</a>
     <li><a href="#ref-for-document-post-prerendering-activation-steps-list③">4.5. Cleanup upon discarding a Document</a>
-    <li><a href="#ref-for-document-post-prerendering-activation-steps-list④">6.3.2. Web Serial API</a>
-    <li><a href="#ref-for-document-post-prerendering-activation-steps-list⑤">6.3.12. Gamepad</a>
+    <li><a href="#ref-for-document-post-prerendering-activation-steps-list④">7.3.2. Web Serial API</a>
+    <li><a href="#ref-for-document-post-prerendering-activation-steps-list⑤">7.3.11. Gamepad</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="platform-object-post-prerendering-activation-steps-list">
    <b><a href="#platform-object-post-prerendering-activation-steps-list">#platform-object-post-prerendering-activation-steps-list</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list">6.1. Downloading resources</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①">6.3.1. Geolocation API</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list②">(2)</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list③">(3)</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list④">6.3.2. Web Serial API</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑤">6.3.3. Notifications API</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑥">(2)</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑦">6.3.4. Web MIDI API</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑧">6.3.5. Idle Detection API</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑨">6.3.6. Clipboard APIs</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⓪">(2)</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①①">6.3.7. Screen Wake Lock API</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①②">6.3.8. Generic Sensor API</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①③">6.3.9. Web NFC</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list①④">(2)</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⑤">6.3.10. Battery Status API</a>
-    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⑥">6.3.11. Screen Orientation API</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⑦">(2)</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list">7.1. Downloading resources</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①">7.3.1. Geolocation API</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list②">(2)</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list③">(3)</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list④">7.3.2. Web Serial API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑤">7.3.3. Notifications API</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑥">(2)</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑦">7.3.4. Web MIDI API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑧">7.3.5. Idle Detection API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list⑨">7.3.6. Clipboard APIs</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⓪">(2)</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①①">7.3.7. Generic Sensor API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①②">7.3.8. Web NFC</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list①③">(2)</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①④">7.3.9. Battery Status API</a>
+    <li><a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⑤">7.3.10. Screen Orientation API</a> <a href="#ref-for-platform-object-post-prerendering-activation-steps-list①⑥">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="create-a-prerendering-browsing-context">
@@ -4834,8 +4904,8 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-prerendering-browsing-context-activate">3.2. Prerendering browsing contexts</a>
     <li><a href="#ref-for-prerendering-browsing-context-activate①">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context-activate②">(2)</a> <a href="#ref-for-prerendering-browsing-context-activate③">(3)</a>
     <li><a href="#ref-for-prerendering-browsing-context-activate④">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context-activate⑤">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate⑥">6.1. Downloading resources</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate⑦">6.3. Delaying async API results</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate⑥">7.1. Downloading resources</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate⑦">7.3. Delaying async API results</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="can-activate-a-prerender">
@@ -4848,7 +4918,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="post-prerendering-activation-geolocation-watch-process-id">
    <b><a href="#post-prerendering-activation-geolocation-watch-process-id">#post-prerendering-activation-geolocation-watch-process-id</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-post-prerendering-activation-geolocation-watch-process-id">6.3.1. Geolocation API</a>
+    <li><a href="#ref-for-post-prerendering-activation-geolocation-watch-process-id">7.3.1. Geolocation API</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
