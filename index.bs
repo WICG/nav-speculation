@@ -373,6 +373,22 @@ The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=e
 
 As is customary for [[HTML]], the definition of {{Document/prerendering}} would be located in another section of the spec; we'd place it in the new section introduced below:
 
+<h3 id="performance-navigation-timing-extension">Extensions to the {{PerformanceNavigationTiming}} interface</h3>
+
+We'd modify the definition of {{PerformanceNavigationTiming}} as follows:
+
+<pre class="idl">
+  partial interface PerformanceNavigationTiming {
+      readonly attribute DOMHighResTimeStamp activationStart;
+  };
+</pre>
+
+When getting the value of the <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> attribute, run the following steps:
+
+1. If the current [=browsing context=] has not been [=prerendering browsing context/activate|activatted=], return a {{DOMHighResTimeStamp}} with a time value equal to zero.
+
+1. Otherwise, return a {{DOMHighResTimeStamp}} with a time value equal to the time immediately after [=Prompt to unload|prompting to unload=] the previous document. 
+
 <h3 id="prerendering-bcs-subsection">Prerendering browsing contexts</h3>
 
 <em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#windows">Browsing contexts</a> section.</em>
