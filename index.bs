@@ -459,7 +459,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. [=Prompt to unload=] the [=active document=] of |predecessorBC|. If the user [=refused to allow the document to be unloaded=], then return.
 
-  1. Let |activation start time| be the [=coarsened shared current time=] given the |predecessorBC|'s [=active document=]'s [=relevant settings object=]'s [=environment settings object/cross-origin isolated capability=].
+  1. Let |coarsened time| be the [=coarsened shared current time=] given the |predecessorBC|'s [=active document=]'s [=relevant settings object=]'s [=environment settings object/cross-origin isolated capability=].
 
   1. [=Document/Abort=] the [=active document=] of |predecessorBC|.
 
@@ -480,7 +480,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
       1. Let |doc| be |bc|'s [=active document=].
 
-      1. If |doc|'s [=Document/origin=] is the same as |predecessorBC|'s [=active document=]'s [=Document/origin=], then set |doc|'s [=Document/activation start time=] to the [=relative high resolution coarse time=] for |activation start time| and |doc|.
+      1. If |doc|'s [=Document/origin=] is the same as |predecessorBC|'s [=active document=]'s [=Document/origin=], then set |doc|'s [=Document/activation start time=] to the [=relative high resolution coarse time=] for |coarsened time| and |doc|.
 
       1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
