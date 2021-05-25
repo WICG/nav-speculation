@@ -121,9 +121,6 @@ spec: picture-in-picture; urlPrefix: https://w3c.github.io/picture-in-picture/
     text: autoPictureInPicture; url: dom-htmlvideoelement-requestpictureinpicture
   type: method; for: HTMLVideoElement
     text: requestPictureInPicture(); url: dom-htmlvideoelement-autopictureinpicture
-spec: High Resolution Time; urlPrefix: https://w3c.github.io/hr-time/
-  type: dfn
-    text: relative high resolution coarse time; url: dfn-relative-high-resolution-coarse-time
 spec: Navigation Timing Level 2; urlPrefix: https://www.w3.org/TR/navigation-timing-2/
   type: dfn
     text: current document; url: dfn-current-document
@@ -418,7 +415,8 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
   :: 1. Return |platformObject|'s [=relevant global object=]'s [=associated Document=]'s [=Document/post-prerendering activation steps list=].
 </dl>
 
-Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value equal to zero. This is used to keep the time of immediately after [=Prompt to unload|prompting to unload=] the [=active document=] of the previous [=browsing context=].
+Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
+<p class="note">This is used to keep the time immediately after [=Prompt to unload|prompting to unload=] the [=active document=] of the previous [=browsing context=].
 
 <div algorithm="create a prerendering browsing context">
   To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
@@ -459,7 +457,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. [=Prompt to unload=] the [=active document=] of |predecessorBC|. If the user [=refused to allow the document to be unloaded=], then return.
 
-  1. Let |coarsened time| be the [=coarsened shared current time=] given the |predecessorBC|'s [=active document=]'s [=relevant settings object=]'s [=environment settings object/cross-origin isolated capability=].
+  1. Let |unsafe time| be the [=unsafe shared current time=].
 
   1. [=Document/Abort=] the [=active document=] of |predecessorBC|.
 
@@ -480,7 +478,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
       1. Let |doc| be |bc|'s [=active document=].
 
-      1. If |doc|'s [=Document/origin=] is the same as |predecessorBC|'s [=active document=]'s [=Document/origin=], then set |doc|'s [=Document/activation start time=] to the [=relative high resolution coarse time=] for |coarsened time| and |doc|.
+      1. If |doc|'s [=Document/origin=] is the same as |predecessorBC|'s [=active document=]'s [=Document/origin=], then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
 
       1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
@@ -650,6 +648,8 @@ Extend the {{PerformanceNavigationTiming}} interface as follows:
 When getting the value of the <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> attribute, run the following steps:
 
 1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
+
+<p class="note">This value is 0 in cross-origin prerenders.
 
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
