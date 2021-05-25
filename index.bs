@@ -124,6 +124,9 @@ spec: picture-in-picture; urlPrefix: https://w3c.github.io/picture-in-picture/
 spec: High Resolution Time; urlPrefix: https://w3c.github.io/hr-time/
   type: dfn
     text: relative high resolution coarse time; url: dfn-relative-high-resolution-coarse-time
+spec: Navigation Timing Level 2; urlPrefix: https://www.w3.org/TR/navigation-timing-2/
+  type: dfn
+    text: current document; url: dfn-current-document
 </pre>
 <pre class="biblio">
 {
@@ -415,7 +418,7 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
   :: 1. Return |platformObject|'s [=relevant global object=]'s [=associated Document=]'s [=Document/post-prerendering activation steps list=].
 </dl>
 
-Every {{Document}} has a <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value equal to zero. This is used to keep the time of immediately after [=Prompt to unload|prompting to unload=] the [=active document=] of the previous [=browsing context=].
+Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value equal to zero. This is used to keep the time of immediately after [=Prompt to unload|prompting to unload=] the [=active document=] of the previous [=browsing context=].
 
 <div algorithm="create a prerendering browsing context">
   To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
@@ -646,7 +649,7 @@ Extend the {{PerformanceNavigationTiming}} interface as follows:
 
 When getting the value of the <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> attribute, run the following steps:
 
-1. Return a {{DOMHighResTimeStamp}} with a time value equal to the current document's [=Document/activation start time=].
+1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
 
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
