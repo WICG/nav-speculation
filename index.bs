@@ -121,6 +121,9 @@ spec: picture-in-picture; urlPrefix: https://w3c.github.io/picture-in-picture/
     text: autoPictureInPicture; url: dom-htmlvideoelement-requestpictureinpicture
   type: method; for: HTMLVideoElement
     text: requestPictureInPicture(); url: dom-htmlvideoelement-autopictureinpicture
+spec: spec: navigation-timing; urlPrefix: https://w3c.github.io/navigation-timing/
+  type: dfn
+    text: current document; url: dfn-current-document
 </pre>
 <pre class="biblio">
 {
@@ -412,6 +415,9 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
   :: 1. Return |platformObject|'s [=relevant global object=]'s [=associated Document=]'s [=Document/post-prerendering activation steps list=].
 </dl>
 
+Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
+<p class="note">This is used to keep the time immediately after [=Prompt to unload|prompting to unload=] the [=active document=] of the previous [=browsing context=].
+
 <div algorithm="create a prerendering browsing context">
   To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
 
@@ -445,11 +451,13 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
   1. Assert: |predecessorBC| is a [=top-level browsing context=].
 
-  <!-- The following are copied from the navigate algorithm, and probably could benefit from some refactoring to deduplicate. -->
+  <!-- The following except for the step that sets the |activation start time| are copied from the navigate algorithm, and probably could benefit from some refactoring to deduplicate. -->
 
   1. Cancel any preexisting but not yet [=navigate/mature=] attempts to navigate |predecessorBC|, including canceling any instances of the [=fetch=] algorithm started by those attempts. If one of those attempts has already <a lt="create and initialize a Document object">created and initialized a new `Document` object</a>, [=Document/abort=] that {{Document}} also.
 
   1. [=Prompt to unload=] the [=active document=] of |predecessorBC|. If the user [=refused to allow the document to be unloaded=], then return.
+
+  1. Let |unsafe time| be the [=unsafe shared current time=].
 
   1. [=Document/Abort=] the [=active document=] of |predecessorBC|.
 
@@ -469,6 +477,8 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
       1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
 
       1. Let |doc| be |bc|'s [=active document=].
+
+      1. If |doc|'s [=Document/origin=] is the same as |predecessorBC|'s [=active document=]'s [=Document/origin=], then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
 
       1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
@@ -624,6 +634,22 @@ Documents in [=prerendering browsing contexts=] are [=Document/hidden=].
 <h3 id="interaction-with-system-focus">Interaction with system focus</h3>
 
 [=Prerendering browsing contexts=] never have [=system focus=].
+
+<h3 id="performance-navigation-timing-extension">Extensions to the {{PerformanceNavigationTiming}} interface</h3>
+
+Extend the {{PerformanceNavigationTiming}} interface as follows:
+
+<pre class="idl">
+  partial interface PerformanceNavigationTiming {
+      readonly attribute DOMHighResTimeStamp activationStart;
+  };
+</pre>
+
+The <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> getter steps are:
+
+1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
+
+<p class="note">This value is 0 in cross-origin prerenders.
 
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
