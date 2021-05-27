@@ -2090,7 +2090,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-05-26">26 May 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-05-27">27 May 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -2104,7 +2104,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 26 May 2021,
+In addition, as of 27 May 2021,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2141,7 +2141,7 @@ Parts of this work may be from another specification document.  If so, those par
       <li><a href="#navigate-activation"><span class="secno">4.1</span> <span class="content">Allowing activation in place of navigation</span></a>
       <li><a href="#redirect-handling"><span class="secno">4.2</span> <span class="content">Redirect handling</span></a>
       <li><a href="#always-replacement"><span class="secno">4.3</span> <span class="content">Maintaining a trivial session history</span></a>
-      <li><a href="#no-bad-navs"><span class="secno">4.4</span> <span class="content">Preventing non-HTTP(S) navigations</span></a>
+      <li><a href="#no-bad-navs"><span class="secno">4.4</span> <span class="content">Preventing forbidden navigations</span></a>
       <li><a href="#cleanup-upon-discarding"><span class="secno">4.5</span> <span class="content">Cleanup upon discarding a <code class="idl"><span>Document</span></code></span></a>
      </ol>
     <li>
@@ -2675,7 +2675,7 @@ Parts of this work may be from another specification document.  If so, those par
       <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①③">prerendering browsing context</a>, then set <var>isPush</var> to false.</p>
     </ol>
    </div>
-   <h3 class="heading settled" data-level="4.4" id="no-bad-navs"><span class="secno">4.4. </span><span class="content">Preventing non-HTTP(S) navigations</span><a class="self-link" href="#no-bad-navs"></a></h3>
+   <h3 class="heading settled" data-level="4.4" id="no-bad-navs"><span class="secno">4.4. </span><span class="content">Preventing forbidden navigations</span><a class="self-link" href="#no-bad-navs"></a></h3>
    <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑤">navigate</a> algorithm to prevent certain navigations in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①④">prerendering browsing context</a> as follows:</p>
    <p class="issue" id="issue-755a1cad"><a class="self-link" href="#issue-755a1cad"></a>Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn’t observable anyway? </p>
    <div class="algorithm" data-algorithm="process a navigate response patch">
@@ -3265,7 +3265,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-concept-request-current-url">
    <a href="https://fetch.spec.whatwg.org/#concept-request-current-url">https://fetch.spec.whatwg.org/#concept-request-current-url</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-request-current-url">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-concept-request-current-url">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-fetch">
@@ -3281,7 +3281,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-http-scheme①">2.4. Parsing</a>
     <li><a href="#ref-for-http-scheme②">3.2. Prerendering browsing contexts</a>
     <li><a href="#ref-for-http-scheme③">4.2. Redirect handling</a>
-    <li><a href="#ref-for-http-scheme④">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-http-scheme④">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-response-location-url">
@@ -3319,7 +3319,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-concept-response-status">
    <a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-concept-response-status">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-concept-response-status">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-url">
@@ -3627,7 +3627,7 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-environment-discarding-steps">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#environment-discarding-steps">https://html.spec.whatwg.org/multipage/webappapis.html#environment-discarding-steps</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-environment-discarding-steps">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-environment-discarding-steps">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-event-error">
@@ -3732,7 +3732,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-navigate">3.2. Prerendering browsing contexts</a> <a href="#ref-for-navigate①">(2)</a>
     <li><a href="#ref-for-navigate②">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-navigate③">(2)</a>
     <li><a href="#ref-for-navigate④">4.3. Maintaining a trivial session history</a>
-    <li><a href="#ref-for-navigate⑤">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-navigate⑤">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-nested-browsing-context">
@@ -3793,13 +3793,13 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-response">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-response">https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-response</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-process-a-navigate-response">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-process-a-navigate-response">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-url-scheme">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-url-scheme">https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-url-scheme</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-process-a-navigate-url-scheme">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-process-a-navigate-url-scheme">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-prompt-to-unload-a-document">
@@ -3854,13 +3854,13 @@ Parts of this work may be from another specification document.  If so, those par
   <aside class="dfn-panel" data-for="term-for-navigation-params-request">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigation-params-request">4.4. Preventing non-HTTP(S) navigations</a> <a href="#ref-for-navigation-params-request①">(2)</a>
+    <li><a href="#ref-for-navigation-params-request">4.4. Preventing forbidden navigations</a> <a href="#ref-for-navigation-params-request①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-reserved-environment">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-navigation-params-reserved-environment">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-navigation-params-reserved-environment">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-resulting-url-record">
@@ -4293,7 +4293,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-concept-url-scheme①">2.4. Parsing</a>
     <li><a href="#ref-for-concept-url-scheme②">3.2. Prerendering browsing contexts</a>
     <li><a href="#ref-for-concept-url-scheme③">4.2. Redirect handling</a>
-    <li><a href="#ref-for-concept-url-scheme④">4.4. Preventing non-HTTP(S) navigations</a>
+    <li><a href="#ref-for-concept-url-scheme④">4.4. Preventing forbidden navigations</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url">
@@ -4718,6 +4718,8 @@ Parts of this work may be from another specification document.  If so, those par
    <dd>Steve Agoston; et al. <a href="https://www.w3.org/TR/gamepad/">Gamepad</a>. 8 April 2021. WD. URL: <a href="https://www.w3.org/TR/gamepad/">https://www.w3.org/TR/gamepad/</a>
    <dt id="biblio-generic-sensor">[GENERIC-SENSOR]
    <dd>Rick Waldron. <a href="https://www.w3.org/TR/generic-sensor/">Generic Sensor API</a>. 12 December 2019. CR. URL: <a href="https://www.w3.org/TR/generic-sensor/">https://www.w3.org/TR/generic-sensor/</a>
+   <dt id="biblio-geolocation">[GEOLOCATION]
+   <dd>Marcos Caceres. <a href="https://www.w3.org/TR/geolocation/">Geolocation API</a>. 27 May 2021. WD. URL: <a href="https://www.w3.org/TR/geolocation/">https://www.w3.org/TR/geolocation/</a>
    <dt id="biblio-hr-time-2">[HR-TIME-2]
    <dd>Ilya Grigorik. <a href="https://www.w3.org/TR/hr-time-2/">High Resolution Time Level 2</a>. 21 November 2019. REC. URL: <a href="https://www.w3.org/TR/hr-time-2/">https://www.w3.org/TR/hr-time-2/</a>
    <dt id="biblio-hr-time-3">[HR-TIME-3]
@@ -4905,7 +4907,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-prerendering-browsing-context④">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context⑤">(2)</a> <a href="#ref-for-prerendering-browsing-context⑥">(3)</a>
     <li><a href="#ref-for-prerendering-browsing-context⑦">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context⑧">(2)</a> <a href="#ref-for-prerendering-browsing-context⑨">(3)</a> <a href="#ref-for-prerendering-browsing-context①⓪">(4)</a>
     <li><a href="#ref-for-prerendering-browsing-context①①">4.3. Maintaining a trivial session history</a> <a href="#ref-for-prerendering-browsing-context①②">(2)</a> <a href="#ref-for-prerendering-browsing-context①③">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context①④">4.4. Preventing non-HTTP(S) navigations</a> <a href="#ref-for-prerendering-browsing-context①⑤">(2)</a> <a href="#ref-for-prerendering-browsing-context①⑥">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context①④">4.4. Preventing forbidden navigations</a> <a href="#ref-for-prerendering-browsing-context①⑤">(2)</a> <a href="#ref-for-prerendering-browsing-context①⑥">(3)</a>
     <li><a href="#ref-for-prerendering-browsing-context①⑦">5.1. Interaction with Page Visibility</a>
     <li><a href="#ref-for-prerendering-browsing-context①⑧">5.2. Interaction with system focus</a>
     <li><a href="#ref-for-prerendering-browsing-context①⑨">6. Preventing nonsensical behaviors</a>
