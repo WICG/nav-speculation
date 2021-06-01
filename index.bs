@@ -787,20 +787,6 @@ TODO: what about the service worker API? Depends on what we're doing for service
 
 <p class="note">The other interesting method, {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}}, is gated on [=transient activation=]. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering.
 
-<h4 id="patch-clipboard-apis">Clipboard APIs</h4>
-
-<div algorithm="Clipboard write patch">
-  Modify the {{Clipboard/write()}} method steps by inserting the following steps after the initial creation of |p|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
-</div>
-
-<div algorithm="Clipboard writeText patch">
-  Modify the {{Clipboard/writeText()}} method steps by inserting the following steps after the initial creation of |p|:
-
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |p|.
-</div>
-
 <h4 id="patch-generic-sensor">Generic Sensor API</h4>
 
 <div algorithm="Sensor start patch">
@@ -895,9 +881,12 @@ APIs that require [=transient activation=] or [=sticky activation=]:
 - {{PresentationRequest/start()|presentationRequest.start()}} [[PRESENTATION-API]]
 - {{Window/showOpenFilePicker()}}, {{Window/showSaveFilePicker()}}, and {{Window/showDirectoryPicker()}} [[FILE-SYSTEM-ACCESS]]
 - {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}} [[IDLE-DETECTION]]
-- Firing of clipboard events, as well as {{Clipboard/read()|navigator.clipboard.read()}} and {{Clipboard/readText()|navigator.clipboard.readText()}} [[CLIPBOARD-APIS]]
+- Firing of clipboard events. [[CLIPBOARD-APIS]]
 - {{Navigator/share()|navigator.share()}} [[WEB-SHARE]]
 - {{Element/requestPointerLock()|element.requestPointerLock()}} [[POINTERLOCK]]
+
+APIs that require [=system focus=]:
+- The Asynchronous Clipboard API: {{Clipboard/read()|navigator.clipboard.read()}}, {{Clipboard/readText()|navigator.clipboard.readText()}}, {{Clipboard/write()|navigator.clipboard.write()}}, {{Clipboard/writeText|navigator.clipboard.writeText()}}. [[CLIPBOARD-APIS]]
 
 APIs that require the [=Document/visible=] [=Document/visibility state=]:
 - {{WakeLock/request()|navigator.wakeLock.request()}} [[SCREEN-WAKE-LOCK]]
