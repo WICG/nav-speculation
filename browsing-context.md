@@ -140,7 +140,7 @@ Apart from the privacy-related restrictions to communications and storage, while
 
 - `window.alert()` and `window.print()` will silently do nothing pre-activation.
 
-- `window.confirm()` and `window.prompt()` will silently return their default values (`false` and `""`) pre-activation.
+- `window.confirm()` and `window.prompt()` will silently return their default values (`false` and `null`) pre-activation.
 
 _Note: specifying this will likely be messy, as these different APIs are controlled through different mechanisms, and many specs will need to be patched to include a "pause until activation" step._
 
