@@ -124,9 +124,12 @@ spec: picture-in-picture; urlPrefix: https://w3c.github.io/picture-in-picture/
     text: autoPictureInPicture; url: dom-htmlvideoelement-requestpictureinpicture
   type: method; for: HTMLVideoElement
     text: requestPictureInPicture(); url: dom-htmlvideoelement-autopictureinpicture
-spec: spec: navigation-timing; urlPrefix: https://w3c.github.io/navigation-timing/
+spec: navigation-timing; urlPrefix: https://w3c.github.io/navigation-timing/
   type: dfn
     text: current document; url: dfn-current-document
+spec: encrypted-media; urlPrefix: https://w3c.github.io/encrypted-media/
+  type: method; for: Navigator
+    text: requestMediaKeySystemAccess(keySystem, supportedConfigurations); url: requestMediaKeySystemAccess
 </pre>
 <pre class="biblio">
 {
@@ -856,6 +859,10 @@ Add {{[DelayWhilePrerendering]}} to {{ScreenOrientation/unlock()}}.
 
   1. If |document| is [=allowed to use=] the "`gamepad`" feature, and |document|'s [=relevant settings object=] is a [=secure context=], and any gamepads are connected, then for each connected gamepad, [=fire an event=] named {{Window/gamepadconnected}} at |document|'s [=relevant global object=] using {{GamepadEvent}}, with its {{GamepadEvent/gamepad}} attribute initialized to a new {{Gamepad}} object representing the connected gamepad.
 </div>
+
+<h4 id="eme-patch">Encrypted Media Extensions</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{Navigator/requestMediaKeySystemAccess()}}.
 
 <h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 
