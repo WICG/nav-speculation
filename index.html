@@ -2175,6 +2175,7 @@ Parts of this work may be from another specification document.  If so, those par
         <li><a href="#patch-battery"><span class="secno">7.3.9</span> <span class="content">Battery Status API</span></a>
         <li><a href="#patch-orientation-lock"><span class="secno">7.3.10</span> <span class="content">Screen Orientation API</span></a>
         <li><a href="#patch-gamepads"><span class="secno">7.3.11</span> <span class="content">Gamepad</span></a>
+        <li><a href="#eme-patch"><span class="secno">7.3.12</span> <span class="content">Encrypted Media Extensions</span></a>
        </ol>
       <li><a href="#implicitly-restricted"><span class="secno">7.4</span> <span class="content">Implicitly restricted APIs</span></a>
      </ol>
@@ -2940,6 +2941,8 @@ Parts of this work may be from another specification document.  If so, those par
       <p>If <var>document</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html#allowed-to-use" id="ref-for-allowed-to-use">allowed to use</a> the "<code>gamepad</code>" feature, and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object">relevant settings object</a> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#secure-context" id="ref-for-secure-context">secure context</a>, and any gamepads are connected, then for each connected gamepad, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-fire" id="ref-for-concept-event-fire①">fire an event</a> named <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected②">gamepadconnected</a></code> at <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a> using <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepadevent" id="ref-for-dom-gamepadevent">GamepadEvent</a></code>, with its <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepadevent-gamepad" id="ref-for-dom-gamepadevent-gamepad">gamepad</a></code> attribute initialized to a new <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-gamepad" id="ref-for-dom-gamepad">Gamepad</a></code> object representing the connected gamepad.</p>
     </ol>
    </div>
+   <h4 class="heading settled" data-level="7.3.12" id="eme-patch"><span class="secno">7.3.12. </span><span class="content">Encrypted Media Extensions</span><a class="self-link" href="#eme-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⓪">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess" id="ref-for-requestMediaKeySystemAccess">requestMediaKeySystemAccess()</a></code>.</p>
    <h3 class="heading settled" data-level="7.4" id="implicitly-restricted"><span class="secno">7.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
    <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑦">active document</a> will never have. These properties include:</p>
    <ul>
@@ -3244,6 +3247,12 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://tc39.es/ecma262/#current-realm">https://tc39.es/ecma262/#current-realm</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-realm">7.3.1. The [DelayWhilePrerendering] extended attribute</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-requestMediaKeySystemAccess">
+   <a href="https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess">https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-requestMediaKeySystemAccess">7.3.12. Encrypted Media Extensions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-current-url">
@@ -4127,6 +4136,12 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-user-agent">7.3.10. Screen Orientation API</a> <a href="#ref-for-user-agent①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-current-document">
+   <a href="https://w3c.github.io/navigation-timing/#dfn-current-document">https://w3c.github.io/navigation-timing/#dfn-current-document</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-current-document">5.3. Extensions to the PerformanceNavigationTiming interface</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-performancenavigationtiming">
    <a href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming">https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming</a><b>Referenced in:</b>
    <ul>
@@ -4253,12 +4268,6 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://wicg.github.io/serial/#dom-serial-requestPort">https://wicg.github.io/serial/#dom-serial-requestPort</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-serial-requestPort">7.3.3. Web Serial API</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-current-document">
-   <a href="https://w3c.github.io/navigation-timing/#dfn-current-document">https://w3c.github.io/navigation-timing/#dfn-current-document</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dfn-current-document">5.3. Extensions to the PerformanceNavigationTiming interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-basic-url-parser">
@@ -4451,6 +4460,11 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-current-realm">current realm</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[encrypted-media]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-requestMediaKeySystemAccess">requestMediaKeySystemAccess(keySystem, supportedConfigurations)</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-concept-request-current-url">current url</span>
@@ -4630,6 +4644,11 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-user-agent">user agent</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[navigation-timing]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dfn-current-document">current document</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[navigation-timing-2]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-performancenavigationtiming">PerformanceNavigationTiming</span>
@@ -4695,11 +4714,6 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-dom-serial-requestPort">requestPort(options)</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[spec: navigation-timing]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-dfn-current-document">current document</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-concept-basic-url-parser">basic url parser</span>
@@ -4750,6 +4764,8 @@ Parts of this work may be from another specification document.  If so, those par
    <dd>Gary Kacmarcik; Grisha Lyukshin. <a href="https://www.w3.org/TR/clipboard-apis/">Clipboard API and events</a>. 4 June 2021. WD. URL: <a href="https://www.w3.org/TR/clipboard-apis/">https://www.w3.org/TR/clipboard-apis/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/">DOM Standard</a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
+   <dt id="biblio-encrypted-media">[ENCRYPTED-MEDIA]
+   <dd>David Dorwin; et al. <a href="https://www.w3.org/TR/encrypted-media/">Encrypted Media Extensions</a>. 18 September 2017. REC. URL: <a href="https://www.w3.org/TR/encrypted-media/">https://www.w3.org/TR/encrypted-media/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/">Fetch Standard</a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-file-system-access">[FILE-SYSTEM-ACCESS]
@@ -4772,6 +4788,8 @@ Parts of this work may be from another specification document.  If so, those par
    <dd>Reilly Grant. <a href="https://wicg.github.io/idle-detection/">Idle Detection API</a>. CG-DRAFT. URL: <a href="https://wicg.github.io/idle-detection/">https://wicg.github.io/idle-detection/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/">Infra Standard</a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
+   <dt id="biblio-navigation-timing">[NAVIGATION-TIMING]
+   <dd>Zhiheng Wang. <a href="https://www.w3.org/TR/navigation-timing/">Navigation Timing</a>. 17 December 2012. REC. URL: <a href="https://www.w3.org/TR/navigation-timing/">https://www.w3.org/TR/navigation-timing/</a>
    <dt id="biblio-navigation-timing-2">[NAVIGATION-TIMING-2]
    <dd>Yoav Weiss; et al. <a href="https://www.w3.org/TR/navigation-timing-2/">Navigation Timing Level 2</a>. 8 March 2021. WD. URL: <a href="https://www.w3.org/TR/navigation-timing-2/">https://www.w3.org/TR/navigation-timing-2/</a>
    <dt id="biblio-notifications">[NOTIFICATIONS]
@@ -5057,6 +5075,7 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering⑦">7.3.6. Idle Detection API</a>
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering⑧">7.3.8. Web NFC</a>
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering⑨">7.3.10. Screen Orientation API</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①⓪">7.3.12. Encrypted Media Extensions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="post-prerendering-activation-geolocation-watch-process-id">
