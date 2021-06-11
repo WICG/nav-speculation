@@ -701,7 +701,7 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
 
 To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until [=prerendering browsing context/activated|activation=], we introduce the <dfn extended-attribute>[DelayWhilePrerendering]</dfn> Web IDL extended attribute. It indicates that when a given method is called in a [=prerendering browsing context=], it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.
 
-The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and must only appear on a <a lt="regular operation" spec="WEBIDL">regular</a> or <a spec="WEBIDL">static operation</a> whose <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a> and whose <a spec="WEBIDL">exposure set</a> contains {{Window}}.
+The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and must only appear on a <a lt="regular operation" spec="WEBIDL">regular</a> or <a spec="WEBIDL">static operation</a> whose <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a> and whose <a spec="WEBIDL">exposure set</a> contains only {{Window}}.
 
 <div algorithm="DelayWhilePrerendering method steps">
   The method steps for any operation annotated with the {{[DelayWhilePrerendering]}} extended attribute are replaced with the following:
