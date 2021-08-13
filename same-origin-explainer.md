@@ -108,7 +108,7 @@ The primary advantage of prerendering over prefetching is that users perceive ne
 
 The primary disadvantage is that feature is much more complex for browser implementors, and some pages may need to adjust to detect prerendering by using the `document.prerendering` API if needed.
 
-### <link rel=prerender>
+### `<link rel=prerender>`
 
 An existing API `<link rel=prerender>` is specified today but it is not widely supported. While Chromium is listed as supporting this API, it performs a NoState Prefetch rather than a prerender.
 
