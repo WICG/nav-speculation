@@ -77,7 +77,7 @@ The user agent may also discard a prerendered page at any time, and some impleme
 
 Generally, prerendered pages can load resources like a normal page. As mentioned earlier, cookies are included on these requests as usual.
 
-However, cross-origin iframes delay loading until after activation. This is partially to avoid breakage caused by loading a cross-origin site that is unaware of prerendering.
+However, loading of cross-origin iframes within the prerendered page is delayed until after activation. This is partially to avoid breakage caused by loading a cross-origin site that is unaware of prerendering.
 
 ### Timing APIs
 
