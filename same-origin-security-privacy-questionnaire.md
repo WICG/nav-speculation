@@ -44,7 +44,7 @@ The origin can tell if a page is being prerendered using `document.prerendering`
 
 The origin can tell when the activation navigation started by inspecting the `activationStart` milestone added to the Navigation Timing API. This should be very close to the `prerenderingchange` event if the implementation is performant.
 
-If the page makes cross-origin requests, the cross-origin servers can see that the requests came from a prerendering page via a header like `Purpose: prefetch`. Some user agents already add such a header to some existing prefetching features. Standardization discussion for this is happening at [Resource Hints #74](https://github.com/w3c/resource-hints/issues/74).
+The user agents adds a header like `Purpose: prefetch` to requests from prerendered pages. Therefore, if the page makes cross-origin requests, the cross-origin servers can see that the requests came from a prerendered page. Some user agents already add such a header to some existing prefetching features. Standardization discussion for this is happening at [Resource Hints #74](https://github.com/w3c/resource-hints/issues/74).
 
 ### Does this specification enable new script execution/loading mechanisms?
 
