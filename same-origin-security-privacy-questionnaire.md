@@ -2,7 +2,7 @@
 
 Covers the specific case of [same-origin prerendering](same-origin-explainer.md) triggered by [speculation rules](triggers.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
 
-See [speculation-rules-security-privacy-questionnaire.md](security-privacy-questionnaire.md) for the general case of [speculation rules](triggers.md) including cross-origin cases. Some answers below are inspired by that document.
+For general [speculation rules](triggers.md) including cross-origin cases, see that [questionnaire](speculation-rules-security-privacy-questionnaire.md). Some answers below are inspired by that document.
 
 ### What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
