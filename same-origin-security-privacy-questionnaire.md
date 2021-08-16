@@ -1,14 +1,14 @@
 # Security & Privacy Questionnaire (same-origin prerendering)
 
-Covers the specific case of [same-origin prerendering](same-origin-explainer.md) triggered by [speculation rules](trigger.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
+Covers the specific case of [same-origin prerendering](same-origin-explainer.md) triggered by [speculation rules](triggers.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
 
-See [security-privacy-questionnaire.md](security-privacy-questionnaire.md) for the general case of [speculation rules](triggers.md) including the cross-origin cases. Some answers below are inspired by that document.
+See [speculation-rules-security-privacy-questionnaire.md](security-privacy-questionnaire.md) for the general case of [speculation rules](triggers.md) including cross-origin cases. Some answers below are inspired by that document.
 
 ### What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
 At its core, this feature does not expose any additional information because it is restricted to same-origin triggers. The origin cannot do anything it cannot already do with an iframe.
 
-However, the user agent chooses whether to act upon the origin's hint to prerender a URL at its own discretion. If the user agent uses heuristics such as the user's engagement with the origin to make that decision, origin can potentially glean information based on whether the user-agent acts upon the hint or not.
+However, the user agent chooses whether to act upon the origin's hint to prerender a URL at its own discretion. If the user agent uses heuristics such as the user's engagement with the origin to make that decision, the origin can potentially glean information based on whether the user agent acts upon the hint or not.
 
 ### Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
@@ -16,9 +16,7 @@ This is similar to the previous response. The specification leaves some freedom 
 
 ### How do the features in your specification deal with personal information, personally-identifiable information (PII), or information derived from them?
 
-This is similar to the previous responses.
-
-The fact that a prerender occurs or not is visible to the origin. Accordingly, user agents should avoid basing this decision on personal information not already known to the site. For example, if a user agent prerenders a link based on a profile of the user's interests from their browsing activity across the web, the fact that a prerender was executed may reveal information about those interests that would not have otherwise been exposed.
+This is similar to the previous responses. User agents should avoid basing heuristics on personal information not already known to the site. For example, if a user agent prerenders a link based on a profile of the user's interests from their browsing activity across the web, the fact that a prerender was executed may reveal information about those interests that would not have otherwise been exposed.
 
 ### How do the features in your specification deal with sensitive information?
 
@@ -46,7 +44,7 @@ The origin can tell if a page is being prerendered using `document.prerendering`
 
 The origin can tell when the activation navigation started by inspecting the `activationStart` milestone added to the Navigation Timing API. This should be very close to the `prerenderingchange` event if the implementation is performant.
 
-If the page makes cross-origin requests, the cross-origin servers can see that the requests came from a prerendering page via a header like `Purpose: prefetch`. This header is already added to some existing prefetching features that Chrome uses. Standardization discussion for this is happening at [Resource Hints #74](https://github.com/w3c/resource-hints/issues/74).
+If the page makes cross-origin requests, the cross-origin servers can see that the requests came from a prerendering page via a header like `Purpose: prefetch`. Some user agents already add such a header to some existing prefetching features. Standardization discussion for this is happening at [Resource Hints #74](https://github.com/w3c/resource-hints/issues/74).
 
 ### Does this specification enable new script execution/loading mechanisms?
 
@@ -80,7 +78,7 @@ Browsers could choose to behave more conservatively, but doing so may make it po
 
 Not as yet, though we recognize that it cannot be considered complete without one.
 
-We do discuss security and privacy considerations thoroughly in the relevant explainers, and will be porting that into the overall "prerendering revamped" specification as that specification gets more concrete.
+We do discuss security and privacy considerations thoroughly in the relevant explainers, though they are naturally focused on the cross-origin cases. We will be porting those discussions into the overall [Prerendering Revamped](https://jeremyroman.github.io/alternate-loading-modes/) specification as that specification gets more concrete.
 
 ### Do features in your specification enable origins to downgrade default security protections?
 
