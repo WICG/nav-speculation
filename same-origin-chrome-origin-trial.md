@@ -8,7 +8,7 @@ It is recommended to first read the feature's [explainer](same-origin-explainer.
 
 The origin trial is scheduled to be available in Chrome 94 through Chrome 98, approximately September 2021 to Februrary 2022.
 
-The origin trial is only supported on Chrome for Android. However, the feature can be experimented with on any platform by enabling the `"Prerender2"` in `chrome://flags` for local development.
+The origin trial is only supported on **Chrome for Android**. However, the feature can be experimented with on any platform by enabling the `"Prerender2"` in `chrome://flags` for local development.
 
 ## Origin trial registration
 
@@ -46,7 +46,7 @@ document.addEventListener('prerenderingchange', (event) => {
 
 In the above example, `index.html` provides a hint to the browser to prerender `foo.html`. The origin trial token is present on both pages.
 
-## Debugging
+## Development tips
 
 There is limited debugging support for prerendering at this time. Chrome's DevTools has almost no knowledge of prerendered pages. But there are still some methods to debug, described below.
 
@@ -129,13 +129,13 @@ document.addEventListener('prerenderingchange', (event) => {
 
 Now `wasActivated` after navigating to the page indicates whether the page was activated.
 
-### Using histograms
+### Chrome histograms
 
 If the prerender is not started or not activated, it can admittedly be difficult to figure out why. As a last resort, checking Chrome's internal histograms may provide clues.
 
 A prerender attempt is logged in the Prerender.Experimental.PrerenderHostFinalStatus histogram when it is eventually activated or discarded. You can view this histogram at `chrome://histograms/Prerender.Experimental.PrerenderHostFinalStatus`. A value of 0 is logged when a prerender is successfully activation; other values indicate prerenders that started and were discarded. A list as reasons as of August 2021 is available [here](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/prerender/prerender_host.h;l=53;drc=d4099a80842a10144a7e678155667b4a84dc802f).
 
-## Measuring performance
+### Measuring performance
 
 It is recommended to use real user monitoring (RUM) methods to measure the performance of the origin trial.
 
