@@ -4,21 +4,21 @@
 
 Google Chrome will offer an [origin trial](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md) of [same-origin prerendering](same-origin-explainer.md) triggered by the [Speculation Rules API](triggers.md).
 
-This document complements the [explainer](same-origin-explainer.md) of this feature. It is recommended to read that first. This document contains information specific to the Chrome origin trial, such as quirks and limitations of Chrome's implementation today.
+It is recommended to first read the [explainer](same-origin-explainer.md) of this feature. This document complements that explainer with contains information specific to the origin trial, such as quirks and limitations of Chrome's implementation today.
 
 The origin trial is scheduled to be available in Chrome 94 through Chrome 98, approximately September 2021 to Februrary 2022.
 
-## Enabling the feature for local testing
+## Local development
 
-You can enable the feature for local development by enabling Prerender2 in chrome://flags.
+You can enable the feature for local development by enabling "Prerender2" in <chrome://flags>.
 
-## Sign up for the origin trial
+## Origin trial registration
 
 Developers can sign up for the origin trial at (TBD link) to receive an [origin trial token](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md#how-do-i-enable-an-experimental-feature-on-my-origin).
 
-The token must be present on both a) the page that uses the Speculation Rules API to trigger a prerender of a URL, b) the target URL being prerendered.
+The token must be present on both a) the page that uses the Speculation Rules API to trigger a prerender of a URL, and b) the target URL being prerendered.
 
-*Example:*
+**Example:**
 
 On index.html:
 
@@ -46,7 +46,7 @@ document.addEventListener('prerenderingchange', (event) => {
 </script>
 ```
 
-In the above example, `index.html` hints to the browser to prerender `foo.html`.The origin trial token is present on both pages.
+In the above example, `index.html` provides a hint to the browser to prerender `foo.html`.The origin trial token is present on both pages.
 
 ## Debugging
 
@@ -54,15 +54,15 @@ There is limited debugging support for prerendering at this time. Chrome's DevTo
 
 ### How to tell if a prerender was started
 
-The chrome://process-internals page provides a quick way to check if a prerendered page exists. Navigate to that page, and then to the "Frame Trees" section.
+The <chrome://process-internals> page provides a quick way to check if a prerendered page exists. Navigate to that page, and then to the "Frame Trees" section.
 
 A list of all pages and frames in the browser are displayed.
 
-While invisible, a prerendered page is associated with a tab (or "WebContents") in the browser: the tab that contained the speculation rule that initiated the prerender. The chrome://process-internals page describes the active page in each WebContents, and the prerendered page, if any.
+While invisible, a prerendered page is associated with a tab (or "WebContents") in the browser: the tab that contained the speculation rule that initiated the prerender. The <chrome://process-internals> page describes the active page in each WebContents, and the prerendered page, if any.
 
-(SCREENSHOT)
+TODO: Add screenshot.
 
-Here, the relevant information extracted below:
+The relevant information from the above screenshot is extracted below:
 
 ```
 WebContents: https://prerender2-specrules.glitch.me, 1 active frame, 1 prerender root
@@ -70,13 +70,13 @@ WebContents: https://prerender2-specrules.glitch.me, 1 active frame, 1 prerender
     Frame[...]: prerender, url: https://prerender2-specrules.glitch.me/timer.html
 ```
 
-This indicates that the tab contains one active page (rooted at https://prerender2-specrules.glitch.me/) and one prerendered page (rooted at https://prerender2-specrules.glitch.me/timer.html).
+This indicates that the tab contains one active page (rooted at <https://prerender2-specrules.glitch.me/>) and one prerendered page (rooted at <https://prerender2-specrules.glitch.me/timer.html>).
 
-If there is no mention of "prerender root" on chrome://process-internals#web-contents, then there is currently no prerendering page.
+If there is no mention of "prerender root" on <chrome://process-internals#web-contents>, then there is currently no prerendering page.
 
-Aside from this internal page, you may also find it convenient to use JavaScript to detect the prerendered page programmatically. Prerendered pages and active pages can use BroadcastChannel to communicate with each other.
+Aside from this internal page, you may also find it convenient to use JavaScript to detect the prerendered page programmatically. Prerendered pages and active pages can use [Broadcast Channel](https://developer.mozilla.org/docs/Web/API/Broadcast_Channel_API) to communicate with each other.
 
-*Example*:
+**Example:**
 
 On index.html:
 ```
@@ -111,7 +111,7 @@ Upon successful prerender, index.html receives a message that foo.html is being 
 
 After a navigation, you may want to check whether a prerendered page was activated, or if a new page load occurred.
 
-One way to do this involves executing script in the DevTools Console. However, if DevTools was open prior to the navigation, you must **close and reopen DevTools** in order for it to see the activated page ([crbug](https://crbug.com/1170464)). Then in the console, check if `activationStart` is populated:
+One way to do this involves executing script in the DevTools Console. If DevTools was open prior to the navigation, you must **close and reopen DevTools** in order for it to see the activated page ([crbug](https://crbug.com/1170464)). Then in the console, check if `activationStart` is populated:
 
 ```javascript
 let activationStart = performance.getEntriesByType('navigation')[0].activationStart;
@@ -120,7 +120,7 @@ console.log(activationStart);
 
 The `activationStart` milestone is populated at the beginning of a navigation that activates a prerender, so a non-zero value means that the page was activated.
 
-You can of course also do this programmmatically by listening to the prerenderingchange event:
+You can of course also do this programmatically by listening for the prerenderingchange event:
 
 ```javascript
 let wasActivated = false;
@@ -139,7 +139,7 @@ A prerender attempt is logged in the Prerender.Experimental.PrerenderHostFinalSt
 
 ## Measuring performance
 
-It is recommended to use real user monitoring (RUM) to measure the performance of the origin trial.
+It is recommended to use real user monitoring (RUM) methods to measure the performance of the origin trial.
 
 See the [Timing APIs](same-origin-explainer.md#timing-apis) section of the explainer for how to measure user-perceived durations.
 
@@ -185,7 +185,8 @@ On a navigation, Chrome will only activate a prerendered page that was created i
 
 If the navigations differ, Chrome will elect to not activate the page, and it will be discarded as the navigation loads a page anew and destroys the document that triggered the prerender.
 
-
 ## Feedback
 
-We would be happy to hear from you! Please direct feedback about the origin trial to [navigation-dev@chromium.org]. You may also file bugs [here](https://crbug.new). Describing the bug as related to the same-origin prerendering origin trial will help route it to the correct people. For feedback on the specification and the shape of the API, file issues at the [Prerendering, revamped](https://github.com/jeremyroman/alternate-loading-modes/issues) repository.
+We would be happy to hear from you! Please direct feedback about the origin trial to <navigation-dev@chromium.org>. You may also file bugs [here](https://crbug.new). Describing the bug as related to the same-origin prerendering origin trial will help route it to the correct people. For feedback on the specification and the shape of the API, file issues at the [Prerendering, revamped](https://github.com/jeremyroman/alternate-loading-modes/issues) repository.
+
+Thank you, and may your pages load instantly.
