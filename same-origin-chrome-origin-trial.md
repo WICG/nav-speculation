@@ -6,11 +6,11 @@ Google Chrome will offer an [origin trial](https://github.com/GoogleChrome/Origi
 
 It is recommended to first read the feature's [explainer](same-origin-explainer.md). This document complements the explainer with information specific to the origin trial, such as quirks and limitations of Chrome's implementation today.
 
-The origin trial is scheduled to be available in Chrome 94 through Chrome 98, approximately September 2021 to Februrary 2022.
+## Quick start 
 
-## Local development
+The origin trial is scheduled to be available in Chrome 94 through Chrome 98, approximately September 2021 to Februrary 2022. 
 
-You can enable the feature for local development by enabling "Prerender2" in `chrome://flags`.
+The origin trial is only supported on Chrome for Android. However, the feature can be experimented with on any platform by enabling the `"Prerender2"` in `chrome://flags` for local development.
 
 ## Origin trial registration
 
