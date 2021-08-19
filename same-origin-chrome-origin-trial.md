@@ -10,7 +10,7 @@ The origin trial is scheduled to be available in Chrome 94 through Chrome 98, ap
 
 ## Local development
 
-You can enable the feature for local development by enabling "Prerender2" in [chrome://flags](chrome://flags).
+You can enable the feature for local development by enabling "Prerender2" in `chrome://flags`.
 
 ## Origin trial registration
 
@@ -54,11 +54,11 @@ There is limited debugging support for prerendering at this time. Chrome's DevTo
 
 ### How to tell if a prerender was started
 
-The <chrome://process-internals> page provides a quick way to check if a prerendered page exists. Navigate to that page, and then to the "Frame Trees" section.
+The `chrome://process-internals` page provides a quick way to check if a prerendered page exists. Navigate to that page, and then to the "Frame Trees" section.
 
 A list of all pages and frames in the browser are displayed.
 
-While invisible, a prerendered page is associated with a tab (or "WebContents") in the browser: the tab that contained the speculation rule that initiated the prerender. The <chrome://process-internals> page describes the active page in each WebContents, and the prerendered page, if any.
+While invisible, a prerendered page is associated with a tab (or "WebContents") in the browser: the tab that contained the speculation rule that initiated the prerender. The process internals page describes the active page in each WebContents, and the prerendered page, if any.
 
 TODO: Add screenshot.
 
@@ -72,14 +72,14 @@ WebContents: https://prerender2-specrules.glitch.me, 1 active frame, 1 prerender
 
 This indicates that the tab contains one active page (rooted at <https://prerender2-specrules.glitch.me/>) and one prerendered page (rooted at <https://prerender2-specrules.glitch.me/timer.html>).
 
-If there is no mention of "prerender root" on <chrome://process-internals#web-contents>, then there is currently no prerendering page.
+If there is no mention of "prerender root" on the process internals page, then there is currently no prerendering page.
 
 Aside from this internal page, you may also find it convenient to use JavaScript to detect the prerendered page programmatically. Prerendered pages and active pages can use [Broadcast Channel](https://developer.mozilla.org/docs/Web/API/Broadcast_Channel_API) to communicate with each other.
 
 **Example:**
 
 On index.html:
-```
+```html
 <script type="speculationrules">
 {
   "prerender": [
@@ -96,7 +96,7 @@ bc.addEventListener('message', e => {
 ```
 
 On foo.html:
-```
+```html
 <script>
 const bc = new BroadcastChannel('channel');
 if (document.prerendering) {
@@ -105,7 +105,7 @@ if (document.prerendering) {
 </script>
 ```
 
-Upon successful prerender, index.html receives a message that foo.html is being prerendered.
+Upon successful prerender, `index.html` receives a message that `foo.html` is being prerendered.
 
 ### How to tell if a prerender was activated
 
@@ -135,7 +135,7 @@ Now `wasActivated` after navigating to the page indicates whether the page was a
 
 If the prerender is not started or not activated, it can admittedly be difficult to figure out why. As a last resort, checking Chrome's internal histograms may provide clues.
 
-A prerender attempt is logged in the Prerender.Experimental.PrerenderHostFinalStatus histogram when it is eventually activated or discarded. You can view this histogram at chrome://histograms/Prerender.Experimental.PrerenderHostFinalStatus. A value of 0 is logged when a prerender is successfully activation; other values indicate prerenders that started and were discarded. A list as reasons as of August 2021 is available [here](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/prerender/prerender_host.h;l=53;drc=d4099a80842a10144a7e678155667b4a84dc802f).
+A prerender attempt is logged in the Prerender.Experimental.PrerenderHostFinalStatus histogram when it is eventually activated or discarded. You can view this histogram at `chrome://histograms/Prerender.Experimental.PrerenderHostFinalStatus`. A value of 0 is logged when a prerender is successfully activation; other values indicate prerenders that started and were discarded. A list as reasons as of August 2021 is available [here](https://source.chromium.org/chromium/chromium/src/+/main:content/browser/prerender/prerender_host.h;l=53;drc=d4099a80842a10144a7e678155667b4a84dc802f).
 
 ## Measuring performance
 
@@ -157,7 +157,7 @@ A limited subset of the proposed Speculation Rules API is currently offered. Bas
 In the typical case, a prerender lives as long as the document that triggered it is alive, until it is either activated by a subsequent navigation to the prerendered URL, or discarded due to a navigation to another URL.
 
 In more detail:
-* Only "prerender" actions are supported. The action "prefetch_with_subresources" is additionally supported in a [separate origin trial](https://developer.chrome.com/origintrials/#/view_trial/4576783121315266561) that requires its own token. It is acceptable to mix these origin trials.
+* Only `"prerender"` actions are supported. The action `"prefetch_with_subresources"` is supported in a [separate origin trial](https://developer.chrome.com/origintrials/#/view_trial/4576783121315266561) that requires its own token. It is acceptable to mix these origin trials.
 * Only same-origin prerendering is permitted. Cross-origin redirects cause prerendering to be cancelled. Any navigation away from the initial prerendered page also cancels the prerendering (exception: same-document navigations are allowed).
 * We only process rules being added; removal of rule sets is presently ignored.
 * We only accept list rules.
@@ -172,11 +172,11 @@ In more detail:
 
 ### Prerendered page behaviors
 
-Many powerful APIs are deferred in prerendering: they do not have an effect until after activation. Some behaviors and APIs cause a cancellation of the prerender, because Chrome does not yet handle deferring or handling them gracefully. The following is a non-exhaustive list of features that may cause a cancellation:
+Many powerful APIs are deferred in prerendering: they do not have an effect until after activation. Some behaviors and APIs cause a cancellation of the prerender, because Chrome does not yet handle deferring or otherwise handling them gracefully. The following is a non-exhaustive list of features that may cause a cancellation:
 * Using WebAudio and generally attempting to playing media.
 * Triggering a download with `<a download>` or the `Content-Disposition` header.
 * Using the Gamepad API or Notifications API.
-* Prerendering a page whose main document has a non-OK HTTP status code or that requires special handling due to client certificates, basic HTTP authentication, or SSL certification errors.
+* Prerendering a page whose main document has a non-OK HTTP status code or that requires special handling due to client certificates, basic HTTP authentication, SSL certification errors, etc.
 * Navigating the prerendered document to another document using `window.location`, `<meta http-equiv="refresh">`, etc. Same-document navigations are allowed.
 
 ### Activation eligibility
@@ -187,6 +187,6 @@ If the navigations differ, Chrome will elect to not activate the page, and it wi
 
 ## Feedback
 
-We would be happy to hear from you! Please direct feedback about the origin trial to <navigation-dev@chromium.org>. You may also file bugs [here](https://crbug.new). Describing the bug as related to the same-origin prerendering origin trial will help route it to the correct people. For feedback on the specification and the shape of the API, file issues at the [Prerendering, revamped](https://github.com/jeremyroman/alternate-loading-modes/issues) repository.
+We would be happy to hear from you! Please direct feedback about the origin trial to <navigation-dev@chromium.org>. You may also file bugs at Chromium's [bug tracker](https://bugs.chromium.org/p/chromium/issues/list). Describing the bug as related to the same-origin prerendering origin trial will help route it to the correct people. For feedback on the specification and the shape of the API, file issues at the [Prerendering, revamped](https://github.com/jeremyroman/alternate-loading-modes/issues) repository.
 
 Thank you, and may your pages load instantly.
