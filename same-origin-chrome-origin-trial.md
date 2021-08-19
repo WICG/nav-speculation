@@ -4,13 +4,13 @@
 
 Google Chrome will offer an [origin trial](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md) of [same-origin prerendering](same-origin-explainer.md) triggered by the [Speculation Rules API](triggers.md).
 
-It is recommended to first read the [explainer](same-origin-explainer.md) of this feature. This document complements that explainer with contains information specific to the origin trial, such as quirks and limitations of Chrome's implementation today.
+It is recommended to first read the feature's [explainer](same-origin-explainer.md). This document complements the explainer with information specific to the origin trial, such as quirks and limitations of Chrome's implementation today.
 
 The origin trial is scheduled to be available in Chrome 94 through Chrome 98, approximately September 2021 to Februrary 2022.
 
 ## Local development
 
-You can enable the feature for local development by enabling "Prerender2" in <chrome://flags>.
+You can enable the feature for local development by enabling "Prerender2" in [chrome://flags](chrome://flags).
 
 ## Origin trial registration
 
@@ -46,7 +46,7 @@ document.addEventListener('prerenderingchange', (event) => {
 </script>
 ```
 
-In the above example, `index.html` provides a hint to the browser to prerender `foo.html`.The origin trial token is present on both pages.
+In the above example, `index.html` provides a hint to the browser to prerender `foo.html`. The origin trial token is present on both pages.
 
 ## Debugging
 
