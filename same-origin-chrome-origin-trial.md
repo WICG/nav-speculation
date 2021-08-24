@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Google Chrome will offer an [origin trial](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md) of [same-origin prerendering](same-origin-explainer.md) triggered by the [Speculation Rules API](triggers.md).
+Google Chrome offers an [origin trial](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md) of [same-origin prerendering](same-origin-explainer.md) triggered by the [Speculation Rules API](triggers.md).
 
 It is recommended to first read the feature's [explainer](same-origin-explainer.md). This document complements the explainer with information specific to the origin trial, such as quirks and limitations of Chrome's implementation today.
 
@@ -12,7 +12,7 @@ The origin trial is only supported on **Chrome for Android**. However, the featu
 
 ## Origin trial registration
 
-Developers can sign up for the origin trial at (TBD link) to receive an [origin trial token](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md#how-do-i-enable-an-experimental-feature-on-my-origin).
+Developers can sign up for the origin trial [here](https://developer.chrome.com/origintrials/#/view_trial/1325184190353768449), to receive an [origin trial token](https://github.com/GoogleChrome/OriginTrials/blob/gh-pages/developer-guide.md#how-do-i-enable-an-experimental-feature-on-my-origin).
 
 The token must be present on both a) the page that uses the Speculation Rules API to trigger a prerender of a URL, and b) the target URL being prerendered.
 
@@ -58,7 +58,7 @@ A list of all pages and frames in the browser are displayed.
 
 While invisible, a prerendered page is associated with a tab (or "WebContents") in the browser: the tab that contained the speculation rule that initiated the prerender. The process internals page describes the active page in each WebContents, and the prerendered page, if any.
 
-TODO: Add screenshot.
+![the process internals page](/assets/chrome-process-internals.png)
 
 The relevant information from the above screenshot is extracted below:
 
