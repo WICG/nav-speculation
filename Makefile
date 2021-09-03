@@ -5,7 +5,7 @@ bikeshed_files = prerendering.bs speculation-rules.bs
 .PHONY: ci clean local remote
 
 local: $(bikeshed_files)
-	$(foreach source,$(bikeshed_files),bikeshed --die-on=warning spec $(source) $(source:.bs=.html))
+	$(foreach source,$(bikeshed_files),bikeshed --die-on=warning spec $(source) $(source:.bs=.html);)
 
 remote: $(bikeshed_files:.bs=.html)
 
