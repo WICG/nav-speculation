@@ -1,28 +1,30 @@
 SHELL=/bin/bash
 
+bikeshed_files = prerendering.bs speculation-rules.bs
+
 .PHONY: ci clean local remote
 
-local: index.bs
-	bikeshed --die-on=warning spec index.bs index.html
+local: $(bikeshed_files)
+	$(foreach source,$(bikeshed_files),bikeshed --die-on=warning spec $(source) $(source:.bs=.html))
 
-remote: index.html
+remote: $(bikeshed_files:.bs=.html)
 
-ci: index.bs index.html
+ci: index.html $(bikeshed_files:.bs=.html)
 	mkdir -p out
-	cp index.html out/
+	cp $^ out/
 
 clean:
-	rm index.html
+	rm -f $(bikeshed_files:.bs=.html)
 
-index.html: index.bs
+%.html: %.bs
 	@ (HTTP_STATUS=$$(curl https://api.csswg.org/bikeshed/ \
-	                       --output index.html \
+	                       --output $@ \
 	                       --write-out "%{http_code}" \
 	                       --header "Accept: text/plain, text/html" \
 												 -F die-on=warning \
-	                       -F file=@index.bs) && \
+	                       -F file=@$<) && \
 	[[ "$$HTTP_STATUS" -eq "200" ]]) || ( \
-		echo ""; cat index.html; echo ""; \
-		rm -f index.html; \
+		echo ""; cat $@; echo ""; \
+		rm -f $@; \
 		exit 22 \
 	);

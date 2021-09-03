@@ -1,0 +1,752 @@
+<pre class="metadata">
+Title: Prerendering Revamped
+Shortname: prerendering-revamped
+Status: DREAM
+Repository: jeremyroman/alternate-loading-modes
+Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me
+Editor: Dominic Farolino, Google https://www.google.com/, domfarolino@gmail.com
+Abstract: This document contains a collection of specification patches for well-specified prerendering.
+Markup Shorthands: css no, markdown yes
+Assume Explicit For: yes
+Complain About: accidental-2119 yes, missing-example-ids yes
+Indent: 2
+Boilerplate: omit conformance
+</pre>
+<pre class="link-defaults">
+spec:html; type:element; text:link
+spec:html; type:element; text:script
+</pre>
+<pre class="anchors">
+spec: ecma262; urlPrefix: https://tc39.es/ecma262/
+  type: dfn
+    text: current Realm; url: current-realm
+spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
+  type: dfn
+    urlPrefix: browsers.html
+      text: creating a new top-level browsing context; url: creating-a-new-top-level-browsing-context
+    urlPrefix: history.html
+      text: session history; url: session-history
+    urlPrefix: browsing-the-web.html
+      for: session history entry
+        text: document; url: she-document
+      for: navigate
+        text: mature; url: concept-navigate-mature
+      for: navigation params
+        text: request; url: navigation-params-request
+        text: reserved environment; url: navigation-params-reserved-environment
+      text: abort; for: Document; url: abort-a-document
+      text: create and initialize a Document object; url: initialise-the-document-object
+      text: history handling behavior; url: history-handling-behavior
+      text: prompt to unload; url: prompt-to-unload-a-document
+      text: refused to allow the document to be unloaded; url: refused-to-allow-the-document-to-be-unloaded
+      text: traverse the history; url: traverse-the-history
+    urlPrefix: interaction.html
+      text: system focus; url: tlbc-system-focus
+    urlPrefix: urls-and-fetching.html
+      text: parse a URL; url: parse-a-url
+      text: resulting URL record
+    urlPrefix: webappapis.html
+      text: script; url: concept-script
+spec: page-visibility; urlPrefix: https://w3c.github.io/page-visibility/
+  type: dfn
+    text: hidden; for: Document; url: dfn-hidden
+    text: visible; for: Document; url: dfn-visible
+    text: visibility state; for: Document; url: dfn-visibility-states
+spec: geolocation; urlPrefix: https://w3c.github.io/geolocation-api/
+  type: method; for: Geolocation
+    text: getCurrentPosition(successCallback, errorCallback, options); url: getcurrentposition-method
+    text: watchPosition(successCallback, errorCallback, options); url: watchposition-method
+    text: clearWatch(watchId); url: clearwatch-method
+  type: dfn
+    text: watch process; url: dfn-watch-process
+spec: serial; urlPrefix: https://wicg.github.io/serial/
+  type: method; for: Serial
+    text: getPorts(); url: dom-serial-getports
+    text: requestPort(options); url: dom-serial-requestPort
+spec: presentation-api; urlPrefix: https://w3c.github.io/presentation-api/
+  type: method; for: PresentationRequest
+    text: start(); url: dom-presentationrequest-start
+spec: webmidi; urlPrefix: https://webaudio.github.io/web-midi-api/
+  type: method; for: Navigator
+    text: requestMIDIAccess(); url: dom-navigator-requestmidiaccess
+spec: file-system-access; urlPrefix: https://wicg.github.io/file-system-access/
+  type: method; for: Window
+    text: showOpenFilePicker(); url: dom-window-showopenfilepicker
+    text: showSaveFilePicker(); url: dom-window-showsavefilepicker
+    text: showDirectoryPicker(); url: dom-window-showdirectorypicker
+spec: idle-detection; urlPrefix: https://wicg.github.io/idle-detection/
+  type: method; for: IdleDetector
+    text: requestPermission(); url: api-idledetector-requestpermission
+    text: start(); url: api-idledetector-start
+spec: clipboard-apis; urlPrefix: https://w3c.github.io/clipboard-apis/
+  type: method; for: Clipboard
+    text: read(); url: dom-clipboard-read
+    text: readText(); url: dom-clipboard-readtext
+    text: write(); url: dom-clipboard-write
+    text: writeText(); url: dom-clipboard-writetext
+spec: screen-wake-lock; urlPrefix: https://w3c.github.io/screen-wake-lock/
+  type: method; for: WakeLock
+    text: request(); url: the-request-method
+spec: web-nfc; urlPrefix: https://w3c.github.io/web-nfc/
+  type: method; for: NDEFReader
+    text: write(); url: dom-ndefreader-write
+    text: scan(); url: dom-ndefreader-scan
+spec: battery; urlPrefix: https://w3c.github.io/battery/
+  type: method; for: Navigator
+    text: getBattery(); url: dom-navigator-getbattery
+  type: dfn
+    text: battery promise; url: dfn-battery-promise
+spec: pointerlock; urlPrefix: https://w3c.github.io/pointerlock/
+  type: method; for: Element
+    text: requestPointerLock(options); url: #dfn-requestpointerlock-pointerlockoptions-options
+spec: screen-orientation; urlPrefix: https://w3c.github.io/screen-orientation/
+  type: dfn
+    text: apply an orientation lock; url: dfn-apply-an-orientation-lock
+    text: pre-lock conditions; url: dfn-pre-lock-conditions
+  type: method; for: ScreenOrientation
+    text: lock(); url: dom-screenorientation-lock
+    text: unlock(); url: dom-screenorientation-unlock
+spec: gamepad; urlPrefix: https://w3c.github.io/gamepad/
+  type: method; for: Navigator
+    text: getGamepads(); url: dom-navigator-getgamepads
+  type: event; for: Window
+    text: gamepadconnected; url: dfn-gamepadconnected
+    text: gamepaddisconnected; url: dfn-gamepaddisconnected
+  type: interface
+    text: Gamepad; url: dom-gamepad
+    text: GamepadEvent; url: dom-gamepadevent
+  type: attribute; for: GamepadEvent
+    text: gamepad; url: dom-gamepadevent-gamepad
+spec: picture-in-picture; urlPrefix: https://w3c.github.io/picture-in-picture/
+  type: dfn
+    text: request Picture-in-Picture; url: request-picture-in-picture-algorithm
+  type: attribute; for: HTMLVideoElement
+    text: autoPictureInPicture; url: dom-htmlvideoelement-requestpictureinpicture
+  type: method; for: HTMLVideoElement
+    text: requestPictureInPicture(); url: dom-htmlvideoelement-autopictureinpicture
+spec: navigation-timing; urlPrefix: https://w3c.github.io/navigation-timing/
+  type: dfn
+    text: current document; url: dfn-current-document
+spec: encrypted-media; urlPrefix: https://w3c.github.io/encrypted-media/
+  type: method; for: Navigator
+    text: requestMediaKeySystemAccess(keySystem, supportedConfigurations); url: requestMediaKeySystemAccess
+</pre>
+<pre class="biblio">
+{
+  "IDLE-DETECTION": {
+    "authors": [
+      "Reilly Grant"
+    ],
+    "href": "https://wicg.github.io/idle-detection/",
+    "title": "Idle Detection API",
+    "status": "CG-DRAFT",
+    "publisher": "W3C"
+  }
+}
+</pre>
+
+<style>
+/* domintro from https://resources.whatwg.org/standard.css */
+.domintro {
+  position: relative;
+  color: green;
+  background: #DDFFDD;
+  margin: 2.5em 0 2em 0;
+  padding: 1.5em 1em 0.5em 2em;
+}
+
+.domintro dt, .domintro dt * {
+  color: black;
+  font-size: inherit;
+}
+.domintro dd {
+  margin: 0.5em 0 1em 2em; padding: 0;
+}
+.domintro dd p {
+  margin: 0.5em 0;
+}
+.domintro::before {
+  content: 'For web developers (non-normative)';
+  background: green;
+  color: white;
+  padding: 0.15em 0.25em;
+  font-style: normal;
+  position: absolute;
+  top: -0.8em;
+  left: -0.8em;
+}
+</style>
+
+<h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
+
+<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in [[RESOURCE-HINTS]]</em>
+
+The <{link/rel/prerender}> keyword may be used with <{link}> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
+
+The appropriate times to <a spec=HTML>fetch and process the linked resource</a> for such a link are:
+
+<ul>
+  <li>When the <a spec=HTML>external resource link</a> is created on a <{link}> element that is already [=browsing-context connected=]</a>.</li>
+  <li>When the <a spec=HTML>external resource link</a>'s <{link}> element [=becomes browsing-context connected=].</li>
+  <li>When the <{link/href}> attribute is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
+  <li>When the <{link/referrerpolicy}> attribute's state is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
+</ul>
+
+<div algorithm="prerender-processing-model">
+  The <a spec=HTML>fetch and process the linked resource</a> algorithm for <{link/rel/prerender}> links, given a <{link}> element <var>el</var>, is as follows:
+
+  1. If |el|'s <{link/href}> attribute's value is the empty string, then return.
+
+  1. [=Parse a URL=] given |el|'s <{link/href}> attribute, relative to |el|'s [=Node/node document=]. If that fails, then return. Otherwise, let |url| be the [=resulting URL record=].
+
+  1. If |url|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then return.
+
+  1. Let |referrerPolicy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
+
+  1. If |url|'s [=url/origin=] is not [=same origin=] with |el|'s [=Node/node document=]'s [=Document/origin=], then:
+
+    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] |referrerPolicy|, then return.
+
+  1. [=Create a prerendering browsing context=] with |url|, |referrerPolicy|, and |el|'s [=Node/node document=].
+</div>
+
+A user agent must not <a spec=HTML>delay the load event</a> of the <{link}> element's [=Node/node document=] for this link type.
+
+<p class="note">Note that this link type does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other link types that create <a spec=HTML>external resource links</a>.
+
+The <dfn>list of sufficiently-strict speculative navigation referrer policies</dfn> is a [=list=] containing the following subset of [=referrer policies=]: the empty string, "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
+
+<h2 id="speculation-rules">Speculation rules</h2>
+
+It is anticipated that prerendering will be triggered using <a href="speculation-rules.html">speculation rules</a>.
+
+<h2 id="prerendering-bcs">Prerendering browsing context infrastructure</h2>
+
+<h3 id="document-prerendering">Extensions to the {{Document}} interface</h3>
+
+We'd modify [[HTML]]'s centralized definition of {{Document}} as follows:
+
+<pre class="idl">
+  partial interface Document {
+      readonly attribute boolean prerendering;
+
+      // Under "special event handler IDL attributes that only apply to Document objects"
+      attribute EventHandler onprerenderingchange;
+  };
+</pre>
+
+The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=event handler IDL attribute=] corresponding to the <dfn event for="Document">prerenderingchange</dfn> [=event handler event type=]. (We would update the corresponding table in [[HTML]], which currently only contains {{Document/onreadystatechange}}.)
+
+As is customary for [[HTML]], the definition of {{Document/prerendering}} would be located in another section of the spec; we'd place it in the new section introduced below:
+
+<h3 id="prerendering-bcs-subsection">Prerendering browsing contexts</h3>
+
+<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#windows">Browsing contexts</a> section.</em>
+
+Every [=browsing context=] has a <dfn for="browsing context">loading mode</dfn>, which is one of the following:
+
+: "`default`"
+:: No special considerations are applied to content loaded in this browsing context
+: "`prerender`"
+:: This browsing context is displaying prerendered content
+: "`uncredentialed-prerender`"
+:: This browsing context is displaying prerendered content, and furthermore that content cannot make credentialed fetches
+
+By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`default`". A browsing context whose [=browsing context/loading mode=] is either "`prerender`" or "`uncredentialed-prerender`" is known as a <dfn>prerendering browsing context</dfn>.
+
+<dl class="domintro">
+  <dt><code>document . {{Document/prerendering}}</code></dt>
+
+  <dd>Returns true if the page is being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.
+</dl>
+
+The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=Document/browsing context=] that is a [=prerendering browsing context=]; otherwise, false.
+
+<hr>
+
+A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
+
+Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of ([=URL=], [=referrer policy=]) [=tuples=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
+
+Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
+
+<dl class="switch">
+  : If |platformObject| is a [=node=]
+  :: 1. Return |platformObject|'s [=Node/node document=]'s [=Document/post-prerendering activation steps list=].
+  : Otherwise
+  :: 1. Assert: |platformObject|'s [=relevant global object=] is a {{Window}} object.
+  :: 1. Return |platformObject|'s [=relevant global object=]'s [=associated Document=]'s [=Document/post-prerendering activation steps list=].
+</dl>
+
+Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
+<p class="note">This is used to keep the time immediately after [=Prompt to unload|prompting to unload=] the [=active document=] of the previous [=browsing context=].
+
+<div algorithm="create a prerendering browsing context">
+  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
+
+  1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
+
+  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)] [=map/exists=], then return.
+
+  1. Let |bc| be the result of [=creating a new top-level browsing context=].
+
+  1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
+
+  1. If |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
+
+    1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
+
+    1. [=Assert=]: The [=list of sufficiently-strict speculative navigation referrer policies=] [=list/contains=] |referrerPolicy|.
+
+  1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
+
+  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
+
+  1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
+</div>
+
+<div algorithm>
+  To <dfn for="prerendering browsing context">activate</dfn> a [=prerendering browsing context=] |successorBC| in place of a [=top-level browsing context=] |predecessorBC| given a [=history handling behavior=] |historyHandling|:
+
+  1. Assert: |historyHandling| is either "`default`" or "`replace`".
+
+  1. Assert: |successorBC| is not [=prerendering browsing context/empty=].
+
+  1. Assert: |predecessorBC| is a [=top-level browsing context=].
+
+  <!-- The following except for the step that sets the |activation start time| are copied from the navigate algorithm, and probably could benefit from some refactoring to deduplicate. -->
+
+  1. Cancel any preexisting but not yet [=navigate/mature=] attempts to navigate |predecessorBC|, including canceling any instances of the [=fetch=] algorithm started by those attempts. If one of those attempts has already <a lt="create and initialize a Document object">created and initialized a new `Document` object</a>, [=Document/abort=] that {{Document}} also.
+
+  1. [=Prompt to unload=] the [=active document=] of |predecessorBC|. If the user [=refused to allow the document to be unloaded=], then return.
+
+  1. Let |unsafe time| be the [=unsafe shared current time=].
+
+  1. [=Document/Abort=] the [=active document=] of |predecessorBC|.
+
+  <!-- End copied section. -->
+
+  1. TODO prepend the existing session history of |predecessorBC| into |successorBC|? Or, probably better, use the new "browsing session" concept to bridge them? Be sure to respect |historyHandling|.
+
+  1. [=In parallel=]:
+
+    1. Update the user agent's user interface to replace |predecessorBC| with |successorBC|, e.g., by updating the tab/window contents and the browser chrome.
+
+    1. Let |inclusiveDescendants| be « |successorBC| » [=list/extended=] with |successorBC|'s [=active document=]'s <a spec="HTML">list of the descendant browsing contexts</a>.
+
+    <!-- TODO is this the right task source? Should we make a new one? -->
+    1. [=list/For each=] |bc| of |inclusiveDescendants|, [=queue a global task=] on the [=networking task source=], given |bc|'s [=browsing context/active window=], to perform the following steps:
+
+      1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
+
+      1. Let |doc| be |bc|'s [=active document=].
+
+      1. If |doc|'s [=Document/origin=] is the same as |predecessorBC|'s [=active document=]'s [=Document/origin=], then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
+
+      1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
+
+      1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
+
+        1. Run |steps|.
+
+            <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
+
+        1. Assert: running |steps| did not throw an exception.
+
+       <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
+</div>
+
+<h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
+
+<div algorithm="create a new nested browsing context patch">
+  To ensure that any [=nested browsing contexts=] inherit their parent's [=browsing context/loading mode=], modify <a spec=HTML>create a new nested browsing context</a> by appending the following step:
+
+  1. Set <var ignore>browsingContext</var>'s [=browsing context/loading mode=] to <var ignore>element</var>'s [=Node/node document=]'s [=Document/browsing context=]'s [=browsing context/loading mode=].
+</div>
+
+<h2 id="navigation">Navigation and session history</h2>
+
+<h3 id="navigate-activation">Allowing activation in place of navigation</h3>
+
+<div algorithm="can activate a prerender">
+  We <dfn>can activate a prerender</dfn> given a [=browsing context=] |browsingContext|, a [=history handling behavior=] |historyHandling|, a string |navigationType|, and a [=request=] |request|, if the following steps return true:
+
+  1. Return true if all of the following are true:
+
+      * |browsingContext| is a [=top-level browsing context=]
+      * |browsingContext| is not a [=prerendering browsing context=]
+      * |historyHandling| is "`default`" or "`replace`"
+      * |navigationType| is "`other`"
+      * |request|'s [=request/method=] is \``GET`\`
+      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|request|'s [=request/URL=], |request|'s [=request/referrer policy=])] [=map/exists=] and is not [=prerendering browsing context/empty=]
+
+  1. Otherwise, return false.
+
+</div>
+
+Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/activate|activation=] of a [=prerendering browsing context=] in place of a normal navigation as follows:
+
+<div algorithm="navigate activate patch">
+  In [=navigate=], append the following steps after the fragment navigation handling (currently step 6):
+
+  1. If |resource| is a [=request=] and we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource|, then:
+
+    1. [=prerendering browsing context/Activate=] <var ignore>successorBC</var> in place of |browsingContext| given |historyHandling|.
+
+    1. Return.
+</div>
+
+Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#redirect-handling]] section.
+
+<h3 id="redirect-handling">Redirect handling</h3>
+
+This section contains two types of changes to the navigation redirect handling portion of the [=process a navigate fetch=] algorithm:
+ * Logic allowing navigation redirects that are not inside of a [=prerendering browsing context=] to [=prerendering browsing context/activate=] a [=prerendering browsing context=].
+ * Logic that updates specific state of a [=prerendering browsing context=] when it redirects coss-origin.
+
+Patch the [=process a navigate fetch=] algorithm like so:
+
+<div algorithm="navigate activate patch redirect handling">
+  In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly:
+
+  1. If we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and <var ignore>request</var>, then:
+
+    1. [=prerendering browsing context/Activate=] |browsingContext| in place of <var ignore>sourceBrowsingContext</var> given |historyHandling|.
+
+    1. Return.
+
+  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
+
+    1. Set |browsingContext|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
+
+    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] <var ignore>request</var>'s [=referrer policy=], then:
+
+      1. [=Assert=]: |response| is not null.
+
+      1. [=Assert=]: |response|'s [=response/location URL=] is a [=URL=] whose [=url/scheme=] is a [=HTTP(S) scheme=].
+
+      1. Set |response| to a [=network error=] and [=iteration/break=].
+</div>
+
+<h3 id="always-replacement">Maintaining a trivial session history</h3>
+
+<div algorithm="navigate historyHandling patch">
+  Patch the [=navigate=] algorithm to ensure the [=session history=] of a [=prerendering browsing context=] stays trivial by prepending the following step before all others:
+
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then:
+
+    1. Assert: |historyHandling| is not "`entry update`", since prerendering browsing contexts have trivial session histories and thus will never end up [=traverse the history|traversing=] back to an entry with null [=session history entry/document=].
+
+    1. If |historyHandling| is "`default`", then set |historyHandling| to "`replace`".
+</div>
+
+<div algorithm="URL and history update steps patch">
+  Patch the <a spec=HTML>URL and history update steps</a> by adding the following step after step 1:
+
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then set <var ignore>isPush</var> to false.
+</div>
+
+<h3 id="no-bad-navs">Preventing forbidden navigations</h3>
+
+Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerendering browsing context=] as follows:
+
+<p class="issue">Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn't observable anyway?
+
+<div algorithm="process a navigate response patch">
+  In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
+
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], and any of the following hold:
+
+      * |failure| is true;
+      * |navigationParams|'s [=navigation params/request=] is null;
+      * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
+      * |response| has a \``Content-Disposition`\` header specifying the `attachment`
+          disposition type; or
+      * |response|'s [=response/status=] is 204 or 205,
+
+    then:
+
+    1. Run the [=environment discarding steps=] for |navigationParams|'s [=navigation params/reserved environment=].
+
+    1. Return.
+</div>
+
+<div algorithm="process a navigate URL scheme patch">
+  In <a spec=HTML>process a navigate URL scheme</a>, insert the following step before the step
+  which displays inline content:
+
+  1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
+</div>
+
+<h3 id="cleanup-upon-discarding">Cleanup upon discarding a {{Document}}</h3>
+
+Modify the [=discard a document|discard=] algorithm for {{Document}}s by appending the following step:
+
+<div algorithm="discard a Document patch">
+  1. [=list/Empty=] <var ignore>document</var>'s [=Document/post-prerendering activation steps list=].
+</div>
+
+<h2 id="interaction-with-other-specs">Interaction with other specifications and concepts</h2>
+
+<h3 id="interaction-with-visibility-state">Interaction with Page Visibility</h3>
+
+Documents in [=prerendering browsing contexts=] are [=Document/hidden=].
+
+<p class="issue">What about portals? Portals might not be hidden, and portals are envisioned to be a type of prerendering browsing context.</p>
+
+<h3 id="interaction-with-system-focus">Interaction with system focus</h3>
+
+[=Prerendering browsing contexts=] never have [=system focus=].
+
+<h3 id="performance-navigation-timing-extension">Extensions to the {{PerformanceNavigationTiming}} interface</h3>
+
+Extend the {{PerformanceNavigationTiming}} interface as follows:
+
+<pre class="idl">
+  partial interface PerformanceNavigationTiming {
+      readonly attribute DOMHighResTimeStamp activationStart;
+  };
+</pre>
+
+The <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> getter steps are:
+
+1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
+
+<p class="note">This value is 0 in cross-origin prerenders.
+
+<h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
+
+Some behaviors might make sense in most [=top-level browsing contexts=], but do not make sense in [=prerendering browsing contexts=]. This section enumerates specification patches to enforce such restrictions.
+
+<h3 id="patch-window-apis">APIs for creating and navigating browsing contexts by name</h3>
+
+Modify the definition of <a spec=HTML>script-closable</a> to prevent window closing while in a [=prerendering browsing context=]:
+
+A [=browsing context=] is <dfn noexport>script-closable</dfn> if either of the following is true:
+
+* it is an [=auxiliary browsing context=] that was created by script (as opposed to by an action of the user); or
+* it is a [=top-level browsing context=] <ins>that is not a [=prerendering browsing context=]</ins> and whose [=session history=] contains only one {{Document}}.
+
+<h2 id="intrusive-behaviors">Preventing intrusive behaviors</h2>
+
+Various behaviors are disallowed in [=prerendering browsing contexts=] because they would be intrusive to the user, since the prerendered content is not being actively interacted with.
+
+<h3 id="patch-downloading">Downloading resources</h3>
+
+Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that downloads inside [=prerendering browsing contexts=] are delayed until [=prerendering browsing context/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
+
+<div algorithm="download the hyperlink patch">
+  1. If <var ignore>subject</var>'s [=Node/node document=]'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following step to <var ignore>subject</var>'s [=platform object/post-prerendering activation steps list=] and return.
+</div>
+
+<h3 id="patch-modals">User prompts</h3>
+
+<div algorithm="cannot show simple dialogs patch">
+  Modify the <a spec=HTML>cannot show simple dialogs</a> algorithm, given a {{Window}} |window|, by prepending the following step:
+
+  1. If |window|'s [=Window/browsing context=] is a [=prerendering browsing context=], then return true.
+</div>
+
+<div algorithm="window print() patch">
+  Modify the {{Window/print()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
+</div>
+
+<h3 id="delay-async-apis">Delaying async API results</h3>
+
+Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering browsing context=], most of its work is deferred until the browsing context is [=prerendering browsing context/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
+
+<h4 id="delay-while-prerendering">The {{[DelayWhilePrerendering]}} extended attribute</h4>
+
+To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until [=prerendering browsing context/activated|activation=], we introduce the <dfn extended-attribute>[DelayWhilePrerendering]</dfn> Web IDL extended attribute. It indicates that when a given method is called in a [=prerendering browsing context=], it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.
+
+The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and must only appear on a <a lt="regular operation" spec="WEBIDL">regular</a> or <a spec="WEBIDL">static operation</a> whose <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a> and whose <a spec="WEBIDL">exposure set</a> contains only {{Window}}.
+
+<div algorithm="DelayWhilePrerendering method steps">
+  The method steps for any operation annotated with the {{[DelayWhilePrerendering]}} extended attribute are replaced with the following:
+
+  1. Let |realm| be the [=current Realm=].
+  1. If the operation in question is a <a spec="WEBIDL">regular operation</a>, then set |realm| to the [=relevant Realm=] of [=this=].
+  1. If |realm|'s [=Realm/global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+    1. Let |promise| be [=a new promise=], created in |realm|.
+    1. Append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=]:
+      1. Let |result| be the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
+      1. [=Resolve=] |promise| with |result|.
+    1. Return |promise|.
+  1. Otherwise, return the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
+</div>
+
+<h4 id="patch-geolocation">Geolocation API</h4>
+
+<div algorithm="Geolocation getCurrentPosition patch">
+  Modify the {{Geolocation/getCurrentPosition()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+</div>
+
+<div algorithm="Geolocation watchPosition patch">
+  Modify the {{Geolocation/watchPosition()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+
+    1. Let |watchProcessId| be a new unique <a spec=GEOLOCATION>watch process</a> ID, and note it as a <dfn>post-prerendering activation geolocation watch process ID</dfn>.
+
+    1. Append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=], with the modification that the <a spec=GEOLOCATION>watch process</a> generated must use |watchProcessId| as its ID, and return |watchProcessId|.
+</div>
+
+<div algorithm="Geolocation clearWatch patch">
+  Modify the {{Geolocation/clearWatch(watchId)}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+
+    1. If <var ignore>watchId</var> is a [=post-prerendering activation geolocation watch process ID=], then remove its corresponding steps from [=this=]'s [=platform object/post-prerendering activation steps list=].
+
+    1. Return.
+</div>
+
+<h4 id="patch-serial">Web Serial API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{Serial/requestPort()}}.
+
+TODO: the below could probably be done by generalizing {{[DelayWhilePrerendering]}} to use owner document while in dedicated workers.
+
+<div algorithm="Serial getPorts patch">
+  Modify the {{Serial/getPorts()}} method steps by inserting the following steps after the initial creation of |promise|:
+
+  <!-- TODO link owner document once https://github.com/whatwg/html/pull/6379 lands -->
+  1. Let |document| be [=this=]'s [=relevant global object=]'s [=associated Document=], if [=this=]'s [=relevant global object=] is a {{Window}}, or [=this=]'s [=relevant global object=]'s owner document, if [=this=]'s [=relevant global object=] is a {{DedicatedWorkerGlobalScope}}.
+
+  1. If |document| is null, then return [=a promise rejected with=] a "{{SecurityError}}" {{DOMException}}.
+
+  1. If |document|'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following steps to |document|'s [=Document/post-prerendering activation steps list=] and return |promise|.
+</div>
+
+<h4 id="patch-notifications">Notifications API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{Notification/requestPermission()}}.
+
+<div algorithm="Notification constructor patch">
+  Modify the {{Notification/Notification()}} constructor steps by replacing the step which goes [=in parallel=] with the following:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append these steps to [=this=]'s [=platform object/post-prerendering activation steps list=]. Otherwise, run these steps [=in parallel=].
+</div>
+
+<div algorithm="Notification permission patch">
+  Modify the {{Notification/permission}} static getter steps by replacing them with the following:
+
+  1. If the [=current global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return "`default`".
+
+     <p class="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of [=prerendering browsing contexts=]. Web developers can then call {{Notification/requestPermission()|Notification.requestPermission()}}, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "`granted`" or "`denied`", so the browser might not actually ask the user like would normally be the case with "`default`". But that's OK: it's not observable to web developer code.</p>
+
+  1. Otherwise, return the [=current settings object=]'s [=environment settings object/origin=]'s <a spec="NOTIFICATIONS">permission</a>.
+</div>
+
+TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
+
+<h4 id="patch-midi">Web MIDI API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{Navigator/requestMIDIAccess()}}.
+
+<h4 id="patch-idle-detection">Idle Detection API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{IdleDetector/start()}}.
+
+<p class="note">The other interesting method, {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}}, is gated on [=transient activation=]. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering.
+
+<h4 id="patch-generic-sensor">Generic Sensor API</h4>
+
+<div algorithm="Sensor start patch">
+  Modify the {{Sensor/start()}} method steps by inserting the following steps after the state is set to "`activating`":
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+  1. If [=this=].{{Sensor/[[state]]}} is "`idle`", then return.
+
+      <p class="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime {{Sensor/stop()}} was called, we do nothing upon activating the prerender.
+
+  1. Assert: [=this=].{{Sensor/[[state]]}} is "`activating`".
+</div>
+
+<h4 id="patch-web-nfc">Web NFC</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{NDEFReader/write()}} and {{NDEFReader/scan()}}.
+
+<h4 id="patch-battery">Battery Status API</h4>
+
+<div algorithm="Navigator getBattery patch">
+  Modify the {{Navigator/getBattery()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return [=this=]'s [=battery promise=].
+</div>
+
+<h4 id="patch-orientation-lock">Screen Orientation API</h4>
+
+<div algorithm="apply an orientation lock patch">
+  Modify the [=apply an orientation lock=] algorithm steps by overwriting the first few steps, before it goes [=in parallel=], as follows:
+
+  1. Let |promise| be a new promise.
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+
+  1. If the [=user agent=] does not support locking the screen orientation, then [=reject=] |promise| with a "{{NotSupportedError}}" {{DOMException}} and return |promise|.
+
+  1. If the [=document=]'s [=Document/active sandboxing flag set=] has the [=sandboxed orientation lock browsing context flag=] set, or the [=user agent=] doesn't meet the [=pre-lock conditions=] to perform an orientation change, then [=reject=] |promise| with a "{{SecurityError}}" {{DOMException}} and return |promise|.
+
+  1. Set the [=document=]'s \[[orientationPendingPromise]] to |promise|.
+</div>
+
+Add {{[DelayWhilePrerendering]}} to {{ScreenOrientation/unlock()}}.
+
+<p class="note">This latter modification is necessary to ensure that code that calls {{ScreenOrientation/lock()|screen.orientation.lock()}} followed by {{ScreenOrientation/unlock()|screen.orientation.unlock()}} produces the expected results.
+
+<h4 id="patch-gamepads">Gamepad</h4>
+
+<div algorithm="getGamepads patch">
+  Modify the {{Navigator/getGamepads()}} method steps by prepending the following step:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return an empty sequence.
+</div>
+
+<div algorithm="gamepad events patch">
+  Modify the discussion of the {{Window/gamepadconnected}} and {{Window/gamepaddisconnected}} events to specify that the user agent must not dispatch these events if the {{Window}} object's [=Window/browsing context=] is a [=prerendering browsing context=].
+</div>
+
+<div algorithm="gamepadconnected post-prerendering">
+  Modify the {{Window/gamepadconnected}} section to indicate that every {{Document}} |document|'s [=Document/post-prerendering activation steps list=] should gain the following steps:
+
+  1. If |document| is [=allowed to use=] the "`gamepad`" feature, and |document|'s [=relevant settings object=] is a [=secure context=], and any gamepads are connected, then for each connected gamepad, [=fire an event=] named {{Window/gamepadconnected}} at |document|'s [=relevant global object=] using {{GamepadEvent}}, with its {{GamepadEvent/gamepad}} attribute initialized to a new {{Gamepad}} object representing the connected gamepad.
+</div>
+
+<h4 id="eme-patch">Encrypted Media Extensions</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{Navigator/requestMediaKeySystemAccess()}}.
+
+<h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
+
+Some APIs do not need modifications because they will automatically fail or no-op without a property that a [=prerendering browsing context=], its [=browsing context/active window=], or its [=active document=] will never have. These properties include:
+- [=transient activation=] or [=sticky activation=]
+- [=system focus=]
+- the [=Document/visible=] [=Document/visibility state=]
+
+We list known APIs here for completeness, to show which API surfaces we've audited.
+
+APIs that require [=transient activation=] or [=sticky activation=]:
+- {{Window/open(url, target, features)|window.open()}} [[HTML]]
+- The prompt generated by the {{Window/beforeunload}} event [[HTML]]
+- {{Element/requestFullscreen()|element.requestFullscreen()}} [[FULLSCREEN]]
+- {{PaymentRequest/show()|paymentRequest.show()}} [[PAYMENT-REQUEST]]
+- {{PresentationRequest/start()|presentationRequest.start()}} [[PRESENTATION-API]]
+- {{Window/showOpenFilePicker()}}, {{Window/showSaveFilePicker()}}, and {{Window/showDirectoryPicker()}} [[FILE-SYSTEM-ACCESS]]
+- {{IdleDetector/requestPermission()|IdleDetector.requestPermission()}} [[IDLE-DETECTION]]
+- Firing of clipboard events. [[CLIPBOARD-APIS]]
+- {{Navigator/share()|navigator.share()}} [[WEB-SHARE]]
+- {{Element/requestPointerLock()|element.requestPointerLock()}} [[POINTERLOCK]]
+
+APIs that require [=system focus=]:
+- The Asynchronous Clipboard API: {{Clipboard/read()|navigator.clipboard.read()}}, {{Clipboard/readText()|navigator.clipboard.readText()}}, {{Clipboard/write()|navigator.clipboard.write()}}, {{Clipboard/writeText|navigator.clipboard.writeText()}}. [[CLIPBOARD-APIS]]
+
+APIs that require the [=Document/visible=] [=Document/visibility state=]:
+- {{WakeLock/request()|navigator.wakeLock.request()}} [[SCREEN-WAKE-LOCK]]
+
+More complicated cases:
+- [=Request Picture-in-Picture=] as invoked due to {{HTMLVideoElement/requestPictureInPicture()|video.requestPictureInPicture()}} or {{HTMLVideoElement/autoPictureInPicture}} requires either [=transient activation=], or the [=Document/visibility state=] to have been [=Document/visible=]. [[PICTURE-IN-PICTURE]]
