@@ -1,0 +1,106 @@
+<pre class="metadata">
+Title: Prefetch
+Shortname: prefetch
+Status: DREAM
+Repository: jeremyroman/alternate-loading-modes
+Editor: Jeremy Roman, Google https://www.google.com/, jbroman@chromium.org
+Abstract: Extensions to WHATWG Fetch for prefetching with partitioning in mind.
+Markup Shorthands: css no, markdown yes
+Assume Explicit For: yes
+Complain About: accidental-2119 yes, missing-example-ids yes
+Indent: 2
+Boilerplate: omit conformance
+</pre>
+<pre class="anchors">
+spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
+  type: dfn
+    urlPrefix: browsers.html
+      text: container; for: browsing context; url: bc-container 
+spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
+  type: dfn
+    text: process response; url: process-response
+</pre>
+
+<h2 id="concepts">Concepts</h2>
+
+In light of <a href="https://privacycg.github.io/storage-partitioning/">storage partitioning</a>, this specification defines prefetch for navigations which would occur within the same partition (for example, top-level navigations within the same site) and for navigations which would occur in a separate partition (for example, top-level navigations to a different site).
+
+Each [=document=] has a <dfn export>prefetch buffer</dfn>, which is a [=list=] of [=prefetch records=].
+
+A <dfn>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn export for="prefetch record">URL</dfn>, a [=URL=]
+* <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
+* <dfn export for="prefetch record">response</dfn>, a [=response=]
+* <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}}
+
+<p class="issue">Does the connection between the prefetch buffer and document need to be abstracted if this is integrated into [[FETCH]]?</p>
+
+<p class="issue">Does the prefetch record need to contain redirect info?</p>
+
+The user agent may remove elements from the [=prefetch buffer=] even if they are not expired, e.g., due to resource constraints.
+
+<div algorithm="store a prefetch record">
+    To <dfn export>store a prefetch record</dfn> given a [=document=] |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=response=] |response|, perform the following steps.
+
+    1. [=Assert=]: |document| is [=Document/fully active=].
+    1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
+    1. Let |expiryTime| be |currentTime| + 300000.
+    1. [=list/Remove=] all elements whose [=prefetch record/URL=] equals |url| and [=prefetch record/referrer policy=] equals |referrerPolicy| from |document|'s [=prefetch buffer=].
+    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/response=] |response| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
+</div>
+
+<div algorithm="find a matching prefetch response">
+    To <dfn export>find a matching prefetch response</dfn> given a [=document=] |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+
+    1. [=Assert=]: |document| is [=Document/fully active=].
+    1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
+    1. [=list/For each=] |record| of |document|'s [=prefetch buffer=]:
+        1. If |record|'s [=prefetch record/URL=] is not equal to |url| or |record|'s [=prefetch record/referrer policy=] is not equal to |referrerPolicy|, then [=iteration/continue=].
+        1. [=list/Remove=] |record| from |document|'s [=prefetch buffer=].
+        1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
+        1. Return |record|'s [=prefetch record/response=].
+    1. Return null.
+    
+    <p class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it's unclear whether this is worthwhile.</p>
+</div>
+
+<h2 id="prefetch-algorithms">Prefetch algorithms</h2>
+
+<!-- with reference to "process a navigate fetch" -->
+
+<p class="issue">Check whether we need to expressly call Should request/response by blocked by Content Security Policy</p>
+<p class="issue">Check Service Worker integration</p>
+
+<div algorithm="partitioned prefetch">
+    To <dfn export>partitioned prefetch</dfn> given a [=document=] |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+
+    1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
+    1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
+    1. Let |browsingContext| be [=document=]'s [=Document/browsing context=].
+    1. Let |request| be a [=request=] with [=request/URL=] |url|, [=request/referrer policy=] |referrerPolicy|, [=request/initiator=] "`prefetch`", [=request/destination=] "`document`", [=request/mode=] "`navigate`", [=request/credentials mode=] "`include`", [=request/redirect mode=] "`manual`", [=request/use-URL-credentials flag=] set, and [=request/client=] |document|'s [=relevant settings object=].
+    1. Let |locationURL| be null.
+    1. Let |currentURL| be |request|'s [=request/current URL=].
+    1. While true:
+        1. If |locationURL| is non-null, then set |currentURL| to |locationURL|.
+        1. If |request|'s [=request/reserved client=] is not null and |currentURL|'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
+            1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
+            1. Set |request|'s [=request/reserved client=] to null.
+        1. If |request|'s [=request/reserved client=] is null, then:
+            1. Let |topLevelCreationURL| be |currentURL|.
+            1. Let |topLevelOrigin| be null.
+            1. If |browsingContext| is not a [=top-level browsing context=], then:
+                1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
+                1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
+            1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+        1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|.
+        1. If |partitionKey| is not equal to |proposedPartitionKey|, then:
+            1. TODO: Abort in a suitable way. This tried to leave the partition.
+        1. TODO: this is where [=process a navigate fetch=] checks the `navigate-to` CSP
+        1. If |response| is null, [=fetch=] |request|.
+        1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
+        1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
+        1. TODO: Figure out if the coop enforcement logic is necessary here; it probably is
+        1. TODO: Figure out if the corp enforcement logic is necessary here; it probably is
+        1. Set |locationURL| to |response|'s [=response/location URL=].
+        1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], then [=iteration/break=].
+</div>
