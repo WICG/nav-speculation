@@ -239,7 +239,11 @@ Site operators should be aware that, similar to virtual private network (VPN) te
 
 <h3 id="privacy-heuristics">Heuristics</h3>
 
-Because the candidate prefetches and other actions are not required, the user agent can use heuristics to determine which actions would be best to execute. Because it may be observable to the document whether actions were executed, user agents should take care to protect privacy when making such decisions — for instance by only using information which is already available to the origin. To the extent these heuristics depend on any persistent state, that state should be erased whenever other site data is erased, possibly including time-based expiry.
+Because the candidate prefetches and other actions are not required, the user agent can use heuristics to determine which actions would be best to execute. Because it may be observable to the document whether actions were executed, user agents must take care to protect privacy when making such decisions — for instance by only using information which is already available to the origin. If these heuristics depend on any persistent state, that state must be erased whenever the user erases other site data. If the user agent automatically clears other site data from time to time, it must erase such persistent state at the same time.
+
+<div class="note">
+  The use of <em>origin</em> here instead of <em>site</em> here is intentional. Origins generally form the basis for the web's security boundary. Though same-site origins are generally allowed to coordinate if they wish, origins are generally not allowed access to data from other origins, even same-site ones.
+</div>
 
 Examples of inputs which would be already known to the document:
 * author-supplied scores (if future version of this specification allows specifying them)
@@ -248,10 +252,10 @@ Examples of inputs which would be already known to the document:
 * whether the cursor is near the link
 * rendered size of the link
 
-Examples of persistent data related to the origin (which the origin could have gathered itself) but which should be erased according to user intent:
+Examples of persistent data related to the origin (which the origin could have gathered itself) but which must be erased according to user intent:
 * whether the user has clicked this or similar links on this document or other documents on the same origin
 
-Examples of device information which may be valuable in deciding whether prefetching is appropriate, but which should be considered as part of the user agent's overall privacy posture because it may make the user more identifiable across origins:
+Examples of device information which may be valuable in deciding whether prefetching is appropriate, but which must be considered as part of the user agent's overall privacy posture because it may make the user more identifiable across origins:
 * coarse device class (CPU, memory)
 * coarse battery level
 * whether the network connection is known to be metered
