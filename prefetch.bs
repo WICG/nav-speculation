@@ -19,6 +19,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: process response; url: process-response
+    text: network partition key; url: network-partition-key
 </pre>
 
 <h2 id="concepts">Concepts</h2>
@@ -33,9 +34,7 @@ A <dfn>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]
 * <dfn export for="prefetch record">response</dfn>, a [=response=]
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}}
 
-<p class="issue">Does the connection between the prefetch buffer and document need to be abstracted if this is integrated into [[FETCH]]?</p>
-
-<p class="issue">Does the prefetch record need to contain redirect info?</p>
+<p class="issue">Does the prefetch record need to contain redirect info, e.g. to verify that all redirects would pass `navigate-to`?</p>
 
 The user agent may remove elements from the [=prefetch buffer=] even if they are not expired, e.g., due to resource constraints.
 
@@ -44,7 +43,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
-    1. Let |expiryTime| be |currentTime| + 300000.
+    1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
     1. [=list/Remove=] all elements whose [=prefetch record/URL=] equals |url| and [=prefetch record/referrer policy=] equals |referrerPolicy| from |document|'s [=prefetch buffer=].
     1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/response=] |response| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
 </div>
@@ -117,7 +116,7 @@ These algorithms are based on [=process a navigate fetch=].
         1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|.
         1. If |partitionKey| is not equal to |proposedPartitionKey|, then set |response| to a [=network error=] and [=iteration/break=].
 
-            <div class="issue">It might be possible to "downgrade" in this case.</div>
+            <div class="issue">It might be possible to "downgrade" to [=uncredentialed prefetch=] in this case.</div>
         1. TODO: this is where [=process a navigate fetch=] checks the `navigate-to` CSP
         1. If |response| is null, [=fetch=] |request|.
         1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
@@ -128,12 +127,93 @@ These algorithms are based on [=process a navigate fetch=].
         1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], then [=iteration/break=].
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
-    1. If |response| is not [=network error=], then return.
+    1. If |response| is a [=network error=], then return.
     1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |response|.
 </div>
 
-<div algorithm="uncredentialed prefetch">
-    To <dfn export>uncredentialed prefetch</dfn> given a [=document=] |document, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
-    <!-- probably can make an opaque origin and set it on the reserved client to force an isolated network partition, or could force the partition key to be null in order to force the cache off; forcing it off by setting no-store cache mode would also set the Pragma and Cache-Control headers -->
+<div algorithm="uncredentialed prefetch">
+    To <dfn export>uncredentialed prefetch</dfn> given a [=document=] |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+
+    1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
+    1. Let |isolationOrigin| be a new [=opaque origin=].
+
+        <div class="note">This is used to ensure a distinct network partition key is used.</div>
+    1. If |referrerPolicy| is not in the [=list of sufficiently strict speculative navigation referrer policies=], then return.
+    1. Let |originalPartitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
+    1. Let |browsingContext| be [=document=]'s [=Document/browsing context=].
+    1. Let |request| be a [=request=] as follows:
+
+        :  [=request/URL=]
+        :: |url|
+        :  [=request/referrer policy=]
+        :: |referrerPolicy|
+        :  [=request/initiator=]
+        :: "`prefetch`"
+        :  [=request/destination=]
+        :: "`document`"
+        :  [=request/mode=]
+        :: "`navigate`"
+        :  [=request/credentials mode=]
+        :: "`include`"
+
+            <div class="note">Though credentials are included, they will be isolated such that no credentials are present to begin with.</div>
+        :  [=request/cache mode=]
+        :: "`no-store`"
+        :  [=request/redirect mode=]
+        :: "`manual`"
+        :  [=request/client=]
+        :: |document|'s [=relevant settings object=]
+        :  [=request/header list=]
+        ::
+            *  `` `Sec-Purpose` ``/`` `Prefetch` ``
+        :  [=request/reserved client=]
+        :: a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is `about:blank`, [=environment/top-level creation URL=] is `about:blank`, and [=environment/top-level origin=] is |isolationOrigin|.
+    1. Let |locationURL| be null.
+    1. Let |currentURL| be |request|'s [=request/current URL=].
+    1. Let |hypotheticalReservedClient| be null.
+    1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
+    1. While true:
+        1. If |locationURL| is non-null, then set |currentURL| to |locationURL|.
+        1. If |request|'s [=request/reserved client=] is not null and |currentURL|'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
+            1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
+            1. Set |hypotheticalReservedClient| to null.
+        1. If |hypotheticalReservedClient| is null, then:
+            1. Let |topLevelCreationURL| be |currentURL|.
+            1. Let |topLevelOrigin| be null.
+            1. If |browsingContext| is not a [=top-level browsing context=], then:
+                1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
+                1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
+            1. Set |hypotheticalReservedClient| to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+        1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalReservedClient|.
+        1. If |originalPartitionKey| is equal to |hypotheticalPartitionKey|, then set |response| to a [=network error=] and [=iteration/break=].
+
+            <div class="note">The prefetch would end up in the same partition as the prefetch came from in this case. We mirror the logic for tracking the reserved client (and thus partition) exclusively to make this determination.</div>
+        1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |originsWithConflictingCredentials|.
+        1. TODO: this is where [=process a navigate fetch=] checks the `navigate-to` CSP
+        1. TODO: This is where we should react to a conflicting cookie/authorization/TLS client certificate existing, and decide whether to abandon or to continue but not store.
+        1. If |response| is null, [=fetch=] |request|.
+        1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
+        1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
+        1. TODO: Figure out if the coop enforcement logic is necessary here; it probably is
+        1. TODO: Figure out if the corp enforcement logic is necessary here; it probably is
+        1. Set |locationURL| to |response|'s [=response/location URL=].
+        1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], then [=iteration/break=].
+    1. If |hypotheticalReservedClient| is an [=environment=], run the [=environment discarding steps=] for it.
+    1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
+    1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
+    1. If |response| is a [=network error=], then return.
+    1. If |originsWithConflictingCredentials| is not empty, then return.
+
+        <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |response|.
+
+    <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
+
+    <div class="issue">This does not fully address cookie isolation or migration (somewhat complicated by [[FETCH]] not dealing with it), and similar measures with authorization entries, TLS client certificates, and connection pools. This is currently complicated by the fact that even those that are covered by the [=network partition key=] are difficult to address while it's not possible to further partition.</div>
+
+    <div class="issue">Update this to include the `` `Supports-Loading-Mode` `` mechanism to allow responses to continue despite cookies.</div>
+
+    <div class="issue">Further review is needed of the cookies-present handling and its interaction with redirects and caches.</div>
 </div>
