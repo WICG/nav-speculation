@@ -66,7 +66,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
 
-<!-- with reference to "process a navigate fetch" -->
+These algorithms are based on [=process a navigate fetch=].
 
 <p class="issue">Check whether we need to expressly call Should request/response by blocked by Content Security Policy</p>
 <p class="issue">Check Service Worker integration</p>
@@ -77,7 +77,29 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
     1. Let |browsingContext| be [=document=]'s [=Document/browsing context=].
-    1. Let |request| be a [=request=] with [=request/URL=] |url|, [=request/referrer policy=] |referrerPolicy|, [=request/initiator=] "`prefetch`", [=request/destination=] "`document`", [=request/mode=] "`navigate`", [=request/credentials mode=] "`include`", [=request/redirect mode=] "`manual`", [=request/use-URL-credentials flag=] set, and [=request/client=] |document|'s [=relevant settings object=].
+    1. Let |request| be a [=request=] as follows:
+
+        :  [=request/URL=]
+        :: |url|
+        :  [=request/referrer policy=]
+        :: |referrerPolicy|
+        :  [=request/initiator=]
+        :: "`prefetch`"
+        :  [=request/destination=]
+        :: "`document`"
+        :  [=request/mode=]
+        :: "`navigate`"
+        :  [=request/credentials mode=]
+        :: "`include`"
+        :  [=request/redirect mode=]
+        :: "`manual`"
+        :  [=request/use-URL-credentials flag=]
+        :: (set)
+        :  [=request/client=]
+        :: |document|'s [=relevant settings object=]
+        :  [=request/header list=]
+        ::
+            *  `` `Sec-Purpose` ``/`` `Prefetch` ``
     1. Let |locationURL| be null.
     1. Let |currentURL| be |request|'s [=request/current URL=].
     1. While true:
@@ -93,8 +115,9 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
                 1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
             1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
         1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|.
-        1. If |partitionKey| is not equal to |proposedPartitionKey|, then:
-            1. TODO: Abort in a suitable way. This tried to leave the partition.
+        1. If |partitionKey| is not equal to |proposedPartitionKey|, then set |response| to a [=network error=] and [=iteration/break=].
+
+            <div class="issue">It might be possible to "downgrade" in this case.</div>
         1. TODO: this is where [=process a navigate fetch=] checks the `navigate-to` CSP
         1. If |response| is null, [=fetch=] |request|.
         1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
@@ -103,4 +126,14 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
         1. TODO: Figure out if the corp enforcement logic is necessary here; it probably is
         1. Set |locationURL| to |response|'s [=response/location URL=].
         1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], then [=iteration/break=].
+    1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
+    1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
+    1. If |response| is not [=network error=], then return.
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |response|.
+</div>
+
+<div algorithm="uncredentialed prefetch">
+    To <dfn export>uncredentialed prefetch</dfn> given a [=document=] |document, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+
+    <!-- probably can make an opaque origin and set it on the reserved client to force an isolated network partition, or could force the partition key to be null in order to force the cache off; forcing it off by setting no-store cache mode would also set the Pragma and Cache-Control headers -->
 </div>
