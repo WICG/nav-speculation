@@ -15,7 +15,44 @@ Boilerplate: omit conformance
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
+      text: browsing context scope origin; url: browsing-context-scope-origin
       text: container; for: browsing context; url: bc-container 
+      text: determine the origin; url: determining-the-origin
+    urlPrefix: browsing-the-web.html
+      text: history handling behavior; url: history-handling-behavior
+      text: navigation id; url: navigation-id
+      text: navigation params; url: navigation-pparams
+      for: navigation params
+        text: id; url: navigation-params-id
+        text: request; url: navigation-params-request
+        text: response; url: navigation-params-response
+        text: origin; url: navigation-params-origin
+        text: policy container; url: navigation-params-policy-container
+        text: final sandboxing flag set; url: navigation-params-sandboxing
+        text: cross-origin opener policy; url: navigation-params-coop
+        text: COOP enforcement result; url: navigation-params-coop-enforcement-result
+        text: reserved environment; url: navigation-params-reserved-environment
+        text: browsing context; url: navigation-params-browsing-context
+        text: history handling; url: navigation-params-hh
+        text: has cross-origin redirects; url: navigation-params-has-cross-origin-redirects
+      text: process a navigate URL scheme; url: process-a-navigate-url-scheme
+    urlPrefix: dom.html
+      text: cross-origin opener policy; for: Document; url: concept-document-coop
+    urlPrefix: origin.html
+      text: cross-origin opener policy enforcement result; url: coop-enforcement-result
+      for: cross-origin opener policy
+        text: value; url: coop-struct-value
+      for: cross-origin opener policy enforcement result
+        text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
+        text: would need a browsing context group switch due to report-only; url: coop-enforcement-bcg-switch-report-only
+        text: url; url: coop-enforcement-url
+        text: current origin; url: coop-enforcement-origin
+        text: cross-origin opener policy; url: coop-enforcement-coop
+        text: current context is navigation source; url: coop-enforcement-source
+      text: determine navigation params policy container; url: determining-navigation-params-policy-container
+      text: enforce a response's cross-origin opener policy; url: coop-enforce
+      text: obtain a cross-origin opener policy; url: obtain-coop
+      text: sandboxing flags; for: browsing context; url: concept-bc-sandboxing-flags
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: process response; url: process-response
@@ -61,6 +98,107 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     1. Return null.
     
     <p class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it's unclear whether this is worthwhile.</p>
+</div>
+
+<h2 id="html-patches">HTML Patches</h2>
+
+<div algorithm="perform a common navigational fetch">
+    <div class="note">This is an abstraction of the existing [=process a navigate fetch=]. It includes behavior like redirect handling that is particular to navigational fetches, including those that are relate to a speculate future navigation, rather than an immediate one.</div>
+
+    To <dfn export>perform a common navigational fetch</dfn> given a [=request=] |request|, [=string=] |navigationType|, [=browsing context=] |browsingContext|, [=environment=] or null |forceEnvironment|, algorithm |willRedirect| (which takes [=URLs=] currentURL and locationURL) algorithm |shouldBlockNavigationRequest| (which takes a [=request=] and navigation type [=string=], and returns "`Blocked`" or "`Allowed`"), algorithm |shouldBlockNavigationResponse| (which takes a [=request=] and a [=response=], and returns "`Blocked`" or "`Allowed`"), perform the following steps.
+
+    1. Let |response| be null.
+    1. Set |request|'s [=request/mode=] to "`navigate`" and [=request/redirect mode=] to "`manual`".
+    1. [=Assert=]: |request|'s [=request/reserved client=] is null.
+    1. Let |environment| be null.
+    1. Let |locationURL| be null.
+    1. Let |currentURL| be |request|'s [=request/current URL=].
+
+    1. While true:
+        1. If |locationURL| is non-null, then:
+            1. Run |willRedirect|.
+            1. Set |currentURL| to |locationURL|.
+        1. If |environment| is not null and |currentURL|'s [=url/origin=] is not the [=same origin|same=] as |environment|'s [=environment/creation URL=]'s [=url/origin=], then:
+            1. Run the [=environment discarding steps=] for |environment|.
+            1. Set |environment| to null.
+        1. If |environment| is null, then:
+            1. Let |topLevelCreationURL| be |currentURL|.
+            1. Let |topLevelOrigin| be null.
+            1. If |browsingContext| is not a [=top-level browsing context=], then:
+                1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
+                1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
+            1. Set |environment| to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+            1. If |forceEnvironment| is null, set |request|'s [=request/reserved client=] to |environment|.
+            1. Otherwise, set |request|'s [=request/reserved client=] to |forceEnvironment|.
+
+            <div class="note">These steps ensure that |environment| is an [=environment=] which the correct [=network partition key=], [=environment/active service worker=], etc., depending on whether it's a top-level navigation and if not, what the top-level site is.</div>
+
+        1. If the result of |shouldBlockNavigationRequest| given |request| and |navigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=].
+        1. If |response| is null, [=fetch=] |request|.
+        1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
+        1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
+        1. If the result of |shouldBlockNavigationResponse| given |request| and |response| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=].
+        1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
+        1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], the [=iteration/break=].
+
+            <div class="note">
+                By the end of this loop we will be in one of these scenarios:
+                    * |response| is a [=network error=].
+                    * |locationURL| is failure, because of an unparseable `` `Location` `` header.
+                    * |locationURL| is null, because we successfully fetched a non-[=network error=] HTTP(S) response with no `` `Location` `` header.
+                    * |locationURL| is a [=URL=] with a non-[=HTTP(S) scheme=].
+            </div>
+
+    1. If |forceEnvironment| is not null, run the [=environment discarding steps=] for |environment|.
+    1. Return (|response|, |locationURL|).
+</div>
+
+Given this, the non-prefetch case becomes:
+
+<div algorithm="process a navigate fetch">
+    To <strong>process a navigate fetch</strong>, given a [=navigation id=] |navigationId|, [=request=] |request|, two [=browsing contexts=] |sourceBrowsingContext| and |browsingContext|, a string |navigationType|, a [=sandboxing flag set=] |sandboxFlags|, two [=policy containers=] |historyPolicyContainer| and |initiatorPolicyContainer|, a boolean |allowedToDownload|, a boolean |hasTransientActivation|, an [=origin=] |incumbentNavigationOrigin|, and a [=history handling behavior=] |historyHandling|:
+
+    1. Set [=request=]'s [=request/client=] to |sourceBrowsingContext|'s [=active document=]'s [=relevant settings object=], [=request/destination=] to "`document`", [=request/credentials mode=] to "`include`", [=request/use-URL-credentials flag=], and [=request/replaces client id=] to |browsingContext|'s [=active document=]'s [=relevant settings object=]'s [=environment/id=].
+    1. If |hasTransientActivation| is true, then set |request|'s [=request/user-activation=] to true.
+    1. If |browsingContext|'s [=browsing context/container=] is non-null:
+        1. If |browsingContext|'s [=browsing context/container=] has a [=browsing context scope origin=], then set |request|'s [=request/origin=] to that [=browsing context scope origin=].
+        1. Set |request|'s [=request/destination=] to |browsingContext|'s [=browsing context/container=]'s [=Element/local name=].
+    1. Let |responseOrigin| be null.
+    1. Let |responseCOOP| be null.
+    1. Let |currentContextIsSource| be the result of whether |browsingContext|'s [=active document=] is [=same origin=] with |sourceBrowsingContext|'s [=active document=].
+    1. Let |coopEnforcementResult| be a new [=cross-origin opener policy enforcement result=] whose [=cross-origin opener policy enforcement result/needs a browsing context group switch=] is false, [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=] is false, [=cross-origin opener policy enforcement result/url=] is |browsingContext|'s [=active document=]'s [=Document/url=], [=cross-origin opener policy enforcement result/current origin=] is |browsingContext|'s [=active document=]'s [=Document/origin=], [=cross-origin opener policy enforcement result/cross-origin opener policy=] is |browsingContext|'s [=active document=]'s [=Document/cross-origin opener policy=], and [=cross-origin opener policy enforcement result/current context is navigation source=] is |currentContextIsSource|.
+    1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
+    1. Let |hasCrossOriginRedirects| be false.
+    1. Let |willRedirect| be the following steps, given |currentURL| and |locationURL|:
+        1. If |locationURL|'s [=url/origin=] is not the [=same origin|same=] as |currentURL|'s [=url/origin=], then set |hasCrossOriginRedirects| to true.
+    1. Let |shouldBlockNavigationRequest| be [=Should navigation request of type be blocked by Content Security Policy?=].
+    1. Let |shouldBlockNavigationResponse| be the following steps, given |request| and |response|:
+        1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
+        1. Set |responseOrigin| to the result of [=determining the origin=] given |browsingContext|, |request|'s [=request/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
+        1. If |browsingContext| is a [=top-level browsing context=], then:
+            1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
+            1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
+
+                <div class="note">This results in a network error as one cannot simultaneously provide a clean slate to a response using cross-origin opener policy and sandbox the result of navigating to that response.</div>
+
+            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |request|'s [=request/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
+
+                <div class="issue">Is COOP enforcement needed on the prefetch path, too?</div>
+
+        1. If |response| is not a [=network error=], |browsingContext| is a [=child browsing context=], and the result of performing a [=cross-origin resource policy check=] with |browsingContext|'s [=browsing context/container document=]'s [=Document/origin=], |browsingContext|'s [=browsing context/container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response| and true is <strong>blocked</strong>, then return "`Blocked`".
+
+            <div class="note">Here we're running the [=cross-origin resource policy check=] against the [=parent browsing context=] rather than sourceBrowsingContext. This is because we care about the same-originness of the embedded content against the parent context, not the navigation source.</div>
+            <div class="issue">Is CORP enforcement needed on the prefetch path, too?</div>
+
+        1. Return "`Allowed`".
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, |navigationType|, |browsingContext|, null (for forceEnvironment), |willRedirect|, |shouldBlockNavigationRequest| and |shouldBlockNavigationResponse|.
+    1. If |locationURL| is a [=URL=]:
+        1. [=Assert=]: |locationURL|'s [=url/scheme=] is not a [=fetch scheme=] and not "`javascript`".
+        1. [=Process a navigate URL scheme=] given |locationURL|, |browsingContext|, and |hasTransientActivation|, and return.
+    1. Let |responsePolicyContainer| be the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
+    1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |response|'s [=response/URL=], |historyPolicyContainer|, |initiatorPolicyContainer|, null, and |responsePolicyContainer|.
+    1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |response|, [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
+    1. Run [=process a navigate response=] with |navigationType|, |allowedToDownload|, |hasTransientActivation|, and |navigationParams|.
 </div>
 
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
