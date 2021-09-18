@@ -105,7 +105,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 <div algorithm="perform a common navigational fetch">
     <div class="note">This is an abstraction of the existing [=process a navigate fetch=]. It includes behavior like redirect handling that is particular to navigational fetches, including those that are relate to a speculate future navigation, rather than an immediate one.</div>
 
-    To <dfn export>perform a common navigational fetch</dfn> given a [=request=] |request|, [=string=] |navigationType|, [=browsing context=] |browsingContext|, [=environment=] or null |forceEnvironment|, algorithm |willRedirect| (which takes [=URLs=] currentURL and locationURL) algorithm |shouldBlockNavigationRequest| (which takes a [=request=] and navigation type [=string=], and returns "`Blocked`" or "`Allowed`"), algorithm |shouldBlockNavigationResponse| (which takes a [=request=] and a [=response=], and returns "`Blocked`" or "`Allowed`"), perform the following steps.
+    To <dfn export>perform a common navigational fetch</dfn> given a [=request=] |request|, [=string=] |navigationType|, [=browsing context=] |browsingContext|, [=environment=] or null |forceEnvironment|, algorithm |willRedirect| (which takes [=URLs=] currentURL and locationURL) algorithm |shouldBlockNavigationRequest| (which takes a [=request=], navigation type [=string=], and [=environment=], and returns "`Blocked`" or "`Allowed`"), algorithm |shouldBlockNavigationResponse| (which takes a [=request=] and a [=response=], and returns "`Blocked`" or "`Allowed`"), perform the following steps.
 
     1. Let |response| be null.
     1. Set |request|'s [=request/mode=] to "`navigate`" and [=request/redirect mode=] to "`manual`".
@@ -133,7 +133,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 
             <div class="note">These steps ensure that |environment| is an [=environment=] which the correct [=network partition key=], [=environment/active service worker=], etc., depending on whether it's a top-level navigation and if not, what the top-level site is.</div>
 
-        1. If the result of |shouldBlockNavigationRequest| given |request| and |navigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=].
+        1. If the result of |shouldBlockNavigationRequest| given |request|, |navigationType|, and |environment| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=].
         1. If |response| is null, [=fetch=] |request|.
         1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
         1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
@@ -171,7 +171,9 @@ Given this, the non-prefetch case becomes:
     1. Let |hasCrossOriginRedirects| be false.
     1. Let |willRedirect| be the following steps, given |currentURL| and |locationURL|:
         1. If |locationURL|'s [=url/origin=] is not the [=same origin|same=] as |currentURL|'s [=url/origin=], then set |hasCrossOriginRedirects| to true.
-    1. Let |shouldBlockNavigationRequest| be [=Should navigation request of type be blocked by Content Security Policy?=].
+    1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
+        1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
+        1. Return the result of [=Should navigation request of type be blocked by Content Security Policy?=], given |request| and |navigationType|.
     1. Let |shouldBlockNavigationResponse| be the following steps, given |request| and |response|:
         1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |browsingContext|, |request|'s [=request/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
@@ -224,12 +226,8 @@ These algorithms are based on [=process a navigate fetch=].
         :: "`prefetch`"
         :  [=request/destination=]
         :: "`document`"
-        :  [=request/mode=]
-        :: "`navigate`"
         :  [=request/credentials mode=]
         :: "`include`"
-        :  [=request/redirect mode=]
-        :: "`manual`"
         :  [=request/use-URL-credentials flag=]
         :: (set)
         :  [=request/client=]
@@ -237,32 +235,15 @@ These algorithms are based on [=process a navigate fetch=].
         :  [=request/header list=]
         ::
             *  `` `Sec-Purpose` ``/`` `Prefetch` ``
-    1. Let |locationURL| be null.
-    1. Let |currentURL| be |request|'s [=request/current URL=].
-    1. While true:
-        1. If |locationURL| is non-null, then set |currentURL| to |locationURL|.
-        1. If |request|'s [=request/reserved client=] is not null and |currentURL|'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
-            1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
-            1. Set |request|'s [=request/reserved client=] to null.
-        1. If |request|'s [=request/reserved client=] is null, then:
-            1. Let |topLevelCreationURL| be |currentURL|.
-            1. Let |topLevelOrigin| be null.
-            1. If |browsingContext| is not a [=top-level browsing context=], then:
-                1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
-                1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
-            1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+    1. Let |shouldBlockNavigationRequest| be the folloiwng steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
+        1. [=Assert=]: |navigationType| is "`other`".
+        1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
         1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|.
-        1. If |partitionKey| is not equal to |proposedPartitionKey|, then set |response| to a [=network error=] and [=iteration/break=].
+        1. If |partitionKey| is not equal to |proposedPartitionKey|, then return "`Blocked`".
 
             <div class="issue">It might be possible to "downgrade" to [=uncredentialed prefetch=] in this case.</div>
-        1. TODO: this is where [=process a navigate fetch=] checks the `navigate-to` CSP
-        1. If |response| is null, [=fetch=] |request|.
-        1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
-        1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
-        1. TODO: Figure out if the coop enforcement logic is necessary here; it probably is
-        1. TODO: Figure out if the corp enforcement logic is necessary here; it probably is
-        1. Set |locationURL| to |response|'s [=response/location URL=].
-        1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], then [=iteration/break=].
+        1. Otherwise, return "`Allowed`".
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, null, an empty algorithm, |shouldBlockNavigationRequest|, and an empty algorithm.
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
     1. If |response| is a [=network error=], then return.
@@ -275,12 +256,13 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     To <dfn export>uncredentialed prefetch</dfn> given a {{Document}} |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
 
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
+    1. If |referrerPolicy| is not in the [=list of sufficiently strict speculative navigation referrer policies=], then return.
+    1. Let |browsingContext| be {{Document}}'s [=Document/browsing context=].
     1. Let |isolationOrigin| be a new [=opaque origin=].
 
         <div class="note">This is used to ensure a distinct network partition key is used.</div>
-    1. If |referrerPolicy| is not in the [=list of sufficiently strict speculative navigation referrer policies=], then return.
+    1. Let |isolatedEnvironment| be a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is `about:blank`, [=environment/top-level creation URL=] is `about:blank`, and [=environment/top-level origin=] is |isolationOrigin|.
     1. Let |originalPartitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
-    1. Let |browsingContext| be {{Document}}'s [=Document/browsing context=].
     1. Let |request| be a [=request=] as follows:
 
         :  [=request/URL=]
@@ -291,54 +273,30 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: "`prefetch`"
         :  [=request/destination=]
         :: "`document`"
-        :  [=request/mode=]
-        :: "`navigate`"
         :  [=request/credentials mode=]
         :: "`include`"
 
             <div class="note">Though credentials are included, they will be isolated such that no credentials are present to begin with.</div>
         :  [=request/cache mode=]
         :: "`no-store`"
-        :  [=request/redirect mode=]
-        :: "`manual`"
         :  [=request/client=]
         :: |document|'s [=relevant settings object=]
         :  [=request/header list=]
         ::
             *  `` `Sec-Purpose` ``/`` `Prefetch` ``
-        :  [=request/reserved client=]
-        :: a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is `about:blank`, [=environment/top-level creation URL=] is `about:blank`, and [=environment/top-level origin=] is |isolationOrigin|.
-    1. Let |locationURL| be null.
-    1. Let |currentURL| be |request|'s [=request/current URL=].
-    1. Let |hypotheticalReservedClient| be null.
-    1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
-    1. While true:
-        1. If |locationURL| is non-null, then set |currentURL| to |locationURL|.
-        1. If |request|'s [=request/reserved client=] is not null and |currentURL|'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
-            1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
-            1. Set |hypotheticalReservedClient| to null.
-        1. If |hypotheticalReservedClient| is null, then:
-            1. Let |topLevelCreationURL| be |currentURL|.
-            1. Let |topLevelOrigin| be null.
-            1. If |browsingContext| is not a [=top-level browsing context=], then:
-                1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
-                1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
-            1. Set |hypotheticalReservedClient| to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
-        1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalReservedClient|.
-        1. If |originalPartitionKey| is equal to |hypotheticalPartitionKey|, then set |response| to a [=network error=] and [=iteration/break=].
 
-            <div class="note">The prefetch would end up in the same partition as the prefetch came from in this case. We mirror the logic for tracking the reserved client (and thus partition) exclusively to make this determination.</div>
+    1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
+    1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
+        1. [=Assert=]: |request|'s [=request/reserved client=] is |isolatedEnvironment| and not |environment|.
+        1. [=Assert=]: |navigationType| is "`other`".
+        1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |environment|.
+        1. If |originalPartitionKey| is equal to |hypotheticalPartitionKey|, then return "`Blocked`".
+
+            <div class="note">The prefetch would end up in the same partition as the prefetch came from in this case. |environment| represents the environment that would ordinarily be used during navigation fetch.</div>
         1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |originsWithConflictingCredentials|.
-        1. TODO: this is where [=process a navigate fetch=] checks the `navigate-to` CSP
-        1. TODO: This is where we should react to a conflicting cookie/authorization/TLS client certificate existing, and decide whether to abandon or to continue but not store.
-        1. If |response| is null, [=fetch=] |request|.
-        1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
-        1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
-        1. TODO: Figure out if the coop enforcement logic is necessary here; it probably is
-        1. TODO: Figure out if the corp enforcement logic is necessary here; it probably is
-        1. Set |locationURL| to |response|'s [=response/location URL=].
-        1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], then [=iteration/break=].
-    1. If |hypotheticalReservedClient| is an [=environment=], run the [=environment discarding steps=] for it.
+        1. Return "`Allowed`".
+
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, and an empty algorithm.
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
     1. If |response| is a [=network error=], then return.
