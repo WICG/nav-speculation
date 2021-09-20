@@ -105,7 +105,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 <div algorithm="perform a common navigational fetch">
     <div class="note">This is an abstraction of the existing [=process a navigate fetch=]. It includes behavior like redirect handling that is particular to navigational fetches, including those that are relate to a speculate future navigation, rather than an immediate one.</div>
 
-    To <dfn export>perform a common navigational fetch</dfn> given a [=request=] |request|, [=string=] |navigationType|, [=browsing context=] |browsingContext|, [=environment=] or null |forceEnvironment|, algorithm |willRedirect| (which takes [=URLs=] currentURL and locationURL) algorithm |shouldBlockNavigationRequest| (which takes a [=request=], navigation type [=string=], and [=environment=], and returns "`Blocked`" or "`Allowed`"), algorithm |shouldBlockNavigationResponse| (which takes a [=request=] and a [=response=], and returns "`Blocked`" or "`Allowed`"), perform the following steps.
+    To <dfn export>perform a common navigational fetch</dfn> given a [=request=] |request|, [=string=] |navigationType|, [=browsing context=] |browsingContext|, [=environment=] or null |forceEnvironment|, algorithm |preRedirectHook| (which takes [=URLs=] currentURL and locationURL) algorithm |shouldBlockNavigationRequest| (which takes a [=request=], navigation type [=string=], and [=environment=], and returns "`Blocked`" or "`Allowed`"), algorithm |shouldBlockNavigationResponse| (which takes a [=request=] and a [=response=], and returns "`Blocked`" or "`Allowed`"), perform the following steps.
 
     1. Let |response| be null.
     1. Set |request|'s [=request/mode=] to "`navigate`" and [=request/redirect mode=] to "`manual`".
@@ -116,7 +116,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 
     1. While true:
         1. If |locationURL| is non-null, then:
-            1. Run |willRedirect|.
+            1. Run |preRedirectHook| given |currentURL| and |locationURL|.
             1. Set |currentURL| to |locationURL|.
         1. If |environment| is not null and |currentURL|'s [=url/origin=] is not the [=same origin|same=] as |environment|'s [=environment/creation URL=]'s [=url/origin=], then:
             1. Run the [=environment discarding steps=] for |environment|.
@@ -169,7 +169,7 @@ Given this, the non-prefetch case becomes:
     1. Let |coopEnforcementResult| be a new [=cross-origin opener policy enforcement result=] whose [=cross-origin opener policy enforcement result/needs a browsing context group switch=] is false, [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=] is false, [=cross-origin opener policy enforcement result/url=] is |browsingContext|'s [=active document=]'s [=Document/url=], [=cross-origin opener policy enforcement result/current origin=] is |browsingContext|'s [=active document=]'s [=Document/origin=], [=cross-origin opener policy enforcement result/cross-origin opener policy=] is |browsingContext|'s [=active document=]'s [=Document/cross-origin opener policy=], and [=cross-origin opener policy enforcement result/current context is navigation source=] is |currentContextIsSource|.
     1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
     1. Let |hasCrossOriginRedirects| be false.
-    1. Let |willRedirect| be the following steps, given |currentURL| and |locationURL|:
+    1. Let |preRedirectHook| be the following steps, given |currentURL| and |locationURL|:
         1. If |locationURL|'s [=url/origin=] is not the [=same origin|same=] as |currentURL|'s [=url/origin=], then set |hasCrossOriginRedirects| to true.
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
@@ -193,7 +193,7 @@ Given this, the non-prefetch case becomes:
             <div class="issue">Is CORP enforcement needed on the prefetch path, too?</div>
 
         1. Return "`Allowed`".
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, |navigationType|, |browsingContext|, null (for forceEnvironment), |willRedirect|, |shouldBlockNavigationRequest| and |shouldBlockNavigationResponse|.
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, |navigationType|, |browsingContext|, null (for forceEnvironment), |preRedirectHook|, |shouldBlockNavigationRequest| and |shouldBlockNavigationResponse|.
     1. If |locationURL| is a [=URL=]:
         1. [=Assert=]: |locationURL|'s [=url/scheme=] is not a [=fetch scheme=] and not "`javascript`".
         1. [=Process a navigate URL scheme=] given |locationURL|, |browsingContext|, and |hasTransientActivation|, and return.
