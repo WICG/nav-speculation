@@ -173,18 +173,6 @@ if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')
 }
 ```
 
-#### Monkeypatch HTMLScriptElement.supports() method in HTML spec
-
-In the HTML spec's [HTMLScriptElement](https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement)'s
-[supports(type)](https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports) method, before 
-
-> 3. Return false.
-
-add the following step:
-
-3. If type is "`speculationrules`", then return true.
-
-
 ## Alternatives considered
 
 The obvious alternative is to extend the `<link>` element.
