@@ -94,6 +94,14 @@ The following algorithms are updated accordingly:
 
 <p class="issue">We could fire {{HTMLElement/error}} and {{HTMLElement/load}} events if we wanted to.</p>
 
+* In {{HTMLScriptElement/supports(type)}} method steps, before
+
+  > 3. Return false.
+
+  add the following step:
+
+  > 3. If type is "`speculationrules`", then return true.
+
 <h3 id="speculation-rules-prepare-a-script-patch">Prepare a script</h3>
 
 Inside the [=prepare a script=] algorithm we make the following changes:

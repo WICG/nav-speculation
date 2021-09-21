@@ -26,6 +26,7 @@ The existence of web-facing triggers doesn't necessarily preclude the user agent
     - [Extension: Handler URLs](#extension-handler-urls)
   - [Proposed Processing Model](#proposed-processing-model)
   - [Developer Tooling](#developer-tooling)
+  - [Feature detection](#feature-detection)
 - [Alternatives considered](#alternatives-considered)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -159,6 +160,18 @@ In the case where the URL is cross-origin, actions will be assumed to be version
 It will likely be useful to surface in developer tools what rules and URLs have been found, and what the heuristic probability used for each was. Developer tools should also provide an option to force the user agent to execute a speculation that it may have deemed low probability, so that the developer can reproducibly observe behavior in this case.
 
 This information and control is important because otherwise it may be difficult to validate correct behavior as it would otherwise depend on heuristics unknown to the author. Similarly testing tools such as [WebDriver][webdriver] should likely permit overriding the user agent's selection of which valid speculations to execute.
+
+### Feature detection
+
+If the browser supports [HTMLScriptElement](https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement)'s
+[supports(type)](https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports) method,
+`HTMLScriptElement.supports('speculationrules')` must return true.
+
+```js
+if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
+  console.log('Your browser supports speculationrules.');
+}
+```
 
 ## Alternatives considered
 
