@@ -1964,7 +1964,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-09-20">20 September 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-09-21">21 September 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -1977,7 +1977,7 @@ dfn > a.self-link::before      { content: "#"; }
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 20 September 2021,
+In addition, as of 21 September 2021,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2076,6 +2076,23 @@ Parts of this work may be from another specification document.  If so, those par
    <p class="issue" id="issue-c2e21e13"><a class="self-link" href="#issue-c2e21e13"></a>We should consider whether we also want to make this execute even if scripting is disabled.</p>
    <p class="issue" id="issue-bb120c28"><a class="self-link" href="#issue-bb120c28"></a>We should also incorporate the case where a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src" id="ref-for-dom-script-src">src</a></code> attribute is set.</p>
    <p class="issue" id="issue-9cd39e70"><a class="self-link" href="#issue-9cd39e70"></a>We could fire <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-error" id="ref-for-event-error">error</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-load" id="ref-for-event-load">load</a></code> events if we wanted to.</p>
+   <ul>
+    <li data-md>
+     <p>In <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports" id="ref-for-dom-script-supports">supports(type)</a></code> method steps, before</p>
+     <blockquote>
+      <ol start="3">
+       <li data-md>
+        <p>Return false.</p>
+      </ol>
+     </blockquote>
+     <p>add the following step:</p>
+     <blockquote>
+      <ol start="3">
+       <li data-md>
+        <p>If type is "<code>speculationrules</code>", then return true.</p>
+      </ol>
+     </blockquote>
+   </ul>
    <h3 class="heading settled" data-level="1.3" id="speculation-rules-prepare-a-script-patch"><span class="secno">1.3. </span><span class="content">Prepare a script</span><a class="self-link" href="#speculation-rules-prepare-a-script-patch"></a></h3>
    <p>Inside the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/scripting.html#prepare-a-script" id="ref-for-prepare-a-script①">prepare a script</a> algorithm we make the following changes:</p>
    <ul>
@@ -2532,6 +2549,12 @@ Parts of this work may be from another specification document.  If so, those par
     <li><a href="#ref-for-dom-script-src①">1.3. Prepare a script</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-script-supports">
+   <a href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports">https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-script-supports">1.2. The script element</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-the-script-is-ready">
    <a href="https://html.spec.whatwg.org/multipage/scripting.html#the-script-is-ready">https://html.spec.whatwg.org/multipage/scripting.html#the-script-is-ready</a><b>Referenced in:</b>
    <ul>
@@ -2693,6 +2716,7 @@ Parts of this work may be from another specification document.  If so, those par
      <li><span class="dfn-paneled" id="term-for-same-origin">same origin</span>
      <li><span class="dfn-paneled" id="term-for-concept-script">script</span>
      <li><span class="dfn-paneled" id="term-for-dom-script-src">src</span>
+     <li><span class="dfn-paneled" id="term-for-dom-script-supports">supports(type)</span>
      <li><span class="dfn-paneled" id="term-for-the-script-is-ready">the script is ready</span>
      <li><span class="dfn-paneled" id="term-for-concept-script-script">the script's script</span>
      <li><span class="dfn-paneled" id="term-for-concept-script-type">the script's type</span>
