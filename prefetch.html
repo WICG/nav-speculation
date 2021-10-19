@@ -1487,7 +1487,7 @@ Possible extra rowspan handling
 		}
 	}
 </style>
-  <meta content="Bikeshed version a210b7d86, updated Thu Sep 16 13:45:19 2021 -0700" name="generator">
+  <meta content="Bikeshed version d7036035b, updated Fri Oct 8 17:07:11 2021 -0700" name="generator">
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -1729,6 +1729,16 @@ figcaption:not(.no-marker)::before {
 
 .dfn-paneled { cursor: pointer; }
 </style>
+<style>/* style-issues */
+
+a[href].issue-return {
+    float: right;
+    float: inline-end;
+    color: var(--issueheading-text);
+    font-weight: bold;
+    text-decoration: none;
+}
+</style>
 <style>/* style-md-lists */
 
 /* This is a weird hack for me not yet following the commonmark spec
@@ -1933,7 +1943,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"></p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-09-21">21 September 2021</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">A Collection of Interesting Ideas, <time class="dt-updated" datetime="2021-10-19">19 October 2021</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>Issue Tracking:
@@ -1946,7 +1956,7 @@ dfn > a.self-link::before      { content: "#"; }
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="http://creativecommons.org/publicdomain/zero/1.0/" rel="license"><img alt="CC0" height="15" src="https://licensebuttons.net/p/zero/1.0/80x15.png" width="80"></a> To the extent possible under law, the editors have waived all copyright
 and related or neighboring rights to this work.
-In addition, as of 21 September 2021,
+In addition, as of 19 October 2021,
 the editors have made this specification available under the <a href="http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0" rel="license">Open Web Foundation Agreement Version 1.0</a>,
 which is available at http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0.
 Parts of this work may be from another specification document.  If so, those parts are instead covered by the license of that specification document. </p>
@@ -2255,7 +2265,8 @@ Parts of this work may be from another specification document.  If so, those par
        <dd data-md>
         <ul>
          <li data-md>
-          <p><code>`Sec-Purpose`</code>/<code>`Prefetch`</code></p>
+          <p><code>`Sec-Purpose`</code>/<code>`prefetch`</code></p>
+          <div class="note" role="note"> Implementations might also send vendor-specific headers, like Chromium’s <code>`Purpose`</code>/<code>`prefetch`</code>, Mozilla’s <code>`X-moz`</code>/<code>`prefetch`</code>, and WebKit’s <code>`X-Purpose`</code>/<code>`preview`</code>, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header. </div>
         </ul>
       </dl>
      <li data-md>
@@ -2331,7 +2342,8 @@ Parts of this work may be from another specification document.  If so, those par
        <dd data-md>
         <ul>
          <li data-md>
-          <p><code>`Sec-Purpose`</code>/<code>`Prefetch`</code></p>
+          <p><code>`Sec-Purpose`</code>/<code>`prefetch`</code></p>
+          <div class="note" role="note"> Implementations might also send vendor-specific headers, like Chromium’s <code>`Purpose`</code>/<code>`prefetch`</code>, Mozilla’s <code>`X-moz`</code>/<code>`prefetch`</code>, and WebKit’s <code>`X-Purpose`</code>/<code>`preview`</code>, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header. </div>
         </ul>
       </dl>
      <li data-md>
@@ -3358,17 +3370,17 @@ Parts of this work may be from another specification document.  If so, those par
   </dl>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue">Does the prefetch record need to contain redirect info, e.g. to verify that all redirects would pass <code>navigate-to</code>?<a href="#issue-794936c7"> ↵ </a></div>
-   <div class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it’s unclear whether this is worthwhile.<a href="#issue-34917491"> ↵ </a></div>
-   <div class="issue">Is COOP enforcement needed on the prefetch path, too?<a href="#issue-b4469747"> ↵ </a></div>
-   <div class="issue">Is CORP enforcement needed on the prefetch path, too?<a href="#issue-cf0764a5"> ↵ </a></div>
-   <div class="issue">Check whether we need to expressly call Should request/response by blocked by Content Security Policy<a href="#issue-eb60bbf4"> ↵ </a></div>
-   <div class="issue">Check Service Worker integration<a href="#issue-1ea0021d"> ↵ </a></div>
-   <div class="issue">It might be possible to "downgrade" to <a data-link-type="dfn" href="#uncredentialed-prefetch">uncredentialed prefetch</a> in this case.<a href="#issue-a3686c91"> ↵ </a></div>
-   <div class="issue">This ends up setting the <code>`Cache-Control`</code> and <code>`Pragma`</code> request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#no-cache-prevent-cache-control">prevent no-cache cache-control header modification flag</a>. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.<a href="#issue-239df98e"> ↵ </a></div>
-   <div class="issue">This does not fully address cookie isolation or migration (somewhat complicated by <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> not dealing with it), and similar measures with authorization entries, TLS client certificates, and connection pools. This is currently complicated by the fact that even those that are covered by the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key">network partition key</a> are difficult to address while it’s not possible to further partition.<a href="#issue-d45eff4c"> ↵ </a></div>
-   <div class="issue">Update this to include the <code>`Supports-Loading-Mode`</code> mechanism to allow responses to continue despite cookies.<a href="#issue-414cc665"> ↵ </a></div>
-   <div class="issue">Further review is needed of the cookies-present handling and its interaction with redirects and caches.<a href="#issue-cdd1a31a"> ↵ </a></div>
+   <div class="issue">Does the prefetch record need to contain redirect info, e.g. to verify that all redirects would pass <code>navigate-to</code>? <a class="issue-return" href="#issue-794936c7" title="Jump to section">↵</a></div>
+   <div class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it’s unclear whether this is worthwhile. <a class="issue-return" href="#issue-34917491" title="Jump to section">↵</a></div>
+   <div class="issue">Is COOP enforcement needed on the prefetch path, too? <a class="issue-return" href="#issue-b4469747" title="Jump to section">↵</a></div>
+   <div class="issue">Is CORP enforcement needed on the prefetch path, too? <a class="issue-return" href="#issue-cf0764a5" title="Jump to section">↵</a></div>
+   <div class="issue">Check whether we need to expressly call Should request/response by blocked by Content Security Policy <a class="issue-return" href="#issue-eb60bbf4" title="Jump to section">↵</a></div>
+   <div class="issue">Check Service Worker integration <a class="issue-return" href="#issue-1ea0021d" title="Jump to section">↵</a></div>
+   <div class="issue">It might be possible to "downgrade" to <a data-link-type="dfn" href="#uncredentialed-prefetch">uncredentialed prefetch</a> in this case. <a class="issue-return" href="#issue-a3686c91" title="Jump to section">↵</a></div>
+   <div class="issue">This ends up setting the <code>`Cache-Control`</code> and <code>`Pragma`</code> request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#no-cache-prevent-cache-control">prevent no-cache cache-control header modification flag</a>. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies. <a class="issue-return" href="#issue-239df98e" title="Jump to section">↵</a></div>
+   <div class="issue">This does not fully address cookie isolation or migration (somewhat complicated by <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> not dealing with it), and similar measures with authorization entries, TLS client certificates, and connection pools. This is currently complicated by the fact that even those that are covered by the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key">network partition key</a> are difficult to address while it’s not possible to further partition. <a class="issue-return" href="#issue-d45eff4c" title="Jump to section">↵</a></div>
+   <div class="issue">Update this to include the <code>`Supports-Loading-Mode`</code> mechanism to allow responses to continue despite cookies. <a class="issue-return" href="#issue-414cc665" title="Jump to section">↵</a></div>
+   <div class="issue">Further review is needed of the cookies-present handling and its interaction with redirects and caches. <a class="issue-return" href="#issue-cdd1a31a" title="Jump to section">↵</a></div>
   </div>
   <aside class="dfn-panel" data-for="prefetch-buffer">
    <b><a href="#prefetch-buffer">#prefetch-buffer</a></b><b>Referenced in:</b>
