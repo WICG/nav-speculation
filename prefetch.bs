@@ -234,7 +234,11 @@ These algorithms are based on [=process a navigate fetch=].
         :: |document|'s [=relevant settings object=]
         :  [=request/header list=]
         ::
-            *  `` `Sec-Purpose` ``/`` `Prefetch` ``
+            *  `` `Sec-Purpose` ``/`` `prefetch` ``
+
+                <div class="note">
+                    Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
+                </div>
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |navigationType| is "`other`".
         1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
@@ -283,7 +287,11 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: |document|'s [=relevant settings object=]
         :  [=request/header list=]
         ::
-            *  `` `Sec-Purpose` ``/`` `Prefetch` ``
+            *  `` `Sec-Purpose` ``/`` `prefetch` ``
+
+                <div class="note">
+                    Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
+                </div>
 
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
