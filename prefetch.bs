@@ -207,7 +207,6 @@ Given this, the non-prefetch case becomes:
 
 These algorithms are based on [=process a navigate fetch=].
 
-<p class="issue">Check whether we need to expressly call Should request/response by blocked by Content Security Policy</p>
 <p class="issue">Check Service Worker integration</p>
 
 <div algorithm="partitioned prefetch">
@@ -224,6 +223,8 @@ These algorithms are based on [=process a navigate fetch=].
         :: |referrerPolicy|
         :  [=request/initiator=]
         :: "`prefetch`"
+
+            <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
         :  [=request/destination=]
         :: "`document`"
         :  [=request/credentials mode=]
@@ -271,6 +272,8 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: |referrerPolicy|
         :  [=request/initiator=]
         :: "`prefetch`"
+
+            <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
         :  [=request/destination=]
         :: "`document`"
         :  [=request/credentials mode=]
