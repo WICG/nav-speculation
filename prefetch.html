@@ -2226,7 +2226,6 @@ Parts of this work may be from another specification document.  If so, those par
    </div>
    <h2 class="heading settled" data-level="3" id="prefetch-algorithms"><span class="secno">3. </span><span class="content">Prefetch algorithms</span><a class="self-link" href="#prefetch-algorithms"></a></h2>
    <p>These algorithms are based on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch①">process a navigate fetch</a>.</p>
-   <p class="issue" id="issue-eb60bbf4"><a class="self-link" href="#issue-eb60bbf4"></a>Check whether we need to expressly call Should request/response by blocked by Content Security Policy</p>
    <p class="issue" id="issue-1ea0021d"><a class="self-link" href="#issue-1ea0021d"></a>Check Service Worker integration</p>
    <div class="algorithm" data-algorithm="partitioned prefetch">
      To <dfn data-dfn-type="dfn" data-export id="partitioned-prefetch">partitioned prefetch<a class="self-link" href="#partitioned-prefetch"></a></dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑦">URL</a> <var>url</var> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy③">referrer policy</a> <var>referrerPolicy</var>, perform the following steps. 
@@ -2249,6 +2248,7 @@ Parts of this work may be from another specification document.  If so, those par
        <dt data-md><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator">initiator</a>
        <dd data-md>
         <p>"<code>prefetch</code>"</p>
+        <div class="note" role="note">This causes the <code>prefetch-src</code> <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> directive to apply as part of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-fetch" id="ref-for-concept-fetch①">fetch</a>.</div>
        <dt data-md><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination③">destination</a>
        <dd data-md>
         <p>"<code>document</code>"</p>
@@ -2325,6 +2325,7 @@ Parts of this work may be from another specification document.  If so, those par
        <dt data-md><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator①">initiator</a>
        <dd data-md>
         <p>"<code>prefetch</code>"</p>
+        <div class="note" role="note">This causes the <code>prefetch-src</code> <a data-link-type="biblio" href="#biblio-csp">[CSP]</a> directive to apply as part of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-fetch" id="ref-for-concept-fetch②">fetch</a>.</div>
        <dt data-md><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-destination" id="ref-for-concept-request-destination④">destination</a>
        <dd data-md>
         <p>"<code>document</code>"</p>
@@ -2617,6 +2618,7 @@ Parts of this work may be from another specification document.  If so, those par
    <a href="https://fetch.spec.whatwg.org/#concept-fetch">https://fetch.spec.whatwg.org/#concept-fetch</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-fetch">2. HTML Patches</a>
+    <li><a href="#ref-for-concept-fetch①">3. Prefetch algorithms</a> <a href="#ref-for-concept-fetch②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-fetch-scheme">
@@ -3208,7 +3210,7 @@ Parts of this work may be from another specification document.  If so, those par
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
-    <a data-link-type="biblio">[CSP3]</a> defines the following terms:
+    <a data-link-type="biblio">[CSP]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-should-block-navigation-request">should navigation request of type be blocked by content security policy?</span>
     </ul>
@@ -3351,7 +3353,7 @@ Parts of this work may be from another specification document.  If so, those par
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
-   <dt id="biblio-csp3">[CSP3]
+   <dt id="biblio-csp">[CSP]
    <dd>Mike West. <a href="https://www.w3.org/TR/CSP3/"><cite>Content Security Policy Level 3</cite></a>. 29 June 2021. WD. URL: <a href="https://www.w3.org/TR/CSP3/">https://www.w3.org/TR/CSP3/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
@@ -3374,7 +3376,6 @@ Parts of this work may be from another specification document.  If so, those par
    <div class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it’s unclear whether this is worthwhile. <a class="issue-return" href="#issue-34917491" title="Jump to section">↵</a></div>
    <div class="issue">Is COOP enforcement needed on the prefetch path, too? <a class="issue-return" href="#issue-b4469747" title="Jump to section">↵</a></div>
    <div class="issue">Is CORP enforcement needed on the prefetch path, too? <a class="issue-return" href="#issue-cf0764a5" title="Jump to section">↵</a></div>
-   <div class="issue">Check whether we need to expressly call Should request/response by blocked by Content Security Policy <a class="issue-return" href="#issue-eb60bbf4" title="Jump to section">↵</a></div>
    <div class="issue">Check Service Worker integration <a class="issue-return" href="#issue-1ea0021d" title="Jump to section">↵</a></div>
    <div class="issue">It might be possible to "downgrade" to <a data-link-type="dfn" href="#uncredentialed-prefetch">uncredentialed prefetch</a> in this case. <a class="issue-return" href="#issue-a3686c91" title="Jump to section">↵</a></div>
    <div class="issue">This ends up setting the <code>`Cache-Control`</code> and <code>`Pragma`</code> request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#no-cache-prevent-cache-control">prevent no-cache cache-control header modification flag</a>. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies. <a class="issue-return" href="#issue-239df98e" title="Jump to section">↵</a></div>
