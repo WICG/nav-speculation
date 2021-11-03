@@ -78,7 +78,7 @@ Browsers could choose to behave more conservatively, but doing so may make it po
 
 Not as yet, though we recognize that it cannot be considered complete without one.
 
-We do discuss security and privacy considerations thoroughly in the relevant explainers, though they are naturally focused on the cross-origin cases. We will be porting those discussions into the overall [Prerendering Revamped](https://jeremyroman.github.io/alternate-loading-modes/) specification as that specification gets more concrete.
+We do discuss security and privacy considerations thoroughly in the relevant explainers, though they are naturally focused on the cross-origin cases. We will be porting those discussions into the overall [Prerendering Revamped](https://wicg.github.io/nav-speculation/prerendering.html) specification as that specification gets more concrete.
 
 ### Do features in your specification enable origins to downgrade default security protections?
 

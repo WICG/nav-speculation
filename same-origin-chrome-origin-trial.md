@@ -185,6 +185,6 @@ If the navigations differ, Chrome will elect to not activate the page, and it wi
 
 ## Feedback
 
-We would be happy to hear from you! Please direct feedback about the origin trial to <navigation-dev@chromium.org>. You may also file bugs at Chromium's [bug tracker](https://bugs.chromium.org/p/chromium/issues/list). Describing the bug as related to the same-origin prerendering origin trial will help route it to the correct people. For feedback on the specification and the shape of the API, file issues at the [Prerendering, revamped](https://github.com/jeremyroman/alternate-loading-modes/issues) repository.
+We would be happy to hear from you! Please direct feedback about the origin trial to <navigation-dev@chromium.org>. You may also file bugs at Chromium's [bug tracker](https://bugs.chromium.org/p/chromium/issues/list). Describing the bug as related to the same-origin prerendering origin trial will help route it to the correct people. For feedback on the specification and the shape of the API, file issues at the [Prerendering, revamped](https://github.com/WICG/nav-speculation/issues) repository.
 
 Thank you, and may your pages load instantly.
