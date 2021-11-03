@@ -69,7 +69,7 @@ Many APIs are simply deferred in a prerendered page, that is, the processing doe
 
 It is worth noting that APIs gated on user interaction, system focus, or visibilty are implicitly restricted in a prerendered page, since prerendered pages never have those properties. This includes `window.open()`, `element.requestFullscreen()`, and more.
 
-See the [Preventing intrusive behaviors](https://wicg.github.io/nav-speculation/#intrusive-behaviors) section of the specification for a list of restrictions, while this is still a work-in-progress.
+See the [Preventing intrusive behaviors](https://wicg.github.io/nav-speculation/prerendering.html#intrusive-behaviors) section of the specification for a list of restrictions, while this is still a work-in-progress.
 
 The user agent may also discard a prerendered page at any time, and some implementations may do this when they do not yet support deferring or handling an API in a graceful manner. For example, Chromium's implementation discards prerendered pages that use plugins.
 
