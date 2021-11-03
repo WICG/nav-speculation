@@ -53,7 +53,7 @@ Within this prerendering browsing context, assuming the opt-in check passes, loa
 
 However, if `https://b.example/` is one of those sites that requests notification permissions on first load, such a permission prompt will be denied, as if the user had declined. Similarly, if `https://b.example/` performs an `alert()` call, the call will instantly return, without the user seeing anything. Another key difference is that `https://b.example/` will not have any storage access, including to cookies. Thus, the content it initially renders will be a logged-out view of the web app, or perhaps a specially-tailored "prerendering" view which leaves things like logged-in state indeterminate.
 
-(The above describes a conservative plan for the behavior restrictions of prerendered content. See also [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7) and [#8](https://github.com/jeremyroman/alternate-loading-modes/issues/8) for discussion of alternate strategies.)
+(The above describes a conservative plan for the behavior restrictions of prerendered content. See also [#7](https://github.com/WICG/nav-speculation/issues/7) and [#8](https://github.com/WICG/alternate-loading-modes/issues/8) for discussion of alternate strategies.)
 
 Now, the user clicks on the "Click me!" link. At this point the user agent notices that it has a prerendering browsing context originally created for `https://b.example/`, so it activates it, replacing the one displaying `https://a.example/`. The user observes their browser navigating to `https://b.example/`, e.g., via changes in the URL bar contents and the back/forward UI. And since `https://b.example/` was already loaded in the prerendering browsing context, this navigation occurs seamlessly and instantly, providing a great user experience.
 
@@ -102,7 +102,7 @@ As for the exact mechanism of this blocking:
 
 - Asynchronous storage access APIs, such as IndexedDB, the Cache API, and File System Access's origin-private file system, will perform no work and have their corresponding promises/events delayed until activation.
 
-- For synchronous storage APIs like `localStorage` and `docuemnt.cookie`, we are currently still discussing the best option, in [#7](https://github.com/jeremyroman/alternate-loading-modes/issues/7). The simplest idea would be to have them throw exceptions, but there may be more friendly alternatives that would allow prerendering to work on more pages without code changes.
+- For synchronous storage APIs like `localStorage` and `docuemnt.cookie`, we are currently still discussing the best option, in [#7](https://github.com/WICG/nav-speculation/issues/7). The simplest idea would be to have them throw exceptions, but there may be more friendly alternatives that would allow prerendering to work on more pages without code changes.
 
 #### Communications channels that are blocked
 
@@ -216,7 +216,7 @@ We are also considering exposing the core primitive which the browser uses, i.e.
 
 In the future, `document.loadingMode` might have additional properties; for example, it might expose the notion that the page was loaded via some proxy, as mentioned in the [fetch integration](./fetch.md).
 
-However, we currently believe the purpose-specific APIs described above suffice for all known use cases. So although we like the idea of exposing the spec-level primitives directly, we're currently putting that idea on hold. See some discussion in [#2](https://github.com/jeremyroman/alternate-loading-modes/issues/2).
+However, we currently believe the purpose-specific APIs described above suffice for all known use cases. So although we like the idea of exposing the spec-level primitives directly, we're currently putting that idea on hold. See some discussion in [#2](https://github.com/WICG/nav-speculation/issues/2).
 
 ## Page lifecycle and freezing
 
