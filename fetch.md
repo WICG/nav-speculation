@@ -238,7 +238,7 @@ proxy server or virtual private network, if available)
 [1]: https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin
 [2]: https://fetch.spec.whatwg.org/#network-partition-key
 [3]: https://fetch.spec.whatwg.org/#concept-request-cache-mode
-[4]: https://htmlpreview.github.io/?https://raw.githubusercontent.com/WICG/nav-speculation/spec/index.html#prerendering-browsing-context
+[4]: https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context
 [5]: https://fetch.spec.whatwg.org/#concept-request-priority
 [6]: https://fetch.spec.whatwg.org/#concept-request-credentials-mode
 [7]: https://w3c.github.io/webappsec-referrer-policy/#default-referrer-policy
