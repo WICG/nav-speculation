@@ -3,8 +3,8 @@
   <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
-  <link href="https://www.w3.org/StyleSheets/TR/2016/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version d7036035b, updated Fri Oct 8 17:07:11 2021 -0700" name="generator">
+  <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
+  <meta content="Bikeshed version bbc364800, updated Mon Nov 15 13:57:55 2021 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -616,9 +616,9 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
 </style>
  <body class="h-entry">
   <div class="head">
-   <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C" width="72"> </a> </p>
+   <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Draft Community Group Report, <time class="dt-updated" datetime="2021-11-03">3 November 2021</time></span></h2>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2021-11-29">29 November 2021</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1202,7 +1202,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object">current global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑦">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑤">prerendering browsing context</a>, then return "<code>default</code>".</p>
       <p class="note" role="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑥">prerendering browsing contexts</a>. Web developers can then call <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission①">Notification.requestPermission()</a></code>, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "<code>granted</code>" or "<code>denied</code>", so the browser might not actually ask the user like would normally be the case with "<code>default</code>". But that’s OK: it’s not observable to web developer code.</p>
      <li data-md>
-      <p>Otherwise, return the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object" id="ref-for-current-settings-object">current settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a>'s <a data-link-type="dfn" href="https://notifications.spec.whatwg.org/#permission" id="ref-for-permission">permission</a>.</p>
+      <p>Otherwise, <a data-link-type="dfn" href="https://notifications.spec.whatwg.org/#get-the-notifications-permission-state" id="ref-for-get-the-notifications-permission-state">get the notifications permission state</a> and return it.</p>
     </ol>
    </div>
    <p>TODO: what about the service worker API? Depends on what we’re doing for service workers in prerendering BCs...</p>
@@ -1325,7 +1325,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p><a data-link-type="dfn" href="https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm" id="ref-for-request-picture-in-picture-algorithm">Request Picture-in-Picture</a> as invoked due to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-autopictureinpicture" id="ref-for-dom-htmlvideoelement-autopictureinpicture">video.requestPictureInPicture()</a></code> or <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture" id="ref-for-dom-htmlvideoelement-requestpictureinpicture">autoPictureInPicture</a></code> requires either <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation③">transient activation</a>, or the <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visibility-states" id="ref-for-dfn-visibility-states②">visibility state</a> to have been <a data-link-type="dfn" href="https://w3c.github.io/page-visibility/#dfn-visible" id="ref-for-dfn-visible②">visible</a>. <a data-link-type="biblio" href="#biblio-picture-in-picture">[PICTURE-IN-PICTURE]</a></p>
    </ul>
   </main>
-<script src="https://www.w3.org/scripts/TR/2016/fixup.js"></script>
+<script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
@@ -1768,12 +1768,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-current-global-object">7.3.4. Notifications API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-current-settings-object">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-settings-object</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-current-settings-object">7.3.4. Notifications API</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-delay-the-load-event">
    <a href="https://html.spec.whatwg.org/multipage/parsing.html#delay-the-load-event">https://html.spec.whatwg.org/multipage/parsing.html#delay-the-load-event</a><b>Referenced in:</b>
    <ul>
@@ -1923,12 +1917,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#dom-open">https://html.spec.whatwg.org/multipage/window-object.html#dom-open</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-open">7.4. Implicitly restricted APIs</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-settings-object-origin">
-   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-settings-object-origin">7.3.4. Notifications API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-parse-a-url">
@@ -2221,6 +2209,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://notifications.spec.whatwg.org/#dom-notification-notification">https://notifications.spec.whatwg.org/#dom-notification-notification</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-notification-notification">7.3.4. Notifications API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-get-the-notifications-permission-state">
+   <a href="https://notifications.spec.whatwg.org/#get-the-notifications-permission-state">https://notifications.spec.whatwg.org/#get-the-notifications-permission-state</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-get-the-notifications-permission-state">7.3.4. Notifications API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-notification-permission">
@@ -2609,7 +2603,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-initialise-the-document-object">create and initialize a document object</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context</span>
      <li><span class="dfn-paneled" id="term-for-current-global-object">current global object</span>
-     <li><span class="dfn-paneled" id="term-for-current-settings-object">current settings object</span>
      <li><span class="dfn-paneled" id="term-for-delay-the-load-event">delays the load event</span>
      <li><span class="dfn-paneled" id="term-for-discard-a-document">discard a document</span>
      <li><span class="dfn-paneled" id="term-for-she-document">document</span>
@@ -2634,7 +2627,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-networking-task-source">networking task source</span>
      <li><span class="dfn-paneled" id="term-for-handler-onreadystatechange">onreadystatechange</span>
      <li><span class="dfn-paneled" id="term-for-dom-open">open(url, target, features)</span>
-     <li><span class="dfn-paneled" id="term-for-concept-settings-object-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-parse-a-url">parse a url</span>
      <li><span class="dfn-paneled" id="term-for-dom-print">print()</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-fetch">process a navigate fetch</span>
@@ -2704,7 +2696,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[NOTIFICATIONS]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-notification-notification">Notification(title)</span>
-     <li><span class="dfn-paneled" id="term-for-dom-notification-permission">permission <small>(for Notification)</small></span>
+     <li><span class="dfn-paneled" id="term-for-get-the-notifications-permission-state">get the notifications permission state</span>
+     <li><span class="dfn-paneled" id="term-for-dom-notification-permission">permission</span>
      <li><span class="dfn-paneled" id="term-for-dom-notification-requestpermission">requestPermission()</span>
     </ul>
    <li>
@@ -2823,7 +2816,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dt id="biblio-generic-sensor">[GENERIC-SENSOR]
    <dd>Rick Waldron; et al. <a href="https://www.w3.org/TR/generic-sensor/"><cite>Generic Sensor API</cite></a>. 29 July 2021. CR. URL: <a href="https://www.w3.org/TR/generic-sensor/">https://www.w3.org/TR/generic-sensor/</a>
    <dt id="biblio-geolocation">[GEOLOCATION]
-   <dd>Marcos Caceres. <a href="https://www.w3.org/TR/geolocation/"><cite>Geolocation API</cite></a>. 12 October 2021. WD. URL: <a href="https://www.w3.org/TR/geolocation/">https://www.w3.org/TR/geolocation/</a>
+   <dd>Marcos Caceres. <a href="https://www.w3.org/TR/geolocation/"><cite>Geolocation API</cite></a>. 24 November 2021. WD. URL: <a href="https://www.w3.org/TR/geolocation/">https://www.w3.org/TR/geolocation/</a>
    <dt id="biblio-hr-time-2">[HR-TIME-2]
    <dd>Ilya Grigorik. <a href="https://www.w3.org/TR/hr-time-2/"><cite>High Resolution Time Level 2</cite></a>. 21 November 2019. REC. URL: <a href="https://www.w3.org/TR/hr-time-2/">https://www.w3.org/TR/hr-time-2/</a>
    <dt id="biblio-hr-time-3">[HR-TIME-3]
@@ -2863,7 +2856,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dt id="biblio-web-nfc">[WEB-NFC]
    <dd><a href="https://w3c.github.io/web-nfc/"><cite>Web NFC API</cite></a>. ED. URL: <a href="https://w3c.github.io/web-nfc/">https://w3c.github.io/web-nfc/</a>
    <dt id="biblio-web-share">[WEB-SHARE]
-   <dd>Matt Giuca; Eric Willigers; Marcos Caceres. <a href="https://www.w3.org/TR/web-share/"><cite>Web Share API</cite></a>. 13 October 2021. WD. URL: <a href="https://www.w3.org/TR/web-share/">https://www.w3.org/TR/web-share/</a>
+   <dd>Matt Giuca; Eric Willigers; Marcos Caceres. <a href="https://www.w3.org/TR/web-share/"><cite>Web Share API</cite></a>. 22 November 2021. WD. URL: <a href="https://www.w3.org/TR/web-share/">https://www.w3.org/TR/web-share/</a>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
    <dt id="biblio-webmidi">[WEBMIDI]
