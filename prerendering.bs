@@ -378,6 +378,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
       * |browsingContext| is a [=top-level browsing context=]
       * |browsingContext| is not a [=prerendering browsing context=]
+      * |browsingContext| is not for a [Fenced Frame](https://github.com/shivanigithub/fenced-frame)
+         <p class="issue">The concept of a fenced frame browsing context is not yet defined but we need to link to it once it exists.</p>
       * |historyHandling| is "`default`" or "`replace`"
       * |navigationType| is "`other`"
       * |request|'s [=request/method=] is \``GET`\`
@@ -642,7 +644,7 @@ Add {{[DelayWhilePrerendering]}} to {{Notification/requestPermission()}}.
 
      <p class="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of [=prerendering browsing contexts=]. Web developers can then call {{Notification/requestPermission()|Notification.requestPermission()}}, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "`granted`" or "`denied`", so the browser might not actually ask the user like would normally be the case with "`default`". But that's OK: it's not observable to web developer code.</p>
 
-  1. Otherwise, return the [=current settings object=]'s [=environment settings object/origin=]'s <a spec="NOTIFICATIONS">permission</a>.
+  1. Otherwise, <a spec="NOTIFICATIONS">get the notifications permission state</a> and return it.
 </div>
 
 TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
