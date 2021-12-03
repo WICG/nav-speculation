@@ -71,21 +71,23 @@ Each {{Document}} has a <dfn export>prefetch buffer</dfn>, which is a [=list=] o
 A <dfn>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
-* <dfn export for="prefetch record">response</dfn>, a [=response=]
+* <dfn export for="prefetch record">redirect chain</dfn>, a [=list=] of [=responses=]
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}}
+
+A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the last [=response=] in its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
 <p class="issue">Does the prefetch record need to contain redirect info, e.g. to verify that all redirects would pass `navigate-to`?</p>
 
 The user agent may remove elements from the [=prefetch buffer=] even if they are not expired, e.g., due to resource constraints. Since records with expiry times in the past are never returned, they can be removed with no observable consequences.
 
 <div algorithm="store a prefetch record">
-    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=response=] |response|, perform the following steps.
+    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=list=] of [=responses=] |redirectChain|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
     1. [=list/Remove=] all elements whose [=prefetch record/URL=] equals |url| and [=prefetch record/referrer policy=] equals |referrerPolicy| from |document|'s [=prefetch buffer=].
-    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/response=] |response| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
+    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/redirect chain=] |redirectChain| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
 </div>
 
 <div algorithm="find a matching prefetch response">
@@ -97,10 +99,40 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
         1. If |record|'s [=prefetch record/URL=] is not equal to |url| or |record|'s [=prefetch record/referrer policy=] is not equal to |referrerPolicy|, then [=iteration/continue=].
         1. [=list/Remove=] |record| from |document|'s [=prefetch buffer=].
         1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
-        1. Return |record|'s [=prefetch record/response=].
+        1. Return |record|.
     1. Return null.
-    
+
     <p class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it's unclear whether this is worthwhile.</p>
+</div>
+
+<div algorithm="perform prefetch response checks">
+    To <dfn export>perform prefetch response checks</dfn> given a [=request=] |request|, [=prefetch record=] |record|, two [=browsing contexts=] |sourceBrowsingContext| and |browsingContext|, [=sandboxing flag set=] |sandboxFlags|, and an [=origin=] |incumbentNavigationOrigin|, perform the following steps.
+
+    1. Let |responseOrigin| be null.
+    1. Let |responseCOOP| be null.
+    1. Let |currentContextIsSource| be the result of whether |browsingContext|'s [=active document=] is [=same origin=] with |sourceBrowsingContext|'s [=active document=].
+    1. Let |coopEnforcementResult| be a new [=cross-origin opener policy enforcement result=] whose [=cross-origin opener policy enforcement result/needs a browsing context group switch=] is false, [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=] is false, [=cross-origin opener policy enforcement result/url=] is |browsingContext|'s [=active document=]'s [=Document/url=], [=cross-origin opener policy enforcement result/current origin=] is |browsingContext|'s [=active document=]'s [=Document/origin=], [=cross-origin opener policy enforcement result/cross-origin opener policy=] is |browsingContext|'s [=active document=]'s [=Document/cross-origin opener policy=], and [=cross-origin opener policy enforcement result/current context is navigation source=] is |currentContextIsSource|.
+    1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
+    1. Let |hasCrossOriginRedirects| be false.
+    1. [=list/For each=] |response| in |record|'s [=prefetch record/redirect chain=]:
+        1. TODO: update |hasCrossOriginRedirects|.
+        1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
+        1. TODO: can we use |response|'s [=response/URL=] or [=response/URL list=] here instead of a request's, or do we really need the requests too?
+        1. Set |responseOrigin| to the result of [=determining the origin=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
+        1. If |browsingContext| is a [=top-level browsing context=], then:
+            1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
+
+                TODO: this is not the right reserved client
+
+            1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
+
+                TODO: Need to figure out how best to bail here.
+
+                <div class="note">This results in a network error as one cannot simultaneously provide a clean slate to a response using cross-origin opener policy and sandbox the result of navigating to that response.</div>
+
+            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
+    1. TODO: Just go ahead and make navigate params and run [=process a navigate response=].
+
 </div>
 
 <h2 id="html-patches">HTML Patches</h2>
@@ -191,8 +223,6 @@ Given this, the non-prefetch case becomes:
 
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |request|'s [=request/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
 
-                <div class="issue">Is COOP enforcement needed on the prefetch path, too?</div>
-
         1. Return "`Allowed`".
     1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, |navigationType|, |browsingContext|, null (for forceEnvironment), |preRedirectHook|, |shouldBlockNavigationRequest| and |shouldBlockNavigationResponse|.
     1. If |locationURL| is a [=URL=]:
@@ -241,6 +271,7 @@ These algorithms are based on [=process a navigate fetch=].
                 <div class="note">
                     Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
                 </div>
+    1. Let |redirectChain| be an empty [=list=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |navigationType| is "`other`".
         1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
@@ -249,11 +280,20 @@ These algorithms are based on [=process a navigate fetch=].
 
             <div class="issue">It might be possible to "downgrade" to [=uncredentialed prefetch=] in this case.</div>
         1. Otherwise, return "`Allowed`".
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, null, an empty algorithm, |shouldBlockNavigationRequest|, and an empty algorithm.
+
+    1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
+        1. TODO: sandbox flags
+        1. [=list/Append=] |response| to |redirectChain|.
+
+            <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred.</div>
+        1. Return "`Allowed`".
+
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, null, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|.
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
     1. If |response| is a [=network error=], then return.
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |response|.
+    1. [=Assert=]: |response| is the last element of |redirectChain|.
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |redirectChain|.
 </div>
 
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
@@ -298,6 +338,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
                 </div>
 
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
+    1. Let |redirectChain| be an empty [=list=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |request|'s [=request/reserved client=] is |isolatedEnvironment| and not |environment|.
         1. [=Assert=]: |navigationType| is "`other`".
@@ -308,14 +349,22 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |originsWithConflictingCredentials|.
         1. Return "`Allowed`".
 
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, and an empty algorithm.
+    1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
+        1. TODO: sandbox flags
+        1. [=list/Append=] |response| to |redirectChain|.
+
+            <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred.</div>
+        1. Return "`Allowed`".
+
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|.
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
     1. If |response| is a [=network error=], then return.
     1. If |originsWithConflictingCredentials| is not empty, then return.
 
         <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |response|.
+    1. [=Assert=]: |response| is the last element of |redirectChain|.
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |redirectChain|.
 
     <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
