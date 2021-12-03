@@ -141,6 +141,9 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
         1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
         1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
         1. If the result of |shouldBlockNavigationResponse| given |request| and |response| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=].
+        1. If |response| is not a [=network error=], |browsingContext| is a [=child browsing context=], and the result of performing a [=cross-origin resource policy check=] with |browsingContext|'s [=browsing context/container document=]'s [=Document/origin=], |browsingContext|'s [=browsing context/container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
+
+            <div class="note">Here we're running the [=cross-origin resource policy check=] against the [=parent browsing context=] rather than |browsingContext|. This is because we care about the same-originness of the embedded content against the parent context, not the navigation source.</div>
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is not a [=URL=] whose [=url/scheme=] is an [=HTTP(S) scheme=], the [=iteration/break=].
 
@@ -189,11 +192,6 @@ Given this, the non-prefetch case becomes:
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |request|'s [=request/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
 
                 <div class="issue">Is COOP enforcement needed on the prefetch path, too?</div>
-
-        1. If |response| is not a [=network error=], |browsingContext| is a [=child browsing context=], and the result of performing a [=cross-origin resource policy check=] with |browsingContext|'s [=browsing context/container document=]'s [=Document/origin=], |browsingContext|'s [=browsing context/container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response| and true is <strong>blocked</strong>, then return "`Blocked`".
-
-            <div class="note">Here we're running the [=cross-origin resource policy check=] against the [=parent browsing context=] rather than sourceBrowsingContext. This is because we care about the same-originness of the embedded content against the parent context, not the navigation source.</div>
-            <div class="issue">Is CORP enforcement needed on the prefetch path, too?</div>
 
         1. Return "`Allowed`".
     1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, |navigationType|, |browsingContext|, null (for forceEnvironment), |preRedirectHook|, |shouldBlockNavigationRequest| and |shouldBlockNavigationResponse|.
