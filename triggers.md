@@ -122,7 +122,7 @@ The link element itself can also be [matched][selector-match] using [CSS selecto
 
 This feature is designed to allow future extension, such as a notion of requirements: assertions in rules about the capabilities of the user agent while executing them. Since user agents disregard rules they do not understand, this can be safely added later on without violating the requirements listed.
 
-For example, an "anonymous-client-ip-when-cross-origin" requirement might mean that the rule matches only if the user agent can prevent the client IP address from being visible to the origin server if a cross-origin request is issued.
+For example, an "anonymous-client-ip-when-cross-origin" requirement might mean that the rule matches only if the user agent can [prevent the client IP address from being visible to the origin server](anonymous-client-ip.md) if a cross-origin request is issued.
 
 ```json
 {"prerender": [
