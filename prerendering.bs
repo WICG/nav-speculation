@@ -45,16 +45,13 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: traverse the history; url: traverse-the-history
     urlPrefix: interaction.html
       text: system focus; url: tlbc-system-focus
+      text: visibility state; for: Document; url: dom-document-visibilitystate
+      text: hidden; for: Document; url: dom-document-hidden
     urlPrefix: urls-and-fetching.html
       text: parse a URL; url: parse-a-url
       text: resulting URL record
     urlPrefix: webappapis.html
       text: script; url: concept-script
-spec: page-visibility; urlPrefix: https://w3c.github.io/page-visibility/
-  type: dfn
-    text: hidden; for: Document; url: dfn-hidden
-    text: visible; for: Document; url: dfn-visible
-    text: visibility state; for: Document; url: dfn-visibility-states
 spec: geolocation; urlPrefix: https://w3c.github.io/geolocation-api/
   type: method; for: Geolocation
     text: getCurrentPosition(successCallback, errorCallback, options); url: getcurrentposition-method
@@ -731,7 +728,7 @@ Add {{[DelayWhilePrerendering]}} to {{Navigator/requestMediaKeySystemAccess()}}.
 Some APIs do not need modifications because they will automatically fail or no-op without a property that a [=prerendering browsing context=], its [=browsing context/active window=], or its [=active document=] will never have. These properties include:
 - [=transient activation=] or [=sticky activation=]
 - [=system focus=]
-- the [=Document/visible=] [=Document/visibility state=]
+- the "<code>visible</code>" [=Document/visibility state=]
 
 We list known APIs here for completeness, to show which API surfaces we've audited.
 
@@ -753,8 +750,8 @@ APIs that require [=transient activation=] or [=sticky activation=]:
 APIs that require [=system focus=]:
 - The Asynchronous Clipboard API: {{Clipboard/read()|navigator.clipboard.read()}}, {{Clipboard/readText()|navigator.clipboard.readText()}}, {{Clipboard/write()|navigator.clipboard.write()}}, {{Clipboard/writeText|navigator.clipboard.writeText()}}. [[CLIPBOARD-APIS]]
 
-APIs that require the [=Document/visible=] [=Document/visibility state=]:
+APIs that require the "<code>visible</code>" [=Document/visibility state=]:
 - {{WakeLock/request()|navigator.wakeLock.request()}} [[SCREEN-WAKE-LOCK]]
 
 More complicated cases:
-- [=Request Picture-in-Picture=] as invoked due to {{HTMLVideoElement/requestPictureInPicture()|video.requestPictureInPicture()}} or {{HTMLVideoElement/autoPictureInPicture}} requires either [=transient activation=], or the [=Document/visibility state=] to have been [=Document/visible=]. [[PICTURE-IN-PICTURE]]
+- [=Request Picture-in-Picture=] as invoked due to {{HTMLVideoElement/requestPictureInPicture()|video.requestPictureInPicture()}} or {{HTMLVideoElement/autoPictureInPicture}} requires either [=transient activation=], or the [=Document/visibility state=] to have been "<code>visible</code>". [[PICTURE-IN-PICTURE]]
