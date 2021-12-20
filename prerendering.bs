@@ -131,6 +131,33 @@ spec: navigation-timing; urlPrefix: https://w3c.github.io/navigation-timing/
 spec: encrypted-media; urlPrefix: https://w3c.github.io/encrypted-media/
   type: method; for: Navigator
     text: requestMediaKeySystemAccess(keySystem, supportedConfigurations); url: requestMediaKeySystemAccess
+spec: mediacapture-main; urlPrefix: https://w3c.github.io/mediacapture-main/
+  type: dfn
+    text: device change notification steps; url: dfn-device-change-notification-steps
+spec: hid; urlPrefix: https://wicg.github.io/webhid/
+  type: interface
+    text: HID; url: hid-interface
+  type: method; for: HID
+    text: getDevices(); url: dom-hid-getdevices
+  type: method; for: HID
+    text: requestDevice(); url: dom-hid-requestdevice
+spec: backgroud-fetch; urlPrefix: https://wicg.github.io/background-fetch/
+  type: interface
+    text: BackgroundFetchManager; url: backgroundfetchmanager
+  type: method; for: BackgroundFetchManager
+    text: fetch(); url: dom-backgroundfetchmanager-fetch
+spec: push-api; urlPrefix: https://w3c.github.io/push-api/
+  type: interface
+    text: PushManager; url: dom-pushmanager
+  type: method; for: PushManager
+    text: subscribe(); url: dom-pushmanager-subscribe
+spec: screen-capture; urlPrefix: https://w3c.github.io/mediacapture-screen-share
+  type: method; for: MediaDevices
+    text: getDisplayMedia(); url: dom-mediadevices-getdisplaymedia
+spec: audio-output; urlPrefix: https://w3c.github.io/mediacapture-output/
+  type: method; for: MediaDevices
+    text: selectAudioOutput(); url: dom-mediadevices-selectaudiooutput
+
 </pre>
 <pre class="biblio">
 {
@@ -564,7 +591,7 @@ Many specifications need to be patched so that, if a given algorithm invoked in 
 
 To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until [=prerendering browsing context/activated|activation=], we introduce the <dfn extended-attribute>[DelayWhilePrerendering]</dfn> Web IDL extended attribute. It indicates that when a given method is called in a [=prerendering browsing context=], it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.
 
-The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and must only appear on a <a lt="regular operation" spec="WEBIDL">regular</a> or <a spec="WEBIDL">static operation</a> whose <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a> and whose <a spec="WEBIDL">exposure set</a> contains only {{Window}}.
+The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and must only appear on a <a lt="regular operation" spec="WEBIDL">regular</a> or <a spec="WEBIDL">static operation</a> whose <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a> or {{undefined}}, and whose <a spec="WEBIDL">exposure set</a> contains only {{Window}}.
 
 <div algorithm="DelayWhilePrerendering method steps">
   The method steps for any operation annotated with the {{[DelayWhilePrerendering]}} extended attribute are replaced with the following:
@@ -576,7 +603,7 @@ The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and 
     1. Append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=]:
       1. Let |result| be the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
       1. [=Resolve=] |promise| with |result|.
-    1. Return |promise|.
+    1. If this operation's <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a>, then return |promise|.
   1. Otherwise, return the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
 </div>
 
@@ -727,6 +754,56 @@ Add {{[DelayWhilePrerendering]}} to {{Navigator/requestMediaKeySystemAccess()}}.
 <h4 id="autoplay-patch">Media Autoplay</h4>
 
 Modify the [=playing the media resource=] section to indicate that the the [=current playback position=] of a	{{HTMLMediaElement}} must increase monotonically only when the {{Document}} is not {{Document/prerendering}}.
+
+<h4 id="media-capture-patch">Media Capture and Streams</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{Navigator/getUserMedia()}}, {{MediaDevices/getUserMedia()}} and {{MediaDevices/enumerateDevices()}}.
+
+<div algorithm="mediacapture device-change path">
+  Modify the {{MediaDevices}} section by prepending the following step to the [=device change notification steps=]:
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
+</div>
+
+<h4 id="audio-output-patch">Audio Output Devices API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{MediaDevices/selectAudioOutput()}}.
+
+<h4 id="push-patch">Push API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{PushManager/subscribe()}}.
+
+<h4 id="background-fetch-patch">Background Fetch</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{BackgroundFetchManager/fetch()}}.
+
+<h4 id="persist-patch">Storage API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{StorageManager/persist()}}.
+
+<h4 id="screen-capture-patch">Screen Capture</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{MediaDevices/getDisplayMedia()}}.
+
+<h4 id="webusb-patch">WebUSB API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{USB/getDevices()}} and {{USB/requestDevice()}}.
+
+<h4 id="web-bluetooth-patch">Web Bluetooth</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{Bluetooth/getDevices()}} and {{Bluetooth/requestDevice()}}.
+
+<h4 id="webhid-patch">WebHID API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{HID/getDevices()}} and {{HID/requestDevice()}}.
+
+<h4 id="webxr-patch">WebXR Device API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{XRSystem/requestSession()}}.
+
+<h4 id="credential-manamgenet-patch">Credential Manamgenet</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{CredentialsContainer/get()}}, {{CredentialsContainer/store()}}, and {{CredentialsContainer/create()}}. 
 
 <h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 
