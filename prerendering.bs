@@ -642,7 +642,17 @@ Add {{[DelayWhilePrerendering]}} to {{Notification/requestPermission()}}.
   1. Otherwise, <a spec="NOTIFICATIONS">get the notifications permission state</a> and return it.
 </div>
 
-TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
+<div algorithm="Service worker notifications patch">
+  Modify the {{ServiceWorkerRegistration/showNotification()}} steps to add the following steps before [=getting the notifications permission state=]:
+
+  1. Let |prerenderedOnly| be true.
+
+  1. For each [=/service worker client=] |client| whose [=service worker client/origin=] is the [=same origin|same=] as the associated [=ServiceWorkerGlobalScope/service worker=]'s [=environment settings object/origin=]:
+    1. If |client| is a {{WorkerGlobalScope}}, then: [=list/or each=] |documentOrWorker| in [=WorkerGlobalScope/owner set=]: If |documentOrWorker| is a {{Document}} which is not {{Document/prerendering}}, set |prerenderedOnly| to false.
+    1. Otherwise, if [=environment settings object/responsible document=] is not {{Document/prerendering}} set |prerenderedOnly| to false.
+
+  1. If |prerenderedOnly| is true, return.
+</div>
 
 <h4 id="patch-midi">Web MIDI API</h4>
 
