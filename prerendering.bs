@@ -128,6 +128,10 @@ spec: navigation-timing; urlPrefix: https://w3c.github.io/navigation-timing/
 spec: encrypted-media; urlPrefix: https://w3c.github.io/encrypted-media/
   type: method; for: Navigator
     text: requestMediaKeySystemAccess(keySystem, supportedConfigurations); url: requestMediaKeySystemAccess
+
+spec: notifications; urlPrefix: https://notifications.spec.whatwg.org/
+  type: dfn;
+    text: getting the notifications permission state; url: get-the-notifications-permission-state
 </pre>
 <pre class="biblio">
 {
@@ -647,9 +651,9 @@ Add {{[DelayWhilePrerendering]}} to {{Notification/requestPermission()}}.
 
   1. Let |prerenderedOnly| be true.
 
-  1. For each [=/service worker client=] |client| whose [=service worker client/origin=] is the [=same origin|same=] as the associated [=ServiceWorkerGlobalScope/service worker=]'s [=environment settings object/origin=]:
-    1. If |client| is a {{WorkerGlobalScope}}, then: [=list/or each=] |documentOrWorker| in [=WorkerGlobalScope/owner set=]: If |documentOrWorker| is a {{Document}} which is not {{Document/prerendering}}, set |prerenderedOnly| to false.
-    1. Otherwise, if [=environment settings object/responsible document=] is not {{Document/prerendering}} set |prerenderedOnly| to false.
+  1. [=list/For each=] [=/service worker client=] |client| whose [=service worker client/origin=] is the [=same origin|same=] as the associated [=ServiceWorkerGlobalScope/service worker=]'s [=environment settings object/origin=]:
+    1. If |client| is a {{WorkerGlobalScope}}, then: [=list/For each=] |documentOrWorker| in [=WorkerGlobalScope/owner set=]: If |documentOrWorker| is a {{Document}} which is not {{Document/prerendering}}, set |prerenderedOnly| to false.
+    1. Otherwise, if |client|'s [=environment settings object/responsible document=] is not {{Document/prerendering}} set |prerenderedOnly| to false.
 
   1. If |prerenderedOnly| is true, return.
 </div>
