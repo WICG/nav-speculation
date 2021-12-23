@@ -618,7 +618,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2021-12-16">16 December 2021</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2021-12-23">23 December 2021</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -705,6 +705,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#patch-orientation-lock"><span class="secno">7.3.10</span> <span class="content">Screen Orientation API</span></a>
         <li><a href="#patch-gamepads"><span class="secno">7.3.11</span> <span class="content">Gamepad</span></a>
         <li><a href="#eme-patch"><span class="secno">7.3.12</span> <span class="content">Encrypted Media Extensions</span></a>
+        <li><a href="#autoplay-patch"><span class="secno">7.3.13</span> <span class="content">Media Autoplay</span></a>
        </ol>
       <li><a href="#implicitly-restricted"><span class="secno">7.4</span> <span class="content">Implicitly restricted APIs</span></a>
      </ol>
@@ -1273,6 +1274,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </div>
    <h4 class="heading settled" data-level="7.3.12" id="eme-patch"><span class="secno">7.3.12. </span><span class="content">Encrypted Media Extensions</span><a class="self-link" href="#eme-patch"></a></h4>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⓪">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess" id="ref-for-requestMediaKeySystemAccess">requestMediaKeySystemAccess()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.13" id="autoplay-patch"><span class="secno">7.3.13. </span><span class="content">Media Autoplay</span><a class="self-link" href="#autoplay-patch"></a></h4>
+   <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#playing-the-media-resource" id="ref-for-playing-the-media-resource">playing the media resource</a> section to indicate that the the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#current-playback-position" id="ref-for-current-playback-position">current playback position</a> of a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement" id="ref-for-htmlmediaelement">HTMLMediaElement</a></code> must increase monotonically only when the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①③">Document</a></code> is not <code class="idl"><a data-link-type="idl" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering③">prerendering</a></code>.</p>
    <h3 class="heading settled" data-level="7.4" id="implicitly-restricted"><span class="secno">7.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
    <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑦">active document</a> will never have. These properties include:</p>
    <ul>
@@ -1400,6 +1403,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-document⑨">4.5. Cleanup upon discarding a Document</a> <a href="#ref-for-document①⓪">(2)</a>
     <li><a href="#ref-for-document①①">6.1. APIs for creating and navigating browsing contexts by name</a>
     <li><a href="#ref-for-document①②">7.3.11. Gamepad</a>
+    <li><a href="#ref-for-document①③">7.3.13. Media Autoplay</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document">
@@ -1648,6 +1652,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-eventhandler">3.1. Extensions to the Document interface</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-htmlmediaelement">
+   <a href="https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement">https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-htmlmediaelement">7.3.13. Media Autoplay</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-window">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#window">https://html.spec.whatwg.org/multipage/window-object.html#window</a><b>Referenced in:</b>
    <ul>
@@ -1769,6 +1779,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object">https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-current-global-object">7.3.4. Notifications API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-current-playback-position">
+   <a href="https://html.spec.whatwg.org/multipage/media.html#current-playback-position">https://html.spec.whatwg.org/multipage/media.html#current-playback-position</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-current-playback-position">7.3.13. Media Autoplay</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-delay-the-load-event">
@@ -1926,6 +1942,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url">https://html.spec.whatwg.org/multipage/urls-and-fetching.html#parse-a-url</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-parse-a-url">1. Link type "prerender"</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-playing-the-media-resource">
+   <a href="https://html.spec.whatwg.org/multipage/media.html#playing-the-media-resource">https://html.spec.whatwg.org/multipage/media.html#playing-the-media-resource</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-playing-the-media-resource">7.3.13. Media Autoplay</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-print">
@@ -2577,6 +2599,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <ul>
      <li><span class="dfn-paneled" id="term-for-dedicatedworkerglobalscope">DedicatedWorkerGlobalScope</span>
      <li><span class="dfn-paneled" id="term-for-eventhandler">EventHandler</span>
+     <li><span class="dfn-paneled" id="term-for-htmlmediaelement">HTMLMediaElement</span>
      <li><span class="dfn-paneled" id="term-for-window">Window</span>
      <li><span class="dfn-paneled" id="term-for-abort-a-document">abort</span>
      <li><span class="dfn-paneled" id="term-for-active-document">active document</span>
@@ -2595,6 +2618,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-initialise-the-document-object">create and initialize a document object</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context</span>
      <li><span class="dfn-paneled" id="term-for-current-global-object">current global object</span>
+     <li><span class="dfn-paneled" id="term-for-current-playback-position">current playback position</span>
      <li><span class="dfn-paneled" id="term-for-delay-the-load-event">delays the load event</span>
      <li><span class="dfn-paneled" id="term-for-discard-a-document">discard a document</span>
      <li><span class="dfn-paneled" id="term-for-she-document">document</span>
@@ -2620,6 +2644,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-handler-onreadystatechange">onreadystatechange</span>
      <li><span class="dfn-paneled" id="term-for-dom-open">open(url, target, features)</span>
      <li><span class="dfn-paneled" id="term-for-parse-a-url">parse a url</span>
+     <li><span class="dfn-paneled" id="term-for-playing-the-media-resource">playing the media resource</span>
      <li><span class="dfn-paneled" id="term-for-dom-print">print()</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-fetch">process a navigate fetch</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-response">process a navigate response</span>
@@ -2936,6 +2961,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-dom-document-prerendering">3.1. Extensions to the Document interface</a> <a href="#ref-for-dom-document-prerendering①">(2)</a>
     <li><a href="#ref-for-dom-document-prerendering②">3.2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-dom-document-prerendering③">7.3.13. Media Autoplay</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerendering-browsing-context-empty">
