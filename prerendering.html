@@ -618,7 +618,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2021-12-23">23 December 2021</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2021-12-29">29 December 2021</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -706,6 +706,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#patch-gamepads"><span class="secno">7.3.11</span> <span class="content">Gamepad</span></a>
         <li><a href="#eme-patch"><span class="secno">7.3.12</span> <span class="content">Encrypted Media Extensions</span></a>
         <li><a href="#autoplay-patch"><span class="secno">7.3.13</span> <span class="content">Media Autoplay</span></a>
+        <li><a href="#media-capture-patch"><span class="secno">7.3.14</span> <span class="content">Media Capture and Streams</span></a>
+        <li><a href="#audio-output-patch"><span class="secno">7.3.15</span> <span class="content">Audio Output Devices API</span></a>
+        <li><a href="#push-patch"><span class="secno">7.3.16</span> <span class="content">Push API</span></a>
+        <li><a href="#background-fetch-patch"><span class="secno">7.3.17</span> <span class="content">Background Fetch</span></a>
+        <li><a href="#persist-patch"><span class="secno">7.3.18</span> <span class="content">Storage API</span></a>
+        <li><a href="#screen-capture-patch"><span class="secno">7.3.19</span> <span class="content">Screen Capture</span></a>
+        <li><a href="#webusb-patch"><span class="secno">7.3.20</span> <span class="content">WebUSB API</span></a>
+        <li><a href="#web-bluetooth-patch"><span class="secno">7.3.21</span> <span class="content">Web Bluetooth</span></a>
+        <li><a href="#webhid-patch"><span class="secno">7.3.22</span> <span class="content">WebHID API</span></a>
+        <li><a href="#webxr-patch"><span class="secno">7.3.23</span> <span class="content">WebXR Device API</span></a>
+        <li><a href="#credential-manamgenet-patch"><span class="secno">7.3.24</span> <span class="content">Credential Manamgenet</span></a>
        </ol>
       <li><a href="#implicitly-restricted"><span class="secno">7.4</span> <span class="content">Implicitly restricted APIs</span></a>
      </ol>
@@ -1114,7 +1125,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑦">prerendering browsing context</a>, most of its work is deferred until the browsing context is <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑦">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
    <h4 class="heading settled" data-level="7.3.1" id="delay-while-prerendering"><span class="secno">7.3.1. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering">[DelayWhilePrerendering]</a></code> extended attribute</span><a class="self-link" href="#delay-while-prerendering"></a></h4>
    <p>To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑧">activation</a>, we introduce the <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export id="extendedattrdef-delaywhileprerendering"><code>[DelayWhilePrerendering]</code></dfn> Web IDL extended attribute. It indicates that when a given method is called in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑧">prerendering browsing context</a>, it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.</p>
-   <p>The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①">[DelayWhilePrerendering]</a></code> extended attribute must take no arguments, and must only appear on a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation">regular</a> or <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-static-operation" id="ref-for-dfn-static-operation">static operation</a> whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-return-type" id="ref-for-dfn-return-type">return type</a> is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-promise-type" id="ref-for-dfn-promise-type">promise type</a> and whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-exposure-set" id="ref-for-dfn-exposure-set">exposure set</a> contains only <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window②">Window</a></code>.</p>
+   <p>The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①">[DelayWhilePrerendering]</a></code> extended attribute must take no arguments, and must only appear on a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation">regular</a> or <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-static-operation" id="ref-for-dfn-static-operation">static operation</a> whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-return-type" id="ref-for-dfn-return-type">return type</a> is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-promise-type" id="ref-for-dfn-promise-type">promise type</a> or <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined">undefined</a></code>, and whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-exposure-set" id="ref-for-dfn-exposure-set">exposure set</a> contains only <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window②">Window</a></code>.</p>
    <div class="algorithm" data-algorithm="DelayWhilePrerendering method steps">
      The method steps for any operation annotated with the <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②">[DelayWhilePrerendering]</a></code> extended attribute are replaced with the following: 
     <ol>
@@ -1136,7 +1147,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
           <p><a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#resolve" id="ref-for-resolve">Resolve</a> <var>promise</var> with <var>result</var>.</p>
         </ol>
        <li data-md>
-        <p>Return <var>promise</var>.</p>
+        <p>If this operation’s <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-return-type" id="ref-for-dfn-return-type①">return type</a> is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-promise-type" id="ref-for-dfn-promise-type①">promise type</a>, then return <var>promise</var>.</p>
       </ol>
      <li data-md>
       <p>Otherwise, return the result of running the originally-specified steps for this operation, with the same <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑤">this</a> and arguments.</p>
@@ -1276,8 +1287,37 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⓪">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess" id="ref-for-requestMediaKeySystemAccess">requestMediaKeySystemAccess()</a></code>.</p>
    <h4 class="heading settled" data-level="7.3.13" id="autoplay-patch"><span class="secno">7.3.13. </span><span class="content">Media Autoplay</span><a class="self-link" href="#autoplay-patch"></a></h4>
    <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#playing-the-media-resource" id="ref-for-playing-the-media-resource">playing the media resource</a> section to indicate that the the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#current-playback-position" id="ref-for-current-playback-position">current playback position</a> of a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement" id="ref-for-htmlmediaelement">HTMLMediaElement</a></code> must increase monotonically only when the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①③">Document</a></code> is not <code class="idl"><a data-link-type="idl" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering③">prerendering</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.14" id="media-capture-patch"><span class="secno">7.3.14. </span><span class="content">Media Capture and Streams</span><a class="self-link" href="#media-capture-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①①">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia" id="ref-for-dom-navigator-getusermedia">getUserMedia()</a></code>, <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-getusermedia" id="ref-for-dom-mediadevices-getusermedia">getUserMedia()</a></code> and <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices" id="ref-for-dom-mediadevices-enumeratedevices">enumerateDevices()</a></code>.</p>
+   <div class="algorithm" data-algorithm="mediacapture device-change path">
+     Modify the <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices" id="ref-for-dom-mediadevices">MediaDevices</a></code> section by prepending the following step to the <a data-link-type="dfn" href="https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps" id="ref-for-dfn-device-change-notification-steps">device change notification steps</a>: 
+    <ol>
+     <li data-md>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, then return.</p>
+    </ol>
+   </div>
+   <h4 class="heading settled" data-level="7.3.15" id="audio-output-patch"><span class="secno">7.3.15. </span><span class="content">Audio Output Devices API</span><a class="self-link" href="#audio-output-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①②">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput" id="ref-for-dom-mediadevices-selectaudiooutput">selectAudioOutput()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.16" id="push-patch"><span class="secno">7.3.16. </span><span class="content">Push API</span><a class="self-link" href="#push-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①③">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/push-api/#dom-pushmanager-subscribe" id="ref-for-dom-pushmanager-subscribe">subscribe()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.17" id="background-fetch-patch"><span class="secno">7.3.17. </span><span class="content">Background Fetch</span><a class="self-link" href="#background-fetch-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①④">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/background-fetch/#dom-backgroundfetchmanager-fetch" id="ref-for-dom-backgroundfetchmanager-fetch">fetch()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.18" id="persist-patch"><span class="secno">7.3.18. </span><span class="content">Storage API</span><a class="self-link" href="#persist-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://storage.spec.whatwg.org/#dom-storagemanager-persist" id="ref-for-dom-storagemanager-persist">persist()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.19" id="screen-capture-patch"><span class="secno">7.3.19. </span><span class="content">Screen Capture</span><a class="self-link" href="#screen-capture-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑥">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-screen-share#dom-mediadevices-getdisplaymedia" id="ref-for-dom-mediadevices-getdisplaymedia">getDisplayMedia()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.20" id="webusb-patch"><span class="secno">7.3.20. </span><span class="content">WebUSB API</span><a class="self-link" href="#webusb-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑦">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webusb/#dom-usb-getdevices" id="ref-for-dom-usb-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webusb/#dom-usb-requestdevice" id="ref-for-dom-usb-requestdevice">requestDevice()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.21" id="web-bluetooth-patch"><span class="secno">7.3.21. </span><span class="content">Web Bluetooth</span><a class="self-link" href="#web-bluetooth-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑧">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-getdevices" id="ref-for-dom-bluetooth-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-requestdevice" id="ref-for-dom-bluetooth-requestdevice">requestDevice()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.22" id="webhid-patch"><span class="secno">7.3.22. </span><span class="content">WebHID API</span><a class="self-link" href="#webhid-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑨">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webhid/#dom-hid-getdevices" id="ref-for-dom-hid-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webhid/#dom-hid-requestdevice" id="ref-for-dom-hid-requestdevice">requestDevice()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.23" id="webxr-patch"><span class="secno">7.3.23. </span><span class="content">WebXR Device API</span><a class="self-link" href="#webxr-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⓪">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://immersive-web.github.io/webxr/#dom-xrsystem-requestsession" id="ref-for-dom-xrsystem-requestsession">requestSession()</a></code>.</p>
+   <h4 class="heading settled" data-level="7.3.24" id="credential-manamgenet-patch"><span class="secno">7.3.24. </span><span class="content">Credential Manamgenet</span><a class="self-link" href="#credential-manamgenet-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②①">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get" id="ref-for-dom-credentialscontainer-get">get()</a></code>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store" id="ref-for-dom-credentialscontainer-store">store()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-create" id="ref-for-dom-credentialscontainer-create">create()</a></code>.</p>
    <h3 class="heading settled" data-level="7.4" id="implicitly-restricted"><span class="secno">7.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
-   <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑦">active document</a> will never have. These properties include:</p>
+   <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④③">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑦">active document</a> will never have. These properties include:</p>
    <ul>
     <li data-md>
      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation">sticky activation</a></p>
@@ -1359,6 +1399,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#eventdef-document-prerenderingchange">prerenderingchange</a><span>, in § 3.1</span>
    <li><a href="#script-closable">script-closable</a><span>, in § 6.1</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-dom-mediadevices-selectaudiooutput">
+   <a href="https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput">https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-mediadevices-selectaudiooutput">7.3.15. Audio Output Devices API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-backgroundfetchmanager-fetch">
+   <a href="https://wicg.github.io/background-fetch/#dom-backgroundfetchmanager-fetch">https://wicg.github.io/background-fetch/#dom-backgroundfetchmanager-fetch</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-backgroundfetchmanager-fetch">7.3.17. Background Fetch</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-battery-promise">
    <a href="https://w3c.github.io/battery/#dfn-battery-promise">https://w3c.github.io/battery/#dfn-battery-promise</a><b>Referenced in:</b>
    <ul>
@@ -1393,6 +1445,24 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext">https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-clipboard-writetext">7.4. Implicitly restricted APIs</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-credentialscontainer-create">
+   <a href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-create">https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-create</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-credentialscontainer-create">7.3.24. Credential Manamgenet</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-credentialscontainer-get">
+   <a href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get">https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-get</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-credentialscontainer-get">7.3.24. Credential Manamgenet</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-credentialscontainer-store">
+   <a href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store">https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-credentialscontainer-store">7.3.24. Credential Manamgenet</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-document">
@@ -1621,6 +1691,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-watchposition-method">7.3.2. Geolocation API</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-hid-getdevices">
+   <a href="https://wicg.github.io/webhid/#dom-hid-getdevices">https://wicg.github.io/webhid/#dom-hid-getdevices</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-hid-getdevices">7.3.22. WebHID API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-hid-requestdevice">
+   <a href="https://wicg.github.io/webhid/#dom-hid-requestdevice">https://wicg.github.io/webhid/#dom-hid-requestdevice</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-hid-requestdevice">7.3.22. WebHID API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-domhighrestimestamp">
    <a href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp">https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp</a><b>Referenced in:</b>
    <ul>
@@ -1743,6 +1825,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-window-bc⑨">7.3.9. Battery Status API</a>
     <li><a href="#ref-for-window-bc①⓪">7.3.10. Screen Orientation API</a>
     <li><a href="#ref-for-window-bc①①">7.3.11. Gamepad</a> <a href="#ref-for-window-bc①②">(2)</a>
+    <li><a href="#ref-for-window-bc①③">7.3.14. Media Capture and Streams</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-browsing-context-connected">
@@ -2009,6 +2092,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-relevant-global①①">7.3.9. Battery Status API</a>
     <li><a href="#ref-for-concept-relevant-global①②">7.3.10. Screen Orientation API</a>
     <li><a href="#ref-for-concept-relevant-global①③">7.3.11. Gamepad</a> <a href="#ref-for-concept-relevant-global①④">(2)</a>
+    <li><a href="#ref-for-concept-relevant-global①⑤">7.3.14. Media Capture and Streams</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-relevant-realm">
@@ -2225,6 +2309,30 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-keyboard-lock">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-device-change-notification-steps">
+   <a href="https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps">https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-device-change-notification-steps">7.3.14. Media Capture and Streams</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-mediadevices">
+   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices">https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-mediadevices">7.3.14. Media Capture and Streams</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-mediadevices-enumeratedevices">
+   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices">https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-mediadevices-enumeratedevices">7.3.14. Media Capture and Streams</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-navigator-getusermedia">
+   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia">https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-navigator-getusermedia">7.3.14. Media Capture and Streams</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-current-document">
    <a href="https://w3c.github.io/navigation-timing/#dfn-current-document">https://w3c.github.io/navigation-timing/#dfn-current-document</a><b>Referenced in:</b>
    <ul>
@@ -2297,12 +2405,24 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-presentationrequest-start">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-pushmanager-subscribe">
+   <a href="https://w3c.github.io/push-api/#dom-pushmanager-subscribe">https://w3c.github.io/push-api/#dom-pushmanager-subscribe</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-pushmanager-subscribe">7.3.16. Push API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-referrer-policy">
    <a href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy">https://w3c.github.io/webappsec-referrer-policy/#referrer-policy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-referrer-policy">1. Link type "prerender"</a>
     <li><a href="#ref-for-referrer-policy①">3.2. Prerendering browsing contexts</a> <a href="#ref-for-referrer-policy②">(2)</a>
     <li><a href="#ref-for-referrer-policy③">4.2. Redirect handling</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-mediadevices-getdisplaymedia">
+   <a href="https://w3c.github.io/mediacapture-screen-share#dom-mediadevices-getdisplaymedia">https://w3c.github.io/mediacapture-screen-share#dom-mediadevices-getdisplaymedia</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-mediadevices-getdisplaymedia">7.3.19. Screen Capture</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-apply-an-orientation-lock">
@@ -2347,6 +2467,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-serial-requestPort">7.3.3. Web Serial API</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-storagemanager-persist">
+   <a href="https://storage.spec.whatwg.org/#dom-storagemanager-persist">https://storage.spec.whatwg.org/#dom-storagemanager-persist</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-storagemanager-persist">7.3.18. Storage API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-origin">
    <a href="https://url.spec.whatwg.org/#concept-url-origin">https://url.spec.whatwg.org/#concept-url-origin</a><b>Referenced in:</b>
    <ul>
@@ -2369,6 +2495,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-concept-url">3.2. Prerendering browsing contexts</a> <a href="#ref-for-concept-url①">(2)</a>
     <li><a href="#ref-for-concept-url②">4.2. Redirect handling</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-bluetooth-getdevices">
+   <a href="https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-getdevices">https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-getdevices</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-bluetooth-getdevices">7.3.21. Web Bluetooth</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-bluetooth-requestdevice">
+   <a href="https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-requestdevice">https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-requestdevice</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-bluetooth-requestdevice">7.3.21. Web Bluetooth</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-ndefreader-scan">
@@ -2442,7 +2580,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-dfn-promise-type">
    <a href="https://webidl.spec.whatwg.org/#dfn-promise-type">https://webidl.spec.whatwg.org/#dfn-promise-type</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-promise-type">7.3.1. The [DelayWhilePrerendering] extended attribute</a>
+    <li><a href="#ref-for-dfn-promise-type">7.3.1. The [DelayWhilePrerendering] extended attribute</a> <a href="#ref-for-dfn-promise-type①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-regular-operation">
@@ -2466,7 +2604,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-dfn-return-type">
    <a href="https://webidl.spec.whatwg.org/#dfn-return-type">https://webidl.spec.whatwg.org/#dfn-return-type</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-return-type">7.3.1. The [DelayWhilePrerendering] extended attribute</a>
+    <li><a href="#ref-for-dfn-return-type">7.3.1. The [DelayWhilePrerendering] extended attribute</a> <a href="#ref-for-dfn-return-type①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-static-operation">
@@ -2488,6 +2626,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-this②②">7.3.9. Battery Status API</a> <a href="#ref-for-this②③">(2)</a> <a href="#ref-for-this②④">(3)</a>
     <li><a href="#ref-for-this②⑤">7.3.10. Screen Orientation API</a> <a href="#ref-for-this②⑥">(2)</a>
     <li><a href="#ref-for-this②⑦">7.3.11. Gamepad</a>
+    <li><a href="#ref-for-this②⑧">7.3.14. Media Capture and Streams</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-undefined">
+   <a href="https://webidl.spec.whatwg.org/#idl-undefined">https://webidl.spec.whatwg.org/#idl-undefined</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-undefined">7.3.1. The [DelayWhilePrerendering] extended attribute</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-requestmidiaccess">
@@ -2496,8 +2641,36 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-navigator-requestmidiaccess">7.3.5. Web MIDI API</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-usb-getdevices">
+   <a href="https://wicg.github.io/webusb/#dom-usb-getdevices">https://wicg.github.io/webusb/#dom-usb-getdevices</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-usb-getdevices">7.3.20. WebUSB API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-usb-requestdevice">
+   <a href="https://wicg.github.io/webusb/#dom-usb-requestdevice">https://wicg.github.io/webusb/#dom-usb-requestdevice</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-usb-requestdevice">7.3.20. WebUSB API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-xrsystem-requestsession">
+   <a href="https://immersive-web.github.io/webxr/#dom-xrsystem-requestsession">https://immersive-web.github.io/webxr/#dom-xrsystem-requestsession</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-xrsystem-requestsession">7.3.23. WebXR Device API</a>
+   </ul>
+  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
+   <li>
+    <a data-link-type="biblio">[audio-output]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-mediadevices-selectaudiooutput">selectAudioOutput()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[backgroud-fetch]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-backgroundfetchmanager-fetch">fetch()</span>
+    </ul>
    <li>
     <a data-link-type="biblio">[battery]</a> defines the following terms:
     <ul>
@@ -2511,6 +2684,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-clipboard-readtext">readText()</span>
      <li><span class="dfn-paneled" id="term-for-dom-clipboard-write">write()</span>
      <li><span class="dfn-paneled" id="term-for-dom-clipboard-writetext">writeText()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[credential-management-1]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-credentialscontainer-create">create()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-credentialscontainer-get">get()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-credentialscontainer-store">store()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
@@ -2582,6 +2762,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-getcurrentposition-method">getCurrentPosition(successCallback, errorCallback, options)</span>
      <li><span class="dfn-paneled" id="term-for-dfn-watch-process">watch process</span>
      <li><span class="dfn-paneled" id="term-for-watchposition-method">watchPosition(successCallback, errorCallback, options)</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[hid]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-hid-getdevices">getDevices()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-hid-requestdevice">requestDevice()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[hr-time-2]</a> defines the following terms:
@@ -2701,6 +2887,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-keyboard-lock">lock()</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[mediacapture-main]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dfn-device-change-notification-steps">device change notification steps</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[mediacapture-streams]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-mediadevices">MediaDevices</span>
+     <li><span class="dfn-paneled" id="term-for-dom-mediadevices-enumeratedevices">enumerateDevices()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-navigator-getusermedia">getUserMedia() <small>(for Navigator)</small></span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[navigation-timing]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dfn-current-document">current document</span>
@@ -2741,9 +2939,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-presentationrequest-start">start()</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[push-api]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-pushmanager-subscribe">subscribe()</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[referrer-policy]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-referrer-policy">referrer policy</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[screen-capture]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-mediadevices-getdisplaymedia">getDisplayMedia()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[screen-orientation]</a> defines the following terms:
@@ -2765,11 +2973,22 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-serial-requestPort">requestPort(options)</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[STORAGE]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-storagemanager-persist">persist()</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-concept-url-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-concept-url-scheme">scheme</span>
      <li><span class="dfn-paneled" id="term-for-concept-url">url</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[web-bluetooth]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-bluetooth-getdevices">getDevices()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-bluetooth-requestdevice">requestDevice()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[web-nfc]</a> defines the following terms:
@@ -2800,18 +3019,34 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dfn-return-type">return type</span>
      <li><span class="dfn-paneled" id="term-for-dfn-static-operation">static operations</span>
      <li><span class="dfn-paneled" id="term-for-this">this</span>
+     <li><span class="dfn-paneled" id="term-for-idl-undefined">undefined</span>
     </ul>
    <li>
     <a data-link-type="biblio">[webmidi]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-navigator-requestmidiaccess">requestMIDIAccess()</span>
     </ul>
+   <li>
+    <a data-link-type="biblio">[WEBUSB]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-usb-getdevices">getDevices()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-usb-requestdevice">requestDevice(options)</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[webxr]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-xrsystem-requestsession">requestSession(mode)</span>
+    </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-audio-output">[AUDIO-OUTPUT]
+   <dd>Justin Uberti; Guido Urdaneta; youenn fablet. <a href="https://www.w3.org/TR/audio-output/"><cite>Audio Output Devices API</cite></a>. 15 November 2021. CR. URL: <a href="https://www.w3.org/TR/audio-output/">https://www.w3.org/TR/audio-output/</a>
    <dt id="biblio-clipboard-apis">[CLIPBOARD-APIS]
    <dd>Gary Kacmarcik; Grisha Lyukshin. <a href="https://www.w3.org/TR/clipboard-apis/"><cite>Clipboard API and events</cite></a>. 6 August 2021. WD. URL: <a href="https://www.w3.org/TR/clipboard-apis/">https://www.w3.org/TR/clipboard-apis/</a>
+   <dt id="biblio-credential-management-1">[CREDENTIAL-MANAGEMENT-1]
+   <dd>Mike West. <a href="https://www.w3.org/TR/credential-management-1/"><cite>Credential Management Level 1</cite></a>. 17 January 2019. WD. URL: <a href="https://www.w3.org/TR/credential-management-1/">https://www.w3.org/TR/credential-management-1/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-encrypted-media">[ENCRYPTED-MEDIA]
@@ -2840,6 +3075,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-keyboard-lock">[KEYBOARD-LOCK]
    <dd><a href="https://wicg.github.io/keyboard-lock/"><cite>Keyboard Lock</cite></a>. cg-draft. URL: <a href="https://wicg.github.io/keyboard-lock/">https://wicg.github.io/keyboard-lock/</a>
+   <dt id="biblio-mediacapture-streams">[MEDIACAPTURE-STREAMS]
+   <dd>Cullen Jennings; et al. <a href="https://www.w3.org/TR/mediacapture-streams/"><cite>Media Capture and Streams</cite></a>. 16 December 2021. CR. URL: <a href="https://www.w3.org/TR/mediacapture-streams/">https://www.w3.org/TR/mediacapture-streams/</a>
    <dt id="biblio-navigation-timing">[NAVIGATION-TIMING]
    <dd>Zhiheng Wang. <a href="https://www.w3.org/TR/navigation-timing/"><cite>Navigation Timing</cite></a>. 17 December 2012. REC. URL: <a href="https://www.w3.org/TR/navigation-timing/">https://www.w3.org/TR/navigation-timing/</a>
    <dt id="biblio-navigation-timing-2">[NAVIGATION-TIMING-2]
@@ -2854,14 +3091,22 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Vincent Scheib. <a href="https://www.w3.org/TR/pointerlock/"><cite>Pointer Lock</cite></a>. 27 October 2016. REC. URL: <a href="https://www.w3.org/TR/pointerlock/">https://www.w3.org/TR/pointerlock/</a>
    <dt id="biblio-presentation-api">[PRESENTATION-API]
    <dd>Mark Foltz; Dominik Röttsches. <a href="https://www.w3.org/TR/presentation-api/"><cite>Presentation API</cite></a>. 5 November 2020. CR. URL: <a href="https://www.w3.org/TR/presentation-api/">https://www.w3.org/TR/presentation-api/</a>
+   <dt id="biblio-push-api">[PUSH-API]
+   <dd>Peter Beverloo; Martin Thomson. <a href="https://www.w3.org/TR/push-api/"><cite>Push API</cite></a>. 3 November 2021. WD. URL: <a href="https://www.w3.org/TR/push-api/">https://www.w3.org/TR/push-api/</a>
    <dt id="biblio-referrer-policy">[REFERRER-POLICY]
    <dd>Jochen Eisinger; Emily Stark. <a href="https://www.w3.org/TR/referrer-policy/"><cite>Referrer Policy</cite></a>. 26 January 2017. CR. URL: <a href="https://www.w3.org/TR/referrer-policy/">https://www.w3.org/TR/referrer-policy/</a>
+   <dt id="biblio-screen-capture">[SCREEN-CAPTURE]
+   <dd>Martin Thomson; et al. <a href="https://www.w3.org/TR/screen-capture/"><cite>Screen Capture</cite></a>. 2 December 2021. WD. URL: <a href="https://www.w3.org/TR/screen-capture/">https://www.w3.org/TR/screen-capture/</a>
    <dt id="biblio-screen-orientation">[SCREEN-ORIENTATION]
    <dd>Mounir Lamouri; Marcos Caceres; Johanna Herman. <a href="https://www.w3.org/TR/screen-orientation/"><cite>The Screen Orientation API</cite></a>. 6 September 2021. WD. URL: <a href="https://www.w3.org/TR/screen-orientation/">https://www.w3.org/TR/screen-orientation/</a>
    <dt id="biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]
    <dd>Kenneth Christiansen; Marcos Caceres; Raphael Kubo da Costa. <a href="https://www.w3.org/TR/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. 7 December 2021. WD. URL: <a href="https://www.w3.org/TR/screen-wake-lock/">https://www.w3.org/TR/screen-wake-lock/</a>
+   <dt id="biblio-storage">[STORAGE]
+   <dd>Anne van Kesteren. <a href="https://storage.spec.whatwg.org/"><cite>Storage Standard</cite></a>. Living Standard. URL: <a href="https://storage.spec.whatwg.org/">https://storage.spec.whatwg.org/</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
+   <dt id="biblio-web-bluetooth">[WEB-BLUETOOTH]
+   <dd>Jeffrey Yasskin. <a href="https://webbluetoothcg.github.io/web-bluetooth/"><cite>Web Bluetooth</cite></a>. Draft Community Group Report. URL: <a href="https://webbluetoothcg.github.io/web-bluetooth/">https://webbluetoothcg.github.io/web-bluetooth/</a>
    <dt id="biblio-web-nfc">[WEB-NFC]
    <dd><a href="https://w3c.github.io/web-nfc/"><cite>Web NFC API</cite></a>. ED. URL: <a href="https://w3c.github.io/web-nfc/">https://w3c.github.io/web-nfc/</a>
    <dt id="biblio-web-share">[WEB-SHARE]
@@ -2870,6 +3115,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
    <dt id="biblio-webmidi">[WEBMIDI]
    <dd>Chris Wilson; Jussi Kalliokoski. <a href="https://www.w3.org/TR/webmidi/"><cite>Web MIDI API</cite></a>. 17 March 2015. WD. URL: <a href="https://www.w3.org/TR/webmidi/">https://www.w3.org/TR/webmidi/</a>
+   <dt id="biblio-webusb">[WEBUSB]
+   <dd><a href="https://wicg.github.io/webusb/"><cite>WebUSB API</cite></a>. cg-draft. URL: <a href="https://wicg.github.io/webusb/">https://wicg.github.io/webusb/</a>
+   <dt id="biblio-webxr">[WEBXR]
+   <dd>Brandon Jones; Manish Goregaokar; Rik Cabanier. <a href="https://www.w3.org/TR/webxr/"><cite>WebXR Device API</cite></a>. 24 December 2021. WD. URL: <a href="https://www.w3.org/TR/webxr/">https://www.w3.org/TR/webxr/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
@@ -2953,7 +3202,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-prerendering-browsing-context③⑧">7.3.9. Battery Status API</a>
     <li><a href="#ref-for-prerendering-browsing-context③⑨">7.3.10. Screen Orientation API</a>
     <li><a href="#ref-for-prerendering-browsing-context④⓪">7.3.11. Gamepad</a> <a href="#ref-for-prerendering-browsing-context④①">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context④②">7.4. Implicitly restricted APIs</a>
+    <li><a href="#ref-for-prerendering-browsing-context④②">7.3.14. Media Capture and Streams</a>
+    <li><a href="#ref-for-prerendering-browsing-context④③">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-document-prerendering">
@@ -3047,6 +3297,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering⑧">7.3.8. Web NFC</a>
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering⑨">7.3.10. Screen Orientation API</a>
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①⓪">7.3.12. Encrypted Media Extensions</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①①">7.3.14. Media Capture and Streams</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①②">7.3.15. Audio Output Devices API</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①③">7.3.16. Push API</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①④">7.3.17. Background Fetch</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①⑤">7.3.18. Storage API</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①⑥">7.3.19. Screen Capture</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①⑦">7.3.20. WebUSB API</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①⑧">7.3.21. Web Bluetooth</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering①⑨">7.3.22. WebHID API</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering②⓪">7.3.23. WebXR Device API</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering②①">7.3.24. Credential Manamgenet</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="post-prerendering-activation-geolocation-watch-process-id">
