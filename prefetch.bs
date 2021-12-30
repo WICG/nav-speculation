@@ -118,11 +118,18 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
         1. If |response|'s [=response/URL=]'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/URL=], then set |hasCrossOriginRedirects| to true.
         1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
+        1. If |request|'s [=request/reserved client=] is not null and [=response/URL=]' [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
+            1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
+            1. Set |request|'s [=request/reserved client=] to null.
+        1. If |request|'s [=request/reserved client=] is null, then:
+            1. Let |topLevelCreationURL| be |response|'s [=response/URL=].
+            1. Let |topLevelOrigin| be null.
+            1. If |browsingContext| is not a [=top-level browsing context=], then:
+                1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
+                1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
+            1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
         1. If |browsingContext| is a [=top-level browsing context=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-
-                TODO: this is not the right reserved client
-
             1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
 
                 TODO: Need to figure out how best to bail here.
