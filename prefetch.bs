@@ -117,7 +117,6 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     1. [=list/For each=] |response| in |record|'s [=prefetch record/redirect chain=]:
         1. If |response|'s [=response/URL=]'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/URL=], then set |hasCrossOriginRedirects| to true.
         1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
-        1. TODO: can we use |response|'s [=response/URL=] or [=response/URL list=] here instead of a request's, or do we really need the requests too?
         1. Set |responseOrigin| to the result of [=determining the origin=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
         1. If |browsingContext| is a [=top-level browsing context=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
