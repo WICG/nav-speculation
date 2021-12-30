@@ -115,6 +115,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 <div algorithm="perform prefetch response checks">
     To <dfn export>perform prefetch response checks</dfn> given a [=request=] |request|, [=prefetch record=] |record|, two [=browsing contexts=] |sourceBrowsingContext| and |browsingContext|, [=sandboxing flag set=] |sandboxFlags|, and an [=origin=] |incumbentNavigationOrigin|, perform the following steps.
 
+    1. TODO: need |navigationId|, |resultPolicyContainer|, |historyHandling|
     1. Let |responseOrigin| be null.
     1. Let |responseCOOP| be null.
     1. Let |currentContextIsSource| be the result of whether |browsingContext|'s [=active document=] is [=same origin=] with |sourceBrowsingContext|'s [=active document=].
@@ -139,7 +140,10 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
             1. [=Assert=]: If |sandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
-    1. TODO: Just go ahead and make navigate params and run [=process a navigate response=].
+    1. TODO: Do we have to do something to update request to reflect the redirects to the final response?
+    1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |record|'s [=prefetch record/response=], [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
+    1. Return |navigationParams|.
+    1. TODO: Someone must then call [=process a navigate response=].
 
 </div>
 
