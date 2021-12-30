@@ -140,11 +140,9 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
             1. [=Assert=]: If |sandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
-    1. TODO: Do we have to do something to update request to reflect the redirects to the final response?
+    1. Set |request|'s [=request/URL list=] to |record|'s [=prefetch record/redirect chain=].
     1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |record|'s [=prefetch record/response=], [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
     1. Return |navigationParams|.
-    1. TODO: Someone must then call [=process a navigate response=].
-
 </div>
 
 <h2 id="html-patches">HTML Patches</h2>
@@ -244,6 +242,16 @@ Given this, the non-prefetch case becomes:
     1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |response|'s [=response/URL=], |historyPolicyContainer|, |initiatorPolicyContainer|, null, and |responsePolicyContainer|.
     1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |response|, [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
     1. Run [=process a navigate response=] with |navigationType|, |allowedToDownload|, |hasTransientActivation|, and |navigationParams|.
+</div>
+
+Insert the following steps below the step that sets the request's [=request/destination=]:
+
+<div algorithm="process a navigate fetch patch">
+    1. Let |prefetchRecord| be the result of [=finding a matching prefetch response=] given |browsingContext|'s [=active document=], |request|'s [=request/URL=], |request|'s [=request/referrer policy=], and |sandboxFlags|.
+    1. If |prefetchRecord| is not null, then:
+        1. Let |navigationParams| be the result of [=performing prefetch response checks=] given |request|, |prefetchRecord|, <var ignore>sourceBrowsingContext</var>, |browsingContext|, |sandboxFlags|, and <var ignore>incumbentNavigationOrigin</var>.
+        1. [=Process a navigate response=] with <var ignore>navigationType</var>, <var ignore>allowedToDownload</var>, <var ignore>hasTransientActivation</var>, and |navigationParams|.
+        1. Return.
 </div>
 
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
