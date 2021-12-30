@@ -113,9 +113,8 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 </div>
 
 <div algorithm="perform prefetch response checks">
-    To <dfn export>perform prefetch response checks</dfn> given a [=request=] |request|, [=prefetch record=] |record|, two [=browsing contexts=] |sourceBrowsingContext| and |browsingContext|, [=sandboxing flag set=] |sandboxFlags|, and an [=origin=] |incumbentNavigationOrigin|, perform the following steps.
+    To <dfn export>perform prefetch response checks</dfn> given a [=navigation id=] |navigationId|, a [=request=] |request|, [=prefetch record=] |record|, two [=browsing contexts=] |sourceBrowsingContext| and |browsingContext|, [=sandboxing flag set=] |sandboxFlags|, two [=policy containers=] |historyPolicyContainer| and |initiatorPolicyContainer|, an [=origin=] |incumbentNavigationOrigin|, and a [=history handling behavior=] |historyHandling|, perform the following steps.
 
-    1. TODO: need |navigationId|, |resultPolicyContainer|, |historyHandling|
     1. Let |responseOrigin| be null.
     1. Let |responseCOOP| be null.
     1. Let |currentContextIsSource| be the result of whether |browsingContext|'s [=active document=] is [=same origin=] with |sourceBrowsingContext|'s [=active document=].
@@ -141,6 +140,8 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
             1. [=Assert=]: If |sandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
     1. Set |request|'s [=request/URL list=] to |record|'s [=prefetch record/redirect chain=].
+    1. Let |responsePolicyContainer| be the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
+    1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |response|'s [=response/URL=], |historyPolicyContainer|, |initiatorPolicyContainer|, null, and |responsePolicyContainer|.
     1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |record|'s [=prefetch record/response=], [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
     1. Return |navigationParams|.
 </div>
@@ -249,7 +250,7 @@ Insert the following steps below the step that sets the request's [=request/dest
 <div algorithm="process a navigate fetch patch">
     1. Let |prefetchRecord| be the result of [=finding a matching prefetch response=] given |browsingContext|'s [=active document=], |request|'s [=request/URL=], |request|'s [=request/referrer policy=], and |sandboxFlags|.
     1. If |prefetchRecord| is not null, then:
-        1. Let |navigationParams| be the result of [=performing prefetch response checks=] given |request|, |prefetchRecord|, <var ignore>sourceBrowsingContext</var>, |browsingContext|, |sandboxFlags|, and <var ignore>incumbentNavigationOrigin</var>.
+        1. Let |navigationParams| be the result of [=performing prefetch response checks=] given <var ignore>navigationId</var>, |request|, |prefetchRecord|, <var ignore>sourceBrowsingContext</var>, |browsingContext|, |sandboxFlags|, <var ignore>historyPolicyContainer</var>, <var ignore>initiatorPolicyContainer</var>, <var ignore>incumbentNavigationOrigin</var>, and <var ignore>historyHandling</var>.
         1. [=Process a navigate response=] with <var ignore>navigationType</var>, <var ignore>allowedToDownload</var>, <var ignore>hasTransientActivation</var>, and |navigationParams|.
         1. Return.
 </div>
