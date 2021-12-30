@@ -53,6 +53,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: cross-origin opener policy; url: coop-enforcement-coop
         text: current context is navigation source; url: coop-enforcement-source
       text: determine navigation params policy container; url: determining-navigation-params-policy-container
+      text: determining the creation sandboxing flags; url: determining-the-creation-sandboxing-flags
       text: enforce a response's cross-origin opener policy; url: coop-enforce
       text: obtain a cross-origin opener policy; url: obtain-coop
       text: sandboxing flags; for: browsing context; url: concept-bc-sandboxing-flags
@@ -71,6 +72,7 @@ Each {{Document}} has a <dfn export>prefetch buffer</dfn>, which is a [=list=] o
 A <dfn>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
+* <dfn export for="prefetch record">sandbox flags present</dfn>, a boolean
 * <dfn export for="prefetch record">redirect chain</dfn>, a [=list=] of [=responses=]
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}}
 
@@ -81,22 +83,27 @@ A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the 
 The user agent may remove elements from the [=prefetch buffer=] even if they are not expired, e.g., due to resource constraints. Since records with expiry times in the past are never returned, they can be removed with no observable consequences.
 
 <div algorithm="store a prefetch record">
-    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=list=] of [=responses=] |redirectChain|, perform the following steps.
+    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, [=sandboxing flag set=] |sandboxFlags|, and [=list=] of [=responses=] |redirectChain|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
     1. [=list/Remove=] all elements whose [=prefetch record/URL=] equals |url| and [=prefetch record/referrer policy=] equals |referrerPolicy| from |document|'s [=prefetch buffer=].
-    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/redirect chain=] |redirectChain| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
+    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/sandbox flags present=] true if |sandboxFlags| is not empty and false otherwise, [=prefetch record/redirect chain=] |redirectChain| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
 </div>
 
 <div algorithm="find a matching prefetch response">
-    To <dfn export>find a matching prefetch response</dfn> given a {{Document}} |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+    To <dfn export>find a matching prefetch response</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. [=list/For each=] |record| of |document|'s [=prefetch buffer=]:
         1. If |record|'s [=prefetch record/URL=] is not equal to |url| or |record|'s [=prefetch record/referrer policy=] is not equal to |referrerPolicy|, then [=iteration/continue=].
+        1. If |record|'s [=prefetch record/sandbox flags present=] is false and |sandboxFlags| is not empty, then [=iteration/continue=].
+
+            <div class="note">
+              Strictly speaking, it would still be possible for this to be valid if sandbox flags have been added to the container since prefetch but those flags would not cause an error due to cross origin opener policy. This is expected to be rare and so isn't handled.
+            </div>
         1. [=list/Remove=] |record| from |document|'s [=prefetch buffer=].
         1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
         1. Return |record|.
@@ -127,15 +134,10 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
             1. If |browsingContext| is not a [=top-level browsing context=], then:
                 1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
                 1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
-            1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+            1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |response|'s [=response/URL=], [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
         1. If |browsingContext| is a [=top-level browsing context=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-            1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
-
-                TODO: Need to figure out how best to bail here.
-
-                <div class="note">This results in a network error as one cannot simultaneously provide a clean slate to a response using cross-origin opener policy and sandbox the result of navigating to that response.</div>
-
+            1. [=Assert=]: If |sandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
     1. TODO: Just go ahead and make navigate params and run [=process a navigate response=].
 
@@ -252,6 +254,7 @@ These algorithms are based on [=process a navigate fetch=].
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
     1. Let |browsingContext| be {{Document}}'s [=Document/browsing context=].
+    1. Let |sandboxFlags| be the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |request| be a [=request=] as follows:
 
         :  [=request/URL=]
@@ -288,7 +291,8 @@ These algorithms are based on [=process a navigate fetch=].
         1. Otherwise, return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
-        1. TODO: sandbox flags
+        1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
+        1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
         1. [=list/Append=] |response| to |redirectChain|.
 
             <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred.</div>
@@ -299,7 +303,7 @@ These algorithms are based on [=process a navigate fetch=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
     1. If |response| is a [=network error=], then return.
     1. [=Assert=]: |response| is the last element of |redirectChain|.
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |redirectChain|.
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags| and |redirectChain|.
 </div>
 
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
@@ -310,6 +314,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. If |referrerPolicy| is not in the [=list of sufficiently strict speculative navigation referrer policies=], then return.
     1. Let |browsingContext| be {{Document}}'s [=Document/browsing context=].
+    1. Let |sandboxFlags| be the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |isolationOrigin| be a new [=opaque origin=].
 
         <div class="note">This is used to ensure a distinct network partition key is used.</div>
@@ -356,7 +361,8 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. Return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
-        1. TODO: sandbox flags
+        1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
+        1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
         1. [=list/Append=] |response| to |redirectChain|.
 
             <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred.</div>
@@ -370,7 +376,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
         <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
     1. [=Assert=]: |response| is the last element of |redirectChain|.
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy| and |redirectChain|.
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags| and |redirectChain|.
 
     <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
