@@ -90,8 +90,8 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/sandbox flags present=] true if |sandboxFlags| is not empty and false otherwise, [=prefetch record/redirect chain=] |redirectChain| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
 </div>
 
-<div algorithm="find a matching prefetch response">
-    To <dfn export>find a matching prefetch response</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+<div algorithm="find a matching prefetch record">
+    To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
@@ -246,7 +246,7 @@ Given this, the non-prefetch case becomes:
 Insert the following steps below the step that sets the request's [=request/destination=]:
 
 <div algorithm="process a navigate fetch patch">
-    1. Let |prefetchRecord| be the result of [=finding a matching prefetch response=] given |browsingContext|'s [=active document=], |request|'s [=request/URL=], |request|'s [=request/referrer policy=], and |sandboxFlags|.
+    1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given |browsingContext|'s [=active document=], |request|'s [=request/URL=], |request|'s [=request/referrer policy=], and |sandboxFlags|.
     1. If |prefetchRecord| is not null, then:
         1. Let |navigationParams| be the result of [=performing prefetch response checks=] given <var ignore>navigationId</var>, |request|, |prefetchRecord|, <var ignore>sourceBrowsingContext</var>, |browsingContext|, |sandboxFlags|, <var ignore>historyPolicyContainer</var>, <var ignore>initiatorPolicyContainer</var>, <var ignore>incumbentNavigationOrigin</var>, and <var ignore>historyHandling</var>.
         1. [=Process a navigate response=] with <var ignore>navigationType</var>, <var ignore>allowedToDownload</var>, <var ignore>hasTransientActivation</var>, and |navigationParams|.
