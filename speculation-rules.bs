@@ -23,6 +23,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: webappapis.html
       text: script; url: concept-script
+spec: nav-speculation; urlPrefix: prefetch.html
+  type: dfn
+    text: prefetch; url: prefetch
 </pre>
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -204,8 +207,7 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
     1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
       1. Let |requiresAnonymousClientIPWhenCrossOrigin| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", and false otherwise.
       1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. The user agent may prefetch |url| given |requiresAnonymousClientIPWhenCrossOrigin|.
-           <p class="issue">TODO: expand this to actually elaborate on how prefetch works, once initiated, and to incorporate the |requiresAnonymousClientIPWhenCrossOrigin| flag. We may wish to include language about when the UA should deduplicate requests.
+        1. The user agent may [=prefetch=] |url| given |document|, |url| and "`strict-origin-when-cross-origin`". If |requiresAnonymousClientIPWhenCrossOrigin| is true, it must not do so unless it can obscure the user's client IP address for any request for a URL whose [=url/origin=] is not [=same origin=] to |document|'s [=Document/origin=].
 </div>
 
 <p class="issue">
