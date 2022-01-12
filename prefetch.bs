@@ -401,7 +401,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     To <dfn export>prefetch</dfn> given a {{Document}} |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
 
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
-    1. Let |topLevelOrigin| be |document|'s [=relevant settings object=]'s [=environment/top-level origin=] if |document|'s [=Document/browsing context=] is not a [=top-level browsing context=], and |url|'s [=origin=] otherwise.
+    1. Let |topLevelOrigin| be |url|'s [=url/origin=] if |document|'s [=Document/browsing context=] is a [=top-level browsing context=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
     1. Let |topLevelSite| be the result of [=obtaining a site=], given |topLevelOrigin|.
     1. Let |secondKey| be null or an [=implementation-defined=] value.
     1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document|, |url| and |referrerPolicy|.

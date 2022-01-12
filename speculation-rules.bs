@@ -208,6 +208,8 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
       1. Let |requiresAnonymousClientIPWhenCrossOrigin| be true if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", and false otherwise.
       1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. The user agent may [=prefetch=] |url| given |document|, |url| and "`strict-origin-when-cross-origin`". If |requiresAnonymousClientIPWhenCrossOrigin| is true, it must not do so unless it can obscure the user's client IP address for any request for a URL whose [=url/origin=] is not [=same origin=] to |document|'s [=Document/origin=].
+
+            <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
 </div>
 
 <p class="issue">
