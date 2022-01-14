@@ -407,5 +407,11 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document|, |url| and |referrerPolicy|.
     1. Otherwise, [=uncredentialed prefetch=] given |document|, |url| and |referrerPolicy|.
 
-    <div class="note">This determines whether the navigation would use the same network partition key. If it would, the prefetch is restricted to the same partition. Otherwise it is uncredentialed.</div>
+    <div class="note">
+      This determines whether the navigation would use the same network partition key.
+
+      If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
+
+      Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.
+    </div>
 </div>
