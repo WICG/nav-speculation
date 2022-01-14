@@ -396,3 +396,22 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
     <div class="issue">Further review is needed of the cookies-present handling and its interaction with redirects and caches.</div>
 </div>
+
+<div algorithm>
+    To <dfn export>prefetch</dfn> given a {{Document}} |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+
+    1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
+    1. Let |topLevelOrigin| be |url|'s [=url/origin=] if |document|'s [=Document/browsing context=] is a [=top-level browsing context=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
+    1. Let |topLevelSite| be the result of [=obtaining a site=], given |topLevelOrigin|.
+    1. Let |secondKey| be null or an [=implementation-defined=] value.
+    1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document|, |url| and |referrerPolicy|.
+    1. Otherwise, [=uncredentialed prefetch=] given |document|, |url| and |referrerPolicy|.
+
+    <div class="note">
+      This determines whether the navigation would use the same network partition key.
+
+      If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
+
+      Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.
+    </div>
+</div>
