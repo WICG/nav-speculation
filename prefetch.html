@@ -4,7 +4,7 @@
   <title>Prefetch</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version cace53f8c, updated Tue Dec 7 12:12:54 2021 -0800" name="generator">
+  <meta content="Bikeshed version 2e3c4c68b, updated Fri Jan 14 14:49:00 2022 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prefetch.html" rel="canonical">
 <style>/* style-autolinks */
 
@@ -461,7 +461,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-01-11">11 January 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-01-14">14 January 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -848,7 +848,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>These algorithms are based on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch①">process a navigate fetch</a>.</p>
    <p class="issue" id="issue-1ea0021d"><a class="self-link" href="#issue-1ea0021d"></a>Check Service Worker integration</p>
    <div class="algorithm" data-algorithm="partitioned prefetch">
-     To <dfn data-dfn-type="dfn" data-export id="partitioned-prefetch">partitioned prefetch<a class="self-link" href="#partitioned-prefetch"></a></dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑦">URL</a> <var>url</var> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy③">referrer policy</a> <var>referrerPolicy</var>, perform the following steps. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="partitioned-prefetch">partitioned prefetch</dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑦">URL</a> <var>url</var> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy③">referrer policy</a> <var>referrerPolicy</var>, perform the following steps. 
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑥">Assert</a>: <var>url</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme②">scheme</a> is an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme②">HTTP(S) scheme</a>.</p>
@@ -1043,6 +1043,28 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <div class="issue" id="issue-414cc665"><a class="self-link" href="#issue-414cc665"></a>Update this to include the <code>`Supports-Loading-Mode`</code> mechanism to allow responses to continue despite cookies.</div>
     <div class="issue" id="issue-cdd1a31a"><a class="self-link" href="#issue-cdd1a31a"></a>Further review is needed of the cookies-present handling and its interaction with redirects and caches.</div>
    </div>
+   <div class="algorithm" data-algorithm="prefetch">
+     To <dfn data-dfn-type="dfn" data-export id="prefetch">prefetch<a class="self-link" href="#prefetch"></a></dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑦">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①①">URL</a> <var>url</var> and <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy⑤">referrer policy</a> <var>referrerPolicy</var>, perform the following steps. 
+    <ol>
+     <li data-md>
+      <p>Let <var>partitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key④">determining the network partition key</a> given <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object⑨">relevant settings object</a>.</p>
+     <li data-md>
+      <p>Let <var>topLevelOrigin</var> be <var>url</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin⑧">origin</a> if <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc②">browsing context</a> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing context</a>, and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object①⓪">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin⑤">top-level origin</a> otherwise.</p>
+     <li data-md>
+      <p>Let <var>topLevelSite</var> be the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site" id="ref-for-obtain-a-site">obtaining a site</a>, given <var>topLevelOrigin</var>.</p>
+     <li data-md>
+      <p>Let <var>secondKey</var> be null or an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> value.</p>
+     <li data-md>
+      <p>If <var>partitionKey</var> is equal to (<var>topLevelSite</var>, <var>secondKey</var>), then <a data-link-type="dfn" href="#partitioned-prefetch" id="ref-for-partitioned-prefetch">partitioned prefetch</a> given <var>document</var>, <var>url</var> and <var>referrerPolicy</var>.</p>
+     <li data-md>
+      <p>Otherwise, <a data-link-type="dfn" href="#uncredentialed-prefetch" id="ref-for-uncredentialed-prefetch①">uncredentialed prefetch</a> given <var>document</var>, <var>url</var> and <var>referrerPolicy</var>.</p>
+    </ol>
+    <div class="note" role="note">
+      This determines whether the navigation would use the same network partition key. 
+     <p>If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.</p>
+     <p>Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.</p>
+    </div>
+   </div>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -1054,6 +1076,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#partitioned-prefetch">partitioned prefetch</a><span>, in § 3</span>
    <li><a href="#perform-a-common-navigational-fetch">perform a common navigational fetch</a><span>, in § 2</span>
    <li><a href="#perform-prefetch-response-checks">perform prefetch response checks</a><span>, in § 1</span>
+   <li><a href="#prefetch">prefetch</a><span>, in § 3</span>
    <li><a href="#prefetch-buffer">prefetch buffer</a><span>, in § 1</span>
    <li><a href="#prefetch-record">prefetch record</a><span>, in § 1</span>
    <li><a href="#prefetch-record-redirect-chain">redirect chain</a><span>, in § 1</span>
@@ -1074,7 +1097,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://dom.spec.whatwg.org/#document">https://dom.spec.whatwg.org/#document</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-document">1. Concepts</a> <a href="#ref-for-document①">(2)</a> <a href="#ref-for-document②">(3)</a>
-    <li><a href="#ref-for-document③">3. Prefetch algorithms</a> <a href="#ref-for-document④">(2)</a> <a href="#ref-for-document⑤">(3)</a> <a href="#ref-for-document⑥">(4)</a>
+    <li><a href="#ref-for-document③">3. Prefetch algorithms</a> <a href="#ref-for-document④">(2)</a> <a href="#ref-for-document⑤">(3)</a> <a href="#ref-for-document⑥">(4)</a> <a href="#ref-for-document⑦">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-element-local-name">
@@ -1146,7 +1169,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-determine-the-network-partition-key">
    <a href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key">https://fetch.spec.whatwg.org/#determine-the-network-partition-key</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-determine-the-network-partition-key">3. Prefetch algorithms</a> <a href="#ref-for-determine-the-network-partition-key①">(2)</a> <a href="#ref-for-determine-the-network-partition-key②">(3)</a> <a href="#ref-for-determine-the-network-partition-key③">(4)</a>
+    <li><a href="#ref-for-determine-the-network-partition-key">3. Prefetch algorithms</a> <a href="#ref-for-determine-the-network-partition-key①">(2)</a> <a href="#ref-for-determine-the-network-partition-key②">(3)</a> <a href="#ref-for-determine-the-network-partition-key③">(4)</a> <a href="#ref-for-determine-the-network-partition-key④">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-fetch">
@@ -1534,6 +1557,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-obtain-coop②">3. Prefetch algorithms</a> <a href="#ref-for-obtain-coop③">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-obtain-a-site">
+   <a href="https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site">https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-obtain-a-site">3. Prefetch algorithms</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-origin-opaque">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque">https://html.spec.whatwg.org/multipage/origin.html#concept-origin-opaque</a><b>Referenced in:</b>
    <ul>
@@ -1590,7 +1619,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-relevant-settings-object">1. Concepts</a>
     <li><a href="#ref-for-relevant-settings-object①">2. HTML Patches</a> <a href="#ref-for-relevant-settings-object②">(2)</a> <a href="#ref-for-relevant-settings-object③">(3)</a> <a href="#ref-for-relevant-settings-object④">(4)</a>
-    <li><a href="#ref-for-relevant-settings-object⑤">3. Prefetch algorithms</a> <a href="#ref-for-relevant-settings-object⑥">(2)</a> <a href="#ref-for-relevant-settings-object⑦">(3)</a> <a href="#ref-for-relevant-settings-object⑧">(4)</a>
+    <li><a href="#ref-for-relevant-settings-object⑤">3. Prefetch algorithms</a> <a href="#ref-for-relevant-settings-object⑥">(2)</a> <a href="#ref-for-relevant-settings-object⑦">(3)</a> <a href="#ref-for-relevant-settings-object⑧">(4)</a> <a href="#ref-for-relevant-settings-object⑨">(5)</a> <a href="#ref-for-relevant-settings-object①⓪">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-request">
@@ -1654,6 +1683,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-top-level-browsing-context">1. Concepts</a> <a href="#ref-for-top-level-browsing-context①">(2)</a>
     <li><a href="#ref-for-top-level-browsing-context②">2. HTML Patches</a> <a href="#ref-for-top-level-browsing-context③">(2)</a>
+    <li><a href="#ref-for-top-level-browsing-context④">3. Prefetch algorithms</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-environment-top-level-creation-url">
@@ -1669,7 +1699,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-concept-environment-top-level-origin">1. Concepts</a> <a href="#ref-for-concept-environment-top-level-origin①">(2)</a>
     <li><a href="#ref-for-concept-environment-top-level-origin②">2. HTML Patches</a> <a href="#ref-for-concept-environment-top-level-origin③">(2)</a>
-    <li><a href="#ref-for-concept-environment-top-level-origin④">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-concept-environment-top-level-origin④">3. Prefetch algorithms</a> <a href="#ref-for-concept-environment-top-level-origin⑤">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-coop-enforcement-url">
@@ -1724,6 +1754,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-list-iterate">1. Concepts</a> <a href="#ref-for-list-iterate①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-implementation-defined">
+   <a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-implementation-defined">3. Prefetch algorithms</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-is-empty">
@@ -1781,7 +1817,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy">https://w3c.github.io/webappsec-referrer-policy/#referrer-policy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-referrer-policy">1. Concepts</a> <a href="#ref-for-referrer-policy①">(2)</a> <a href="#ref-for-referrer-policy②">(3)</a>
-    <li><a href="#ref-for-referrer-policy③">3. Prefetch algorithms</a> <a href="#ref-for-referrer-policy④">(2)</a>
+    <li><a href="#ref-for-referrer-policy③">3. Prefetch algorithms</a> <a href="#ref-for-referrer-policy④">(2)</a> <a href="#ref-for-referrer-policy⑤">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-fragment">
@@ -1795,7 +1831,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-concept-url-origin">1. Concepts</a> <a href="#ref-for-concept-url-origin①">(2)</a> <a href="#ref-for-concept-url-origin②">(3)</a>
     <li><a href="#ref-for-concept-url-origin③">2. HTML Patches</a> <a href="#ref-for-concept-url-origin④">(2)</a> <a href="#ref-for-concept-url-origin⑤">(3)</a> <a href="#ref-for-concept-url-origin⑥">(4)</a>
-    <li><a href="#ref-for-concept-url-origin⑦">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-concept-url-origin⑦">3. Prefetch algorithms</a> <a href="#ref-for-concept-url-origin⑧">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
@@ -1810,7 +1846,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-concept-url">1. Concepts</a> <a href="#ref-for-concept-url①">(2)</a> <a href="#ref-for-concept-url②">(3)</a>
     <li><a href="#ref-for-concept-url③">2. HTML Patches</a> <a href="#ref-for-concept-url④">(2)</a> <a href="#ref-for-concept-url⑤">(3)</a> <a href="#ref-for-concept-url⑥">(4)</a>
-    <li><a href="#ref-for-concept-url⑦">3. Prefetch algorithms</a> <a href="#ref-for-concept-url⑧">(2)</a> <a href="#ref-for-concept-url⑨">(3)</a> <a href="#ref-for-concept-url①⓪">(4)</a>
+    <li><a href="#ref-for-concept-url⑦">3. Prefetch algorithms</a> <a href="#ref-for-concept-url⑧">(2)</a> <a href="#ref-for-concept-url⑨">(3)</a> <a href="#ref-for-concept-url①⓪">(4)</a> <a href="#ref-for-concept-url①①">(5)</a>
    </ul>
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
@@ -1904,6 +1940,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-coop-enforcement-bcg-switch">needs a browsing context group switch</span>
      <li><span class="dfn-paneled" id="term-for-networking-task-source">networking task source</span>
      <li><span class="dfn-paneled" id="term-for-obtain-coop">obtain a cross-origin opener policy</span>
+     <li><span class="dfn-paneled" id="term-for-obtain-a-site">obtain a site</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin-opaque">opaque origin</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-origin">origin <small>(for navigation params)</small></span>
      <li><span class="dfn-paneled" id="term-for-parent-browsing-context">parent browsing context</span>
@@ -1936,6 +1973,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-iteration-break">break</span>
      <li><span class="dfn-paneled" id="term-for-iteration-continue">continue</span>
      <li><span class="dfn-paneled" id="term-for-list-iterate">for each</span>
+     <li><span class="dfn-paneled" id="term-for-implementation-defined">implementation-defined</span>
      <li><span class="dfn-paneled" id="term-for-list-is-empty">is empty</span>
      <li><span class="dfn-paneled" id="term-for-struct-item">item</span>
      <li><span class="dfn-paneled" id="term-for-list">list</span>
@@ -2062,6 +2100,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-perform-a-common-navigational-fetch①">3. Prefetch algorithms</a> <a href="#ref-for-perform-a-common-navigational-fetch②">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="partitioned-prefetch">
+   <b><a href="#partitioned-prefetch">#partitioned-prefetch</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-partitioned-prefetch">3. Prefetch algorithms</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="list-of-sufficiently-strict-speculative-navigation-referrer-policies">
    <b><a href="#list-of-sufficiently-strict-speculative-navigation-referrer-policies">#list-of-sufficiently-strict-speculative-navigation-referrer-policies</a></b><b>Referenced in:</b>
    <ul>
@@ -2071,7 +2115,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="uncredentialed-prefetch">
    <b><a href="#uncredentialed-prefetch">#uncredentialed-prefetch</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-uncredentialed-prefetch">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-uncredentialed-prefetch">3. Prefetch algorithms</a> <a href="#ref-for-uncredentialed-prefetch①">(2)</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
