@@ -61,6 +61,11 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: process response; url: process-response
     text: network partition key; url: network-partition-key
+spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
+  type: dfn
+    text: Item; url: name-items
+    text: List; url: name-lists
+    text: Token; url: name-tokens
 </pre>
 
 <h2 id="concepts">Concepts</h2>
@@ -290,6 +295,8 @@ These algorithms are based on [=process a navigate fetch=].
                 <div class="note">
                     Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
                 </div>
+
+                <div class="issue">TODO: Emit the "`anonymous-client-ip`" parameter when applicable.</div>
     1. Let |redirectChain| be an empty [=list=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |navigationType| is "`other`".
@@ -358,6 +365,8 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
                     Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
                 </div>
 
+                <div class="issue">TODO: Emit the "`anonymous-client-ip`" parameter when applicable.</div>
+
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
     1. Let |redirectChain| be an empty [=list=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
@@ -415,3 +424,32 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
       Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.
     </div>
 </div>
+
+<h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
+
+The <dfn http-header>`` `Sec-Purpose` ``</dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
+
+The header field is an [[RFC8941]] Structured Header whose value must be a a <a spec="RFC8941">List</a>. Its ABNF is:
+
+```
+Sec-Purpose = sf-list
+```
+
+It may contain a <a spec="RFC8941">Item</a> member which is the <a spec="RFC8941">Token</a> "`prefetch`". If so, this indicates the request's purpose is to download a resource it is anticipated will be fetched shortly.
+
+<div class="issue">TODO: Are there normative implications of this that should be specified here?</div>
+
+The following parameters are defined for the "`prefetch`" token:
+
+* A parameter whose key is "`anonymous-client-ip`".
+
+  If present with a value other than boolean false (`` `?0` `` in the field value), this parameter indicates that the prefetch request is being made using an anonymous client IP. Consequently, servers should not rely on it matching, or sharing a geographic location or network operator with, the client's IP address from which a non-prefetch request would have been made.
+
+  If a suitable response is not possible, for example because the resource depends on the client's geographic location, there is no other means of determining the location (e.g., the <a href="https://www.ietf.org/archive/id/draft-geohash-hint-00.html">Geohash client hint</a>), and no location-agnostic response is available, then the server should respond with an appropriate HTTP status code and response headers which mark the response as not suitable for caching.
+
+  <div class="note">
+    A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values.
+
+    This specification conforms to this advice; the [=partitioned prefetch=] and [=uncredentialed prefetch=] algorithms do not emit non-boolean values.
+  </div>
+
