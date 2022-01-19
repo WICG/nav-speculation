@@ -427,7 +427,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
 <h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
 
-The `` `Sec-Purpose` `` HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
+The <dfn http-header>`` `Sec-Purpose` ``</dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
 
 The header field is an [[RFC8941]] Structured Header whose value must be a a <a spec="RFC8941">List</a>. Its ABNF is:
 
@@ -443,7 +443,7 @@ The following parameters is defined for the "`prefetch`" member:
 
 * A parameter whose key is "`anonymous-client-ip`".
 
-  If present with a value other than boolean false, this parameter indicates that the prefetch request is being made using an anonymous client IP. Consequently, servers should not rely on it matching, or sharing a geographic location or network operator with, the client's IP address from which a non-prefetch request would have been made.
+  If present with a value other than boolean false (`` `?0` `` in the field value), this parameter indicates that the prefetch request is being made using an anonymous client IP. Consequently, servers should not rely on it matching, or sharing a geographic location or network operator with, the client's IP address from which a non-prefetch request would have been made.
 
   If a suitable response is not possible, for example because the resource depends on the client's geographic location, there is no other means of determining the location (e.g., the <a href="https://www.ietf.org/archive/id/draft-geohash-hint-00.html">Geohash client hint</a>), and no location-agnostic response is available, then the server should respond with an appropriate HTTP status code and response headers which mark the response as not suitable for caching.
 
