@@ -461,7 +461,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-01-14">14 January 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-01-19">19 January 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -500,6 +500,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#concepts"><span class="secno">1</span> <span class="content">Concepts</span></a>
     <li><a href="#html-patches"><span class="secno">2</span> <span class="content">HTML Patches</span></a>
     <li><a href="#prefetch-algorithms"><span class="secno">3</span> <span class="content">Prefetch algorithms</span></a>
+    <li><a href="#sec-purpose-header"><span class="secno">4</span> <span class="content">The <code>Sec-Purpose</code> HTTP request header</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
@@ -517,7 +518,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <main>
    <h2 class="heading settled" data-level="1" id="concepts"><span class="secno">1. </span><span class="content">Concepts</span><a class="self-link" href="#concepts"></a></h2>
    <p>In light of <a href="https://privacycg.github.io/storage-partitioning/">storage partitioning</a>, this specification defines prefetch for navigations which would occur within the same partition (for example, top-level navigations within the same site) and for navigations which would occur in a separate partition (for example, top-level navigations to a different site).</p>
-   <p>Each <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="prefetch-buffer">prefetch buffer</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> of <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record">prefetch records</a>.</p>
+   <p>Each <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="prefetch-buffer">prefetch buffer</dfn>, which is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists">list</a> of <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record">prefetch records</a>.</p>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="prefetch-record">prefetch record</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item">items</a>:</p>
    <ul>
     <li data-md>
@@ -527,14 +528,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-sandbox-flags-present">sandbox flags present</dfn>, a boolean</p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-redirect-chain">redirect chain</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">responses</a></p>
+     <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-redirect-chain">redirect chain</dfn>, a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists①">list</a> of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">responses</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-expiry-time">expiry time</dfn>, a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp">DOMHighResTimeStamp</a></code></p>
    </ul>
    <p>A <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a>'s <dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-response">response</dfn> is the last <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a> in its <a data-link-type="dfn" href="#prefetch-record-redirect-chain" id="ref-for-prefetch-record-redirect-chain">redirect chain</a>, or null if that list <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is empty</a>.</p>
    <p>The user agent may remove elements from the <a data-link-type="dfn" href="#prefetch-buffer" id="ref-for-prefetch-buffer">prefetch buffer</a> even if they are not expired, e.g., due to resource constraints. Since records with expiry times in the past are never returned, they can be removed with no observable consequences.</p>
    <div class="algorithm" data-algorithm="store a prefetch record">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="store-a-prefetch-record">store a prefetch record</dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>url</var>, <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#sandboxing-flag-set" id="ref-for-sandboxing-flag-set">sandboxing flag set</a> <var>sandboxFlags</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a> of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response②">responses</a> <var>redirectChain</var>, perform the following steps. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="store-a-prefetch-record">store a prefetch record</dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>url</var>, <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#sandboxing-flag-set" id="ref-for-sandboxing-flag-set">sandboxing flag set</a> <var>sandboxFlags</var>, and <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists②">list</a> of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response②">responses</a> <var>redirectChain</var>, perform the following steps. 
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert">Assert</a>: <var>document</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#fully-active" id="ref-for-fully-active">fully active</a>.</p>
@@ -591,7 +592,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>hasCrossOriginRedirects</var> be false.</p>
      <li data-md>
-      <p>Let <var>urlList</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>.</p>
+      <p>Let <var>urlList</var> be an empty <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists③">list</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> <var>response</var> in <var>record</var>’s <a data-link-type="dfn" href="#prefetch-record-redirect-chain" id="ref-for-prefetch-record-redirect-chain②">redirect chain</a>:</p>
       <ol>
@@ -889,10 +890,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p><code>`Sec-Purpose`</code>/<code>`prefetch`</code></p>
           <div class="note" role="note"> Implementations might also send vendor-specific headers, like Chromium’s <code>`Purpose`</code>/<code>`prefetch`</code>, Mozilla’s <code>`X-moz`</code>/<code>`prefetch`</code>, and WebKit’s <code>`X-Purpose`</code>/<code>`preview`</code>, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header. </div>
+          <div class="issue" id="issue-46cdb153"><a class="self-link" href="#issue-46cdb153"></a>TODO: Emit the "<code>anonymous-client-ip</code>" parameter when applicable.</div>
         </ul>
       </dl>
      <li data-md>
-      <p>Let <var>redirectChain</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a>.</p>
+      <p>Let <var>redirectChain</var> be an empty <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists④">list</a>.</p>
      <li data-md>
       <p>Let <var>shouldBlockNavigationRequest</var> be the following steps, given <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request⑧">request</a> <var>request</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a> <var>navigationType</var> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment" id="ref-for-environment⑥">environment</a> <var>environment</var>:</p>
       <ol>
@@ -986,12 +988,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p><code>`Sec-Purpose`</code>/<code>`prefetch`</code></p>
           <div class="note" role="note"> Implementations might also send vendor-specific headers, like Chromium’s <code>`Purpose`</code>/<code>`prefetch`</code>, Mozilla’s <code>`X-moz`</code>/<code>`prefetch`</code>, and WebKit’s <code>`X-Purpose`</code>/<code>`preview`</code>, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header. </div>
+          <div class="issue" id="issue-46cdb153①"><a class="self-link" href="#issue-46cdb153①"></a>TODO: Emit the "<code>anonymous-client-ip</code>" parameter when applicable.</div>
         </ul>
       </dl>
      <li data-md>
       <p>Let <var>originsWithConflictingCredentials</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set">ordered set</a>.</p>
      <li data-md>
-      <p>Let <var>redirectChain</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a>.</p>
+      <p>Let <var>redirectChain</var> be an empty <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists⑤">list</a>.</p>
      <li data-md>
       <p>Let <var>shouldBlockNavigationRequest</var> be the following steps, given <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①①">request</a> <var>request</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">string</a> <var>navigationType</var> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment" id="ref-for-environment⑧">environment</a> <var>environment</var>:</p>
       <ol>
@@ -1065,6 +1068,24 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p>Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.</p>
     </div>
    </div>
+   <h2 class="heading settled" data-level="4" id="sec-purpose-header"><span class="secno">4. </span><span class="content">The <code>Sec-Purpose</code> HTTP request header</span><a class="self-link" href="#sec-purpose-header"></a></h2>
+   <p>The <dfn data-dfn-type="http-header" data-export id="http-headerdef-sec-purpose"><code>`Sec-Purpose`</code><a class="self-link" href="#http-headerdef-sec-purpose"></a></dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.</p>
+   <p>The header field is an <a data-link-type="biblio" href="#biblio-rfc8941">[RFC8941]</a> Structured Header whose value must be a a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists⑥">List</a>. Its ABNF is:</p>
+<pre>Sec-Purpose = sf-list
+</pre>
+   <p>It may contain a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-items" id="ref-for-name-items">Item</a> member which is the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens">Token</a> "<code>prefetch</code>". If so, this indicates the request’s purpose is to download a resource it is anticipated will be fetched shortly.</p>
+   <div class="issue" id="issue-2e46aaff"><a class="self-link" href="#issue-2e46aaff"></a>TODO: Are there normative implications of this that should be specified here?</div>
+   <p>The following parameters are defined for the "<code>prefetch</code>" token:</p>
+   <ul>
+    <li data-md>
+     <p>A parameter whose key is "<code>anonymous-client-ip</code>".</p>
+     <p>If present with a value other than boolean false (<code>`?0`</code> in the field value), this parameter indicates that the prefetch request is being made using an anonymous client IP. Consequently, servers should not rely on it matching, or sharing a geographic location or network operator with, the client’s IP address from which a non-prefetch request would have been made.</p>
+     <p>If a suitable response is not possible, for example because the resource depends on the client’s geographic location, there is no other means of determining the location (e.g., the <a href="https://www.ietf.org/archive/id/draft-geohash-hint-00.html">Geohash client hint</a>), and no location-agnostic response is available, then the server should respond with an appropriate HTTP status code and response headers which mark the response as not suitable for caching.</p>
+     <div class="note" role="note">
+       A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values. 
+      <p>This specification conforms to this advice; the <a data-link-type="dfn" href="#partitioned-prefetch" id="ref-for-partitioned-prefetch①">partitioned prefetch</a> and <a data-link-type="dfn" href="#uncredentialed-prefetch" id="ref-for-uncredentialed-prefetch②">uncredentialed prefetch</a> algorithms do not emit non-boolean values.</p>
+     </div>
+   </ul>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -1083,6 +1104,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#prefetch-record-referrer-policy">referrer policy</a><span>, in § 1</span>
    <li><a href="#prefetch-record-response">response</a><span>, in § 1</span>
    <li><a href="#prefetch-record-sandbox-flags-present">sandbox flags present</a><span>, in § 1</span>
+   <li><a href="#http-headerdef-sec-purpose">`Sec-Purpose`</a><span>, in § 4</span>
    <li><a href="#store-a-prefetch-record">store a prefetch record</a><span>, in § 1</span>
    <li><a href="#uncredentialed-prefetch">uncredentialed prefetch</a><span>, in § 3</span>
    <li><a href="#prefetch-record-url">URL</a><span>, in § 1</span>
@@ -1774,13 +1796,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-struct-item">1. Concepts</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-list">
-   <a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list">1. Concepts</a> <a href="#ref-for-list①">(2)</a> <a href="#ref-for-list②">(3)</a> <a href="#ref-for-list③">(4)</a>
-    <li><a href="#ref-for-list④">3. Prefetch algorithms</a> <a href="#ref-for-list⑤">(2)</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-ordered-set">
    <a href="https://infra.spec.whatwg.org/#ordered-set">https://infra.spec.whatwg.org/#ordered-set</a><b>Referenced in:</b>
    <ul>
@@ -1818,6 +1833,26 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-referrer-policy">1. Concepts</a> <a href="#ref-for-referrer-policy①">(2)</a> <a href="#ref-for-referrer-policy②">(3)</a>
     <li><a href="#ref-for-referrer-policy③">3. Prefetch algorithms</a> <a href="#ref-for-referrer-policy④">(2)</a> <a href="#ref-for-referrer-policy⑤">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-name-items">
+   <a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-items">https://www.rfc-editor.org/rfc/rfc8941.html#name-items</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-name-items">4. The Sec-Purpose HTTP request header</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-name-lists">
+   <a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists">https://www.rfc-editor.org/rfc/rfc8941.html#name-lists</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-name-lists">1. Concepts</a> <a href="#ref-for-name-lists①">(2)</a> <a href="#ref-for-name-lists②">(3)</a> <a href="#ref-for-name-lists③">(4)</a>
+    <li><a href="#ref-for-name-lists④">3. Prefetch algorithms</a> <a href="#ref-for-name-lists⑤">(2)</a>
+    <li><a href="#ref-for-name-lists⑥">4. The Sec-Purpose HTTP request header</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-name-tokens">
+   <a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens">https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-name-tokens">4. The Sec-Purpose HTTP request header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-fragment">
@@ -1976,7 +2011,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-implementation-defined">implementation-defined</span>
      <li><span class="dfn-paneled" id="term-for-list-is-empty">is empty</span>
      <li><span class="dfn-paneled" id="term-for-struct-item">item</span>
-     <li><span class="dfn-paneled" id="term-for-list">list</span>
      <li><span class="dfn-paneled" id="term-for-ordered-set">ordered set</span>
      <li><span class="dfn-paneled" id="term-for-list-remove">remove</span>
      <li><span class="dfn-paneled" id="term-for-string">string</span>
@@ -1987,6 +2021,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[referrer-policy]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-referrer-policy">referrer policy</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[RFC8941]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-name-items">item</span>
+     <li><span class="dfn-paneled" id="term-for-name-lists">list</span>
+     <li><span class="dfn-paneled" id="term-for-name-tokens">token</span>
     </ul>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
@@ -2014,6 +2055,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-referrer-policy">[REFERRER-POLICY]
    <dd>Jochen Eisinger; Emily Stark. <a href="https://www.w3.org/TR/referrer-policy/"><cite>Referrer Policy</cite></a>. 26 January 2017. CR. URL: <a href="https://www.w3.org/TR/referrer-policy/">https://www.w3.org/TR/referrer-policy/</a>
+   <dt id="biblio-rfc8941">[RFC8941]
+   <dd>M. Nottingham; P-H. Kamp. <a href="https://www.rfc-editor.org/rfc/rfc8941"><cite>Structured Field Values for HTTP</cite></a>. February 2021. Proposed Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc8941">https://www.rfc-editor.org/rfc/rfc8941</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
   </dl>
@@ -2021,11 +2064,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <div style="counter-reset:issue">
    <div class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it’s unclear whether this is worthwhile. <a class="issue-return" href="#issue-34917491" title="Jump to section">↵</a></div>
    <div class="issue">Check Service Worker integration <a class="issue-return" href="#issue-1ea0021d" title="Jump to section">↵</a></div>
+   <div class="issue">TODO: Emit the "<code>anonymous-client-ip</code>" parameter when applicable. <a class="issue-return" href="#issue-46cdb153" title="Jump to section">↵</a></div>
    <div class="issue">It might be possible to "downgrade" to <a data-link-type="dfn" href="#uncredentialed-prefetch">uncredentialed prefetch</a> in this case. <a class="issue-return" href="#issue-a3686c91" title="Jump to section">↵</a></div>
+   <div class="issue">TODO: Emit the "<code>anonymous-client-ip</code>" parameter when applicable. <a class="issue-return" href="#issue-46cdb153①" title="Jump to section">↵</a></div>
    <div class="issue">This ends up setting the <code>`Cache-Control`</code> and <code>`Pragma`</code> request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#no-cache-prevent-cache-control">prevent no-cache cache-control header modification flag</a>. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies. <a class="issue-return" href="#issue-239df98e" title="Jump to section">↵</a></div>
    <div class="issue">This does not fully address cookie isolation or migration (somewhat complicated by <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> not dealing with it), and similar measures with authorization entries, TLS client certificates, and connection pools. This is currently complicated by the fact that even those that are covered by the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key">network partition key</a> are difficult to address while it’s not possible to further partition. <a class="issue-return" href="#issue-d45eff4c" title="Jump to section">↵</a></div>
    <div class="issue">Update this to include the <code>`Supports-Loading-Mode`</code> mechanism to allow responses to continue despite cookies. <a class="issue-return" href="#issue-414cc665" title="Jump to section">↵</a></div>
    <div class="issue">Further review is needed of the cookies-present handling and its interaction with redirects and caches. <a class="issue-return" href="#issue-cdd1a31a" title="Jump to section">↵</a></div>
+   <div class="issue">TODO: Are there normative implications of this that should be specified here? <a class="issue-return" href="#issue-2e46aaff" title="Jump to section">↵</a></div>
   </div>
   <aside class="dfn-panel" data-for="prefetch-buffer">
    <b><a href="#prefetch-buffer">#prefetch-buffer</a></b><b>Referenced in:</b>
@@ -2104,6 +2150,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#partitioned-prefetch">#partitioned-prefetch</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-partitioned-prefetch">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-partitioned-prefetch①">4. The Sec-Purpose HTTP request header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="list-of-sufficiently-strict-speculative-navigation-referrer-policies">
@@ -2116,6 +2163,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#uncredentialed-prefetch">#uncredentialed-prefetch</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-uncredentialed-prefetch">3. Prefetch algorithms</a> <a href="#ref-for-uncredentialed-prefetch①">(2)</a>
+    <li><a href="#ref-for-uncredentialed-prefetch②">4. The Sec-Purpose HTTP request header</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
