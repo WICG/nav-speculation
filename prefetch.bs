@@ -151,6 +151,20 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     1. Return |navigationParams|.
 </div>
 
+A <dfn export>prefetch IP anonymization policy</dfn> is either null or a [=cross-origin prefetch IP anonymization policy=].
+
+A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn export for="cross-origin prefetch IP anonymization policy">origin</dfn>, which is an [=origin=].
+
+<div algorithm>
+  A [=prefetch IP anonymization policy=] |policy| <dfn for="prefetch IP anonymization policy">requires anonymity</dfn> for [=request=] |request| if the following steps return true:
+
+  1. If |policy| is a [=cross-origin prefetch IP anonymization policy=]:
+      1. If |request|'s [=request/URL=]'s [=url/origin=] is the [=same origin|same=] as |policy|'s [=cross-origin prefetch IP anonymization policy/origin=], then return false.
+      1. Return true.
+  1. [=Assert=]: |policy| is null.
+  1. Return false.
+</div>
+
 <h2 id="html-patches">HTML Patches</h2>
 
 <div algorithm="perform a common navigational fetch">
@@ -264,7 +278,7 @@ These algorithms are based on [=process a navigate fetch=].
 <p class="issue">Check Service Worker integration</p>
 
 <div algorithm="partitioned prefetch">
-    To <dfn export>partitioned prefetch</dfn> given a {{Document}} |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+    To <dfn export>partitioned prefetch</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, and [=prefetch IP anonymization policy=] |anonymizationPolicy|, perform the following steps.
 
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
@@ -289,18 +303,22 @@ These algorithms are based on [=process a navigate fetch=].
         :  [=request/client=]
         :: |document|'s [=relevant settings object=]
         :  [=request/header list=]
-        ::
-            *  `` `Sec-Purpose` ``/`` `prefetch` ``
 
-                <div class="note">
-                    Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
-                </div>
-
-                <div class="issue">TODO: Emit the "`anonymous-client-ip`" parameter when applicable.</div>
     1. Let |redirectChain| be an empty [=list=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |navigationType| is "`other`".
         1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
+        1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> "`prefetch`".
+        1. If |anonymizationPolicy| [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
+            1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the "`prefetch`" token in |purpose|.
+            1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or return "`Blocked`".
+
+                <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
+        1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
+
+            <div class="note">
+                Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
+            </div>
         1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|.
         1. If |partitionKey| is not equal to |proposedPartitionKey|, then return "`Blocked`".
 
@@ -326,7 +344,7 @@ These algorithms are based on [=process a navigate fetch=].
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
 <div algorithm="uncredentialed prefetch">
-    To <dfn export>uncredentialed prefetch</dfn> given a {{Document}} |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+    To <dfn export>uncredentialed prefetch</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, and [=prefetch IP anonymization policy=] |anonymizationPolicy|, perform the following steps.
 
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. If |referrerPolicy| is not in the [=list of sufficiently strict speculative navigation referrer policies=], then return.
@@ -357,21 +375,23 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: "`no-store`"
         :  [=request/client=]
         :: |document|'s [=relevant settings object=]
-        :  [=request/header list=]
-        ::
-            *  `` `Sec-Purpose` ``/`` `prefetch` ``
-
-                <div class="note">
-                    Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
-                </div>
-
-                <div class="issue">TODO: Emit the "`anonymous-client-ip`" parameter when applicable.</div>
 
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
     1. Let |redirectChain| be an empty [=list=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |request|'s [=request/reserved client=] is |isolatedEnvironment| and not |environment|.
         1. [=Assert=]: |navigationType| is "`other`".
+        1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> "`prefetch`".
+        1. If |anonymizationPolicy| [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
+            1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the "`prefetch`" token in |purpose|.
+            1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or return "`Blocked`".
+
+                <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
+        1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
+
+            <div class="note">
+                Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
+            </div>
         1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |environment|.
         1. If |originalPartitionKey| is equal to |hypotheticalPartitionKey|, then return "`Blocked`".
 
@@ -407,14 +427,14 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 </div>
 
 <div algorithm>
-    To <dfn export>prefetch</dfn> given a {{Document}} |document|, [=URL=] |url| and [=referrer policy=] |referrerPolicy|, perform the following steps.
+    To <dfn export>prefetch</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, and [=prefetch IP anonymization policy=] |anonymizationPolicy|, perform the following steps.
 
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
     1. Let |topLevelOrigin| be |url|'s [=url/origin=] if |document|'s [=Document/browsing context=] is a [=top-level browsing context=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
     1. Let |topLevelSite| be the result of [=obtaining a site=], given |topLevelOrigin|.
     1. Let |secondKey| be null or an [=implementation-defined=] value.
-    1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document|, |url| and |referrerPolicy|.
-    1. Otherwise, [=uncredentialed prefetch=] given |document|, |url| and |referrerPolicy|.
+    1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document|, |url|, |referrerPolicy| and |anonymizationPolicy|.
+    1. Otherwise, [=uncredentialed prefetch=] given |document|, |url|, |referrerPolicy| and |anonymizationPolicy|.
 
     <div class="note">
       This determines whether the navigation would use the same network partition key.
@@ -441,7 +461,7 @@ It may contain a <a spec="RFC8941">Item</a> member which is the <a spec="RFC8941
 
 The following parameters are defined for the "`prefetch`" token:
 
-* A parameter whose key is "`anonymous-client-ip`".
+* A parameter whose key is <dfn for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</dfn>.
 
   If present with a value other than boolean false (`` `?0` `` in the field value), this parameter indicates that the prefetch request is being made using an anonymous client IP. Consequently, servers should not rely on it matching, or sharing a geographic location or network operator with, the client's IP address from which a non-prefetch request would have been made.
 
