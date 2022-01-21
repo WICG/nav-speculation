@@ -492,7 +492,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-01-19">19 January 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-01-21">21 January 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -750,13 +750,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-rules" id="ref-for-speculation-rule-set-prefetch-rules①">prefetch rules</a>:</p>
         <ol>
          <li data-md>
-          <p>Let <var>requiresAnonymousClientIPWhenCrossOrigin</var> be true if <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements②">requirements</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> "<code>anonymous-client-ip-when-cross-origin</code>", and false otherwise.</p>
+          <p>Let <var>anonymizationPolicy</var> be null.</p>
+         <li data-md>
+          <p>If <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements②">requirements</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> "<code>anonymous-client-ip-when-cross-origin</code>", set <var>anonymizationPolicy</var> to a <a data-link-type="dfn" href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy" id="ref-for-cross-origin-prefetch-ip-anonymization-policy">cross-origin prefetch IP anonymization policy</a> whose <a data-link-type="dfn" href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin" id="ref-for-cross-origin-prefetch-ip-anonymization-policy-origin">origin</a> is <var>document</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a>.</p>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls①">URLs</a>:</p>
           <ol>
            <li data-md>
-            <p>The user agent may <a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch">prefetch</a> <var>url</var> given <var>document</var>, <var>url</var> and "<code>strict-origin-when-cross-origin</code>". If <var>requiresAnonymousClientIPWhenCrossOrigin</var> is true, it must not do so unless it can obscure the user’s client IP address for any request for a URL whose <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin">origin</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin">same origin</a> to <var>document</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a>.</p>
-            <p class="issue" id="issue-9a2d41cc"><a class="self-link" href="#issue-9a2d41cc"></a>At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> manner using some kind of proxy or relay. Ideally this would be plumbed down to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-connection-obtain" id="ref-for-concept-connection-obtain">obtain a connection</a>, and possibly even the mechanism could be further standardized.</p>
+            <p>The user agent may <a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch">prefetch</a> <var>url</var> given <var>document</var>, <var>url</var>, "<code>strict-origin-when-cross-origin</code>" and <var>anonymizationPolicy</var>.</p>
           </ol>
         </ol>
       </ol>
@@ -766,7 +767,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h2 class="heading settled" data-level="2" id="security-considerations"><span class="secno">2. </span><span class="content">Security considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <h3 class="heading settled" data-level="2.1" id="security-csrf"><span class="secno">2.1. </span><span class="content">Cross-site request forgery</span><a class="self-link" href="#security-csrf"></a></h3>
    <p>This specification allows documents to cause HTTP requests to be issued.</p>
-   <p>When any supported action acts on a URL which is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin①">same origin</a> to the document, then this does not constitute a risk of cross-site request forgery, since the request uses only the credentials available to the document.</p>
+   <p>When any supported action acts on a URL which is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin">same origin</a> to the document, then this does not constitute a risk of cross-site request forgery, since the request uses only the credentials available to the document.</p>
    <p>Otherwise, requests are always issued without using any previously existing <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials">credentials</a>. This limits the ambient authority available to any potentially forged request, and such requests can already be made through <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a>, a subresource or frame, or various other means. Site operators are therefore already well-advised to use CSRF tokens or other mitigations for this threat.</p>
    <h3 class="heading settled" data-level="2.2" id="security-xss"><span class="secno">2.2. </span><span class="content">Cross-site scripting</span><a class="self-link" href="#security-xss"></a></h3>
    <p>This specification causes activity in response to content found in the document, so it is worth considering the options open to an attacker able to inject unescaped HTML.</p>
@@ -818,7 +819,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <div class="issue" id="issue-641b3e22"><a class="self-link" href="#issue-641b3e22"></a>Expand this section once more detail on prefetch and prerender partitioning mechanism is specified.</div>
    <h3 class="heading settled" data-level="3.4" id="privacy-identity-joining"><span class="secno">3.4. </span><span class="content">Identity joining</span><a class="self-link" href="#privacy-identity-joining"></a></h3>
    <p>This specification describes a mechanism through which HTTP requests for later top-level navigation (in the case of prefetching) can be made without a user gesture. It is natural to ask whether it is possible for two coordinating sites to connect user identities.</p>
-   <p>Since existing <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials①">credentials</a> for the destination origin are not sent (assuming it is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin②">same origin</a> with the referrer), that site is limited in its ability to identify the user before navigation in a similar way to if the referrer site had simply used <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> to make an uncredentialed request. Upon navigation, this becomes similar to ordinary navigation (e.g., by clicking a link that was not prefetched).</p>
+   <p>Since existing <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials①">credentials</a> for the destination origin are not sent (assuming it is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin①">same origin</a> with the referrer), that site is limited in its ability to identify the user before navigation in a similar way to if the referrer site had simply used <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> to make an uncredentialed request. Upon navigation, this becomes similar to ordinary navigation (e.g., by clicking a link that was not prefetched).</p>
    <p>To the extent that user agents attempt to mitigate identity joining for ordinary fetches and navigations, they can apply similar mitigations to prefetched navigations.</p>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
@@ -865,12 +866,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://fetch.spec.whatwg.org/#http-scheme">https://fetch.spec.whatwg.org/#http-scheme</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-http-scheme">1.4. Parsing</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-connection-obtain">
-   <a href="https://fetch.spec.whatwg.org/#concept-connection-obtain">https://fetch.spec.whatwg.org/#concept-connection-obtain</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-connection-obtain">1.5. Processing model</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-manipulation-task-source">
@@ -925,9 +920,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-same-origin">
    <a href="https://html.spec.whatwg.org/multipage/origin.html#same-origin">https://html.spec.whatwg.org/multipage/origin.html#same-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-same-origin">1.5. Processing model</a>
-    <li><a href="#ref-for-same-origin①">2.1. Cross-site request forgery</a>
-    <li><a href="#ref-for-same-origin②">3.4. Identity joining</a>
+    <li><a href="#ref-for-same-origin">2.1. Cross-site request forgery</a>
+    <li><a href="#ref-for-same-origin①">3.4. Identity joining</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-script">
@@ -1011,12 +1005,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-list-iterate③">1.5. Processing model</a> <a href="#ref-for-list-iterate④">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-implementation-defined">
-   <a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-implementation-defined">1.5. Processing model</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-struct-item">
    <a href="https://infra.spec.whatwg.org/#struct-item">https://infra.spec.whatwg.org/#struct-item</a><b>Referenced in:</b>
    <ul>
@@ -1069,6 +1057,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-struct">1.1. Definitions</a> <a href="#ref-for-struct①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-cross-origin-prefetch-ip-anonymization-policy">
+   <a href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy">prefetch.html#cross-origin-prefetch-ip-anonymization-policy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-cross-origin-prefetch-ip-anonymization-policy">1.5. Processing model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-cross-origin-prefetch-ip-anonymization-policy-origin">
+   <a href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin">prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-cross-origin-prefetch-ip-anonymization-policy-origin">1.5. Processing model</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-prefetch">
    <a href="prefetch.html#prefetch">prefetch.html#prefetch</a><b>Referenced in:</b>
    <ul>
@@ -1079,12 +1079,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://url.spec.whatwg.org/#concept-basic-url-parser">https://url.spec.whatwg.org/#concept-basic-url-parser</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-basic-url-parser">1.4. Parsing</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-url-origin">
-   <a href="https://url.spec.whatwg.org/#concept-url-origin">https://url.spec.whatwg.org/#concept-url-origin</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-origin">1.5. Processing model</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
@@ -1114,7 +1108,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <ul>
      <li><span class="dfn-paneled" id="term-for-credentials">credentials</span>
      <li><span class="dfn-paneled" id="term-for-http-scheme">http(s) scheme</span>
-     <li><span class="dfn-paneled" id="term-for-concept-connection-obtain">obtain a connection</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
@@ -1145,7 +1138,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-iteration-continue">continue</span>
      <li><span class="dfn-paneled" id="term-for-map-exists">exist</span>
      <li><span class="dfn-paneled" id="term-for-list-iterate">for each</span>
-     <li><span class="dfn-paneled" id="term-for-implementation-defined">implementation-defined</span>
      <li><span class="dfn-paneled" id="term-for-struct-item">item</span>
      <li><span class="dfn-paneled" id="term-for-map-key">key</span>
      <li><span class="dfn-paneled" id="term-for-list">list</span>
@@ -1158,13 +1150,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[nav-speculation]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-cross-origin-prefetch-ip-anonymization-policy">cross-origin prefetch ip anonymization policy</span>
+     <li><span class="dfn-paneled" id="term-for-cross-origin-prefetch-ip-anonymization-policy-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-prefetch">prefetch</span>
     </ul>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-concept-basic-url-parser">basic url parser</span>
-     <li><span class="dfn-paneled" id="term-for-concept-url-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-concept-url-scheme">scheme</span>
      <li><span class="dfn-paneled" id="term-for-concept-url">url</span>
     </ul>
@@ -1196,7 +1189,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <div class="issue">We should also incorporate the case where a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src">src</a></code> attribute is set. <a class="issue-return" href="#issue-bb120c28" title="Jump to section">↵</a></div>
    <div class="issue">We could fire <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-error">error</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-load">load</a></code> events if we wanted to. <a class="issue-return" href="#issue-9cd39e70" title="Jump to section">↵</a></div>
    <div class="issue">It’s likely that we should also handle prerendered and back-forward cached documents. <a class="issue-return" href="#issue-30bcda38" title="Jump to section">↵</a></div>
-   <div class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined">implementation-defined</a> manner using some kind of proxy or relay. Ideally this would be plumbed down to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-connection-obtain">obtain a connection</a>, and possibly even the mechanism could be further standardized. <a class="issue-return" href="#issue-9a2d41cc" title="Jump to section">↵</a></div>
    <div class="issue"> We should also notice removals and consider cancelling speculated actions. <a class="issue-return" href="#issue-ba67a3f6" title="Jump to section">↵</a></div>
    <div class="issue">Expand this section once externally loaded (via "<code>src</code>") speculation rules are specified. <a class="issue-return" href="#issue-8b05d1b2" title="Jump to section">↵</a></div>
    <div class="issue">Expand this section once more detail on prefetch and prerender partitioning mechanism is specified. <a class="issue-return" href="#issue-641b3e22" title="Jump to section">↵</a></div>
