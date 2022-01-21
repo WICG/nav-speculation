@@ -151,14 +151,15 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     1. Return |navigationParams|.
 </div>
 
-A <dfn export>prefetch IP anonymization policy</dfn> is either null or a [=tuple=] consisting of the string "`anonymous-client-ip-when-cross-origin`" and an [=origin=].
+A <dfn export>prefetch IP anonymization policy</dfn> is either null or a [=cross-origin prefetch IP anonymization policy=].
+
+A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn export for="cross-origin prefetch IP anonymization policy">origin</dfn>, which is an [=origin=].
 
 <div algorithm>
   A [=prefetch IP anonymization policy=] |policy| <dfn for="prefetch IP anonymization policy">requires anonymity</dfn> for [=request=] |request| if the following steps return true:
 
-  1. If |policy| is a tuple and |policy|[0] is "`anonymous-client-ip-when-cross-origin`", then:
-      1. Let |origin| be |policy|[1].
-      1. If |request|'s [=request/URL=]'s [=url/origin=] is the [=same origin|same=] as |origin|, then return false.
+  1. If |policy| is a [=cross-origin prefetch IP anonymization policy=]:
+      1. If |request|'s [=request/URL=]'s [=url/origin=] is the [=same origin|same=] as |policy|'s [=cross-origin prefetch IP anonymization policy/origin=], then return false.
       1. Return true.
   1. [=Assert=]: |policy| is null.
   1. Return false.

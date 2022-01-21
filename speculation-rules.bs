@@ -26,6 +26,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
+    text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
+    text: origin; for: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy-origin
 </pre>
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -194,7 +196,8 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
      <p class="issue">It's likely that we should also handle prerendered and back-forward cached documents.
   1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
     1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
-      1. Let |anonymizationPolicy| be ("`anonymous-client-ip-when-cross-origin`", |document|'s [=Document/origin=]) if |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", and null otherwise.
+      1. Let |anonymizationPolicy| be null.
+      1. If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
       1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. The user agent may [=prefetch=] |url| given |document|, |url|, "`strict-origin-when-cross-origin`" and |anonymizationPolicy|.
 </div>
