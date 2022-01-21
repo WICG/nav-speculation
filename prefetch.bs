@@ -158,7 +158,7 @@ A <dfn export>prefetch IP anonymization policy</dfn> is either null or a [=tuple
 
   1. If |policy| is a tuple and |policy|[0] is "`anonymous-client-ip-when-cross-origin`", then:
       1. Let |origin| be |policy|[1].
-      1. Use |request|'s [=request/URL=]'s [=url/origin=] is the [=same origin|same=] as |origin|, then return false.
+      1. If |request|'s [=request/URL=]'s [=url/origin=] is the [=same origin|same=] as |origin|, then return false.
       1. Return true.
   1. [=Assert=]: |policy| is null.
   1. Return false.
