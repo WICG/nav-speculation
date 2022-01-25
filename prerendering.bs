@@ -309,6 +309,21 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
 <p class="note">This is used to keep the time immediately after [=Prompt to unload|prompting to unload=] the [=active document=] of the previous [=browsing context=].
 
+
+<div algorithm="User-agent initiated prerendering">
+  User-agents may choose to initiate prerendering without a predecessor document, for example as a result of the address bar or other browser user interactions.
+
+  To <dfn export>Start user-agent initiated prerendering</dfn> given a [=URL=] |url|:
+
+  1. Let |blankBC| be the result of [=creating a new top-level browsing context=].
+
+  1. Let |prerenderBC| be the result of [=create a prerendering browsing context|creating a prerendering browsing context=] given |url|, "`no-referrer`", and |blankBC|'s [=active document=].
+
+  1. Let |activate| be to [=prerendering browsing context/activate=] |prerenderBC| given |blankBC| and "`replace`".
+
+  1. Return |activate|.
+</div>
+
 <div algorithm="create a prerendering browsing context">
   To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
 
@@ -320,7 +335,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
 
-  1. If |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
+  1. If |referrerDoc| is not the initial `about:blank` and |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
 
     1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
 
@@ -331,6 +346,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
   1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
 
   1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
+
+  1. Return |bc|.
 </div>
 
 <div algorithm>
