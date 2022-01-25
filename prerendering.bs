@@ -354,6 +354,16 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   <!-- End copied section. -->
 
+  1. Assert: |successorBC|'s [=session history=]'s [=list/size=] is 1.
+
+  1. Let |historyEntry| be |successorBC|'s [=session history=][0].
+
+  1. Set |successorBC|'s [=session history=] to |predecessorBC|'s [=session history=].
+
+  1. Append |historyEntry| to |successorBC|'s [=session history=].
+
+  1. [=Traverse the history=] to |historyEntry| with [=Traverse the history/historyHandling=] set to |historyHandling|.
+
   1. TODO prepend the existing session history of |predecessorBC| into |successorBC|? Or, probably better, use the new "browsing session" concept to bridge them? Be sure to respect |historyHandling|.
 
   1. [=In parallel=]:
