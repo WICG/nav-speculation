@@ -315,13 +315,27 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   To <dfn export>Start user-agent initiated prerendering</dfn> given a [=URL=] |url|:
 
-  1. Let |blankBC| be the result of [=creating a new top-level browsing context=].
+  1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
-  1. Let |prerenderBC| be the result of [=create a prerendering browsing context|creating a prerendering browsing context=] given |url|, "`no-referrer`", and |blankBC|'s [=active document=].
+  1. Let |bc| be the result of [=creating a new top-level browsing context=].
 
-  1. Let |activate| be to [=prerendering browsing context/activate=] |prerenderBC| given |blankBC| and "`replace`".
+  1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
+
+  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is "`no-referrer`".
+
+  1. [=Navigate=] |bc| to |request|.
+
+  1. Let |activate| be to do the following [=in parallel=]:
+
+    1. Let |unsafe time| be the [=unsafe shared current time=].
+
+    1. Update the user agent's user interface to present |bc|, e.g., by updating the tab/window contents and the browser chrome.
+
+    1. [=prerendering browsing context/Finalize activation=] for |bc| given |url|'s [=URL/origin=] and |unsafe time|.
 
   1. Return |activate|.
+
+    <p class="note">The returned algorithm steps can be used by the user-agent when the user is ready to "commit" the navigation.
 </div>
 
 <div algorithm="create a prerendering browsing context">
@@ -335,7 +349,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
 
-  1. If |referrerDoc| is not the initial `about:blank` and |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
+  1. If |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
 
     1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
 
@@ -346,8 +360,6 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
   1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
 
   1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
-
-  1. Return |bc|.
 </div>
 
 <div algorithm>
@@ -377,28 +389,34 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. Update the user agent's user interface to replace |predecessorBC| with |successorBC|, e.g., by updating the tab/window contents and the browser chrome.
 
-    1. Let |inclusiveDescendants| be « |successorBC| » [=list/extended=] with |successorBC|'s [=active document=]'s <a spec="HTML">list of the descendant browsing contexts</a>.
+    1. [=prerendering browsing context/Finalize activation=] for |successorBC| given |predecessorBC|'s [=active document=]'s [=document/origin=] and |unsafe time|.
+</div>
 
-    <!-- TODO is this the right task source? Should we make a new one? -->
-    1. [=list/For each=] |bc| of |inclusiveDescendants|, [=queue a global task=] on the [=networking task source=], given |bc|'s [=browsing context/active window=], to perform the following steps:
+<div algorithm>
+  To <dfn for="prerendering browsing context">finalize activation</dfn> of a [=prerendering browsing context=] |bc| given an [=origin=] |origin| and a {{DOMHighResTimeStamp}} |unsafeActivationTime|:
 
-      1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
+  1. Let |inclusiveDescendants| be « |bc| » [=list/extended=] with |bc|'s [=active document=]'s <a spec="HTML">list of the descendant browsing contexts</a>.
 
-      1. Let |doc| be |bc|'s [=active document=].
+  <!-- TODO is this the right task source? Should we make a new one? -->
+  1. [=list/For each=] |bc| of |inclusiveDescendants|, [=queue a global task=] on the [=networking task source=], given |bc|'s [=browsing context/active window=], to perform the following steps:
 
-      1. If |doc|'s [=Document/origin=] is the same as |predecessorBC|'s [=active document=]'s [=Document/origin=], then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
+    1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
 
-      1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
+    1. Let |doc| be |bc|'s [=active document=].
 
-      1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
+    1. If |doc|'s [=Document/origin=] is the same as |origin|, then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
 
-        1. Run |steps|.
+    1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
-            <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
+    1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
 
-        1. Assert: running |steps| did not throw an exception.
+      1. Run |steps|.
 
-       <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
+          <p class="note">These steps might return something, like a {{Promise}}. That is just an artifact of how the spec is modified; such return values can always be ignored.
+
+      1. Assert: running |steps| did not throw an exception.
+
+      <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
 </div>
 
 <h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
