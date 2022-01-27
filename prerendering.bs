@@ -325,7 +325,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. [=Navigate=] |bc| to |request|.
 
-  1. Let |activate| be to do the following [=in parallel=]:
+  1. When the user indicates they wish to commit the navigation:
 
     1. Let |unsafe time| be the [=unsafe shared current time=].
 
@@ -333,7 +333,11 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. [=prerendering browsing context/Finalize activation=] for |bc| given |url|'s [=url/origin=] and |unsafe time|.
 
-  1. Return |activate|.
+    <p class="note">An example of indicating commitment is pressing the Enter key in the URL bar</p>
+
+    <p class="note">TODO The user might never indicate such a commitment, or might take long enough to do
+    so that the user agent needs to reclaim the resources used by the prerender for some more
+    immediate task. In that case the user agent can cancel the prerendering.</p>
 
     <p class="note">The returned algorithm steps can be used by the user-agent when the user is ready to "commit" the navigation.
 </div>
