@@ -421,6 +421,15 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
       <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
 </div>
 
+<div algorithm>
+  To <dfn export for="prerendering browsing context">evict</dfn> a [=prerendering browsing context=] |bc| given an optional Null or {{Document}} |doc| (default ull):
+
+  1. [=Discard=] |bc|.
+
+  1. If |doc| is not null, then [=map/for each=] |key| -> |value| of |doc|'s [=Document/prerendering browsing contexts map=], if |value| is |bc|, then [=map/remove=] |doc|'s [=Document/prerendering browsing contexts map=][|key|].
+
+  User-agents may choose to [=prerendering browsing context/evict=] a [=prerendering browsing context=] at any time, e.g. to save resources for active pages.
+</div>
 <h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
 
 <div algorithm="create a new nested browsing context patch">
@@ -461,6 +470,20 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
     1. [=prerendering browsing context/Activate=] <var ignore>successorBC</var> in place of |browsingContext| given |historyHandling|.
 
     1. Return.
+</div>
+
+Patch the [=navigate=] algorithm to allow delaying or evicting of a cross-origin navigations in a [=prerendering browsing context=] as follows:
+
+<div algorithm="navigate delay cross-origin patch">
+  In [=navigate=], append the following steps after the cross-origin redirect check (currently step 13.1):
+
+  1. Let |crossOrigin| be |hasCrossOriginRedirects|.
+
+  1. f |bc|'s [=browsing context/container=] is not null, and |bc|'s [=browsing context/container=]'s [=node document=]'s	[=Document/origin=] is not [=same origin=] as |currentURL|'s [=url/origin=], then set |crossOrigin| to true.
+
+  1. If |crossOrigin| is true and |browsingContext|'s [=top-level browsing context=] is a [=prerendering browsing context=], then wait until |browsingContext| is [=prerendering browsing context/activate|activated=].
+
+  User agents may choose to [=prerendering browsing context/evict=] a [=prerendering browsing context=] when its document or one of its iframes navigates to a cross-origin URL.
 </div>
 
 Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#redirect-handling]] section.
