@@ -934,6 +934,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>If <var>partitionKey</var> is not equal to <var>proposedPartitionKey</var>, then return "<code>Blocked</code>".</p>
         <div class="issue" id="issue-a3686c91"><a class="self-link" href="#issue-a3686c91"></a>It might be possible to "downgrade" to <a data-link-type="dfn" href="#uncredentialed-prefetch" id="ref-for-uncredentialed-prefetch">uncredentialed prefetch</a> in this case.</div>
        <li data-md>
+        <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url⑥">URL</a> is not <a data-link-type="dfn" href="https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url" id="ref-for-potentially-trustworthy-url">potentially trustworthy</a>, then return "<code>Blocked</code>".</p>
+        <div class="note" role="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
+       <li data-md>
+        <p>If <var>request</var> cannot be fetched given <var>anonymizationPolicy</var> for an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined①">implementation-defined</a> reason, then return "<code>Blocked</code>".</p>
+        <div class="note" role="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic. </div>
+       <li data-md>
         <p>Otherwise, return "<code>Allowed</code>".</p>
       </ol>
      <li data-md>
@@ -985,7 +991,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>request</var> be a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①①">request</a> as follows:</p>
       <dl>
-       <dt data-md><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url⑥">URL</a>
+       <dt data-md><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url⑦">URL</a>
        <dd data-md>
         <p><var>url</var></p>
        <dt data-md><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-referrer-policy" id="ref-for-concept-request-referrer-policy②">referrer policy</a>
@@ -1029,7 +1035,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
           <p>Add a parameter whose key is <a data-link-type="dfn" href="#sec-purpose-prefetch-anonymous-client-ip" id="ref-for-sec-purpose-prefetch-anonymous-client-ip①">"<code>anonymous-client-ip</code>"</a> and whose value is true to the "<code>prefetch</code>" token in <var>purpose</var>.</p>
          <li data-md>
           <p>The user agent must use a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-connection" id="ref-for-concept-connection①">connection</a> which anonymizes the client IP address (e.g., using a proxy) when fetching <var>request</var>, or return "<code>Blocked</code>".</p>
-          <p class="issue" id="issue-9a2d41cc①"><a class="self-link" href="#issue-9a2d41cc①"></a>At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined①">implementation-defined</a> manner using some kind of proxy or relay. Ideally this would be plumbed down to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-connection-obtain" id="ref-for-concept-connection-obtain①">obtain a connection</a>, and possibly even the mechanism could be further standardized.</p>
+          <p class="issue" id="issue-9a2d41cc①"><a class="self-link" href="#issue-9a2d41cc①"></a>At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined②">implementation-defined</a> manner using some kind of proxy or relay. Ideally this would be plumbed down to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-connection-obtain" id="ref-for-concept-connection-obtain①">obtain a connection</a>, and possibly even the mechanism could be further standardized.</p>
         </ol>
        <li data-md>
         <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-set-structured-header" id="ref-for-concept-header-list-set-structured-header①">Set a structured field value</a> given (<a data-link-type="http-header" href="#http-headerdef-sec-purpose" id="ref-for-http-headerdef-sec-purpose①"><code>`Sec-Purpose`</code></a>, <var>purpose</var>) in <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list②">header list</a>.</p>
@@ -1041,6 +1047,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <div class="note" role="note">The prefetch would end up in the same partition as the prefetch came from in this case. <var>environment</var> represents the environment that would ordinarily be used during navigation fetch.</div>
        <li data-md>
         <p>If there are <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials">credentials</a> associated with <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-current-url" id="ref-for-concept-request-current-url①">current URL</a> and <var>hypotheticalPartitionKey</var>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append">append</a> <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-current-url" id="ref-for-concept-request-current-url②">current URL</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin⑧">origin</a> to <var>originsWithConflictingCredentials</var>.</p>
+       <li data-md>
+        <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url⑧">URL</a> is not <a data-link-type="dfn" href="https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url" id="ref-for-potentially-trustworthy-url①">potentially trustworthy</a>, then return "<code>Blocked</code>".</p>
+        <div class="note" role="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
+       <li data-md>
+        <p>If <var>request</var> cannot be fetched given <var>anonymizationPolicy</var> for an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined③">implementation-defined</a> reason, then return "<code>Blocked</code>".</p>
+        <div class="note" role="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic. </div>
        <li data-md>
         <p>Return "<code>Allowed</code>".</p>
       </ol>
@@ -1088,7 +1100,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>topLevelSite</var> be the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site" id="ref-for-obtain-a-site">obtaining a site</a>, given <var>topLevelOrigin</var>.</p>
      <li data-md>
-      <p>Let <var>secondKey</var> be null or an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined②">implementation-defined</a> value.</p>
+      <p>Let <var>secondKey</var> be null or an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined④">implementation-defined</a> value.</p>
      <li data-md>
       <p>If <var>partitionKey</var> is equal to (<var>topLevelSite</var>, <var>secondKey</var>), then <a data-link-type="dfn" href="#partitioned-prefetch" id="ref-for-partitioned-prefetch">partitioned prefetch</a> given <var>document</var>, <var>url</var>, <var>referrerPolicy</var> and <var>anonymizationPolicy</var>.</p>
      <li data-md>
@@ -1836,7 +1848,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-implementation-defined">
    <a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-implementation-defined">3. Prefetch algorithms</a> <a href="#ref-for-implementation-defined①">(2)</a> <a href="#ref-for-implementation-defined②">(3)</a>
+    <li><a href="#ref-for-implementation-defined">3. Prefetch algorithms</a> <a href="#ref-for-implementation-defined①">(2)</a> <a href="#ref-for-implementation-defined②">(3)</a> <a href="#ref-for-implementation-defined③">(4)</a> <a href="#ref-for-implementation-defined④">(5)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-is-empty">
@@ -1909,6 +1921,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-name-tokens">3. Prefetch algorithms</a> <a href="#ref-for-name-tokens①">(2)</a>
     <li><a href="#ref-for-name-tokens②">4. The Sec-Purpose HTTP request header</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-potentially-trustworthy-url">
+   <a href="https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url">https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-potentially-trustworthy-url">3. Prefetch algorithms</a> <a href="#ref-for-potentially-trustworthy-url①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-fragment">
@@ -2089,6 +2107,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-name-tokens">token</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[secure-contexts]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-potentially-trustworthy-url">potentially trustworthy url</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-concept-url-fragment">fragment</span>
@@ -2116,6 +2139,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Jochen Eisinger; Emily Stark. <a href="https://www.w3.org/TR/referrer-policy/"><cite>Referrer Policy</cite></a>. 26 January 2017. CR. URL: <a href="https://www.w3.org/TR/referrer-policy/">https://www.w3.org/TR/referrer-policy/</a>
    <dt id="biblio-rfc8941">[RFC8941]
    <dd>M. Nottingham; P-H. Kamp. <a href="https://www.rfc-editor.org/rfc/rfc8941"><cite>Structured Field Values for HTTP</cite></a>. February 2021. Proposed Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc8941">https://www.rfc-editor.org/rfc/rfc8941</a>
+   <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
+   <dd>Mike West. <a href="https://www.w3.org/TR/secure-contexts/"><cite>Secure Contexts</cite></a>. 18 September 2021. CR. URL: <a href="https://www.w3.org/TR/secure-contexts/">https://www.w3.org/TR/secure-contexts/</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
   </dl>
