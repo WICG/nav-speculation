@@ -323,6 +323,12 @@ These algorithms are based on [=process a navigate fetch=].
         1. If |partitionKey| is not equal to |proposedPartitionKey|, then return "`Blocked`".
 
             <div class="issue">It might be possible to "downgrade" to [=uncredentialed prefetch=] in this case.</div>
+        1. If |request|'s [=request/URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then return "`Blocked`".
+
+            <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
+        1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
+
+            <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
         1. Otherwise, return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
@@ -397,6 +403,12 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
             <div class="note">The prefetch would end up in the same partition as the prefetch came from in this case. |environment| represents the environment that would ordinarily be used during navigation fetch.</div>
         1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |originsWithConflictingCredentials|.
+        1. If |request|'s [=request/URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then return "`Blocked`".
+
+            <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
+        1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
+
+            <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
         1. Return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
