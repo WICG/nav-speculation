@@ -157,7 +157,21 @@ spec: screen-capture; urlPrefix: https://w3c.github.io/mediacapture-screen-share
 spec: audio-output; urlPrefix: https://w3c.github.io/mediacapture-output/
   type: method; for: MediaDevices
     text: selectAudioOutput(); url: dom-mediadevices-selectaudiooutput
-
+spec: speech-api; urlPrefix: https://wicg.github.io/speech-api/
+  type: interface
+    text: SpeechSynthesis; url: speechsynthesis
+  type: method; for: SpeechSynthesis
+    text: speak(utterance); url: dom-speechsynthesis-speak
+    text: cancel(); url: dom-speechsynthesis-cancel
+    text: pause(); url: dom-speechsynthesis-pause
+    text: resume(); url: dom-speechsynthesis-resume
+    text: getVoices(); url: dom-speechsynthesis-getvoices
+  type: interface
+    text: SpeechRecognition; url: speechrecognition
+  type: method; for: SpeechRecognition
+    text: start(); url: dom-speechrecognition-start
+    text: stop(); url: dom-speechrecognition-stop
+    text: abort(); url: dom-speechrecognition-abort
 </pre>
 <pre class="biblio">
 {
@@ -841,6 +855,12 @@ Add {{[DelayWhilePrerendering]}} to {{XRSystem/requestSession()}}.
 <h4 id="credential-manamgenet-patch">Credential Manamgenet</h4>
 
 Add {{[DelayWhilePrerendering]}} to {{CredentialsContainer/get()}}, {{CredentialsContainer/store()}}, and {{CredentialsContainer/create()}}. 
+
+<h4 id="web-speech-patch">Web Speech API</h4>
+
+Add {{[DelayWhilePrerendering]}} to	{{SpeechSynthesis/speak(utterance)}}, {{SpeechSynthesis/cancel()}},	{{SpeechSynthesis/pause()}}, and {{SpeechSynthesis/resume()}}.
+
+Add {{[DelayWhilePrerendering]}} to {{SpeechRecognition/start()}}, {{SpeechRecognition/stop()}}, and {{SpeechRecognition/abort()}}.
 
 <h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 
