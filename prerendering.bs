@@ -545,6 +545,15 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
   1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
 </div>
 
+<div algorithm=The worker's lifetime patch">
+  In <a spec=HTML>The worker's lifetime</a>, modify the definition of [=suspendable worker=], to count workers with a [=prerendering browsing context=] owner as [=suspendable worker|suspendable=]:
+
+  A worker is said to be a [=suspendable worker=] if all of its [=WorkerGlobalScope/owner set|owners=] are {{Document/prerendering}} {{Document|Documents}}, or if it is not an [=active needed worker=] but it is a [=permissible worker=].
+
+  <p class="note">This means that the worker's script would load, but the execution would be suspended until the document is activated.
+
+</div>
+
 <h3 id="cleanup-upon-discarding">Cleanup upon discarding a {{Document}}</h3>
 
 Modify the [=discard a document|discard=] algorithm for {{Document}}s by appending the following step:
