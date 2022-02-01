@@ -335,9 +335,9 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     <p class="note">An example of indicating commitment is pressing the Enter key in the URL bar</p>
 
-    <p class="note">TODO The user might never indicate such a commitment, or might take long enough to do
+    <p class="note">The user might never indicate such a commitment, or might take long enough to do
     so that the user agent needs to reclaim the resources used by the prerender for some more
-    immediate task. In that case the user agent can cancel the prerendering.</p>
+    immediate task. In that case the user agent can [=discard=] |bc|.</p>
 </div>
 
 <div algorithm="create a prerendering browsing context">
@@ -358,6 +358,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
     1. [=Assert=]: The [=list of sufficiently-strict speculative navigation referrer policies=] [=list/contains=] |referrerPolicy|.
 
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
+
+  1. Set |bc|'s [=prerendering browsing context/remove from initiator=] be to [=map/remove=] |referrerDoc|[|startingURL|].
 
   1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
 
@@ -426,6 +428,14 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
       <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
 </div>
 
+<div algorithm>
+  A [=prerendering browsing context=] has an associated <dfn for="prerendering browsing context">remove from initiator</dfn>, which is Null or an algorithm with no arguments, initially set to null.
+
+  To ensure that the references for a [=prererendering browsing context=] are cleared once it is [=discard|discarded=], modify <a spec=HTML for="browsing context">remove</a> by appending the following step:
+
+  1. If <var ignore>browsingContext</var>'s [=prerendering browsing context/remove from initiator=] is not Null, then call [=browsing context/remove from prerendering initiator=].
+</div>
+
 <h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
 
 <div algorithm="create a new nested browsing context patch">
@@ -468,18 +478,16 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
     1. Return.
 </div>
 
-Patch the [=navigate=] algorithm to allow delaying or discarding of cross-origin navigations in a [=prerendering browsing context=] as follows:
+Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding of cross-origin navigations in a [=prerendering browsing context=] as follows:
 
 <div algorithm="navigate delay cross-origin patch">
   In [=navigate=], append the following steps after the cross-origin redirect check (currently step 13.1):
 
   1. Let |crossOrigin| be <var ignore>hasCrossOriginRedirects</var>.
 
-  1. f |bc|'s <a spec="HTML">container</a> is not null, and |bc|'s <a spec="HTML">container</a>'s [=Node/node document=]'s	[=Document/origin=] is not [=same origin=] with <var ignore>currentURL</var>'s [=url/origin=], then set |crossOrigin| to true.
+  1. If |bc|'s <a spec="HTML">container</a> is not null, and |bc|'s <a spec="HTML">container</a>'s [=Node/node document=]'s	[=Document/origin=] is not [=same origin=] with <var ignore>currentURL</var>'s [=url/origin=], then set |crossOrigin| to true.
 
-  1. If |crossOrigin| is true and |browsingContext|'s [=top-level browsing context=] is a [=prerendering browsing context=], then wait until |browsingContext| is [=prerendering browsing context/activate|activated=].
-
-  User agents may choose to [=discard=] a [=prerendering browsing context=] when its document or one of its iframes navigates to a cross-origin URL.
+  1. If |crossOrigin| is true and |bc|'s [=top-level browsing context=] is a [=prerendering browsing context=], then the user agent must either wait to continue this algorithm until |bc| is [=prerendering browsing context/activate|activated=], or [=discard=] |bc|'s [=top-level browsing context=].
 </div>
 
 Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#redirect-handling]] section.
