@@ -66,6 +66,10 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: Item; url: name-items
     text: List; url: name-lists
     text: Token; url: name-tokens
+spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
+  type: http-header; text: Set-Cookie; url: set-cookie
+  type: dfn; text: cookie; url: storage-model
+  type: dfn; text: receive a cookie; url: storage-model
 </pre>
 
 <h2 id="concepts">Concepts</h2>
@@ -80,19 +84,20 @@ A <dfn>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]
 * <dfn export for="prefetch record">sandbox flags present</dfn>, a boolean
 * <dfn export for="prefetch record">redirect chain</dfn>, a [=list=] of [=responses=]
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}}
+* <dfn for="prefetch record">isolated partition key</dfn>, a [=network partition key=] or null (the default)
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the last [=response=] in its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
 The user agent may remove elements from the [=prefetch buffer=] even if they are not expired, e.g., due to resource constraints. Since records with expiry times in the past are never returned, they can be removed with no observable consequences.
 
 <div algorithm="store a prefetch record">
-    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, [=sandboxing flag set=] |sandboxFlags|, and [=list=] of [=responses=] |redirectChain|, perform the following steps.
+    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, [=sandboxing flag set=] |sandboxFlags|, [=list=] of [=responses=] |redirectChain|, and [=network partition key=] or null |isolatedPartitionKey|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
     1. [=list/Remove=] all elements whose [=prefetch record/URL=] equals |url| and [=prefetch record/referrer policy=] equals |referrerPolicy| from |document|'s [=prefetch buffer=].
-    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/sandbox flags present=] true if |sandboxFlags| is not empty and false otherwise, [=prefetch record/redirect chain=] |redirectChain| and [=prefetch record/expiry time=] |expiryTime| to |document|'s [=prefetch buffer=].
+    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/sandbox flags present=] true if |sandboxFlags| is not empty and false otherwise, [=prefetch record/redirect chain=] |redirectChain|, [=prefetch record/expiry time=] |expiryTime|, and [=prefetch record/isolated partition key=] |isolatedPartitionKey| to |document|'s [=prefetch buffer=].
 </div>
 
 <div algorithm="find a matching prefetch record">
@@ -236,6 +241,9 @@ Given this, the non-prefetch case becomes, with the small addition of prefetch l
         <div class="note">This step, and the following condition, is added by this specification.</div>
     1. If |prefetchRecord| is not null, then:
         1. Let |navigationParams| be the result of [=performing prefetch response checks=] given |navigationId|, |request|, |prefetchRecord|, |sourceBrowsingContext|, |browsingContext|, |sandboxFlags|, |historyPolicyContainer|, |initiatorPolicyContainer|, |incumbentNavigationOrigin|, and |historyHandling|.
+        1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and |navigationParams|' [=navigation params/reserved environment=].
+
+            <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies.</div>
         1. [=Process a navigate response=] with |navigationType|, |allowedToDownload|, |hasTransientActivation|, and |navigationParams|.
         1. Return.
     1. Let |responseOrigin| be null.
@@ -338,7 +346,7 @@ These algorithms are based on [=process a navigate fetch=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about status codes and Content-Disposition?
     1. If |response| is a [=network error=], then return.
     1. [=Assert=]: |response| is the last element of |redirectChain|.
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags| and |redirectChain|.
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags|, |redirectChain| and null.
 </div>
 
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
@@ -354,6 +362,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
         <div class="note">This is used to ensure a distinct network partition key is used.</div>
     1. Let |isolatedEnvironment| be a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is `about:blank`, [=environment/top-level creation URL=] is `about:blank`, and [=environment/top-level origin=] is |isolationOrigin|.
+    1. Let |isolatedPartitionKey| be the result of [=determining the network partition key=] given |isolatedEnvironment|.
     1. Let |originalPartitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
     1. Let |request| be a [=request=] as follows:
 
@@ -415,7 +424,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
         <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
     1. [=Assert=]: |response| is the last element of |redirectChain|.
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags| and |redirectChain|.
+    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags|, |redirectChain| and |isolatedPartitionKey|.
 
     <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
@@ -443,6 +452,44 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
       Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.
     </div>
+</div>
+
+<h2 id="cookies">Cookies</h2>
+
+[[COOKIES]] defines "cookies" which can be set using the <a http-header spec="COOKIES" lt="Set-Cookie">`` `Set-Cookie` ``</a> response header field. Because [=uncredentialed prefetch=] forces a separate [=network partition key=] to be used, it's necessary to copy these cookies into the ordinary partition as though they had been [=receive a cookie|received=] at the time of navigation.
+
+<div algorithm>
+  To <dfn>copy prefetch cookies</dfn> given a [=network partition key=] |isolatedPartitionKey| and an [=environment=] |environment|, perform the following steps.
+
+  <div class="note">
+    Though formally there is only one cookie store in [[COOKIES]], some browsers partition cookie stores so as to separate, for example, cookies with the same domain when loaded with different top-level sites. See <a href="https://github.com/privacycg/storage-partitioning">Client-Side Storage Partitioning (Privacy CG)</a>.
+  </div>
+
+  1. Let |isolatedCookieStore| be the cookie store associated with |isolatedPartitionKey|.
+  1. For each <a spec="COOKIES">cookie</a> |cookie| in |isolatedCookieStore|.
+      1. Remove |cookie| from |isolatedCookieStore|.
+      1. A user agent may ignore a cookie in its entirety. If so, continue.
+
+          <div class="note">This is consistent with [[COOKIES]] expressly permitting this when [=receiving a cookie=].</div>
+      1. Let |topLevelSite| be null.
+      1. If |environment|'s [=environment/target browsing context=] is a [=top-level browsing context=]:
+          1. Set |topLevelSite| to the result of [=obtaining a site=] given [=tuple origin=] ("`https`", |cookie|'s domain, null, null).
+      1. Otherwise:
+          1. Let |topLevelOrigin| be |environment|'s [=environment/top-level origin=].
+          1. If |topLevelOrigin| is null, then set |topLevelOrigin| to |environment|'s [=environment/top-level creation URL=]'s [=url/origin=].
+          1. [=Assert=]: |topLevelOrigin| is an [=origin=].
+          1. Set |topLevelSite| be the result of [=obtaining a site=] given |topLevelOrigin|.
+      1. Let |secondKey| be null or an [=implementation-defined=] value.
+
+          <div class="note">|secondKey| is expected to match the value it would have had if this response had been processed as part of an ordinary navigation in |environment|'s [=environment/target browsing context=].</div>
+      1. Let |destinationPartitionKey| be (|topLevelSite|, |secondKey|).
+      1. Let |cookieStore| be the cookie store associated with |destinationPartitionKey|.
+      1. Let |newCookie| be a new cookie identical to |cookie|.
+      1. Set |newCookie|'s creation-time and last-access-time to the current date and time.
+      1. If |cookieStore| contains a cookie |existingCookie| with the same name, domain and path as the newly created cookie:
+          1. Set the creation-time of |newCookie| to |existingCookie|'s creation-time.
+          1. Remove |existingCookie| from |cookieStore|.
+      1. Insert |newCookie| into |cookieStore|.
 </div>
 
 <h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
