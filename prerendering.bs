@@ -595,6 +595,16 @@ The <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> gette
 
 <p class="note">This value is 0 in cross-origin prerenders.
 
+<h3 id="service-worker-extension">Extension to [=service worker=] installation</h3>
+
+To prevent a case where a prerendering document installs a new service-worker that affects active documents or creates notifications:
+
+Add the following to the [=Install Service Worker=] algorithm as, after the assigning of |settingsObjects| (currently step 8):
+
+1. For each |settingsObject| of |settingsObjects|, run the following steps in parallel:
+    1. if |settingsObject|'s [=environment settings object/global object=] is a {{Window}} object, and |settingsObject|'s [=environment settings object/global object=]'s [=/browsing context=] is a [=prerendering browsing context=], then wait until |settingsObject|'s [=environment settings object/global object=]'s [=/browsing context=] is [=prerendering browsing context/activate|activated=].
+    1. Abort these steps.
+
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
 Some behaviors might make sense in most [=top-level browsing contexts=], but do not make sense in [=prerendering browsing contexts=]. This section enumerates specification patches to enforce such restrictions.
