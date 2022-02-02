@@ -474,6 +474,8 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
       1. Let |topLevelSite| be null.
       1. If |environment|'s [=environment/target browsing context=] is a [=top-level browsing context=]:
           1. Set |topLevelSite| to the result of [=obtaining a site=] given [=tuple origin=] ("`https`", |cookie|'s domain, null, null).
+
+            <div class="note">The use of the "`https`" scheme and null port here may seem significant, but they are arbitrary because cookies are visible across schemes and ports, in contrast to the usual same origin policy. The user agent's choice of associated cookie store, therefore, cannot be sensitive to either.</div>
       1. Otherwise:
           1. Let |topLevelOrigin| be |environment|'s [=environment/top-level origin=].
           1. If |topLevelOrigin| is null, then set |topLevelOrigin| to |environment|'s [=environment/top-level creation URL=]'s [=url/origin=].
