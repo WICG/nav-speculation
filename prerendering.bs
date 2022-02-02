@@ -27,6 +27,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
       text: creating a new top-level browsing context; url: creating-a-new-top-level-browsing-context
+      text: fully active; url: fully-active
     urlPrefix: history.html
       text: session history; url: session-history
     urlPrefix: browsing-the-web.html
@@ -52,8 +53,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: script; url: concept-script
     urlPrefix: workers.html
       text: The worker's lifetime; url: the-worker's-lifetime
-      text: suspendable worker; url: suspendable-worker
-      text: permissible worker; url: permissible-worker
       text: active needed worker; url: active-needed-worker
     urlPrefix: media.html
       text: playing the media resource; url: playing-the-media-resource
@@ -550,10 +549,12 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
   1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
 </div>
 
-<div algorithm=The worker's lifetime patch">
-  In <a spec=HTML>The worker's lifetime</a>, modify the definition of [=suspendable worker=], to count workers with a [=prerendering browsing context=] owner as [=suspendable worker|suspendable=]:
+<h3 id="interaction-with-workers">Interaction with Worker Lifetime</h3>
 
-  A worker is said to be a [=suspendable worker=] if all of its [=WorkerGlobalScope/owner set|owners=] are {{Document/prerendering}} {{Document|Documents}}, or if it is not an [=active needed worker=] but it is a [=permissible worker=].
+<div algorithm=The worker's lifetime patch">
+  In <a spec=HTML>The worker's lifetime</a>, modify the definition of [=active needed worker=], to count workers with a [=prerendering browsing context=] owner as not [=active needed worker|active=]:
+
+  A worker is said to be an [=active needed worker=] if any of its [=WorkerGlobalScope/owner set|owners=] are either {{Document}} objects that are [=fully active=] and their [=Document/browsing context=] is not a [=prerendering browsing context=], or [=active needed worker|active needed workers=].
 
   <p class="note">This means that the worker's script would load, but the execution would be suspended until the document is activated.
 
