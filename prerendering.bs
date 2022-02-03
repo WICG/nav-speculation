@@ -173,12 +173,15 @@ spec: speech-api; urlPrefix: https://wicg.github.io/speech-api/
     text: stop(); url: dom-speechrecognition-stop
     text: abort(); url: dom-speechrecognition-abort
 spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
-  type: dfn
-    text: Register Service Worker; url: register
-    text: job; url: dfn-job
-    text: window client; url: dfn-window-client
-  type: dfn; for: job
-    text: client; url: dfn-job-client
+  type: interface
+    text: ServiceWorkerRegistration; url: serviceworkerregistration-interface
+  type: method; for: ServiceWorkerRegistration
+    text: update(); url: dom-serviceworkerregistration-update
+    text: unregister(); url: dom-serviceworkerregistration-unregister
+  type: interface
+    text: ServiceWorkerContainer; url: serviceworkercontainer-interface
+  type: method; for: ServiceWorkerRegistration
+    text: register(scriptURL, options); url: dom-serviceworkercontainer-register
 </pre>
 <pre class="biblio">
 {
@@ -641,17 +644,6 @@ Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that down
   1. If [=this=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
 </div>
 
-<h3 id="service-worker-registration">Service Worker Registration</h3>
-
-To prevent a case where a prerendering document installs a new service-worker that affects active documents or creates notifications, discard the [=prerendering browsing context=] when it tries to register a [=service worker=] that wasn't previously registered:
-
-Prepend the following to the [=Register Service Worker=] algorithm:
-
-1. If <var ignore>job</var>'s [=job/client=] is a [=window client=], then:
-    1. Let |bc| be <var ignore>job</var>'s [=job/client=]'s [=environment settings object/global object=]'s [=global object=]'s [=/browsing context=].
-    
-    1. If |bc| is a [=prerendering browsing context=], then wait until |bc| is [=prerendering browsing context/activated=].
-
 <h3 id="delay-async-apis">Delaying async API results</h3>
 
 Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering browsing context=], most of its work is deferred until the browsing context is [=prerendering browsing context/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
@@ -675,6 +667,12 @@ The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and 
     1. If this operation's <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a>, then return |promise|.
   1. Otherwise, return the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
 </div>
+
+<h4 id="service-workerד">Service Workers</h3>
+
+Add {{DelayWhilePrerendering}} to {{ServiceWorkerRegistration/update()}}, {{ServiceWorkerRegistration/unregister()}}, and {{ServiceWorkerContainer/register(scriptURL, options)}}.
+
+<p class="note">This allows prerendered page to take advantage of existing service workers, but not have any effect on the state of service worker registrations.</p>
 
 <h4 id="patch-geolocation">Geolocation API</h4>
 
