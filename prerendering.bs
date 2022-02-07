@@ -396,7 +396,6 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
   1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
 
   1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
-
 </div>
 
 <div algorithm>
@@ -509,7 +508,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
 Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding of cross-origin navigations in a [=prerendering browsing context=] as follows:
 
 <div algorithm="navigate delay cross-origin patch">
-  In [=navigate=], append the following steps after the cross-origin redirect check (currently step 13.1):
+  In [=process a navigate fetch=], append the following steps after the cross-origin redirect check (currently step 13.1):
 
   1. Let |crossOrigin| be <var ignore>hasCrossOriginRedirects</var>.
 
