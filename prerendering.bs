@@ -391,13 +391,11 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. Set |bc|'s [=prerendering browsing context/remove from initiator=] be to [=map/remove=] |referrerDoc|[|startingURL|].
 
+     <p class="note">As with regular [=browsing context|browsing contexts=], The [=prerendering browsing context=] can be [=discard|discarded=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user-agent believes prerendering takes too much resources.
+
   1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
 
   1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
-
-  1. If |bc| is [=discard|discarded=], [=map/remove=] |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)].
-
-     <p class="note">As with regular [=browsing context|browsing contexts=], The [=prerendering browsing context=] can be [=discard|discarded=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user-agent believes prerendering takes too much resources.
 
 </div>
 
