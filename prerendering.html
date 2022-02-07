@@ -858,9 +858,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p><a data-link-type="dfn" href="#prerendering-browsing-context-finalize-activation" id="ref-for-prerendering-browsing-context-finalize-activation">Finalize activation</a> for <var>bc</var> given <var>url</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin①">origin</a> and <var>unsafe time</var>.</p>
       </ol>
       <p class="note" role="note">An example of indicating commitment is pressing the Enter key in the URL bar</p>
-      <p class="note" role="note">TODO The user might never indicate such a commitment, or might take long enough to do
+      <p class="note" role="note">The user might never indicate such a commitment, or might take long enough to do
 so that the user agent needs to reclaim the resources used by the prerender for some more
-immediate task. In that case the user agent can cancel the prerendering.</p>
+immediate task. In that case the user agent can <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#a-browsing-context-is-discarded" id="ref-for-a-browsing-context-is-discarded">discard</a> <var>bc</var>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="create a prerendering browsing context">
@@ -885,13 +885,16 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      <li data-md>
       <p>Set <var>referrerDoc</var>’s <a data-link-type="dfn" href="#document-prerendering-browsing-contexts-map" id="ref-for-document-prerendering-browsing-contexts-map①">prerendering browsing contexts map</a>[<var>startingURL</var>] to <var>bc</var>.</p>
      <li data-md>
+      <p>Set <var>bc</var>’s <a data-link-type="dfn" href="#prerendering-browsing-context-remove-from-initiator" id="ref-for-prerendering-browsing-context-remove-from-initiator">remove from initiator</a> be to <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-remove" id="ref-for-map-remove">remove</a> <var>referrerDoc</var>[<var>startingURL</var>].</p>
+      <p class="note" role="note">As with regular <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context③">browsing contexts</a>, the <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③">prerendering browsing context</a> can be <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#a-browsing-context-is-discarded" id="ref-for-a-browsing-context-is-discarded①">discarded</a> for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too much resources. </p>
+     <li data-md>
       <p>Let <var>request</var> be a new <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①">request</a> whose <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">URL</a> is <var>startingURL</var> and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-referrer-policy" id="ref-for-concept-request-referrer-policy①">referrer policy</a> is <var>referrerPolicy</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate②">Navigate</a> <var>bc</var> to <var>request</var> with the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-browsing-context" id="ref-for-source-browsing-context">source browsing context</a> set to <var>referrerDoc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc①">browsing context</a>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="activate" data-algorithm-for="prerendering browsing context">
-     To <dfn class="dfn-paneled" data-dfn-for="prerendering browsing context" data-dfn-type="dfn" data-noexport id="prerendering-browsing-context-activate">activate</dfn> a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③">prerendering browsing context</a> <var>successorBC</var> in place of a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context">top-level browsing context</a> <var>predecessorBC</var> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#history-handling-behavior" id="ref-for-history-handling-behavior">history handling behavior</a> <var>historyHandling</var>: 
+     To <dfn class="dfn-paneled" data-dfn-for="prerendering browsing context" data-dfn-type="dfn" data-noexport id="prerendering-browsing-context-activate">activate</dfn> a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④">prerendering browsing context</a> <var>successorBC</var> in place of a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context">top-level browsing context</a> <var>predecessorBC</var> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#history-handling-behavior" id="ref-for-history-handling-behavior">history handling behavior</a> <var>historyHandling</var>: 
     <ol>
      <li data-md>
       <p class="assertion">Assert: <var>historyHandling</var> is either "<code>default</code>" or "<code>replace</code>".</p>
@@ -920,7 +923,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="finalize activation" data-algorithm-for="prerendering browsing context">
-     To <dfn class="dfn-paneled" data-dfn-for="prerendering browsing context" data-dfn-type="dfn" data-noexport id="prerendering-browsing-context-finalize-activation">finalize activation</dfn> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④">prerendering browsing context</a> <var>bc</var> given an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin" id="ref-for-concept-origin">origin</a> <var>origin</var> and a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp①">DOMHighResTimeStamp</a></code> <var>unsafe time</var>: 
+     To <dfn class="dfn-paneled" data-dfn-for="prerendering browsing context" data-dfn-type="dfn" data-noexport id="prerendering-browsing-context-finalize-activation">finalize activation</dfn> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑤">prerendering browsing context</a> <var>bc</var> given an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin" id="ref-for-concept-origin">origin</a> <var>origin</var> and a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp①">DOMHighResTimeStamp</a></code> <var>unsafe time</var>: 
     <ol>
      <li data-md>
       <p>Let <var>inclusiveDescendants</var> be « <var>bc</var> » <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend">extended</a> with <var>bc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document④">active document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#list-of-the-descendant-browsing-contexts" id="ref-for-list-of-the-descendant-browsing-contexts">list of the descendant browsing contexts</a>.</p>
@@ -944,8 +947,16 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
          <li data-md>
           <p class="assertion">Assert: running <var>steps</var> did not throw an exception.</p>
         </ol>
-        <p class="note" role="note">The order here is observable for <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context③">browsing contexts</a> that share an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop" id="ref-for-event-loop">event loop</a>, but not for those in separate event loops. </p>
+        <p class="note" role="note">The order here is observable for <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context④">browsing contexts</a> that share an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop" id="ref-for-event-loop">event loop</a>, but not for those in separate event loops. </p>
       </ol>
+    </ol>
+   </div>
+   <div class="algorithm" data-algorithm="remove from initiator" data-algorithm-for="prerendering browsing context">
+     A <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑥">prerendering browsing context</a> has an associated <dfn class="dfn-paneled" data-dfn-for="prerendering browsing context" data-dfn-type="dfn" data-noexport id="prerendering-browsing-context-remove-from-initiator">remove from initiator</dfn>, which is null or an algorithm with no arguments, initially set to null. 
+    <p>To ensure that the references for a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑦">prerendering browsing context</a> are cleared once it is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#a-browsing-context-is-discarded" id="ref-for-a-browsing-context-is-discarded②">discarded</a>, modify <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#bcg-remove" id="ref-for-bcg-remove">remove</a> by appending the following step:</p>
+    <ol>
+     <li data-md>
+      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑧">prerendering browsing context</a> and <var>browsingContext</var>’s <a data-link-type="dfn" href="#prerendering-browsing-context-remove-from-initiator" id="ref-for-prerendering-browsing-context-remove-from-initiator①">remove from initiator</a> is not null, then call <var>browsingContext</var>’s <a data-link-type="dfn" href="#prerendering-browsing-context-remove-from-initiator" id="ref-for-prerendering-browsing-context-remove-from-initiator②">remove from initiator</a>.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="3.3" id="creating-bcs-patch"><span class="secno">3.3. </span><span class="content">Modifications to creating browsing contexts</span><a class="self-link" href="#creating-bcs-patch"></a></h3>
@@ -959,7 +970,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <h2 class="heading settled" data-level="4" id="navigation"><span class="secno">4. </span><span class="content">Navigation and session history</span><a class="self-link" href="#navigation"></a></h2>
    <h3 class="heading settled" data-level="4.1" id="navigate-activation"><span class="secno">4.1. </span><span class="content">Allowing activation in place of navigation</span><a class="self-link" href="#navigate-activation"></a></h3>
    <div class="algorithm" data-algorithm="can activate a prerender">
-     We <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="can-activate-a-prerender">can activate a prerender</dfn> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context④">browsing context</a> <var>browsingContext</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#history-handling-behavior" id="ref-for-history-handling-behavior①">history handling behavior</a> <var>historyHandling</var>, a string <var>navigationType</var>, and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request②">request</a> <var>request</var>, if the following steps return true: 
+     We <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="can-activate-a-prerender">can activate a prerender</dfn> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context⑤">browsing context</a> <var>browsingContext</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#history-handling-behavior" id="ref-for-history-handling-behavior①">history handling behavior</a> <var>historyHandling</var>, a string <var>navigationType</var>, and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request②">request</a> <var>request</var>, if the following steps return true: 
     <ol>
      <li data-md>
       <p>Return true if all of the following are true:</p>
@@ -967,7 +978,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
        <li data-md>
         <p><var>browsingContext</var> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context②">top-level browsing context</a></p>
        <li data-md>
-        <p><var>browsingContext</var> is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑤">prerendering browsing context</a></p>
+        <p><var>browsingContext</var> is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑨">prerendering browsing context</a></p>
        <li data-md>
         <p><var>browsingContext</var> is not for a <a href="https://github.com/shivanigithub/fenced-frame">Fenced Frame</a></p>
         <p class="issue" id="issue-441858a6"><a class="self-link" href="#issue-441858a6"></a>The concept of a fenced frame browsing context is not yet defined but we need to link to it once it exists.</p>
@@ -984,7 +995,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
       <p>Otherwise, return false.</p>
     </ol>
    </div>
-   <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate③">navigate</a> algorithm to allow the <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate①">activation</a> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑥">prerendering browsing context</a> in place of a normal navigation as follows:</p>
+   <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate③">navigate</a> algorithm to allow the <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate①">activation</a> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⓪">prerendering browsing context</a> in place of a normal navigation as follows:</p>
    <div class="algorithm" data-algorithm="navigate activate patch">
      In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate④">navigate</a>, append the following steps after the fragment navigation handling (currently step 6): 
     <ol>
@@ -998,29 +1009,41 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
       </ol>
     </ol>
    </div>
-   <p>Navigation redirects can also <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate③">activate</a> <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑦">prerendering browsing contexts</a>. This is defined in the <a href="#redirect-handling">§ 4.2 Redirect handling</a> section.</p>
+   <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch">process a navigate fetch</a> algorithm to allow delaying or discarding of cross-origin navigations in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①①">prerendering browsing context</a> as follows:</p>
+   <div class="algorithm" data-algorithm="navigate delay cross-origin patch">
+     In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch①">process a navigate fetch</a>, append the following steps after the cross-origin redirect check (currently step 13.1): 
+    <ol>
+     <li data-md>
+      <p>Let <var>crossOrigin</var> be <var>hasCrossOriginRedirects</var>.</p>
+     <li data-md>
+      <p>If <var>bc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#bc-container" id="ref-for-bc-container">container</a> is not null, and <var>bc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#bc-container" id="ref-for-bc-container①">container</a>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑥">node document</a>'s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin④">origin</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin②">same origin</a> with <var>currentURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin③">origin</a>, then set <var>crossOrigin</var> to true.</p>
+     <li data-md>
+      <p>If <var>crossOrigin</var> is true and <var>bc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context③">top-level browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①②">prerendering browsing context</a>, then the user agent must either wait to continue this algorithm until <var>bc</var> is <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate③">activated</a>, or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#a-browsing-context-is-discarded" id="ref-for-a-browsing-context-is-discarded③">discard</a> <var>bc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing context</a>.</p>
+    </ol>
+   </div>
+   <p>Navigation redirects can also <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate④">activate</a> <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①③">prerendering browsing contexts</a>. This is defined in the <a href="#redirect-handling">§ 4.2 Redirect handling</a> section.</p>
    <h3 class="heading settled" data-level="4.2" id="redirect-handling"><span class="secno">4.2. </span><span class="content">Redirect handling</span><a class="self-link" href="#redirect-handling"></a></h3>
-   <p>This section contains two types of changes to the navigation redirect handling portion of the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch">process a navigate fetch</a> algorithm:</p>
+   <p>This section contains two types of changes to the navigation redirect handling portion of the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch②">process a navigate fetch</a> algorithm:</p>
    <ul>
     <li data-md>
-     <p>Logic allowing navigation redirects that are not inside of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑧">prerendering browsing context</a> to <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate④">activate</a> a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑨">prerendering browsing context</a>.</p>
+     <p>Logic allowing navigation redirects that are not inside of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①④">prerendering browsing context</a> to <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑤">activate</a> a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑤">prerendering browsing context</a>.</p>
     <li data-md>
-     <p>Logic that updates specific state of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⓪">prerendering browsing context</a> when it redirects coss-origin.</p>
+     <p>Logic that updates specific state of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑥">prerendering browsing context</a> when it redirects coss-origin.</p>
    </ul>
-   <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch①">process a navigate fetch</a> algorithm like so:</p>
+   <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch③">process a navigate fetch</a> algorithm like so:</p>
    <div class="algorithm" data-algorithm="navigate activate patch redirect handling">
-     In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch②">process a navigate fetch</a>, append the following steps after the first sub-step under "While true:" in order to handle redirects correctly: 
+     In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch" id="ref-for-process-a-navigate-fetch④">process a navigate fetch</a>, append the following steps after the first sub-step under "While true:" in order to handle redirects correctly: 
     <ol>
      <li data-md>
       <p>If we <a data-link-type="dfn" href="#can-activate-a-prerender" id="ref-for-can-activate-a-prerender①">can activate a prerender</a> given <var>browsingContext</var>, <var>historyHandling</var>, <var>navigationType</var>, and <var>request</var>, then:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑤">Activate</a> <var>browsingContext</var> in place of <var>sourceBrowsingContext</var> given <var>historyHandling</var>.</p>
+        <p><a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑥">Activate</a> <var>browsingContext</var> in place of <var>sourceBrowsingContext</var> given <var>historyHandling</var>.</p>
        <li data-md>
         <p>Return.</p>
       </ol>
      <li data-md>
-      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①①">prerendering browsing context</a> and <var>currentURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin③">origin</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin②">same origin</a> with <var>incumbentNavigationOrigin</var>, then:</p>
+      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑦">prerendering browsing context</a> and <var>currentURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin④">origin</a> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#same-origin" id="ref-for-same-origin③">same origin</a> with <var>incumbentNavigationOrigin</var>, then:</p>
       <ol>
        <li data-md>
         <p>Set <var>browsingContext</var>’s <a data-link-type="dfn" href="#browsing-context-loading-mode" id="ref-for-browsing-context-loading-mode⑨">loading mode</a> to "<code>uncredentialed-prerender</code>".</p>
@@ -1039,10 +1062,10 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    </div>
    <h3 class="heading settled" data-level="4.3" id="always-replacement"><span class="secno">4.3. </span><span class="content">Maintaining a trivial session history</span><a class="self-link" href="#always-replacement"></a></h3>
    <div class="algorithm" data-algorithm="navigate historyHandling patch">
-     Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑤">navigate</a> algorithm to ensure the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history①">session history</a> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①②">prerendering browsing context</a> stays trivial by prepending the following step before all others: 
+     Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑤">navigate</a> algorithm to ensure the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history①">session history</a> of a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑧">prerendering browsing context</a> stays trivial by prepending the following step before all others: 
     <ol>
      <li data-md>
-      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①③">prerendering browsing context</a>, then:</p>
+      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑨">prerendering browsing context</a>, then:</p>
       <ol>
        <li data-md>
         <p class="assertion">Assert: <var>historyHandling</var> is not "<code>entry update</code>", since prerendering browsing contexts have trivial session histories and thus will never end up <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#traverse-the-history" id="ref-for-traverse-the-history">traversing</a> back to an entry with null <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document" id="ref-for-she-document">document</a>.</p>
@@ -1055,17 +1078,17 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#url-and-history-update-steps" id="ref-for-url-and-history-update-steps">URL and history update steps</a> by adding the following step after step 1: 
     <ol>
      <li data-md>
-      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①④">prerendering browsing context</a>, then set <var>isPush</var> to false.</p>
+      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⓪">prerendering browsing context</a>, then set <var>isPush</var> to false.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="4.4" id="no-bad-navs"><span class="secno">4.4. </span><span class="content">Preventing forbidden navigations</span><a class="self-link" href="#no-bad-navs"></a></h3>
-   <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑥">navigate</a> algorithm to prevent certain navigations in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑤">prerendering browsing context</a> as follows:</p>
+   <p>Patch the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate⑥">navigate</a> algorithm to prevent certain navigations in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②①">prerendering browsing context</a> as follows:</p>
    <p class="issue" id="issue-755a1cad"><a class="self-link" href="#issue-755a1cad"></a>Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn’t observable anyway? </p>
    <div class="algorithm" data-algorithm="process a navigate response patch">
      In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-response" id="ref-for-process-a-navigate-response">process a navigate response</a>, append the following after the step which establishes the value of <var>failure</var>, but before the step which uses it to display an error page: 
     <ol>
      <li data-md>
-      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑥">prerendering browsing context</a>, and any of the following hold:</p>
+      <p>If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②②">prerendering browsing context</a>, and any of the following hold:</p>
       <ul>
        <li data-md>
         <p><var>failure</var> is true;</p>
@@ -1092,13 +1115,13 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
   which displays inline content: 
     <ol>
      <li data-md>
-      <p>Otherwise, if <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑦">prerendering browsing context</a>, then return.</p>
+      <p>Otherwise, if <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②③">prerendering browsing context</a>, then return.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="4.5" id="interaction-with-workers"><span class="secno">4.5. </span><span class="content">Interaction with Worker Lifetime</span><a class="self-link" href="#interaction-with-workers"></a></h3>
    <div class="algorithm" data-algorithm="The" lifetime patchU00022 workerU02019s>
-     In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#the-worker&apos;s-lifetime" id="ref-for-the-worker&apos;s-lifetime">The worker’s lifetime</a>, modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker">active needed worker</a>, to count workers with a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑧">prerendering browsing context</a> owner as not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker①">active</a>: 
-    <p>A worker is said to be an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker②">active needed worker</a> if any of its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#concept-WorkerGlobalScope-owner-set" id="ref-for-concept-WorkerGlobalScope-owner-set">owners</a> are either <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑨">Document</a></code> objects that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#fully-active" id="ref-for-fully-active">fully active</a> and their <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc③">browsing context</a> is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context①⑨">prerendering browsing context</a>, or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker③">active needed workers</a>.</p>
+     In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#the-worker&apos;s-lifetime" id="ref-for-the-worker&apos;s-lifetime">The worker’s lifetime</a>, modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker">active needed worker</a>, to count workers with a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②④">prerendering browsing context</a> owner as not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker①">active</a>: 
+    <p>A worker is said to be an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker②">active needed worker</a> if any of its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#concept-WorkerGlobalScope-owner-set" id="ref-for-concept-WorkerGlobalScope-owner-set">owners</a> are either <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑨">Document</a></code> objects that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#fully-active" id="ref-for-fully-active">fully active</a> and their <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc③">browsing context</a> is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑤">prerendering browsing context</a>, or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker③">active needed workers</a>.</p>
     <p class="note" role="note">This means that the worker’s script would load, but the execution would be suspended until the document is activated. </p>
    </div>
    <h3 class="heading settled" data-level="4.6" id="cleanup-upon-discarding"><span class="secno">4.6. </span><span class="content">Cleanup upon discarding a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⓪">Document</a></code></span><a class="self-link" href="#cleanup-upon-discarding"></a></h3>
@@ -1111,10 +1134,10 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    </div>
    <h2 class="heading settled" data-level="5" id="interaction-with-other-specs"><span class="secno">5. </span><span class="content">Interaction with other specifications and concepts</span><a class="self-link" href="#interaction-with-other-specs"></a></h2>
    <h3 class="heading settled" data-level="5.1" id="interaction-with-visibility-state"><span class="secno">5.1. </span><span class="content">Interaction with Page Visibility</span><a class="self-link" href="#interaction-with-visibility-state"></a></h3>
-   <p>Documents in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⓪">prerendering browsing contexts</a> always have a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#visibility-state" id="ref-for-visibility-state">visibility state</a> of "<code>hidden</code>".</p>
+   <p>Documents in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑥">prerendering browsing contexts</a> always have a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#visibility-state" id="ref-for-visibility-state">visibility state</a> of "<code>hidden</code>".</p>
    <p class="issue" id="issue-1c569c2c"><a class="self-link" href="#issue-1c569c2c"></a>What about portals? Portals might not be hidden, and portals are envisioned to be a type of prerendering browsing context.</p>
    <h3 class="heading settled" data-level="5.2" id="interaction-with-system-focus"><span class="secno">5.2. </span><span class="content">Interaction with system focus</span><a class="self-link" href="#interaction-with-system-focus"></a></h3>
-   <p><a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②①">Prerendering browsing contexts</a> never have <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#tlbc-system-focus" id="ref-for-tlbc-system-focus">system focus</a>.</p>
+   <p><a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑦">Prerendering browsing contexts</a> never have <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#tlbc-system-focus" id="ref-for-tlbc-system-focus">system focus</a>.</p>
    <h3 class="heading settled" data-level="5.3" id="performance-navigation-timing-extension"><span class="secno">5.3. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming">PerformanceNavigationTiming</a></code> interface</span><a class="self-link" href="#performance-navigation-timing-extension"></a></h3>
    <p>Extend the <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming①">PerformanceNavigationTiming</a></code> interface as follows:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming②"><c- g>PerformanceNavigationTiming</c-></a> {
@@ -1128,28 +1151,28 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    </ol>
    <p class="note" role="note">This value is 0 in cross-origin prerenders. </p>
    <h2 class="heading settled" data-level="6" id="nonsense-behaviors"><span class="secno">6. </span><span class="content">Preventing nonsensical behaviors</span><a class="self-link" href="#nonsense-behaviors"></a></h2>
-   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context③">top-level browsing contexts</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②②">prerendering browsing contexts</a>. This section enumerates specification patches to enforce such restrictions.</p>
+   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context⑤">top-level browsing contexts</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑧">prerendering browsing contexts</a>. This section enumerates specification patches to enforce such restrictions.</p>
    <h3 class="heading settled" data-level="6.1" id="patch-window-apis"><span class="secno">6.1. </span><span class="content">APIs for creating and navigating browsing contexts by name</span><a class="self-link" href="#patch-window-apis"></a></h3>
-   <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②③">prerendering browsing context</a>:</p>
-   <p>A <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context⑤">browsing context</a> is <dfn data-dfn-type="dfn" data-noexport id="script-closable">script-closable<a class="self-link" href="#script-closable"></a></dfn> if either of the following is true:</p>
+   <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑨">prerendering browsing context</a>:</p>
+   <p>A <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context" id="ref-for-browsing-context⑥">browsing context</a> is <dfn data-dfn-type="dfn" data-noexport id="script-closable">script-closable<a class="self-link" href="#script-closable"></a></dfn> if either of the following is true:</p>
    <ul>
     <li data-md>
      <p>it is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#auxiliary-browsing-context" id="ref-for-auxiliary-browsing-context">auxiliary browsing context</a> that was created by script (as opposed to by an action of the user); or</p>
     <li data-md>
      <p>
-      it is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing context</a> 
-      <ins>that is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②④">prerendering browsing context</a></ins>
+      it is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context⑥">top-level browsing context</a> 
+      <ins>that is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⓪">prerendering browsing context</a></ins>
        and whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/history.html#session-history" id="ref-for-session-history②">session history</a> contains only one <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①②">Document</a></code>.
      </p>
    </ul>
    <h2 class="heading settled" data-level="7" id="intrusive-behaviors"><span class="secno">7. </span><span class="content">Preventing intrusive behaviors</span><a class="self-link" href="#intrusive-behaviors"></a></h2>
-   <p>Various behaviors are disallowed in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑤">prerendering browsing contexts</a> because they would be intrusive to the user, since the prerendered content is not being actively interacted with.</p>
+   <p>Various behaviors are disallowed in <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③①">prerendering browsing contexts</a> because they would be intrusive to the user, since the prerendered content is not being actively interacted with.</p>
    <h3 class="heading settled" data-level="7.1" id="patch-downloading"><span class="secno">7.1. </span><span class="content">Downloading resources</span><a class="self-link" href="#patch-downloading"></a></h3>
-   <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks" id="ref-for-downloading-hyperlinks">download the hyperlink</a> algorithm to ensure that downloads inside <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑥">prerendering browsing contexts</a> are delayed until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑥">activation</a>, by inserting the following before the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
+   <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks" id="ref-for-downloading-hyperlinks">download the hyperlink</a> algorithm to ensure that downloads inside <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③②">prerendering browsing contexts</a> are delayed until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑦">activation</a>, by inserting the following before the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel①">in parallel</a>:</p>
    <div class="algorithm" data-algorithm="download the hyperlink patch">
     <ol>
      <li data-md>
-      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑥">node document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑦">prerendering browsing context</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</a> and return.</p>
+      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document⑦">node document</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③③">prerendering browsing context</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="7.2" id="patch-modals"><span class="secno">7.2. </span><span class="content">User prompts</span><a class="self-link" href="#patch-modals"></a></h3>
@@ -1157,20 +1180,20 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs" id="ref-for-cannot-show-simple-dialogs">cannot show simple dialogs</a> algorithm, given a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window①">Window</a></code> <var>window</var>, by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑧">prerendering browsing context</a>, then return true.</p>
+      <p>If <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③④">prerendering browsing context</a>, then return true.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="window print() patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print" id="ref-for-dom-print">print()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑨">prerendering browsing context</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑤">prerendering browsing context</a>, then return.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="7.3" id="delay-async-apis"><span class="secno">7.3. </span><span class="content">Delaying async API results</span><a class="self-link" href="#delay-async-apis"></a></h3>
-   <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⓪">prerendering browsing context</a>, most of its work is deferred until the browsing context is <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑦">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
+   <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑥">prerendering browsing context</a>, most of its work is deferred until the browsing context is <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑧">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
    <h4 class="heading settled" data-level="7.3.1" id="delay-while-prerendering"><span class="secno">7.3.1. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering">[DelayWhilePrerendering]</a></code> extended attribute</span><a class="self-link" href="#delay-while-prerendering"></a></h4>
-   <p>To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑧">activation</a>, we introduce the <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export id="extendedattrdef-delaywhileprerendering"><code>[DelayWhilePrerendering]</code></dfn> Web IDL extended attribute. It indicates that when a given method is called in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③①">prerendering browsing context</a>, it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.</p>
+   <p>To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until <a data-link-type="dfn" href="#prerendering-browsing-context-activate" id="ref-for-prerendering-browsing-context-activate⑨">activation</a>, we introduce the <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export id="extendedattrdef-delaywhileprerendering"><code>[DelayWhilePrerendering]</code></dfn> Web IDL extended attribute. It indicates that when a given method is called in a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑦">prerendering browsing context</a>, it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①">[DelayWhilePrerendering]</a></code> extended attribute must take no arguments, and must only appear on a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation">regular</a> or <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-static-operation" id="ref-for-dfn-static-operation">static operation</a> whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-return-type" id="ref-for-dfn-return-type">return type</a> is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-promise-type" id="ref-for-dfn-promise-type">promise type</a> or <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined">undefined</a></code>, and whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-exposure-set" id="ref-for-dfn-exposure-set">exposure set</a> contains only <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window②">Window</a></code>.</p>
    <div class="algorithm" data-algorithm="DelayWhilePrerendering method steps">
      The method steps for any operation annotated with the <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②">[DelayWhilePrerendering]</a></code> extended attribute are replaced with the following: 
@@ -1180,7 +1203,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      <li data-md>
       <p>If the operation in question is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation①">regular operation</a>, then set <var>realm</var> to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant Realm</a> of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>.</p>
      <li data-md>
-      <p>If <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③②">prerendering browsing context</a>, then:</p>
+      <p>If <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑧">prerendering browsing context</a>, then:</p>
       <ol>
        <li data-md>
         <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>, created in <var>realm</var>.</p>
@@ -1207,14 +1230,14 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#getcurrentposition-method" id="ref-for-getcurrentposition-method">getCurrentPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③③">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list②">post-prerendering activation steps list</a> and return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑨">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list②">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Geolocation watchPosition patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#watchposition-method" id="ref-for-watchposition-method">watchPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③④">prerendering browsing context</a>, then:</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc④">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⓪">prerendering browsing context</a>, then:</p>
       <ol>
        <li data-md>
         <p>Let <var>watchProcessId</var> be a new unique <a data-link-type="dfn" href="https://w3c.github.io/geolocation-api/#dfn-watch-process" id="ref-for-dfn-watch-process">watch process</a> ID, and note it as a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</dfn>.</p>
@@ -1227,7 +1250,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#clearwatch-method" id="ref-for-clearwatch-method">clearWatch(watchId)</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑤">prerendering browsing context</a>, then:</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④①">prerendering browsing context</a>, then:</p>
       <ol>
        <li data-md>
         <p>If <var>watchId</var> is a <a data-link-type="dfn" href="#post-prerendering-activation-geolocation-watch-process-id" id="ref-for-post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</a>, then remove its corresponding steps from <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a>.</p>
@@ -1247,7 +1270,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      <li data-md>
       <p>If <var>document</var> is null, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
      <li data-md>
-      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑥">prerendering browsing context</a>, then append the following steps to <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc⑤">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, then append the following steps to <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="7.3.5" id="patch-notifications"><span class="secno">7.3.5. </span><span class="content">Notifications API</span><a class="self-link" href="#patch-notifications"></a></h4>
@@ -1256,15 +1279,15 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-notification" id="ref-for-dom-notification-notification">Notification()</a></code> constructor steps by replacing the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel②">in parallel</a> with the following: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑨">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑥">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑦">prerendering browsing context</a>, then append these steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a>. Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel③">in parallel</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑨">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑥">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④③">prerendering browsing context</a>, then append these steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a>. Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel③">in parallel</a>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Notification permission patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-permission" id="ref-for-dom-notification-permission">permission</a></code> static getter steps by replacing them with the following: 
     <ol>
      <li data-md>
-      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object">current global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑦">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑧">prerendering browsing context</a>, then return "<code>default</code>".</p>
-      <p class="note" role="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑨">prerendering browsing contexts</a>. Web developers can then call <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission①">Notification.requestPermission()</a></code>, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "<code>granted</code>" or "<code>denied</code>", so the browser might not actually ask the user like would normally be the case with "<code>default</code>". But that’s OK: it’s not observable to web developer code.</p>
+      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object">current global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑦">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④④">prerendering browsing context</a>, then return "<code>default</code>".</p>
+      <p class="note" role="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑤">prerendering browsing contexts</a>. Web developers can then call <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission①">Notification.requestPermission()</a></code>, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "<code>granted</code>" or "<code>denied</code>", so the browser might not actually ask the user like would normally be the case with "<code>default</code>". But that’s OK: it’s not observable to web developer code.</p>
      <li data-md>
       <p>Otherwise, <a data-link-type="dfn" href="https://notifications.spec.whatwg.org/#get-the-notifications-permission-state" id="ref-for-get-the-notifications-permission-state">get the notifications permission state</a> and return it.</p>
     </ol>
@@ -1279,7 +1302,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-start" id="ref-for-dom-sensor-start">start()</a></code> method steps by inserting the following steps after the state is set to "<code>activating</code>": 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⓪">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑧">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⓪">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑥">post-prerendering activation steps list</a> and return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⓪">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑧">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑥">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑥">post-prerendering activation steps list</a> and return.</p>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⓪">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot">[[state]]</a></code> is "<code>idle</code>", then return.</p>
       <p class="note" role="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-stop" id="ref-for-dom-sensor-stop">stop()</a></code> was called, we do nothing upon activating the prerender. </p>
@@ -1294,7 +1317,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/battery/#dom-navigator-getbattery" id="ref-for-dom-navigator-getbattery">getBattery()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑨">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④①">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-battery-promise" id="ref-for-dfn-battery-promise">battery promise</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc⑨">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑦">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-battery-promise" id="ref-for-dfn-battery-promise">battery promise</a>.</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="7.3.11" id="patch-orientation-lock"><span class="secno">7.3.11. </span><span class="content">Screen Orientation API</span><a class="self-link" href="#patch-orientation-lock"></a></h4>
@@ -1304,7 +1327,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      <li data-md>
       <p>Let <var>promise</var> be a new promise.</p>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑤">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⓪">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④②">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑥">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑧">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑤">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①⓪">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑧">prerendering browsing context</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑥">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑧">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
      <li data-md>
       <p>If the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#user-agent" id="ref-for-user-agent①">user agent</a> does not support locking the screen orientation, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notsupportederror" id="ref-for-notsupportederror">NotSupportedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code> and return <var>promise</var>.</p>
      <li data-md>
@@ -1320,10 +1343,10 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-navigator-getgamepads" id="ref-for-dom-navigator-getgamepads">getGamepads()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④③">prerendering browsing context</a>, then return an empty sequence.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①①">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑨">prerendering browsing context</a>, then return an empty sequence.</p>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="gamepad events patch"> Modify the discussion of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected">gamepadconnected</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepaddisconnected" id="ref-for-dfn-gamepaddisconnected">gamepaddisconnected</a></code> events to specify that the user agent must not dispatch these events if the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window④">Window</a></code> object’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④④">prerendering browsing context</a>. </div>
+   <div class="algorithm" data-algorithm="gamepad events patch"> Modify the discussion of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected">gamepadconnected</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepaddisconnected" id="ref-for-dfn-gamepaddisconnected">gamepaddisconnected</a></code> events to specify that the user agent must not dispatch these events if the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/window-object.html#window" id="ref-for-window④">Window</a></code> object’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①②">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑤⓪">prerendering browsing context</a>. </div>
    <div class="algorithm" data-algorithm="gamepadconnected post-prerendering">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected①">gamepadconnected</a></code> section to indicate that every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①③">Document</a></code> <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a> should gain the following steps: 
     <ol>
@@ -1341,7 +1364,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      Modify the <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices" id="ref-for-dom-mediadevices">MediaDevices</a></code> section by prepending the following step to the <a data-link-type="dfn" href="https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps" id="ref-for-dfn-device-change-notification-steps">device change notification steps</a>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑤">prerendering browsing context</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc①③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑤①">prerendering browsing context</a>, then return.</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="7.3.16" id="audio-output-patch"><span class="secno">7.3.16. </span><span class="content">Audio Output Devices API</span><a class="self-link" href="#audio-output-patch"></a></h4>
@@ -1368,7 +1391,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②③">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-speak" id="ref-for-dom-speechsynthesis-speak">speak(utterance)</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-cancel" id="ref-for-dom-speechsynthesis-cancel">cancel()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-pause" id="ref-for-dom-speechsynthesis-pause">pause()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-resume" id="ref-for-dom-speechsynthesis-resume">resume()</a></code>.</p>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②④">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-start" id="ref-for-dom-speechrecognition-start">start()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-stop" id="ref-for-dom-speechrecognition-stop">stop()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-abort" id="ref-for-dom-speechrecognition-abort">abort()</a></code>.</p>
    <h3 class="heading settled" data-level="7.4" id="implicitly-restricted"><span class="secno">7.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
-   <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context④⑥">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑦">active document</a> will never have. These properties include:</p>
+   <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑤②">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑦">active document</a> will never have. These properties include:</p>
    <ul>
     <li data-md>
      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation">sticky activation</a></p>
@@ -1449,6 +1472,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <li><a href="#prerendering-browsing-context">prerendering browsing context</a><span>, in § 3.2</span>
    <li><a href="#document-prerendering-browsing-contexts-map">prerendering browsing contexts map</a><span>, in § 3.2</span>
    <li><a href="#eventdef-document-prerenderingchange">prerenderingchange</a><span>, in § 3.1</span>
+   <li><a href="#prerendering-browsing-context-remove-from-initiator">remove from initiator</a><span>, in § 3.2</span>
    <li><a href="#script-closable">script-closable</a><span>, in § 6.1</span>
    <li><a href="#start-user-agent-initiated-prerendering">start user-agent initiated prerendering</a><span>, in § 3.2</span>
   </ul>
@@ -1549,7 +1573,8 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
     <li><a href="#ref-for-concept-node-document">1. Link type "prerender"</a> <a href="#ref-for-concept-node-document①">(2)</a> <a href="#ref-for-concept-node-document②">(3)</a> <a href="#ref-for-concept-node-document③">(4)</a>
     <li><a href="#ref-for-concept-node-document④">3.2. Prerendering browsing contexts</a>
     <li><a href="#ref-for-concept-node-document⑤">3.3. Modifications to creating browsing contexts</a>
-    <li><a href="#ref-for-concept-node-document⑥">7.1. Downloading resources</a>
+    <li><a href="#ref-for-concept-node-document⑥">4.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-concept-node-document⑦">7.1. Downloading resources</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-node">
@@ -1563,6 +1588,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <ul>
     <li><a href="#ref-for-concept-document-origin">1. Link type "prerender"</a>
     <li><a href="#ref-for-concept-document-origin①">3.2. Prerendering browsing contexts</a> <a href="#ref-for-concept-document-origin②">(2)</a> <a href="#ref-for-concept-document-origin③">(3)</a>
+    <li><a href="#ref-for-concept-document-origin④">4.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-current-realm">
@@ -1900,6 +1926,12 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
     <li><a href="#ref-for-cannot-show-simple-dialogs">7.2. User prompts</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-bc-container">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#bc-container">https://html.spec.whatwg.org/multipage/browsers.html#bc-container</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-bc-container">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-bc-container①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-creating-a-new-nested-browsing-context">
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-nested-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-nested-browsing-context</a><b>Referenced in:</b>
    <ul>
@@ -1934,6 +1966,13 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <a href="https://html.spec.whatwg.org/multipage/parsing.html#delay-the-load-event">https://html.spec.whatwg.org/multipage/parsing.html#delay-the-load-event</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-delay-the-load-event">1. Link type "prerender"</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-a-browsing-context-is-discarded">
+   <a href="https://html.spec.whatwg.org/multipage/window-object.html#a-browsing-context-is-discarded">https://html.spec.whatwg.org/multipage/window-object.html#a-browsing-context-is-discarded</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-a-browsing-context-is-discarded">3.2. Prerendering browsing contexts</a> <a href="#ref-for-a-browsing-context-is-discarded①">(2)</a> <a href="#ref-for-a-browsing-context-is-discarded②">(3)</a>
+    <li><a href="#ref-for-a-browsing-context-is-discarded③">4.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-discard-a-document">
@@ -2120,7 +2159,8 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-fetch">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch">https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-fetch</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-process-a-navigate-fetch">4.2. Redirect handling</a> <a href="#ref-for-process-a-navigate-fetch①">(2)</a> <a href="#ref-for-process-a-navigate-fetch②">(3)</a>
+    <li><a href="#ref-for-process-a-navigate-fetch">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-process-a-navigate-fetch①">(2)</a>
+    <li><a href="#ref-for-process-a-navigate-fetch②">4.2. Redirect handling</a> <a href="#ref-for-process-a-navigate-fetch③">(2)</a> <a href="#ref-for-process-a-navigate-fetch④">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-process-a-navigate-response">
@@ -2185,6 +2225,12 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
     <li><a href="#ref-for-relevant-settings-object">7.3.12. Gamepad</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-bcg-remove">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#bcg-remove">https://html.spec.whatwg.org/multipage/browsers.html#bcg-remove</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-bcg-remove">3.2. Prerendering browsing contexts</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-request">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request</a><b>Referenced in:</b>
    <ul>
@@ -2208,7 +2254,8 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <ul>
     <li><a href="#ref-for-same-origin">1. Link type "prerender"</a>
     <li><a href="#ref-for-same-origin①">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-same-origin②">4.2. Redirect handling</a>
+    <li><a href="#ref-for-same-origin②">4.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-same-origin③">4.2. Redirect handling</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-sandboxed-orientation-lock-browsing-context-flag">
@@ -2266,9 +2313,9 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-top-level-browsing-context">3.2. Prerendering browsing contexts</a> <a href="#ref-for-top-level-browsing-context①">(2)</a>
-    <li><a href="#ref-for-top-level-browsing-context②">4.1. Allowing activation in place of navigation</a>
-    <li><a href="#ref-for-top-level-browsing-context③">6. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-top-level-browsing-context④">6.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-top-level-browsing-context②">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-top-level-browsing-context③">(2)</a> <a href="#ref-for-top-level-browsing-context④">(3)</a>
+    <li><a href="#ref-for-top-level-browsing-context⑤">6. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-top-level-browsing-context⑥">6.1. APIs for creating and navigating browsing contexts by name</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-transient-activation">
@@ -2373,6 +2420,12 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <a href="https://infra.spec.whatwg.org/#ordered-map">https://infra.spec.whatwg.org/#ordered-map</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-ordered-map">3.2. Prerendering browsing contexts</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-map-remove">
+   <a href="https://infra.spec.whatwg.org/#map-remove">https://infra.spec.whatwg.org/#map-remove</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-map-remove">3.2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-tuple">
@@ -2623,7 +2676,8 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <ul>
     <li><a href="#ref-for-concept-url-origin">1. Link type "prerender"</a>
     <li><a href="#ref-for-concept-url-origin①">3.2. Prerendering browsing contexts</a> <a href="#ref-for-concept-url-origin②">(2)</a>
-    <li><a href="#ref-for-concept-url-origin③">4.2. Redirect handling</a>
+    <li><a href="#ref-for-concept-url-origin③">4.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-concept-url-origin④">4.2. Redirect handling</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
@@ -2946,12 +3000,14 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      <li><span class="dfn-paneled" id="term-for-window-bc">browsing context <small>(for Window)</small></span>
      <li><span class="dfn-paneled" id="term-for-browsing-context-connected">browsing-context connected</span>
      <li><span class="dfn-paneled" id="term-for-cannot-show-simple-dialogs">cannot show simple dialogs</span>
+     <li><span class="dfn-paneled" id="term-for-bc-container">container</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-new-nested-browsing-context">create a new nested browsing context</span>
      <li><span class="dfn-paneled" id="term-for-initialise-the-document-object">create and initialize a document object</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context</span>
      <li><span class="dfn-paneled" id="term-for-current-global-object">current global object</span>
      <li><span class="dfn-paneled" id="term-for-current-playback-position">current playback position</span>
      <li><span class="dfn-paneled" id="term-for-delay-the-load-event">delays the load event</span>
+     <li><span class="dfn-paneled" id="term-for-a-browsing-context-is-discarded">discard</span>
      <li><span class="dfn-paneled" id="term-for-discard-a-document">discard a document</span>
      <li><span class="dfn-paneled" id="term-for-she-document">document</span>
      <li><span class="dfn-paneled" id="term-for-downloading-hyperlinks">download the hyperlink</span>
@@ -2991,6 +3047,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      <li><span class="dfn-paneled" id="term-for-concept-relevant-global">relevant global object</span>
      <li><span class="dfn-paneled" id="term-for-concept-relevant-realm">relevant realm</span>
      <li><span class="dfn-paneled" id="term-for-relevant-settings-object">relevant settings object</span>
+     <li><span class="dfn-paneled" id="term-for-bcg-remove">remove</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-request">request</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-reserved-environment">reserved environment</span>
      <li><span class="dfn-paneled" id="term-for-resulting-url-record">resulting url record</span>
@@ -3028,6 +3085,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
      <li><span class="dfn-paneled" id="term-for-list-item">item</span>
      <li><span class="dfn-paneled" id="term-for-list">list</span>
      <li><span class="dfn-paneled" id="term-for-ordered-map">ordered map</span>
+     <li><span class="dfn-paneled" id="term-for-map-remove">remove</span>
      <li><span class="dfn-paneled" id="term-for-tuple">tuple</span>
      <li><span class="dfn-paneled" id="term-for-user-agent">user agent</span>
     </ul>
@@ -3290,7 +3348,7 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <dt id="biblio-webusb">[WEBUSB]
    <dd><a href="https://wicg.github.io/webusb/"><cite>WebUSB API</cite></a>. cg-draft. URL: <a href="https://wicg.github.io/webusb/">https://wicg.github.io/webusb/</a>
    <dt id="biblio-webxr">[WEBXR]
-   <dd>Brandon Jones; Manish Goregaokar; Rik Cabanier. <a href="https://www.w3.org/TR/webxr/"><cite>WebXR Device API</cite></a>. 5 January 2022. WD. URL: <a href="https://www.w3.org/TR/webxr/">https://www.w3.org/TR/webxr/</a>
+   <dd>Brandon Jones; Manish Goregaokar; Rik Cabanier. <a href="https://www.w3.org/TR/webxr/"><cite>WebXR Device API</cite></a>. 7 February 2022. WD. URL: <a href="https://www.w3.org/TR/webxr/">https://www.w3.org/TR/webxr/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
@@ -3353,30 +3411,30 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
   <aside class="dfn-panel" data-for="prerendering-browsing-context">
    <b><a href="#prerendering-browsing-context">#prerendering-browsing-context</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prerendering-browsing-context">3.2. Prerendering browsing contexts</a> <a href="#ref-for-prerendering-browsing-context①">(2)</a> <a href="#ref-for-prerendering-browsing-context②">(3)</a> <a href="#ref-for-prerendering-browsing-context③">(4)</a> <a href="#ref-for-prerendering-browsing-context④">(5)</a>
-    <li><a href="#ref-for-prerendering-browsing-context⑤">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context⑥">(2)</a> <a href="#ref-for-prerendering-browsing-context⑦">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context⑧">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context⑨">(2)</a> <a href="#ref-for-prerendering-browsing-context①⓪">(3)</a> <a href="#ref-for-prerendering-browsing-context①①">(4)</a>
-    <li><a href="#ref-for-prerendering-browsing-context①②">4.3. Maintaining a trivial session history</a> <a href="#ref-for-prerendering-browsing-context①③">(2)</a> <a href="#ref-for-prerendering-browsing-context①④">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context①⑤">4.4. Preventing forbidden navigations</a> <a href="#ref-for-prerendering-browsing-context①⑥">(2)</a> <a href="#ref-for-prerendering-browsing-context①⑦">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context①⑧">4.5. Interaction with Worker Lifetime</a> <a href="#ref-for-prerendering-browsing-context①⑨">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⓪">5.1. Interaction with Page Visibility</a>
-    <li><a href="#ref-for-prerendering-browsing-context②①">5.2. Interaction with system focus</a>
-    <li><a href="#ref-for-prerendering-browsing-context②②">6. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-prerendering-browsing-context②③">6.1. APIs for creating and navigating browsing contexts by name</a> <a href="#ref-for-prerendering-browsing-context②④">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⑤">7. Preventing intrusive behaviors</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⑥">7.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context②⑦">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context②⑧">7.2. User prompts</a> <a href="#ref-for-prerendering-browsing-context②⑨">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context③⓪">7.3. Delaying async API results</a>
-    <li><a href="#ref-for-prerendering-browsing-context③①">7.3.1. The [DelayWhilePrerendering] extended attribute</a> <a href="#ref-for-prerendering-browsing-context③②">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context③③">7.3.3. Geolocation API</a> <a href="#ref-for-prerendering-browsing-context③④">(2)</a> <a href="#ref-for-prerendering-browsing-context③⑤">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context③⑥">7.3.4. Web Serial API</a>
-    <li><a href="#ref-for-prerendering-browsing-context③⑦">7.3.5. Notifications API</a> <a href="#ref-for-prerendering-browsing-context③⑧">(2)</a> <a href="#ref-for-prerendering-browsing-context③⑨">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context④⓪">7.3.8. Generic Sensor API</a>
-    <li><a href="#ref-for-prerendering-browsing-context④①">7.3.10. Battery Status API</a>
-    <li><a href="#ref-for-prerendering-browsing-context④②">7.3.11. Screen Orientation API</a>
-    <li><a href="#ref-for-prerendering-browsing-context④③">7.3.12. Gamepad</a> <a href="#ref-for-prerendering-browsing-context④④">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context④⑤">7.3.15. Media Capture and Streams</a>
-    <li><a href="#ref-for-prerendering-browsing-context④⑥">7.4. Implicitly restricted APIs</a>
+    <li><a href="#ref-for-prerendering-browsing-context">3.2. Prerendering browsing contexts</a> <a href="#ref-for-prerendering-browsing-context①">(2)</a> <a href="#ref-for-prerendering-browsing-context②">(3)</a> <a href="#ref-for-prerendering-browsing-context③">(4)</a> <a href="#ref-for-prerendering-browsing-context④">(5)</a> <a href="#ref-for-prerendering-browsing-context⑤">(6)</a> <a href="#ref-for-prerendering-browsing-context⑥">(7)</a> <a href="#ref-for-prerendering-browsing-context⑦">(8)</a> <a href="#ref-for-prerendering-browsing-context⑧">(9)</a>
+    <li><a href="#ref-for-prerendering-browsing-context⑨">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context①⓪">(2)</a> <a href="#ref-for-prerendering-browsing-context①①">(3)</a> <a href="#ref-for-prerendering-browsing-context①②">(4)</a> <a href="#ref-for-prerendering-browsing-context①③">(5)</a>
+    <li><a href="#ref-for-prerendering-browsing-context①④">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context①⑤">(2)</a> <a href="#ref-for-prerendering-browsing-context①⑥">(3)</a> <a href="#ref-for-prerendering-browsing-context①⑦">(4)</a>
+    <li><a href="#ref-for-prerendering-browsing-context①⑧">4.3. Maintaining a trivial session history</a> <a href="#ref-for-prerendering-browsing-context①⑨">(2)</a> <a href="#ref-for-prerendering-browsing-context②⓪">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context②①">4.4. Preventing forbidden navigations</a> <a href="#ref-for-prerendering-browsing-context②②">(2)</a> <a href="#ref-for-prerendering-browsing-context②③">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context②④">4.5. Interaction with Worker Lifetime</a> <a href="#ref-for-prerendering-browsing-context②⑤">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑥">5.1. Interaction with Page Visibility</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑦">5.2. Interaction with system focus</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑧">6. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-prerendering-browsing-context②⑨">6.1. APIs for creating and navigating browsing contexts by name</a> <a href="#ref-for-prerendering-browsing-context③⓪">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③①">7. Preventing intrusive behaviors</a>
+    <li><a href="#ref-for-prerendering-browsing-context③②">7.1. Downloading resources</a> <a href="#ref-for-prerendering-browsing-context③③">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③④">7.2. User prompts</a> <a href="#ref-for-prerendering-browsing-context③⑤">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑥">7.3. Delaying async API results</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑦">7.3.1. The [DelayWhilePrerendering] extended attribute</a> <a href="#ref-for-prerendering-browsing-context③⑧">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context③⑨">7.3.3. Geolocation API</a> <a href="#ref-for-prerendering-browsing-context④⓪">(2)</a> <a href="#ref-for-prerendering-browsing-context④①">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context④②">7.3.4. Web Serial API</a>
+    <li><a href="#ref-for-prerendering-browsing-context④③">7.3.5. Notifications API</a> <a href="#ref-for-prerendering-browsing-context④④">(2)</a> <a href="#ref-for-prerendering-browsing-context④⑤">(3)</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⑥">7.3.8. Generic Sensor API</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⑦">7.3.10. Battery Status API</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⑧">7.3.11. Screen Orientation API</a>
+    <li><a href="#ref-for-prerendering-browsing-context④⑨">7.3.12. Gamepad</a> <a href="#ref-for-prerendering-browsing-context⑤⓪">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context⑤①">7.3.15. Media Capture and Streams</a>
+    <li><a href="#ref-for-prerendering-browsing-context⑤②">7.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="dom-document-prerendering">
@@ -3439,17 +3497,23 @@ immediate task. In that case the user agent can cancel the prerendering.</p>
    <b><a href="#prerendering-browsing-context-activate">#prerendering-browsing-context-activate</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-prerendering-browsing-context-activate">3.2. Prerendering browsing contexts</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate①">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context-activate②">(2)</a> <a href="#ref-for-prerendering-browsing-context-activate③">(3)</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate④">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context-activate⑤">(2)</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate⑥">7.1. Downloading resources</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate⑦">7.3. Delaying async API results</a>
-    <li><a href="#ref-for-prerendering-browsing-context-activate⑧">7.3.1. The [DelayWhilePrerendering] extended attribute</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate①">4.1. Allowing activation in place of navigation</a> <a href="#ref-for-prerendering-browsing-context-activate②">(2)</a> <a href="#ref-for-prerendering-browsing-context-activate③">(3)</a> <a href="#ref-for-prerendering-browsing-context-activate④">(4)</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate⑤">4.2. Redirect handling</a> <a href="#ref-for-prerendering-browsing-context-activate⑥">(2)</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate⑦">7.1. Downloading resources</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate⑧">7.3. Delaying async API results</a>
+    <li><a href="#ref-for-prerendering-browsing-context-activate⑨">7.3.1. The [DelayWhilePrerendering] extended attribute</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerendering-browsing-context-finalize-activation">
    <b><a href="#prerendering-browsing-context-finalize-activation">#prerendering-browsing-context-finalize-activation</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-prerendering-browsing-context-finalize-activation">3.2. Prerendering browsing contexts</a> <a href="#ref-for-prerendering-browsing-context-finalize-activation①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="prerendering-browsing-context-remove-from-initiator">
+   <b><a href="#prerendering-browsing-context-remove-from-initiator">#prerendering-browsing-context-remove-from-initiator</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prerendering-browsing-context-remove-from-initiator">3.2. Prerendering browsing contexts</a> <a href="#ref-for-prerendering-browsing-context-remove-from-initiator①">(2)</a> <a href="#ref-for-prerendering-browsing-context-remove-from-initiator②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="can-activate-a-prerender">
