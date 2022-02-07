@@ -29,6 +29,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: creating a new top-level browsing context; url: creating-a-new-top-level-browsing-context
       for: browsing context
         text: remove; url: bcg-remove;
+      text: fully active; url: fully-active
     urlPrefix: history.html
       text: session history; url: session-history
     urlPrefix: browsing-the-web.html
@@ -52,6 +53,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: resulting URL record
     urlPrefix: webappapis.html
       text: script; url: concept-script
+    urlPrefix: workers.html
+      text: The worker's lifetime; url: the-worker's-lifetime
+      text: active needed worker; url: active-needed-worker
     urlPrefix: media.html
       text: playing the media resource; url: playing-the-media-resource
       text: current playback position; url: current-playback-position
@@ -159,7 +163,31 @@ spec: screen-capture; urlPrefix: https://w3c.github.io/mediacapture-screen-share
 spec: audio-output; urlPrefix: https://w3c.github.io/mediacapture-output/
   type: method; for: MediaDevices
     text: selectAudioOutput(); url: dom-mediadevices-selectaudiooutput
-
+spec: speech-api; urlPrefix: https://wicg.github.io/speech-api/
+  type: interface
+    text: SpeechSynthesis; url: speechsynthesis
+  type: method; for: SpeechSynthesis
+    text: speak(utterance); url: dom-speechsynthesis-speak
+    text: cancel(); url: dom-speechsynthesis-cancel
+    text: pause(); url: dom-speechsynthesis-pause
+    text: resume(); url: dom-speechsynthesis-resume
+    text: getVoices(); url: dom-speechsynthesis-getvoices
+  type: interface
+    text: SpeechRecognition; url: speechrecognition
+  type: method; for: SpeechRecognition
+    text: start(); url: dom-speechrecognition-start
+    text: stop(); url: dom-speechrecognition-stop
+    text: abort(); url: dom-speechrecognition-abort
+spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
+  type: interface
+    text: ServiceWorkerRegistration; url: serviceworkerregistration-interface
+  type: method; for: ServiceWorkerRegistration
+    text: update(); url: dom-serviceworkerregistration-update
+    text: unregister(); url: dom-serviceworkerregistration-unregister
+  type: interface
+    text: ServiceWorkerContainer; url: serviceworkercontainer-interface
+  type: method; for: ServiceWorkerRegistration
+    text: register(scriptURL, options); url: dom-serviceworkercontainer-register
 </pre>
 <pre class="biblio">
 {
@@ -574,6 +602,17 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
   1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
 </div>
 
+<h3 id="interaction-with-workers">Interaction with Worker Lifetime</h3>
+
+<div algorithm=The worker's lifetime patch">
+  In <a spec=HTML>The worker's lifetime</a>, modify the definition of [=active needed worker=], to count workers with a [=prerendering browsing context=] owner as not [=active needed worker|active=]:
+
+  A worker is said to be an [=active needed worker=] if any of its [=WorkerGlobalScope/owner set|owners=] are either {{Document}} objects that are [=fully active=] and their [=Document/browsing context=] is not a [=prerendering browsing context=], or [=active needed worker|active needed workers=].
+
+  <p class="note">This means that the worker's script would load, but the execution would be suspended until the document is activated.
+
+</div>
+
 <h3 id="cleanup-upon-discarding">Cleanup upon discarding a {{Document}}</h3>
 
 Modify the [=discard a document|discard=] algorithm for {{Document}}s by appending the following step:
@@ -673,6 +712,12 @@ The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and 
   1. Otherwise, return the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
 </div>
 
+<h4 id="patch-service-workers">Service Workers</h3>
+
+Add {{[DelayWhilePrerendering]}} to {{ServiceWorkerRegistration/update()}}, {{ServiceWorkerRegistration/unregister()}}, and {{ServiceWorkerContainer/register(scriptURL, options)}}.
+
+<p class="note">This allows prerendered page to take advantage of existing service workers, but not have any effect on the state of service worker registrations.</p>
+
 <h4 id="patch-geolocation">Geolocation API</h4>
 
 <div algorithm="Geolocation getCurrentPosition patch">
@@ -737,8 +782,6 @@ Add {{[DelayWhilePrerendering]}} to {{Notification/requestPermission()}}.
 
   1. Otherwise, <a spec="NOTIFICATIONS">get the notifications permission state</a> and return it.
 </div>
-
-TODO: what about the service worker API? Depends on what we're doing for service workers in prerendering BCs...
 
 <h4 id="patch-midi">Web MIDI API</h4>
 
@@ -870,6 +913,12 @@ Add {{[DelayWhilePrerendering]}} to {{XRSystem/requestSession()}}.
 <h4 id="credential-manamgenet-patch">Credential Manamgenet</h4>
 
 Add {{[DelayWhilePrerendering]}} to {{CredentialsContainer/get()}}, {{CredentialsContainer/store()}}, and {{CredentialsContainer/create()}}. 
+
+<h4 id="web-speech-patch">Web Speech API</h4>
+
+Add {{[DelayWhilePrerendering]}} to	{{SpeechSynthesis/speak(utterance)}}, {{SpeechSynthesis/cancel()}},	{{SpeechSynthesis/pause()}}, and {{SpeechSynthesis/resume()}}.
+
+Add {{[DelayWhilePrerendering]}} to {{SpeechRecognition/start()}}, {{SpeechRecognition/stop()}}, and {{SpeechRecognition/abort()}}.
 
 <h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 
