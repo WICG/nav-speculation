@@ -23,18 +23,24 @@ _Note: a browsing context is the right primitive here, as opposed to a `Window` 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of contents
 
-- [Example](#example)
-- [Restrictions](#restrictions)
-  - [Privacy-based restrictions](#privacy-based-restrictions)
-  - [Restrictions on the basis of being hidden](#restrictions-on-the-basis-of-being-hidden)
-  - [Restrictions on loaded content](#restrictions-on-loaded-content)
-  - [Purpose-specific APIs](#purpose-specific-apis)
-  - [Workers](#workers)
-- [Prerendering State API](#prerendering-state-api)
-- [Page lifecycle and freezing](#page-lifecycle-and-freezing)
-- [Session history](#session-history)
-- [Rendering-related behavior](#rendering-related-behavior)
-- [CSP integration](#csp-integration)
+- [Prerendering](#prerendering)
+  - [The Feature](#the-feature)
+  - [Triggering](#triggering)
+  - [How It Works](#how-it-works)
+  - [Table of contents](#table-of-contents)
+  - [Example](#example)
+  - [Restrictions](#restrictions)
+    - [Privacy-based restrictions](#privacy-based-restrictions)
+    - [Restrictions on the basis of being hidden](#restrictions-on-the-basis-of-being-hidden)
+    - [Restrictions on loaded content](#restrictions-on-loaded-content)
+    - [Purpose-specific APIs](#purpose-specific-apis)
+    - [Workers](#workers)
+  - [Prerendering State API](#prerendering-state-api)
+  - [Timing](#timing)
+  - [Page lifecycle and freezing](#page-lifecycle-and-freezing)
+  - [Session history](#session-history)
+  - [Rendering-related behavior](#rendering-related-behavior)
+  - [CSP integration](#csp-integration)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -151,6 +157,24 @@ if (document.prerendering) {
 ```
 
 Please read that sibling [explainer](./prerendering-state.md) for more details on the design choices and motivations there.
+
+## Timing
+Resource Timing and Navigation Timing use the <em>initial prerender navigation</em> as the time origin for milestones. This can be misleading because a prerendered page may have been created long before it was actually navigated to. Therefore, a new milestone for the start time of activation is added. Pages can use this milestone to measure user-perceived times.
+
+Example:
+```javascript
+// When the activation navigation started.
+let activationStart = performance.getEntriesByType('navigation')[0].activationStart;
+
+// When First Paint occurred:
+let firstPaint = performance.getEntriesByName('first-paint')[0].startTime;
+
+// When First Contentful Paint occurred:
+let firstContentfulPaint = performance.getEntriesByName('first-contentful-paint')[0].startTime;
+
+console.log('time to first paint: ' + (firstPaint - activationStart));
+console.log('time to first-contentful-paint: ' + (firstContentfulPaint - activationStart));
+```
 
 ## Page lifecycle and freezing
 
