@@ -74,7 +74,7 @@ When a document is fetched for the purpose of prerendering, the user-agent sends
 
 The server may decide at this point to cancel the prerendering, which would cause a full load of the document once the user performs an actual to the URL, by responsing [as described here](https://wicg.github.io/nav-speculation/prerendering.html#no-bad-navs). (TODO: put actual description here once we reach consensus)
 
-Developers might decide to implement such response, for example, in order to reduce server load in case where there are too many unfulfilled prerendered, or if prerendering may cause the page to reach some error condition.
+Developers might decide to implement such response, for example, in order to reduce server load in case where there are too many unfulfilled prerenders, or if prerendering may cause the page to reach some error condition.
 
 ## Restrictions
 
