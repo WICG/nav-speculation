@@ -29,6 +29,7 @@ _Note: a browsing context is the right primitive here, as opposed to a `Window` 
   - [How It Works](#how-it-works)
   - [Table of contents](#table-of-contents)
   - [Example](#example)
+  - [Opting Out](#opting-out)
   - [Restrictions](#restrictions)
     - [Privacy-based restrictions](#privacy-based-restrictions)
     - [Restrictions on the basis of being hidden](#restrictions-on-the-basis-of-being-hidden)
@@ -49,15 +50,15 @@ _Note: a browsing context is the right primitive here, as opposed to a `Window` 
 Consider that the user types the url `b.exa` in the address bar, and the user-agent decides that
 they're very likely to browse to `https://b.example`.
 
-The browser creates a prerendering browsing context, which it navigates to `https://b.example/`. This navigation takes place using [special fetch modes](./fetch.md), which ensure that `https://b.example/` has [opted in](./opt-in.md) to being prerendered.
+The browser creates a prerendering browsing context, which it navigates to `https://b.example/`. This navigation takes place with a [`Sec-Purpose` header](https://wicg.github.io/nav-speculation/prefetch.html#sec-purpose-header), which gives `https://b.example/` a chance to [opt-out](#opting-out) from being prerendered.
 
-Within this prerendering browsing context, assuming the opt-in check passes, loading of `https://b.example/` proceeds mostly as normal. This includes any expensive in-document JavaScript necessary to initialize the content found there. It could even include server- or client-side redirects to other pages from the same origin.
+Within this prerendering browsing context, assuming the prerender request succeeded, loading of `https://b.example/` proceeds mostly as normal. This includes any expensive in-document JavaScript necessary to initialize the content found there. It could even include server- or client-side redirects to other pages from the same origin.
 
 However, if `https://b.example/` requests notification permissions on first load, such a permission prompt will only be shown when the user navigates to `https://b.example` and the tab is displayed. Similarly, if `https://b.example/` performs an `alert()` call, the call will instantly return, without the user seeing anything.
 
 Now, the user finishes typing `b.example` and pressed the Return key. At this point the user agent notices that it has a prerendering browsing context originally created for `https://b.example/`, so it activates it and upgrades the invisible tab into a full-blown, displayed tab. Since `https://b.example/` was already loaded in the prerendering browsing context, this navigation occurs seamlessly and instantly, providing a great user experience.
 
-Upon activation, `https://b.example/` gets notified via [the API](#javascript-api). At this point, it now has access many of the previously restricted APIs, so it can upgrade itself.
+Upon activation, `https://b.example/` gets notified via [the API](#prerendering-state-api). At this point, it now has access many of the previously restricted APIs, so it can upgrade itself.
 
 ```js
 Notification.requestPermission().then(() => {
@@ -66,6 +67,14 @@ Notification.requestPermission().then(() => {
 ```
 
 This completes the journey to a fully-rendered view of `https://b.example/`, in a user-visible top-level browsing context.
+
+## Opting Out
+
+When a document is fetched for the purpose of prerendering, the user-agent sends an additional header: `Sec-Purpose: prefetch; prerender`. See [here]([`Sec-Purpose` header](https://wicg.github.io/nav-speculation/prefetch.html#sec-purpose-header)) for more details.
+
+The server may decide at this point to cancel the prerendering, which would cause a full load of the document once the user performs an actual to the URL, by responsing [as described here](https://wicg.github.io/nav-speculation/prerendering.html#no-bad-navs). (TODO: put actual description here once we reach consensus)
+
+Developers might decide to implement such response, for example, in order to reduce server load in case where there are too many unfulfilled prerendered, or if prerendering may cause the page to reach some error condition.
 
 ## Restrictions
 
