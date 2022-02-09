@@ -72,7 +72,7 @@ This completes the journey to a fully-rendered view of `https://b.example/`, in 
 
 When a document is fetched for the purpose of prerendering, the user-agent sends an additional header: `Sec-Purpose: prefetch; prerender`. See [the spec](https://wicg.github.io/nav-speculation/prefetch.html#sec-purpose-header) for more details.
 
-The server may decide at this point to cancel the prerendering, which would cause a full load of the document once the user performs an actual to the URL, by responsing [as described here](https://wicg.github.io/nav-speculation/prerendering.html#no-bad-navs). (TODO: put actual description here once we reach consensus)
+The server may decide at this point to cancel the prerendering, which would cause a full load of the document once the user performs an actual to the URL, by responsing [as described here](https://wicg.github.io/nav-speculation/prerendering.html#no-bad-navs). (TODO: we should pick one recommended response strategy from among the linked response strategies, and expand on it here.)
 
 Developers might decide to implement such response, for example, in order to reduce server load in case where there are too many unfulfilled prerenders, or if prerendering may cause the page to reach some error condition.
 
