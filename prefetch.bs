@@ -428,11 +428,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
     <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
-    <div class="issue">This does not fully address cookie isolation or migration (somewhat complicated by [[FETCH]] not dealing with it), and similar measures with authorization entries, TLS client certificates, and connection pools. This is currently complicated by the fact that even those that are covered by the [=network partition key=] are difficult to address while it's not possible to further partition.</div>
-
     <div class="issue">Update this to include the `` `Supports-Loading-Mode` `` mechanism to allow responses to continue despite cookies.</div>
-
-    <div class="issue">Further review is needed of the cookies-present handling and its interaction with redirects and caches.</div>
 </div>
 
 <div algorithm>
