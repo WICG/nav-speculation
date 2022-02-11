@@ -241,7 +241,7 @@ Given this, the non-prefetch case becomes, with the small addition of prefetch l
         <div class="note">This step, and the following condition, is added by this specification.</div>
     1. If |prefetchRecord| is not null, then:
         1. Let |navigationParams| be the result of [=performing prefetch response checks=] given |navigationId|, |request|, |prefetchRecord|, |sourceBrowsingContext|, |browsingContext|, |sandboxFlags|, |historyPolicyContainer|, |initiatorPolicyContainer|, |incumbentNavigationOrigin|, and |historyHandling|.
-        1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and |navigationParams|' [=navigation params/reserved environment=].
+        1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and |navigationParams|'s [=navigation params/reserved environment=].
 
             <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies.</div>
         1. [=Process a navigate response=] with |navigationType|, |allowedToDownload|, |hasTransientActivation|, and |navigationParams|.
@@ -486,7 +486,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
           <div class="note">|secondKey| is expected to match the value it would have had if this response had been processed as part of an ordinary navigation in |environment|'s [=environment/target browsing context=].</div>
       1. Let |destinationPartitionKey| be (|topLevelSite|, |secondKey|).
       1. Let |cookieStore| be the cookie store associated with |destinationPartitionKey|.
-      1. Let |newCookie| be a new cookie identical to |cookie|.
+      1. Let |newCookie| be a copy of |cookie|.
       1. Set |newCookie|'s creation-time and last-access-time to the current date and time.
       1. If |cookieStore| contains a cookie |existingCookie| with the same name, domain and path as the newly created cookie:
           1. Set the creation-time of |newCookie| to |existingCookie|'s creation-time.
