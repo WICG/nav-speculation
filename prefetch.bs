@@ -472,11 +472,15 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
           1. Set |topLevelSite| to the result of [=obtaining a site=] given [=tuple origin=] ("`https`", |cookie|'s domain, null, null).
 
             <div class="note">The use of the "`https`" scheme and null port here is arbitrary because cookies are visible across schemes and ports, in contrast to the usual same origin policy. The user agent's choice of associated cookie store, therefore, cannot be sensitive to either.</div>
+
+          <div class="note">When performing a prefetch in a [=top-level browsing context=], the request (including all redirects) is preparing for a top-level navigation. |environment|'s top-level site changes as redirects are followed, and since a redirect might be cross-site, |environment|'s top-level site might have changed since a given cookie was received. However, since the navigation is top-level, the origin delivering the cookie would have been the top-level site at the time. Since the cookie's domain has to be same-site with an origin delivering it, the cookie's domain can be used to determine the correct top-level site.</div>
       1. Otherwise:
           1. Let |topLevelOrigin| be |environment|'s [=environment/top-level origin=].
           1. If |topLevelOrigin| is null, then set |topLevelOrigin| to |environment|'s [=environment/top-level creation URL=]'s [=url/origin=].
           1. [=Assert=]: |topLevelOrigin| is an [=origin=].
           1. Set |topLevelSite| be the result of [=obtaining a site=] given |topLevelOrigin|.
+
+          <div class="note">When performing a prefetch in a [=nested browsing context=], the top-level site is determined by the [=top-level browsing context=] that contains it. Since that doesn't change as redirects are followed, |environment| can be used to establish the top-level site.</div>
       1. Let |secondKey| be null or an [=implementation-defined=] value.
 
           <div class="note">|secondKey| is expected to match the value it would have had if this response had been processed as part of an ordinary navigation in |environment|'s [=environment/target browsing context=].</div>
@@ -488,6 +492,8 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
           1. Set the creation-time of |newCookie| to |existingCookie|'s creation-time.
           1. Remove |existingCookie| from |cookieStore|.
       1. Insert |newCookie| into |cookieStore|.
+
+          <div class="note">This remove-and-insert pattern is consistent with what happens when [=receiving a cookie=].</div>
 </div>
 
 <h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
