@@ -461,7 +461,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-02-09">9 February 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-02-16">16 February 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -500,7 +500,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#concepts"><span class="secno">1</span> <span class="content">Concepts</span></a>
     <li><a href="#html-patches"><span class="secno">2</span> <span class="content">HTML Patches</span></a>
     <li><a href="#prefetch-algorithms"><span class="secno">3</span> <span class="content">Prefetch algorithms</span></a>
-    <li><a href="#sec-purpose-header"><span class="secno">4</span> <span class="content">The <code>Sec-Purpose</code> HTTP request header</span></a>
+    <li><a href="#cookies"><span class="secno">4</span> <span class="content">Cookies</span></a>
+    <li><a href="#sec-purpose-header"><span class="secno">5</span> <span class="content">The <code>Sec-Purpose</code> HTTP request header</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
@@ -531,11 +532,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-redirect-chain">redirect chain</dfn>, a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists①">list</a> of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">responses</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-expiry-time">expiry time</dfn>, a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp">DOMHighResTimeStamp</a></code></p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-noexport id="prefetch-record-isolated-partition-key">isolated partition key</dfn>, a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key">network partition key</a> or null (the default)</p>
    </ul>
    <p>A <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a>'s <dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-response">response</dfn> is the last <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a> in its <a data-link-type="dfn" href="#prefetch-record-redirect-chain" id="ref-for-prefetch-record-redirect-chain">redirect chain</a>, or null if that list <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-is-empty" id="ref-for-list-is-empty">is empty</a>.</p>
    <p>The user agent may remove elements from the <a data-link-type="dfn" href="#prefetch-buffer" id="ref-for-prefetch-buffer">prefetch buffer</a> even if they are not expired, e.g., due to resource constraints. Since records with expiry times in the past are never returned, they can be removed with no observable consequences.</p>
    <div class="algorithm" data-algorithm="store a prefetch record">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="store-a-prefetch-record">store a prefetch record</dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>url</var>, <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#sandboxing-flag-set" id="ref-for-sandboxing-flag-set">sandboxing flag set</a> <var>sandboxFlags</var>, and <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists②">list</a> of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response②">responses</a> <var>redirectChain</var>, perform the following steps. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="store-a-prefetch-record">store a prefetch record</dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>url</var>, <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#sandboxing-flag-set" id="ref-for-sandboxing-flag-set">sandboxing flag set</a> <var>sandboxFlags</var>, <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists②">list</a> of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response②">responses</a> <var>redirectChain</var>, and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key①">network partition key</a> or null <var>isolatedPartitionKey</var>, perform the following steps. 
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert">Assert</a>: <var>document</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#fully-active" id="ref-for-fully-active">fully active</a>.</p>
@@ -546,7 +549,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-remove" id="ref-for-list-remove">Remove</a> all elements whose <a data-link-type="dfn" href="#prefetch-record-url" id="ref-for-prefetch-record-url">URL</a> equals <var>url</var> and <a data-link-type="dfn" href="#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy">referrer policy</a> equals <var>referrerPolicy</var> from <var>document</var>’s <a data-link-type="dfn" href="#prefetch-buffer" id="ref-for-prefetch-buffer①">prefetch buffer</a>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> a <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record②">prefetch record</a> with <a data-link-type="dfn" href="#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a> <var>url</var>, <a data-link-type="dfn" href="#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, <a data-link-type="dfn" href="#prefetch-record-sandbox-flags-present" id="ref-for-prefetch-record-sandbox-flags-present">sandbox flags present</a> true if <var>sandboxFlags</var> is not empty and false otherwise, <a data-link-type="dfn" href="#prefetch-record-redirect-chain" id="ref-for-prefetch-record-redirect-chain①">redirect chain</a> <var>redirectChain</var> and <a data-link-type="dfn" href="#prefetch-record-expiry-time" id="ref-for-prefetch-record-expiry-time">expiry time</a> <var>expiryTime</var> to <var>document</var>’s <a data-link-type="dfn" href="#prefetch-buffer" id="ref-for-prefetch-buffer②">prefetch buffer</a>.</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">Append</a> a <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record②">prefetch record</a> with <a data-link-type="dfn" href="#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a> <var>url</var>, <a data-link-type="dfn" href="#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy①">referrer policy</a> <var>referrerPolicy</var>, <a data-link-type="dfn" href="#prefetch-record-sandbox-flags-present" id="ref-for-prefetch-record-sandbox-flags-present">sandbox flags present</a> true if <var>sandboxFlags</var> is not empty and false otherwise, <a data-link-type="dfn" href="#prefetch-record-redirect-chain" id="ref-for-prefetch-record-redirect-chain①">redirect chain</a> <var>redirectChain</var>, <a data-link-type="dfn" href="#prefetch-record-expiry-time" id="ref-for-prefetch-record-expiry-time">expiry time</a> <var>expiryTime</var>, and <a data-link-type="dfn" href="#prefetch-record-isolated-partition-key" id="ref-for-prefetch-record-isolated-partition-key">isolated partition key</a> <var>isolatedPartitionKey</var> to <var>document</var>’s <a data-link-type="dfn" href="#prefetch-buffer" id="ref-for-prefetch-buffer②">prefetch buffer</a>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="find a matching prefetch record">
@@ -730,7 +733,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p>Otherwise, set <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-reserved-client" id="ref-for-concept-request-reserved-client①①">reserved client</a> to <var>forceEnvironment</var>.</p>
         </ol>
-        <div class="note" role="note">These steps ensure that <var>environment</var> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment" id="ref-for-environment④">environment</a> which the correct <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key">network partition key</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-active-service-worker" id="ref-for-concept-environment-active-service-worker">active service worker</a>, etc., depending on whether it’s a top-level navigation and if not, what the top-level site is.</div>
+        <div class="note" role="note">These steps ensure that <var>environment</var> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment" id="ref-for-environment④">environment</a> which the correct <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key②">network partition key</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-active-service-worker" id="ref-for-concept-environment-active-service-worker">active service worker</a>, etc., depending on whether it’s a top-level navigation and if not, what the top-level site is.</div>
        <li data-md>
         <p>If the result of <var>shouldBlockNavigationRequest</var> given <var>request</var>, <var>navigationType</var>, and <var>environment</var> is "<code>Blocked</code>", then set <var>response</var> to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a> and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break">break</a>.</p>
        <li data-md>
@@ -792,6 +795,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <ol>
        <li data-md>
         <p>Let <var>navigationParams</var> be the result of <a data-link-type="dfn" href="#perform-prefetch-response-checks" id="ref-for-perform-prefetch-response-checks">performing prefetch response checks</a> given <var>navigationId</var>, <var>request</var>, <var>prefetchRecord</var>, <var>sourceBrowsingContext</var>, <var>browsingContext</var>, <var>sandboxFlags</var>, <var>historyPolicyContainer</var>, <var>initiatorPolicyContainer</var>, <var>incumbentNavigationOrigin</var>, and <var>historyHandling</var>.</p>
+       <li data-md>
+        <p>If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-isolated-partition-key" id="ref-for-prefetch-record-isolated-partition-key①">isolated partition key</a> is not null, then <a data-link-type="dfn" href="#copy-prefetch-cookies" id="ref-for-copy-prefetch-cookies">copy prefetch cookies</a> given <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-isolated-partition-key" id="ref-for-prefetch-record-isolated-partition-key②">isolated partition key</a> and <var>navigationParams</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment" id="ref-for-navigation-params-reserved-environment①">reserved environment</a>.</p>
+        <div class="note" role="note">This copy is complete before continuing, in the sense that subresource fetches, <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie" id="ref-for-dom-document-cookie">document.cookie</a></code>, etc. can observe the cookies.</div>
        <li data-md>
         <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-response" id="ref-for-process-a-navigate-response">Process a navigate response</a> with <var>navigationType</var>, <var>allowedToDownload</var>, <var>hasTransientActivation</var>, and <var>navigationParams</var>.</p>
        <li data-md>
@@ -859,7 +865,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>resultPolicyContainer</var> be the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#determining-navigation-params-policy-container" id="ref-for-determining-navigation-params-policy-container①">determining navigation params policy container</a> given <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url⑧">URL</a>, <var>historyPolicyContainer</var>, <var>initiatorPolicyContainer</var>, null, and <var>responsePolicyContainer</var>.</p>
      <li data-md>
-      <p>Let <var>navigationParams</var> be a new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-pparams" id="ref-for-navigation-pparams①">navigation params</a> whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-id" id="ref-for-navigation-params-id①">id</a> is <var>navigationId</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request" id="ref-for-navigation-params-request①">request</a> is <var>request</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-response" id="ref-for-navigation-params-response①">response</a> is <var>response</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-origin" id="ref-for-navigation-params-origin①">origin</a> is <var>responseOrigin</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-policy-container" id="ref-for-navigation-params-policy-container①">policy container</a> is <var>resultPolicyContainer</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-sandboxing" id="ref-for-navigation-params-sandboxing①">final sandboxing flag set</a> is <var>finalSandboxFlags</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-coop" id="ref-for-navigation-params-coop①">cross-origin opener policy</a> is <var>responseCOOP</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-coop-enforcement-result" id="ref-for-navigation-params-coop-enforcement-result①">COOP enforcement result</a> is <var>coopEnforcementResult</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment" id="ref-for-navigation-params-reserved-environment①">reserved environment</a> is <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-reserved-client" id="ref-for-concept-request-reserved-client①⑤">reserved client</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-browsing-context" id="ref-for-navigation-params-browsing-context①">browsing context</a> is <var>browsingContext</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-hh" id="ref-for-navigation-params-hh①">history handling</a> is <var>historyHandling</var>, and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-has-cross-origin-redirects" id="ref-for-navigation-params-has-cross-origin-redirects①">has cross-origin redirects</a> is <var>hasCrossOriginRedirects</var>.</p>
+      <p>Let <var>navigationParams</var> be a new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-pparams" id="ref-for-navigation-pparams①">navigation params</a> whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-id" id="ref-for-navigation-params-id①">id</a> is <var>navigationId</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request" id="ref-for-navigation-params-request①">request</a> is <var>request</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-response" id="ref-for-navigation-params-response①">response</a> is <var>response</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-origin" id="ref-for-navigation-params-origin①">origin</a> is <var>responseOrigin</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-policy-container" id="ref-for-navigation-params-policy-container①">policy container</a> is <var>resultPolicyContainer</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-sandboxing" id="ref-for-navigation-params-sandboxing①">final sandboxing flag set</a> is <var>finalSandboxFlags</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-coop" id="ref-for-navigation-params-coop①">cross-origin opener policy</a> is <var>responseCOOP</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-coop-enforcement-result" id="ref-for-navigation-params-coop-enforcement-result①">COOP enforcement result</a> is <var>coopEnforcementResult</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment" id="ref-for-navigation-params-reserved-environment②">reserved environment</a> is <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-reserved-client" id="ref-for-concept-request-reserved-client①⑤">reserved client</a>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-browsing-context" id="ref-for-navigation-params-browsing-context①">browsing context</a> is <var>browsingContext</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-hh" id="ref-for-navigation-params-hh①">history handling</a> is <var>historyHandling</var>, and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-has-cross-origin-redirects" id="ref-for-navigation-params-has-cross-origin-redirects①">has cross-origin redirects</a> is <var>hasCrossOriginRedirects</var>.</p>
      <li data-md>
       <p>Run <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#process-a-navigate-response" id="ref-for-process-a-navigate-response①">process a navigate response</a> with <var>navigationType</var>, <var>allowedToDownload</var>, <var>hasTransientActivation</var>, and <var>navigationParams</var>.</p>
     </ol>
@@ -966,7 +972,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①⓪">Assert</a>: <var>response</var> is the last element of <var>redirectChain</var>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="#store-a-prefetch-record" id="ref-for-store-a-prefetch-record">Store a prefetch record</a> given <var>document</var>, <var>url</var>, <var>referrerPolicy</var>, <var>sandboxFlags</var> and <var>redirectChain</var>.</p>
+      <p><a data-link-type="dfn" href="#store-a-prefetch-record" id="ref-for-store-a-prefetch-record">Store a prefetch record</a> given <var>document</var>, <var>url</var>, <var>referrerPolicy</var>, <var>sandboxFlags</var>, <var>redirectChain</var> and null.</p>
     </ol>
    </div>
    <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="list-of-sufficiently-strict-speculative-navigation-referrer-policies">list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "<code>strict-origin-when-cross-origin</code>", "<code>strict-origin</code>", "<code>same-origin</code>", "<code>no-referrer</code>".</p>
@@ -987,7 +993,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>isolatedEnvironment</var> be a new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment" id="ref-for-environment⑦">environment</a> whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-id" id="ref-for-concept-environment-id③">id</a> is a unique opaque string, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-target-browsing-context" id="ref-for-concept-environment-target-browsing-context②">target browsing context</a> is <var>browsingContext</var>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-creation-url" id="ref-for-concept-environment-creation-url④">creation URL</a> is <code>about:blank</code>, <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-creation-url" id="ref-for-concept-environment-top-level-creation-url④">top-level creation URL</a> is <code>about:blank</code>, and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin④">top-level origin</a> is <var>isolationOrigin</var>.</p>
      <li data-md>
-      <p>Let <var>originalPartitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key②">determining the network partition key</a> given <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object⑦">relevant settings object</a>.</p>
+      <p>Let <var>isolatedPartitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key②">determining the network partition key</a> given <var>isolatedEnvironment</var>.</p>
+     <li data-md>
+      <p>Let <var>originalPartitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key③">determining the network partition key</a> given <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object⑦">relevant settings object</a>.</p>
      <li data-md>
       <p>Let <var>request</var> be a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①①">request</a> as follows:</p>
       <dl>
@@ -1041,7 +1049,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-set-structured-header" id="ref-for-concept-header-list-set-structured-header①">Set a structured field value</a> given (<a data-link-type="http-header" href="#http-headerdef-sec-purpose" id="ref-for-http-headerdef-sec-purpose①"><code>`Sec-Purpose`</code></a>, <var>purpose</var>) in <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list②">header list</a>.</p>
         <div class="note" role="note"> Implementations might also send vendor-specific headers, like Chromium’s <code>`Purpose`</code>/<code>`prefetch`</code>, Mozilla’s <code>`X-moz`</code>/<code>`prefetch`</code>, and WebKit’s <code>`X-Purpose`</code>/<code>`preview`</code>, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header. </div>
        <li data-md>
-        <p>Let <var>hypotheticalPartitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key③">determining the network partition key</a> given <var>environment</var>.</p>
+        <p>Let <var>hypotheticalPartitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key④">determining the network partition key</a> given <var>environment</var>.</p>
        <li data-md>
         <p>If <var>originalPartitionKey</var> is equal to <var>hypotheticalPartitionKey</var>, then return "<code>Blocked</code>".</p>
         <div class="note" role="note">The prefetch would end up in the same partition as the prefetch came from in this case. <var>environment</var> represents the environment that would ordinarily be used during navigation fetch.</div>
@@ -1083,18 +1091,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①④">Assert</a>: <var>response</var> is the last element of <var>redirectChain</var>.</p>
      <li data-md>
-      <p><a data-link-type="dfn" href="#store-a-prefetch-record" id="ref-for-store-a-prefetch-record①">Store a prefetch record</a> given <var>document</var>, <var>url</var>, <var>referrerPolicy</var>, <var>sandboxFlags</var> and <var>redirectChain</var>.</p>
+      <p><a data-link-type="dfn" href="#store-a-prefetch-record" id="ref-for-store-a-prefetch-record①">Store a prefetch record</a> given <var>document</var>, <var>url</var>, <var>referrerPolicy</var>, <var>sandboxFlags</var>, <var>redirectChain</var> and <var>isolatedPartitionKey</var>.</p>
     </ol>
     <div class="issue" id="issue-239df98e"><a class="self-link" href="#issue-239df98e"></a>This ends up setting the <code>`Cache-Control`</code> and <code>`Pragma`</code> request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#no-cache-prevent-cache-control" id="ref-for-no-cache-prevent-cache-control">prevent no-cache cache-control header modification flag</a>. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
-    <div class="issue" id="issue-d45eff4c"><a class="self-link" href="#issue-d45eff4c"></a>This does not fully address cookie isolation or migration (somewhat complicated by <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> not dealing with it), and similar measures with authorization entries, TLS client certificates, and connection pools. This is currently complicated by the fact that even those that are covered by the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key①">network partition key</a> are difficult to address while it’s not possible to further partition.</div>
     <div class="issue" id="issue-414cc665"><a class="self-link" href="#issue-414cc665"></a>Update this to include the <code>`Supports-Loading-Mode`</code> mechanism to allow responses to continue despite cookies.</div>
-    <div class="issue" id="issue-cdd1a31a"><a class="self-link" href="#issue-cdd1a31a"></a>Further review is needed of the cookies-present handling and its interaction with redirects and caches.</div>
    </div>
    <div class="algorithm" data-algorithm="prefetch">
      To <dfn data-dfn-type="dfn" data-export id="prefetch">prefetch<a class="self-link" href="#prefetch"></a></dfn> given a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑦">Document</a></code> <var>document</var>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①①">URL</a> <var>url</var>, <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy⑤">referrer policy</a> <var>referrerPolicy</var>, and <a data-link-type="dfn" href="#prefetch-ip-anonymization-policy" id="ref-for-prefetch-ip-anonymization-policy③">prefetch IP anonymization policy</a> <var>anonymizationPolicy</var>, perform the following steps. 
     <ol>
      <li data-md>
-      <p>Let <var>partitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key④">determining the network partition key</a> given <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object⑨">relevant settings object</a>.</p>
+      <p>Let <var>partitionKey</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key" id="ref-for-determine-the-network-partition-key⑤">determining the network partition key</a> given <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object⑨">relevant settings object</a>.</p>
      <li data-md>
       <p>Let <var>topLevelOrigin</var> be <var>url</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin⑨">origin</a> if <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc②">browsing context</a> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context④">top-level browsing context</a>, and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object" id="ref-for-relevant-settings-object①⓪">relevant settings object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin⑤">top-level origin</a> otherwise.</p>
      <li data-md>
@@ -1112,7 +1118,71 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p>Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.</p>
     </div>
    </div>
-   <h2 class="heading settled" data-level="4" id="sec-purpose-header"><span class="secno">4. </span><span class="content">The <code>Sec-Purpose</code> HTTP request header</span><a class="self-link" href="#sec-purpose-header"></a></h2>
+   <h2 class="heading settled" data-level="4" id="cookies"><span class="secno">4. </span><span class="content">Cookies</span><a class="self-link" href="#cookies"></a></h2>
+   <p><a data-link-type="biblio" href="#biblio-cookies">[COOKIES]</a> defines "cookies" which can be set using the <a data-link-type="http-header" href="https://httpwg.org/specs/rfc6265.html#set-cookie" id="ref-for-set-cookie"><code>`Set-Cookie`</code></a> response header field. Because <a data-link-type="dfn" href="#uncredentialed-prefetch" id="ref-for-uncredentialed-prefetch②">uncredentialed prefetch</a> forces a separate <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key③">network partition key</a> to be used, it’s necessary to copy these cookies into the ordinary partition as though they had been <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model">received</a> at the time of navigation.</p>
+   <div class="algorithm" data-algorithm="copy prefetch cookies">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="copy-prefetch-cookies">copy prefetch cookies</dfn> given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key④">network partition key</a> <var>isolatedPartitionKey</var> and an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#environment" id="ref-for-environment⑨">environment</a> <var>environment</var>, perform the following steps. 
+    <div class="note" role="note"> Though formally there is only one cookie store in <a data-link-type="biblio" href="#biblio-cookies">[COOKIES]</a>, some browsers partition cookie stores so as to separate, for example, cookies with the same domain when loaded with different top-level sites. See <a href="https://github.com/privacycg/storage-partitioning">Client-Side Storage Partitioning (Privacy CG)</a>. </div>
+    <ol>
+     <li data-md>
+      <p>Let <var>isolatedCookieStore</var> be the cookie store associated with <var>isolatedPartitionKey</var>.</p>
+     <li data-md>
+      <p>For each <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model①">cookie</a> <var>cookie</var> in <var>isolatedCookieStore</var>.</p>
+      <ol>
+       <li data-md>
+        <p>Remove <var>cookie</var> from <var>isolatedCookieStore</var>.</p>
+       <li data-md>
+        <p>A user agent may ignore a cookie in its entirety. If so, continue.</p>
+        <div class="note" role="note">This is consistent with <a data-link-type="biblio" href="#biblio-cookies">[COOKIES]</a> expressly permitting this when <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model②">receiving a cookie</a>.</div>
+       <li data-md>
+        <p>Let <var>topLevelSite</var> be null.</p>
+       <li data-md>
+        <p>If <var>environment</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-target-browsing-context" id="ref-for-concept-environment-target-browsing-context③">target browsing context</a> is a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context⑤">top-level browsing context</a>:</p>
+        <ol>
+         <li data-md>
+          <p>Set <var>topLevelSite</var> to the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site" id="ref-for-obtain-a-site①">obtaining a site</a> given <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-tuple" id="ref-for-concept-origin-tuple">tuple origin</a> ("<code>https</code>", <var>cookie</var>’s domain, null, null).</p>
+          <div class="note" role="note">The use of the "<code>https</code>" scheme and null port here is arbitrary because cookies are visible across schemes and ports, in contrast to the usual same origin policy. The user agent’s choice of associated cookie store, therefore, cannot be sensitive to either.</div>
+        </ol>
+        <div class="note" role="note">When performing a prefetch in a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context⑥">top-level browsing context</a>, the request (including all redirects) is preparing for a top-level navigation. <var>environment</var>’s top-level site changes as redirects are followed, and since a redirect might be cross-site, <var>environment</var>’s top-level site might have changed since a given cookie was received. However, since the navigation is top-level, the origin delivering the cookie would have been the top-level site at the time. Since the cookie’s domain has to be same-site with an origin delivering it, the cookie’s domain can be used to determine the correct top-level site.</div>
+       <li data-md>
+        <p>Otherwise:</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>topLevelOrigin</var> be <var>environment</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin" id="ref-for-concept-environment-top-level-origin⑥">top-level origin</a>.</p>
+         <li data-md>
+          <p>If <var>topLevelOrigin</var> is null, then set <var>topLevelOrigin</var> to <var>environment</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-creation-url" id="ref-for-concept-environment-top-level-creation-url⑤">top-level creation URL</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin①⓪">origin</a>.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①⑤">Assert</a>: <var>topLevelOrigin</var> is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin" id="ref-for-concept-origin③">origin</a>.</p>
+         <li data-md>
+          <p>Set <var>topLevelSite</var> be the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site" id="ref-for-obtain-a-site②">obtaining a site</a> given <var>topLevelOrigin</var>.</p>
+        </ol>
+        <div class="note" role="note">When performing a prefetch in a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context" id="ref-for-nested-browsing-context">nested browsing context</a>, the top-level site is determined by the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context" id="ref-for-top-level-browsing-context⑦">top-level browsing context</a> that contains it. Since that doesn’t change as redirects are followed, <var>environment</var> can be used to establish the top-level site.</div>
+       <li data-md>
+        <p>Let <var>secondKey</var> be null or an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined⑤">implementation-defined</a> value.</p>
+        <div class="note" role="note"><var>secondKey</var> is expected to match the value it would have had if this response had been processed as part of an ordinary navigation in <var>environment</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-target-browsing-context" id="ref-for-concept-environment-target-browsing-context④">target browsing context</a>.</div>
+       <li data-md>
+        <p>Let <var>destinationPartitionKey</var> be (<var>topLevelSite</var>, <var>secondKey</var>).</p>
+       <li data-md>
+        <p>Let <var>cookieStore</var> be the cookie store associated with <var>destinationPartitionKey</var>.</p>
+       <li data-md>
+        <p>Let <var>newCookie</var> be a copy of <var>cookie</var>.</p>
+       <li data-md>
+        <p>Set <var>newCookie</var>’s creation-time and last-access-time to the current date and time.</p>
+       <li data-md>
+        <p>If <var>cookieStore</var> contains a cookie <var>existingCookie</var> with the same name, domain and path as the newly created cookie:</p>
+        <ol>
+         <li data-md>
+          <p>Set the creation-time of <var>newCookie</var> to <var>existingCookie</var>’s creation-time.</p>
+         <li data-md>
+          <p>Remove <var>existingCookie</var> from <var>cookieStore</var>.</p>
+        </ol>
+       <li data-md>
+        <p>Insert <var>newCookie</var> into <var>cookieStore</var>.</p>
+        <div class="note" role="note">This remove-and-insert pattern is consistent with what happens when <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model③">receiving a cookie</a>.</div>
+      </ol>
+    </ol>
+   </div>
+   <h2 class="heading settled" data-level="5" id="sec-purpose-header"><span class="secno">5. </span><span class="content">The <code>Sec-Purpose</code> HTTP request header</span><a class="self-link" href="#sec-purpose-header"></a></h2>
    <p>The <dfn class="dfn-paneled" data-dfn-type="http-header" data-export id="http-headerdef-sec-purpose"><code>`Sec-Purpose`</code></dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.</p>
    <p>The header field is an <a data-link-type="biblio" href="#biblio-rfc8941">[RFC8941]</a> Structured Header whose value must be a a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists⑧">List</a>. Its ABNF is:</p>
 <pre>Sec-Purpose = sf-list
@@ -1127,7 +1197,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p>If a suitable response is not possible, for example because the resource depends on the client’s geographic location, there is no other means of determining the location (e.g., the <a href="https://www.ietf.org/archive/id/draft-geohash-hint-00.html">Geohash client hint</a>), and no location-agnostic response is available, then the server should respond with an appropriate HTTP status code and response headers which mark the response as not suitable for caching.</p>
      <div class="note" role="note">
        A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values. 
-      <p>This specification conforms to this advice; the <a data-link-type="dfn" href="#partitioned-prefetch" id="ref-for-partitioned-prefetch①">partitioned prefetch</a> and <a data-link-type="dfn" href="#uncredentialed-prefetch" id="ref-for-uncredentialed-prefetch②">uncredentialed prefetch</a> algorithms do not emit non-boolean values.</p>
+      <p>This specification conforms to this advice; the <a data-link-type="dfn" href="#partitioned-prefetch" id="ref-for-partitioned-prefetch①">partitioned prefetch</a> and <a data-link-type="dfn" href="#uncredentialed-prefetch" id="ref-for-uncredentialed-prefetch③">uncredentialed prefetch</a> algorithms do not emit non-boolean values.</p>
      </div>
    </ul>
   </main>
@@ -1135,10 +1205,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
-   <li><a href="#sec-purpose-prefetch-anonymous-client-ip">anonymous-client-ip</a><span>, in § 4</span>
+   <li><a href="#sec-purpose-prefetch-anonymous-client-ip">anonymous-client-ip</a><span>, in § 5</span>
+   <li><a href="#copy-prefetch-cookies">copy prefetch cookies</a><span>, in § 4</span>
    <li><a href="#cross-origin-prefetch-ip-anonymization-policy">cross-origin prefetch IP anonymization policy</a><span>, in § 1</span>
    <li><a href="#prefetch-record-expiry-time">expiry time</a><span>, in § 1</span>
    <li><a href="#find-a-matching-prefetch-record">find a matching prefetch record</a><span>, in § 1</span>
+   <li><a href="#prefetch-record-isolated-partition-key">isolated partition key</a><span>, in § 1</span>
    <li><a href="#list-of-sufficiently-strict-speculative-navigation-referrer-policies">list of sufficiently strict speculative navigation referrer policies</a><span>, in § 3</span>
    <li><a href="#cross-origin-prefetch-ip-anonymization-policy-origin">origin</a><span>, in § 1</span>
    <li><a href="#partitioned-prefetch">partitioned prefetch</a><span>, in § 3</span>
@@ -1153,11 +1225,29 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#prefetch-ip-anonymization-policy-requires-anonymity">requires anonymity</a><span>, in § 1</span>
    <li><a href="#prefetch-record-response">response</a><span>, in § 1</span>
    <li><a href="#prefetch-record-sandbox-flags-present">sandbox flags present</a><span>, in § 1</span>
-   <li><a href="#http-headerdef-sec-purpose">`Sec-Purpose`</a><span>, in § 4</span>
+   <li><a href="#http-headerdef-sec-purpose">`Sec-Purpose`</a><span>, in § 5</span>
    <li><a href="#store-a-prefetch-record">store a prefetch record</a><span>, in § 1</span>
    <li><a href="#uncredentialed-prefetch">uncredentialed prefetch</a><span>, in § 3</span>
    <li><a href="#prefetch-record-url">URL</a><span>, in § 1</span>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-storage-model">
+   <a href="https://httpwg.org/specs/rfc6265.html#storage-model">https://httpwg.org/specs/rfc6265.html#storage-model</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-storage-model">4. Cookies</a> <a href="#ref-for-storage-model①">(2)</a> <a href="#ref-for-storage-model②">(3)</a> <a href="#ref-for-storage-model③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-storage-model">
+   <a href="https://httpwg.org/specs/rfc6265.html#storage-model">https://httpwg.org/specs/rfc6265.html#storage-model</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-storage-model">4. Cookies</a> <a href="#ref-for-storage-model①">(2)</a> <a href="#ref-for-storage-model②">(3)</a> <a href="#ref-for-storage-model③">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-set-cookie">
+   <a href="https://httpwg.org/specs/rfc6265.html#set-cookie">https://httpwg.org/specs/rfc6265.html#set-cookie</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-set-cookie">4. Cookies</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-should-block-navigation-request">
    <a href="https://w3c.github.io/webappsec-csp/#should-block-navigation-request">https://w3c.github.io/webappsec-csp/#should-block-navigation-request</a><b>Referenced in:</b>
    <ul>
@@ -1246,7 +1336,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-determine-the-network-partition-key">
    <a href="https://fetch.spec.whatwg.org/#determine-the-network-partition-key">https://fetch.spec.whatwg.org/#determine-the-network-partition-key</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-determine-the-network-partition-key">3. Prefetch algorithms</a> <a href="#ref-for-determine-the-network-partition-key①">(2)</a> <a href="#ref-for-determine-the-network-partition-key②">(3)</a> <a href="#ref-for-determine-the-network-partition-key③">(4)</a> <a href="#ref-for-determine-the-network-partition-key④">(5)</a>
+    <li><a href="#ref-for-determine-the-network-partition-key">3. Prefetch algorithms</a> <a href="#ref-for-determine-the-network-partition-key①">(2)</a> <a href="#ref-for-determine-the-network-partition-key②">(3)</a> <a href="#ref-for-determine-the-network-partition-key③">(4)</a> <a href="#ref-for-determine-the-network-partition-key④">(5)</a> <a href="#ref-for-determine-the-network-partition-key⑤">(6)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-fetch">
@@ -1309,8 +1399,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-network-partition-key">
    <a href="https://fetch.spec.whatwg.org/#network-partition-key">https://fetch.spec.whatwg.org/#network-partition-key</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-network-partition-key">2. HTML Patches</a>
-    <li><a href="#ref-for-network-partition-key①">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-network-partition-key">1. Concepts</a> <a href="#ref-for-network-partition-key①">(2)</a>
+    <li><a href="#ref-for-network-partition-key②">2. HTML Patches</a>
+    <li><a href="#ref-for-network-partition-key③">4. Cookies</a> <a href="#ref-for-network-partition-key④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-connection-obtain">
@@ -1470,6 +1561,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-bc-container-document">2. HTML Patches</a> <a href="#ref-for-bc-container-document①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-document-cookie">
+   <a href="https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie">https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-document-cookie">2. HTML Patches</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-coop-enforcement-result">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-coop-enforcement-result">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-coop-enforcement-result</a><b>Referenced in:</b>
    <ul>
@@ -1554,6 +1651,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-environment">1. Concepts</a>
     <li><a href="#ref-for-environment①">2. HTML Patches</a> <a href="#ref-for-environment②">(2)</a> <a href="#ref-for-environment③">(3)</a> <a href="#ref-for-environment④">(4)</a> <a href="#ref-for-environment⑤">(5)</a>
     <li><a href="#ref-for-environment⑥">3. Prefetch algorithms</a> <a href="#ref-for-environment⑦">(2)</a> <a href="#ref-for-environment⑧">(3)</a>
+    <li><a href="#ref-for-environment⑨">4. Cookies</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-environment-discarding-steps">
@@ -1632,6 +1730,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-coop-enforcement-bcg-switch①">2. HTML Patches</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-nested-browsing-context">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#nested-browsing-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-nested-browsing-context">4. Cookies</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-networking-task-source">
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source">https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source</a><b>Referenced in:</b>
    <ul>
@@ -1650,6 +1754,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site">https://html.spec.whatwg.org/multipage/origin.html#obtain-a-site</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-obtain-a-site">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-obtain-a-site①">4. Cookies</a> <a href="#ref-for-obtain-a-site②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-origin-opaque">
@@ -1722,7 +1827,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-reserved-environment</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-navigation-params-reserved-environment">1. Concepts</a>
-    <li><a href="#ref-for-navigation-params-reserved-environment①">2. HTML Patches</a>
+    <li><a href="#ref-for-navigation-params-reserved-environment①">2. HTML Patches</a> <a href="#ref-for-navigation-params-reserved-environment②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-response">
@@ -1759,6 +1864,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-environment-target-browsing-context">1. Concepts</a>
     <li><a href="#ref-for-concept-environment-target-browsing-context①">2. HTML Patches</a>
     <li><a href="#ref-for-concept-environment-target-browsing-context②">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-concept-environment-target-browsing-context③">4. Cookies</a> <a href="#ref-for-concept-environment-target-browsing-context④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-task">
@@ -1773,6 +1879,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-top-level-browsing-context">1. Concepts</a> <a href="#ref-for-top-level-browsing-context①">(2)</a>
     <li><a href="#ref-for-top-level-browsing-context②">2. HTML Patches</a> <a href="#ref-for-top-level-browsing-context③">(2)</a>
     <li><a href="#ref-for-top-level-browsing-context④">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-top-level-browsing-context⑤">4. Cookies</a> <a href="#ref-for-top-level-browsing-context⑥">(2)</a> <a href="#ref-for-top-level-browsing-context⑦">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-environment-top-level-creation-url">
@@ -1781,6 +1888,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-environment-top-level-creation-url">1. Concepts</a> <a href="#ref-for-concept-environment-top-level-creation-url①">(2)</a>
     <li><a href="#ref-for-concept-environment-top-level-creation-url②">2. HTML Patches</a> <a href="#ref-for-concept-environment-top-level-creation-url③">(2)</a>
     <li><a href="#ref-for-concept-environment-top-level-creation-url④">3. Prefetch algorithms</a>
+    <li><a href="#ref-for-concept-environment-top-level-creation-url⑤">4. Cookies</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-environment-top-level-origin">
@@ -1789,6 +1897,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-environment-top-level-origin">1. Concepts</a> <a href="#ref-for-concept-environment-top-level-origin①">(2)</a>
     <li><a href="#ref-for-concept-environment-top-level-origin②">2. HTML Patches</a> <a href="#ref-for-concept-environment-top-level-origin③">(2)</a>
     <li><a href="#ref-for-concept-environment-top-level-origin④">3. Prefetch algorithms</a> <a href="#ref-for-concept-environment-top-level-origin⑤">(2)</a>
+    <li><a href="#ref-for-concept-environment-top-level-origin⑥">4. Cookies</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-origin-tuple">
+   <a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin-tuple">https://html.spec.whatwg.org/multipage/origin.html#concept-origin-tuple</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-origin-tuple">4. Cookies</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-coop-enforcement-url">
@@ -1825,6 +1940,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-assert">1. Concepts</a> <a href="#ref-for-assert①">(2)</a> <a href="#ref-for-assert②">(3)</a> <a href="#ref-for-assert③">(4)</a>
     <li><a href="#ref-for-assert④">2. HTML Patches</a> <a href="#ref-for-assert⑤">(2)</a> <a href="#ref-for-assert⑥">(3)</a>
     <li><a href="#ref-for-assert⑦">3. Prefetch algorithms</a> <a href="#ref-for-assert⑧">(2)</a> <a href="#ref-for-assert⑨">(3)</a> <a href="#ref-for-assert①⓪">(4)</a> <a href="#ref-for-assert①①">(5)</a> <a href="#ref-for-assert①②">(6)</a> <a href="#ref-for-assert①③">(7)</a> <a href="#ref-for-assert①④">(8)</a>
+    <li><a href="#ref-for-assert①⑤">4. Cookies</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-iteration-break">
@@ -1849,6 +1965,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-implementation-defined">3. Prefetch algorithms</a> <a href="#ref-for-implementation-defined①">(2)</a> <a href="#ref-for-implementation-defined②">(3)</a> <a href="#ref-for-implementation-defined③">(4)</a> <a href="#ref-for-implementation-defined④">(5)</a>
+    <li><a href="#ref-for-implementation-defined⑤">4. Cookies</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-is-empty">
@@ -1905,7 +2022,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-name-items">
    <a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-items">https://www.rfc-editor.org/rfc/rfc8941.html#name-items</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-name-items">4. The Sec-Purpose HTTP request header</a>
+    <li><a href="#ref-for-name-items">5. The Sec-Purpose HTTP request header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-name-lists">
@@ -1913,14 +2030,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-name-lists">1. Concepts</a> <a href="#ref-for-name-lists①">(2)</a> <a href="#ref-for-name-lists②">(3)</a> <a href="#ref-for-name-lists③">(4)</a>
     <li><a href="#ref-for-name-lists④">3. Prefetch algorithms</a> <a href="#ref-for-name-lists⑤">(2)</a> <a href="#ref-for-name-lists⑥">(3)</a> <a href="#ref-for-name-lists⑦">(4)</a>
-    <li><a href="#ref-for-name-lists⑧">4. The Sec-Purpose HTTP request header</a>
+    <li><a href="#ref-for-name-lists⑧">5. The Sec-Purpose HTTP request header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-name-tokens">
    <a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens">https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-name-tokens">3. Prefetch algorithms</a> <a href="#ref-for-name-tokens①">(2)</a>
-    <li><a href="#ref-for-name-tokens②">4. The Sec-Purpose HTTP request header</a>
+    <li><a href="#ref-for-name-tokens②">5. The Sec-Purpose HTTP request header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-potentially-trustworthy-url">
@@ -1941,6 +2058,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-url-origin">1. Concepts</a> <a href="#ref-for-concept-url-origin①">(2)</a> <a href="#ref-for-concept-url-origin②">(3)</a> <a href="#ref-for-concept-url-origin③">(4)</a>
     <li><a href="#ref-for-concept-url-origin④">2. HTML Patches</a> <a href="#ref-for-concept-url-origin⑤">(2)</a> <a href="#ref-for-concept-url-origin⑥">(3)</a> <a href="#ref-for-concept-url-origin⑦">(4)</a>
     <li><a href="#ref-for-concept-url-origin⑧">3. Prefetch algorithms</a> <a href="#ref-for-concept-url-origin⑨">(2)</a>
+    <li><a href="#ref-for-concept-url-origin①⓪">4. Cookies</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
@@ -1960,6 +2078,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
+   <li>
+    <a data-link-type="biblio">[COOKIES]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-storage-model">cookie</span>
+     <li><span class="dfn-paneled" id="term-for-storage-model①">receive a cookie</span>
+     <li><span class="dfn-paneled" id="term-for-set-cookie">set-cookie</span>
+    </ul>
    <li>
     <a data-link-type="biblio">[CSP]</a> defines the following terms:
     <ul>
@@ -2027,6 +2152,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-child-browsing-context">child browsing context</span>
      <li><span class="dfn-paneled" id="term-for-bc-container">container</span>
      <li><span class="dfn-paneled" id="term-for-bc-container-document">container document</span>
+     <li><span class="dfn-paneled" id="term-for-dom-document-cookie">cookie</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-coop-enforcement-result">coop enforcement result</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-policy-container-from-a-fetch-response">creating a policy container from a fetch response</span>
      <li><span class="dfn-paneled" id="term-for-concept-environment-creation-url">creation url</span>
@@ -2050,6 +2176,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-navigation-id">navigation id</span>
      <li><span class="dfn-paneled" id="term-for-navigation-pparams">navigation params</span>
      <li><span class="dfn-paneled" id="term-for-coop-enforcement-bcg-switch">needs a browsing context group switch</span>
+     <li><span class="dfn-paneled" id="term-for-nested-browsing-context">nested browsing context</span>
      <li><span class="dfn-paneled" id="term-for-networking-task-source">networking task source</span>
      <li><span class="dfn-paneled" id="term-for-obtain-coop">obtain a cross-origin opener policy</span>
      <li><span class="dfn-paneled" id="term-for-obtain-a-site">obtain a site</span>
@@ -2073,6 +2200,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-top-level-browsing-context">top-level browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-environment-top-level-creation-url">top-level creation url</span>
      <li><span class="dfn-paneled" id="term-for-concept-environment-top-level-origin">top-level origin</span>
+     <li><span class="dfn-paneled" id="term-for-concept-origin-tuple">tuple origin</span>
      <li><span class="dfn-paneled" id="term-for-coop-enforcement-url">url</span>
      <li><span class="dfn-paneled" id="term-for-coop-struct-value">value</span>
      <li><span class="dfn-paneled" id="term-for-coop-enforcement-bcg-switch-report-only">would need a browsing context group switch due to report-only</span>
@@ -2123,6 +2251,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-cookies">[COOKIES]
+   <dd>A. Barth. <a href="https://httpwg.org/specs/rfc6265.html"><cite>HTTP State Management Mechanism</cite></a>. April 2011. Proposed Standard. URL: <a href="https://httpwg.org/specs/rfc6265.html">https://httpwg.org/specs/rfc6265.html</a>
    <dt id="biblio-csp">[CSP]
    <dd>Mike West. <a href="https://www.w3.org/TR/CSP3/"><cite>Content Security Policy Level 3</cite></a>. 29 June 2021. WD. URL: <a href="https://www.w3.org/TR/CSP3/">https://www.w3.org/TR/CSP3/</a>
    <dt id="biblio-dom">[DOM]
@@ -2152,9 +2282,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <div class="issue">It might be possible to "downgrade" to <a data-link-type="dfn" href="#uncredentialed-prefetch">uncredentialed prefetch</a> in this case. <a class="issue-return" href="#issue-a3686c91" title="Jump to section">↵</a></div>
    <div class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined">implementation-defined</a> manner using some kind of proxy or relay. Ideally this would be plumbed down to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-connection-obtain">obtain a connection</a>, and possibly even the mechanism could be further standardized. <a class="issue-return" href="#issue-9a2d41cc①" title="Jump to section">↵</a></div>
    <div class="issue">This ends up setting the <code>`Cache-Control`</code> and <code>`Pragma`</code> request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#no-cache-prevent-cache-control">prevent no-cache cache-control header modification flag</a>. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies. <a class="issue-return" href="#issue-239df98e" title="Jump to section">↵</a></div>
-   <div class="issue">This does not fully address cookie isolation or migration (somewhat complicated by <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a> not dealing with it), and similar measures with authorization entries, TLS client certificates, and connection pools. This is currently complicated by the fact that even those that are covered by the <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key">network partition key</a> are difficult to address while it’s not possible to further partition. <a class="issue-return" href="#issue-d45eff4c" title="Jump to section">↵</a></div>
    <div class="issue">Update this to include the <code>`Supports-Loading-Mode`</code> mechanism to allow responses to continue despite cookies. <a class="issue-return" href="#issue-414cc665" title="Jump to section">↵</a></div>
-   <div class="issue">Further review is needed of the cookies-present handling and its interaction with redirects and caches. <a class="issue-return" href="#issue-cdd1a31a" title="Jump to section">↵</a></div>
    <div class="issue">TODO: Are there normative implications of this that should be specified here? <a class="issue-return" href="#issue-2e46aaff" title="Jump to section">↵</a></div>
   </div>
   <aside class="dfn-panel" data-for="prefetch-buffer">
@@ -2197,6 +2325,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#prefetch-record-expiry-time">#prefetch-record-expiry-time</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-prefetch-record-expiry-time">1. Concepts</a> <a href="#ref-for-prefetch-record-expiry-time①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="prefetch-record-isolated-partition-key">
+   <b><a href="#prefetch-record-isolated-partition-key">#prefetch-record-isolated-partition-key</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-isolated-partition-key">1. Concepts</a>
+    <li><a href="#ref-for-prefetch-record-isolated-partition-key①">2. HTML Patches</a> <a href="#ref-for-prefetch-record-isolated-partition-key②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prefetch-record-response">
@@ -2259,7 +2394,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#partitioned-prefetch">#partitioned-prefetch</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-partitioned-prefetch">3. Prefetch algorithms</a>
-    <li><a href="#ref-for-partitioned-prefetch①">4. The Sec-Purpose HTTP request header</a>
+    <li><a href="#ref-for-partitioned-prefetch①">5. The Sec-Purpose HTTP request header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="list-of-sufficiently-strict-speculative-navigation-referrer-policies">
@@ -2272,7 +2407,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#uncredentialed-prefetch">#uncredentialed-prefetch</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-uncredentialed-prefetch">3. Prefetch algorithms</a> <a href="#ref-for-uncredentialed-prefetch①">(2)</a>
-    <li><a href="#ref-for-uncredentialed-prefetch②">4. The Sec-Purpose HTTP request header</a>
+    <li><a href="#ref-for-uncredentialed-prefetch②">4. Cookies</a>
+    <li><a href="#ref-for-uncredentialed-prefetch③">5. The Sec-Purpose HTTP request header</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="copy-prefetch-cookies">
+   <b><a href="#copy-prefetch-cookies">#copy-prefetch-cookies</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-copy-prefetch-cookies">2. HTML Patches</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="http-headerdef-sec-purpose">
