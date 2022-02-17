@@ -28,6 +28,9 @@ spec: nav-speculation; urlPrefix: prefetch.html
     text: prefetch; url: prefetch
     text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
     text: origin; for: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy-origin
+spec: nav-speculation; urlPrefix: prerender.html
+  type: dfn
+    text: create a prerendering browsing context; url: create-a-prerendering-browsing-context
 </pre>
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -73,6 +76,7 @@ The only valid string for [=speculation rule/requirements=] to contain is "`anon
 
 A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule set">prefetch rules</dfn>, a [=list=] of [=speculation rules=]
+* <dfn for="speculation rule set">prerender rules</dfn>, a [=list=] of [=speculation rules=]
 
 <h3 id="speculation-rules-script">The <{script}> element</h3>
 
@@ -156,6 +160,11 @@ Inside the [=prepare a script=] algorithm we make the following changes:
     1. Let |rule| be the result of [=parsing a speculation rule=] given |prefetchRule| and |baseURL|.
     1. If |rule| is null, then [=iteration/continue=].
     1. [=list/Append=] |rule| to |result|'s [=speculation rule set/prefetch rules=].
+  1. If |parsed|["`prerender`"] [=map/exists=] and is a [=list=], then [=list/for each=] |prerenderRule| of |parsed|["`prerender`"]:
+    1. If |prerenderRule| is not a [=map=], then [=iteration/continue=].
+    1. Let |rule| be the result of [=parsing a speculation rule=] given |prerenderRule| and |baseURL|.
+    1. If |rule| is null, then [=iteration/continue=].
+    1. [=list/Append=] |rule| to |result|'s [=speculation rule set/prerender rules=].
   1. Return |result|.
 </div>
 
@@ -200,6 +209,9 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
       1. If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
       1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. The user agent may [=prefetch=] |url| given |document|, |url|, "`strict-origin-when-cross-origin`" and |anonymizationPolicy|.
+    1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
+      1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+        1. The user agent may [=create a prerendering browsing context=] given |url|, "`strict-origin-when-cross-origin`" and |document|.
 </div>
 
 <p class="issue">
