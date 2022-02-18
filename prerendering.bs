@@ -188,6 +188,9 @@ spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
     text: ServiceWorkerContainer; url: serviceworkercontainer-interface
   type: method; for: ServiceWorkerRegistration
     text: register(scriptURL, options); url: dom-serviceworkercontainer-register
+spec: nav-speculation; urlPrefix: prefetch.html
+  type: dfn
+    text: supports prefetch; url: supports-prefetch
 </pre>
 <pre class="biblio">
 {
@@ -573,6 +576,15 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
 
 <p class="issue">Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn't observable anyway?
 
+<div algorithm>
+  A [=response=] |response| <dfn>supports prerender</dfn> if the following steps return true:
+
+  1. If |response| does not [=support prefetch=], then return false.
+  1. Return true.
+
+  <div class="note">Responses which are ineligible for prefetch, e.g. because they have an error status, are not eligible for prerender either. A future version of this specification might allow responses to more clearly delineate the two.</div>
+</div>
+
 <div algorithm="process a navigate response patch">
   In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
 
@@ -581,6 +593,7 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
       * |failure| is true;
       * |navigationParams|'s [=navigation params/request=] is null;
       * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
+      * |response| does not [=support prerender=];
       * |response| has a \``Content-Disposition`\` header specifying the `attachment`
           disposition type; or
       * |response|'s [=response/status=] is 204 or 205,
