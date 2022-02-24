@@ -471,7 +471,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |status| is not a [=redirect status=].
     1. If |status| is not an [=ok status=], then return false.
 
-        <div class="note">In particular, this means that error responses aren't stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It gives server software a simple way to refuse to handle requests which carry a <a http-header>`` `Sec-Purpose` ``</a> request header indicating prefetch.</div>
+        <div class="note">In particular, this means that error responses aren't stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a <a http-header>`` `Sec-Purpose` ``</a> request header indicating prefetch.</div>
     1. Return true.
 
     <div class="note">A future draft of this specification is expected to provide a way for responses to be marked as eligible or ineligible explicitly.</div>
