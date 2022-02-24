@@ -51,6 +51,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: urls-and-fetching.html
       text: parse a URL; url: parse-a-url
       text: resulting URL record
+    urlPrefix: web-messaging.html
+      text: BroadcastChannel; url: broadcastchannel
     urlPrefix: webappapis.html
       text: script; url: concept-script
     urlPrefix: workers.html
@@ -186,8 +188,13 @@ spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
     text: unregister(); url: dom-serviceworkerregistration-unregister
   type: interface
     text: ServiceWorkerContainer; url: serviceworkercontainer-interface
-  type: method; for: ServiceWorkerRegistration
+  type: method; for: ServiceWorkerContainer
     text: register(scriptURL, options); url: dom-serviceworkercontainer-register
+  type: interface
+    text: ServiceWorker; url: serviceworker-interface
+  type: method: for: ServiceWorker
+    text: postMessage(message, transfer); url: dom-serviceworker-postmessage
+    text: postMessage(message, options); url: service-worker-postmessage-options
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: supports prefetch; url: supports-prefetch
@@ -499,25 +506,19 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/activate|activation=] of a [=prerendering browsing context=] in place of a normal navigation as follows:
 
 <div algorithm="navigate activate patch">
-  In [=navigate=], append the following steps after the fragment navigation handling (currently step 6):
+  In [=navigate=], append the following steps after the fragment navigation handling (currently step 8):
 
   1. If |resource| is a [=request=] and we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource|, then:
 
-    1. [=prerendering browsing context/Activate=] <var ignore>successorBC</var> in place of |browsingContext| given |historyHandling|.
+    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])].
 
-    1. Return.
-</div>
+    1. Wait until all navigation attempts of |successorBC| have been [=navigate/mature|matured=].
 
-Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding of cross-origin navigations in a [=prerendering browsing context=] as follows:
+    1. If |successorBC| has not been [=discard|discarded=], then:
 
-<div algorithm="navigate delay cross-origin patch">
-  In [=process a navigate fetch=], append the following steps after the cross-origin redirect check (currently step 13.1):
+      1. [=prerendering browsing context/Activate=] |successorBC| in place of |browsingContext| given |historyHandling|.
 
-  1. Let |crossOrigin| be <var ignore>hasCrossOriginRedirects</var>.
-
-  1. If |bc|'s <a spec="HTML">container</a> is not null, and |bc|'s <a spec="HTML">container</a>'s [=Node/node document=]'s	[=Document/origin=] is not [=same origin=] with <var ignore>currentURL</var>'s [=url/origin=], then set |crossOrigin| to true.
-
-  1. If |crossOrigin| is true and |bc|'s [=top-level browsing context=] is a [=prerendering browsing context=], then the user agent must either wait to continue this algorithm until |bc| is [=prerendering browsing context/activate|activated=], or [=discard=] |bc|'s [=top-level browsing context=].
+      1. Return.
 </div>
 
 Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#redirect-handling]] section.
@@ -550,6 +551,20 @@ Patch the [=process a navigate fetch=] algorithm like so:
       1. [=Assert=]: |response|'s [=response/location URL=] is a [=URL=] whose [=url/scheme=] is a [=HTTP(S) scheme=].
 
       1. Set |response| to a [=network error=] and [=iteration/break=].
+</div>
+
+<h3 id="delay-crossorigin">Delaying crossorigin navigations</h3>
+
+Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding of cross-origin navigations in a [=prerendering browsing context=] as follows:
+
+<div algorithm="navigate delay cross-origin patch">
+  In [=process a navigate fetch=], append the following steps after the cross-origin redirect check (currently step 13.1):
+
+  1. Let |crossOrigin| be <var ignore>hasCrossOriginRedirects</var>.
+
+  1. If |bc|'s <a spec="HTML">container</a> is not null, and |bc|'s <a spec="HTML">container</a>'s [=Node/node document=]'s	[=Document/origin=] is not [=same origin=] with <var ignore>currentURL</var>'s [=url/origin=], then set |crossOrigin| to true.
+
+  1. If |crossOrigin| is true and |bc|'s [=top-level browsing context=] is a [=prerendering browsing context=], then the user agent must either wait to continue this algorithm until |bc| is [=prerendering browsing context/activate|activated=], or [=discard=] |bc|'s [=top-level browsing context=].
 </div>
 
 <h3 id="always-replacement">Maintaining a trivial session history</h3>
@@ -717,9 +732,13 @@ The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and 
 
 <h4 id="patch-service-workers">Service Workers</h3>
 
-Add {{[DelayWhilePrerendering]}} to {{ServiceWorkerRegistration/update()}}, {{ServiceWorkerRegistration/unregister()}}, and {{ServiceWorkerContainer/register(scriptURL, options)}}.
+Add {{[DelayWhilePrerendering]}} to {{ServiceWorkerRegistration/update()}}, {{ServiceWorkerRegistration/unregister()}}, {{ServiceWorkerContainer/register(scriptURL, options)}}, {{ServiceWorker/postMessage(message, transfer)}}, and {{ServiceWorker/ postMessage(message, options)}}.
 
 <p class="note">This allows prerendered page to take advantage of existing service workers, but not have any effect on the state of service worker registrations.</p>
+
+<h4 id="patch-broadcast-channel">BroadcastChannel</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{BroadcastChannel/postMessage()}}.
 
 <h4 id="patch-geolocation">Geolocation API</h4>
 
