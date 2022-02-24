@@ -195,6 +195,9 @@ spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
   type: method: for: ServiceWorker
     text: postMessage(message, transfer); url: dom-serviceworker-postmessage
     text: postMessage(message, options); url: service-worker-postmessage-options
+spec: nav-speculation; urlPrefix: prefetch.html
+  type: dfn
+    text: supports prefetch; url: supports-prefetch
 </pre>
 <pre class="biblio">
 {
@@ -596,6 +599,9 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
       * |failure| is true;
       * |navigationParams|'s [=navigation params/request=] is null;
       * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
+      * |response| does not [=support prefetch=];
+
+        <div class="note">Responses which are ineligible for prefetch, e.g. because they have an error status, are not eligible for prerender either. A future version of this specification might allow responses to more clearly delineate the two.</div>
       * |response| has a \``Content-Disposition`\` header specifying the `attachment`
           disposition type; or
       * |response|'s [=response/status=] is 204 or 205,
