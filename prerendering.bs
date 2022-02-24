@@ -188,8 +188,13 @@ spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
     text: unregister(); url: dom-serviceworkerregistration-unregister
   type: interface
     text: ServiceWorkerContainer; url: serviceworkercontainer-interface
-  type: method; for: ServiceWorkerRegistration
+  type: method; for: ServiceWorkerContainer
     text: register(scriptURL, options); url: dom-serviceworkercontainer-register
+  type: interface
+    text: ServieWorker; url: serviceworker-interface
+  type: method: for: ServiceWorker
+    text: postMessage(message, transfer); url: dom-serviceworker-postmessage
+    text: postMessage(message, options); url: service-worker-postmessage-options
 </pre>
 <pre class="biblio">
 {
@@ -713,7 +718,7 @@ The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and 
 
 <h4 id="patch-service-workers">Service Workers</h3>
 
-Add {{[DelayWhilePrerendering]}} to {{ServiceWorkerRegistration/update()}}, {{ServiceWorkerRegistration/unregister()}}, and {{ServiceWorkerContainer/register(scriptURL, options)}}.
+Add {{[DelayWhilePrerendering]}} to {{ServiceWorkerRegistration/update()}}, {{ServiceWorkerRegistration/unregister()}}, {{ServiceWorkerContainer/register(scriptURL, options)}}, {{ServiceWorker/postMessage(message, transfer)}}, and {{ServiceWorker/ postMessage(message, options)}}.
 
 <p class="note">This allows prerendered page to take advantage of existing service workers, but not have any effect on the state of service worker registrations.</p>
 
