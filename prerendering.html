@@ -1108,6 +1108,9 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
        <li data-md>
         <p><var>navigationParams</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-request" id="ref-for-navigation-params-request①">request</a>'s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-current-url" id="ref-for-concept-request-current-url">current URL</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme④">scheme</a> is not a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme④">HTTP(S) scheme</a>;</p>
        <li data-md>
+        <p><var>response</var> does not <a data-link-type="dfn" href="prefetch.html#supports-prefetch" id="ref-for-supports-prefetch">support prefetch</a>;</p>
+        <div class="note" role="note">Responses which are ineligible for prefetch, e.g. because they have an error status, are not eligible for prerender either. A future version of this specification might allow responses to more clearly delineate the two.</div>
+       <li data-md>
         <p><var>response</var> has a `<code>Content-Disposition</code>` header specifying the <code>attachment</code> disposition type; or</p>
        <li data-md>
         <p><var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-status" id="ref-for-concept-response-status">status</a> is 204 or 205,</p>
@@ -2493,6 +2496,12 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
     <li><a href="#ref-for-dom-navigator-getusermedia">7.3.16. Media Capture and Streams</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-supports-prefetch">
+   <a href="prefetch.html#supports-prefetch">prefetch.html#supports-prefetch</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-supports-prefetch">4.5. Preventing forbidden navigations</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-current-document">
    <a href="https://w3c.github.io/navigation-timing/#dfn-current-document">https://w3c.github.io/navigation-timing/#dfn-current-document</a><b>Referenced in:</b>
    <ul>
@@ -3140,6 +3149,11 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
      <li><span class="dfn-paneled" id="term-for-dom-mediadevices">MediaDevices</span>
      <li><span class="dfn-paneled" id="term-for-dom-mediadevices-enumeratedevices">enumerateDevices()</span>
      <li><span class="dfn-paneled" id="term-for-dom-navigator-getusermedia">getUserMedia() <small>(for Navigator)</small></span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[nav-speculation]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-supports-prefetch">supports prefetch</span>
     </ul>
    <li>
     <a data-link-type="biblio">[navigation-timing]</a> defines the following terms:
