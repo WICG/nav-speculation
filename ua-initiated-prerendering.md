@@ -72,9 +72,11 @@ This completes the journey to a fully-rendered view of `https://b.example/`, in 
 
 When a document is fetched for the purpose of prerendering, the user-agent sends an additional header: `Sec-Purpose: prefetch; prerender`. See [the spec](https://wicg.github.io/nav-speculation/prefetch.html#sec-purpose-header) for more details.
 
-The server may decide at this point to cancel the prerendering, which would cause a full load of the document once the user performs an actual navigation to the URL, by responsing [as described here](https://wicg.github.io/nav-speculation/prerendering.html#no-bad-navs). (TODO: we should pick one recommended response strategy from among the linked response strategies, and expand on it here.)
+The server may decide at this point to cancel the prerendering, which would cause a full load of the document once the user performs an actual navigation to the URL, by responsing with an HTTP error or without a response body, [as described here](https://wicg.github.io/nav-speculation/prerendering.html#no-bad-navs).
 
 Developers might decide to implement such response, for example, in order to reduce server load in case where there are too many unfulfilled prerenders, or if prerendering may cause the page to reach some error condition.
+
+The recommended response codes for opting out of prerendering are [204 No Content](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204), implying that the server has acknowledged that prerendering was requested but no document is served, or [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503), implying that prerendering is not an available service. However, any other 4xx/5xx response code would have the same effect.
 
 ## Restrictions
 
