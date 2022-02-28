@@ -58,7 +58,7 @@ However, if `https://b.example/` requests notification permissions on first load
 
 Now, the user finishes typing `b.example` and pressed the Return key. At this point the user agent notices that it has a prerendering browsing context originally created for `https://b.example/`, so it activates it and upgrades the invisible tab into a full-blown, displayed tab. Since `https://b.example/` was already loaded in the prerendering browsing context, this navigation occurs seamlessly and instantly, providing a great user experience.
 
-Upon activation, `https://b.example/` gets notified via [the API](#prerendering-state-api). At this point, it now has access many of the previously restricted APIs, so it can upgrade itself.
+Upon activation, `https://b.example/` gets notified via [the API](#prerendering-state-api). At this point, it now has access to many of the previously restricted APIs, so it can upgrade itself.
 
 ```js
 Notification.requestPermission().then(() => {
@@ -74,7 +74,7 @@ When a document is fetched for the purpose of prerendering, the user-agent sends
 
 The server may decide at this point to cancel the prerendering, which would cause a full load of the document once the user performs an actual navigation to the URL, by responsing with an HTTP error or without a response body, [as described here](https://wicg.github.io/nav-speculation/prerendering.html#no-bad-navs).
 
-Developers might decide to implement such response, for example, in order to reduce server load in case where there are too many unfulfilled prerenders, or if prerendering may cause the page to reach some error condition.
+Developers might decide to implement such a response, for example, in order to reduce server load in cases where there are too many unfulfilled prerenders, or if prerendering may cause the page to reach some error condition.
 
 The recommended response codes for opting out of prerendering are [204 No Content](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204), implying that the server has acknowledged that prerendering was requested but no document is served, or [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503), implying that prerendering is not an available service. However, any other 4xx/5xx response code would have the same effect.
 
@@ -84,7 +84,7 @@ For an API-by-API analysis of the restrictions in prerendering browsing contexts
 
 ### Privacy-based restrictions
 
-Since the first version of prerendering only supports user-agent initiated prerendering, the cross-origin concerns between the prerendered page and its initiator do not applied. Once prerendering can be [triggered](./triggers.md), some of the restrictions mentioned [here]('./browsing-context.bs) will apply.
+Since the first version of prerendering only supports user-agent initiated prerendering, the cross-origin concerns between the prerendered page and its initiator do not apply. Once prerendering can be [triggered](./triggers.md), some of the restrictions mentioned [here]('./browsing-context.md) will apply.
 
 The main privacy-based restriction at this phase is that loading cross-origin iframes is deferred until activation, and top-level navigation to a different origin would cancel the prerendering.
 
