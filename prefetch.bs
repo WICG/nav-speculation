@@ -104,6 +104,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
+    1. Let |browsingContext| be |document|'s [=Document/browsing context=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. [=list/For each=] |record| of |document|'s [=prefetch buffer=]:
         1. If |record|'s [=prefetch record/URL=] is not equal to |url| or |record|'s [=prefetch record/referrer policy=] is not equal to |referrerPolicy|, then [=iteration/continue=].
@@ -114,6 +115,22 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
             </div>
         1. [=list/Remove=] |record| from |document|'s [=prefetch buffer=].
         1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
+        1. If |record|'s [=prefetch record/isolated partition key=] is not null, then:
+            1. Let |environment| be null.
+            1. [=list/For each=] |response| in |record|'s [=prefetch record/redirect chain=]:
+                1. If |environment| is not null and |response|'s [=response/URL=]'s [=url/origin=] is not the [=same origin|same=] as |environment|'s [=environment/creation URL=]'s [=url/origin=], then:
+                    1. Run the [=environment discarding steps=] for |environment|.
+                    1. Set |environment| to null.
+                1. If |environment| is null, then:
+                    1. Let |topLevelCreationURL| be |response|'s [=response/URL=].
+                    1. Let |topLevelOrigin| be null.
+                    1. If |browsingContext| is not a [=top-level browsing context=], then:
+                        1. Let |parentEnvironment| be |browsingContext|'s [=browsing context/container=]'s [=relevant settings object=].
+                        1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=] and |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
+                    1. Set |environment| to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is |response|'s [=response/URL=], [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+                1. Let |partitionKey| be the result of [=determining the network partition key=] given |environment|.
+                1. If there are [=credentials=] associated with |response|'s [=response/URL=] and |partitionKey|, then return null.
+            1. Run the [=environment discarding steps=] for |environment|.
         1. Return |record|.
     1. Return null.
 
