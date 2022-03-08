@@ -135,7 +135,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
         1. If |response|'s [=response/URL=]'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/URL=], then set |hasCrossOriginRedirects| to true.
         1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |browsingContext|, |response|'s [=response/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
-        1. If |request|'s [=request/reserved client=] is not null and [=response/URL=]' [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
+        1. If |request|'s [=request/reserved client=] is not null and |response|'s [=response/URL=]'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
             1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
             1. Set |request|'s [=request/reserved client=] to null.
         1. If |request|'s [=request/reserved client=] is null, then:
@@ -290,7 +290,7 @@ These algorithms are based on [=process a navigate fetch=].
 
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
-    1. Let |browsingContext| be {{Document}}'s [=Document/browsing context=].
+    1. Let |browsingContext| be |document|'s [=Document/browsing context=].
     1. Let |sandboxFlags| be the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |request| be a [=request=] as follows:
 
@@ -363,7 +363,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
     1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. If |referrerPolicy| is not in the [=list of sufficiently strict speculative navigation referrer policies=], then return.
-    1. Let |browsingContext| be {{Document}}'s [=Document/browsing context=].
+    1. Let |browsingContext| be |document|'s [=Document/browsing context=].
     1. Let |sandboxFlags| be the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |isolationOrigin| be a new [=opaque origin=].
 
