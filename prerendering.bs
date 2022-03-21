@@ -594,7 +594,7 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
 <div algorithm="process a navigate response patch">
   In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
 
-  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], and any of the following hold:
+  1. If <var ignore>browsingContext</var> is a [=top level browsing context|top level=] [=prerendering browsing context=], and any of the following hold:
 
       * |failure| is true;
       * |navigationParams|'s [=navigation params/request=] is null;
