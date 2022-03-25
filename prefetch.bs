@@ -67,14 +67,63 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     text: List; url: name-lists
     text: Token; url: name-tokens
 spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
+  type: http-header; text: Cookie; url: cookie
   type: http-header; text: Set-Cookie; url: set-cookie
   type: dfn; text: cookie; url: storage-model
   type: dfn; text: receive a cookie; url: storage-model
+  type: dfn; text: domain-matches; url: cookie-domain
+  type: dfn; text: canonicalized host name; url: cookie-domain-canonicalize
+  type: dfn; text: path-matches; url: cookie-path
 </pre>
 
 <h2 id="concepts">Concepts</h2>
 
 In light of <a href="https://privacycg.github.io/storage-partitioning/">storage partitioning</a>, this specification defines prefetch for navigations which would occur within the same partition (for example, top-level navigations within the same site) and for navigations which would occur in a separate partition (for example, top-level navigations to a different site).
+
+An <dfn>exchange record</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="exchange record">request</dfn>, a [=request=]
+* <dfn for="exchange record">response</dfn>, a [=response=] or null
+* <dfn for="exchange record">cookie data</dfn>, a [=list=] of [=tuples=] of [=byte sequences=]
+* <dfn for="exchange record">authentication entry</dfn>, an [=authentication entry=] or null
+
+<div class="note">These records can be used to defer checks that would ordinarily happen during a navigate fetch, and to check for modified [=credentials=].</div>
+
+A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
+
+<div algorithm>
+    To <dfn for="redirect chain">append</dfn> a [=request=] |request| to a [=redirect chain=] |redirectChain|:
+
+    1. Let |cookieData| be the result of [=gathering cookie data=] for |request|'s [=request/URL=] in the cookie store associated with |request| if the user agent is not configured to block cookies for |request|, and an empty [=list=] otherwise.
+    1. Let |authenticationEntry| be null.
+    1. If there's an [=authentication entry=] for |request| and |request|'s [=request/current URL=] does not [=include credentials=], then set |authenticationEntry| to that [=authentication entry=].
+    1. [=list/Append=] a new [=exchange record=] whose [=exchange record/request=] is a copy of |request|, [=exchange record/response=] is null, [=exchange record/cookie data=] is |cookieData|, and [=exchange record/authentication entry=] is |authenticationEntry| to |redirectChain|.
+</div>
+
+<div algorithm>
+    To <dfn for="redirect chain">update the response</dfn> for a [=redirect chain=] |redirectChain| given a [=request=] |request| and [=response=] |response|:
+
+    1. [=Assert=]: |redirectChain| is not [=list/empty=].
+    1. [=Assert=]: |redirectChain|'s last element's [=exchange record/request=] is |request| and its [=exchange record/response=] is null.
+    1. Set |redirectChain|'s last element's [=exchange record/response=] to |response|.
+</div>
+
+<div algorithm>
+    A [=redirect chain=] |redirectChain| <dfn for="redirect chain">has updated credentials</dfn> if the following steps return true:
+
+    1. [=list/For each=] |exchangeRecord| of |redirectChain|:
+        1. Let |request| be |exchangeRecord|'s [=exchange record/request=].
+        1. Let |cookieData| be the result of [=gathering cookie data=] for |request|'s [=request/URL=] in the cookie store associated with |request| if the user agent is not configured to block cookies for |request|, and an empty [=list=] otherwise.
+        1. If |cookieData| is not identical to |exchangeRecord|'s [=exchange record/cookie data=], then user agents must return true. User agents may also return true if a modification to the cookies applicable to |request| has occurred in some other way.
+
+            <div class="note">This gives freedom to use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number instead of the full cookie data.</div>
+
+        1. Let |authenticationEntry| be null.
+        1. If there's an [=authentication entry=] for |request| and |request|'s [=request/current URL=] does not [=include credentials=], then set |authenticationEntry| to that [=authentication entry=].
+        1. If |authenticationEntry| is not identical to |exchangeRecord|'s [=exchange record/authentication entry=], then user agents must return true. User agents may also return true if a modification to the authentication entries applicable to |request| has occurred in some other way.
+
+            <div class="note">This provides similar implementation freedom to that described above for cookies.</div>
+    1. Return false.
+</div>
 
 Each {{Document}} has a <dfn export>prefetch buffer</dfn>, which is a [=list=] of [=prefetch records=].
 
@@ -82,16 +131,16 @@ A <dfn>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
 * <dfn export for="prefetch record">sandbox flags present</dfn>, a boolean
-* <dfn export for="prefetch record">redirect chain</dfn>, a [=list=] of [=responses=]
+* <dfn export for="prefetch record">redirect chain</dfn>, a [=redirect chain=]
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}}
 * <dfn for="prefetch record">isolated partition key</dfn>, a [=network partition key=] or null (the default)
 
-A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the last [=response=] in its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
+A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
 The user agent may remove elements from the [=prefetch buffer=] even if they are not expired, e.g., due to resource constraints. Since records with expiry times in the past are never returned, they can be removed with no observable consequences.
 
 <div algorithm="store a prefetch record">
-    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, [=sandboxing flag set=] |sandboxFlags|, [=list=] of [=responses=] |redirectChain|, and [=network partition key=] or null |isolatedPartitionKey|, perform the following steps.
+    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, [=sandboxing flag set=] |sandboxFlags|, [=redirect chain=] |redirectChain|, and [=network partition key=] or null |isolatedPartitionKey|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
@@ -114,6 +163,7 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
             </div>
         1. [=list/Remove=] |record| from |document|'s [=prefetch buffer=].
         1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
+        1. If |record|'s [=prefetch record/redirect chain=] [=redirect chain/has updated credentials=], return null.
         1. Return |record|.
     1. Return null.
 
@@ -130,7 +180,8 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
     1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
     1. Let |hasCrossOriginRedirects| be false.
     1. Let |urlList| be an empty [=list=].
-    1. [=list/For each=] |response| in |record|'s [=prefetch record/redirect chain=]:
+    1. [=list/For each=] |exchangeRecord| in |record|'s [=prefetch record/redirect chain=]:
+        1. Let |response| be |exchangeRecord|'s [=exchange record/response=].
         1. [=list/Append=] |response|'s [=response/URL=] to |urlList|.
         1. If |response|'s [=response/URL=]'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/URL=], then set |hasCrossOriginRedirects| to true.
         1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
@@ -312,7 +363,7 @@ These algorithms are based on [=process a navigate fetch=].
         :: |document|'s [=relevant settings object=]
         :  [=request/header list=]
 
-    1. Let |redirectChain| be an empty [=list=].
+    1. Let |redirectChain| be an empty [=redirect chain=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |navigationType| is "`other`".
         1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
@@ -337,12 +388,13 @@ These algorithms are based on [=process a navigate fetch=].
         1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
 
             <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-        1. Otherwise, return "`Allowed`".
+        1. [=redirect chain/Append=] |request| to |redirectChain|.
+        1. Return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
         1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
         1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
-        1. [=list/Append=] |response| to |redirectChain|.
+        1. [=redirect chain/Update the response=] for |redirectChain| given |request| and |response|.
 
             <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred, since this has visible side effects such as queuing violation reports.</div>
         1. Return "`Allowed`".
@@ -351,7 +403,7 @@ These algorithms are based on [=process a navigate fetch=].
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
     1. If |response| is a [=network error=], then return.
-    1. [=Assert=]: |response| is the last element of |redirectChain|.
+    1. [=Assert=]: |response| is [=exchange record/response=] of |redirectChain|'s last element.
     1. If |response| does not [=support prefetch=], then return.
     1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags|, |redirectChain| and null.
 </div>
@@ -393,7 +445,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: |document|'s [=relevant settings object=]
 
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
-    1. Let |redirectChain| be an empty [=list=].
+    1. Let |redirectChain| be an empty [=redirect chain=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |request|'s [=request/reserved client=] is |isolatedEnvironment| and not |environment|.
         1. [=Assert=]: |navigationType| is "`other`".
@@ -419,14 +471,15 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
 
             <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
+        1. [=redirect chain/Append=] |request| to |redirectChain|.
         1. Return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
         1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
         1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
-        1. [=list/Append=] |response| to |redirectChain|.
+        1. [=redirect chain/Update the response=] for |redirectChain| given |request| and |response|.
 
-            <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred.</div>
+            <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred, since this has visible side effects such as queuing violation reports.</div>
         1. Return "`Allowed`".
 
     1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|.
@@ -436,7 +489,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. If |originsWithConflictingCredentials| is not empty, then return.
 
         <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-    1. [=Assert=]: |response| is the last element of |redirectChain|.
+    1. [=Assert=]: |response| is [=exchange record/response=] of |redirectChain|'s last element.
     1. If |response| does not [=support prefetch=], then return.
     1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags|, |redirectChain| and |isolatedPartitionKey|.
 
@@ -521,6 +574,31 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
       1. Insert |newCookie| into |cookieStore|.
 
           <div class="note">This remove-and-insert pattern is consistent with what happens when [=receiving a cookie=].</div>
+</div>
+
+<div algorithm>
+  <div class="note">
+    This is essentially how the <a http-header lt="Cookie">`` `Cookie` ``</a> header is computed, except that a few details are specialized to this case, the last-access-time is not modified, and the sort order is changed to ensure it is unique.
+  </div>
+
+  To <dfn>gather cookie data</dfn> for [=URL=] |url| in cookie store |cookieStore|:
+
+  1. Let |cookieList| be the set of cookies from |cookieStore| that meet all of the following requirements:
+
+      * one of the following applies:
+          * the cookie's host-only flag is true and |url|'s <a spec="COOKIES" lt="canonicalized host name">canonicalized</a> [=url/host=] is identical to the cookie's domain
+          * the cookie's host-only flag is false and |url|'s <a spec="COOKIES" lt="canonicalized host name">canonicalized</a> [=url/host=] <a spec="COOKIES">domain-matches</a> the cookie's domain
+      * |url|'s [=url/path=] <a spec="COOKIES">path-matches</a> the cookie's path
+      * if the cookie's secure-only-flag is true, then |url|'s [=url/scheme=] is "`https`"
+
+  1. Sort |cookieList| lexicographically by name, and by value if names are equal.
+
+      <div class="note">Since both are octet sequences, Unicode collation rules do not apply.</div>
+
+  1. Let |cookieData| be an empty [=list=].
+  1. For each |cookie| in |cookieList|:
+      1. [=list/Append=] (|cookie|'s name, |cookie|'s value) to |cookieData|.
+  1. Return |cookieData|.
 </div>
 
 <h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
