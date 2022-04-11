@@ -403,9 +403,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">As with regular [=browsing contexts=], the [=prerendering browsing context=] can be [=discarded=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too much resources.
 
-  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL|, [=request/referrer policy=] is |referrerPolicy|, and [=request/policy container=] is |referrerDoc|'s [=Document/policy container=], [=clone a policy container|cloned=].
-
-     <p class="note">The [=policy container=] is cloned to avoid a situation where changes in [=Content Security Policy=] affect a prerender that had already started.
+  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL|, and [=request/referrer policy=] is |referrerPolicy|.
 
   1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
 </div>
