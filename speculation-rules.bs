@@ -21,6 +21,10 @@ spec:html; type:element; text:script
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
+    urlPrefix: infrastructure.html
+      text: HTML element removing steps; url: html-element-removing-steps
+    urlPrefix: scripting.html
+      text: already started; url: already-started
     urlPrefix: webappapis.html
       text: script; url: concept-script
 spec: nav-speculation; urlPrefix: prefetch.html
@@ -112,6 +116,29 @@ The following algorithms are updated accordingly:
   add the following step:
 
   > 3. If type is "`speculationrules`", then return true.
+
+<div algorithm="script element removing steps">
+  The following steps are added as the <{script}> element's [=HTML element removing steps=], given |removedNode| and <var ignore>oldParent</var>:
+
+  1. If [=the script's result=] is a [=speculation rule set=], then:
+      1. [=list/Remove=] it from |removedNode|'s [=Node/node document=]'s [=document/list of speculation rule sets=].
+      1. Set |removedNode|'s [=already started=] flag to false.
+      1. Set [=the script's result=] to null.
+
+      <div class="note">This means that the rule set can be reparsed if the script is reinserted.</div>
+</div>
+
+<div algorithm="script element children changed steps">
+  The following steps are added as the <{script}> element's [=children changed steps=] for an element |scriptElement|.
+
+  1. If [=the script's result=] is a [=speculation rule set=], then:
+      1. Let |ruleSet| be [=the script's result=].
+      1. Let |newResult| be the result of [=parsing speculation rules=] given |scriptElement|'s [=child text content=] and |scriptElement|'s [=Node/node document=]'s [=document base URL=].
+      1. Set [=the script's result=] to |newResult|.
+      1. [=list/Replace=] |ruleSet| with |newResult| in |scriptElement|'s [=Node/node document=]'s [=document/list of speculation rule sets=].
+
+      <div class="note">This means that the rule set is reparsed immediately if inline changes are made.</div>
+</div>
 
 <h3 id="speculation-rules-prepare-a-script-patch">Prepare a script</h3>
 
