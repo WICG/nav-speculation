@@ -618,7 +618,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-12">12 April 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-13">13 April 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -992,6 +992,9 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
         <p><var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-method" id="ref-for-concept-request-method">method</a> is `<code>GET</code>`</p>
        <li data-md>
         <p><var>browsingContext</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑥">active document</a>'s <a data-link-type="dfn" href="#document-prerendering-browsing-contexts-map" id="ref-for-document-prerendering-browsing-contexts-map②">prerendering browsing contexts map</a>[(<var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url②">URL</a>, <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-referrer-policy" id="ref-for-concept-request-referrer-policy②">referrer policy</a>)] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a> and is not <a data-link-type="dfn" href="#prerendering-browsing-context-empty" id="ref-for-prerendering-browsing-context-empty①">empty</a></p>
+       <li data-md>
+        <p>The result of calling <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#should-block-navigation-request" id="ref-for-should-block-navigation-request">should navigation request of type be blocked by content security policy?</a> given <var>request</var> and <var>navigationType</var> is "<code>Allowed</code>".</p>
+        <p class="note" role="note">There is no need for an additional CSP check for the response, see <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#navigate-to" id="ref-for-navigate-to">navigate-to</a>. </p>
       </ul>
      <li data-md>
       <p>Otherwise, return false.</p>
@@ -1556,6 +1559,18 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
    <a href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store">https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-credentialscontainer-store">7.3.26. Credential Management</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-navigate-to">
+   <a href="https://w3c.github.io/webappsec-csp/#navigate-to">https://w3c.github.io/webappsec-csp/#navigate-to</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-navigate-to">4.1. Allowing activation in place of navigation</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-should-block-navigation-request">
+   <a href="https://w3c.github.io/webappsec-csp/#should-block-navigation-request">https://w3c.github.io/webappsec-csp/#should-block-navigation-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-should-block-navigation-request">4.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-document">
@@ -2941,6 +2956,12 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
      <li><span class="dfn-paneled" id="term-for-dom-credentialscontainer-store">store()</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[CSP3]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-navigate-to">navigate-to</span>
+     <li><span class="dfn-paneled" id="term-for-should-block-navigation-request">should navigation request of type be blocked by content security policy?</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[DOM]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-document">Document</span>
@@ -3331,6 +3352,8 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
    <dd>Gary Kacmarcik; Grisha Lyukshin. <a href="https://www.w3.org/TR/clipboard-apis/"><cite>Clipboard API and events</cite></a>. 6 August 2021. WD. URL: <a href="https://www.w3.org/TR/clipboard-apis/">https://www.w3.org/TR/clipboard-apis/</a>
    <dt id="biblio-credential-management-1">[CREDENTIAL-MANAGEMENT-1]
    <dd>Mike West. <a href="https://www.w3.org/TR/credential-management-1/"><cite>Credential Management Level 1</cite></a>. 17 January 2019. WD. URL: <a href="https://www.w3.org/TR/credential-management-1/">https://www.w3.org/TR/credential-management-1/</a>
+   <dt id="biblio-csp3">[CSP3]
+   <dd>Mike West. <a href="https://www.w3.org/TR/CSP3/"><cite>Content Security Policy Level 3</cite></a>. 29 June 2021. WD. URL: <a href="https://www.w3.org/TR/CSP3/">https://www.w3.org/TR/CSP3/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-encrypted-media">[ENCRYPTED-MEDIA]
