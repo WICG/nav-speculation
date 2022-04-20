@@ -449,15 +449,15 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
        - Move the session history entry |successorEntry| from |successorTraversable| into |predecessorTraversable|, as follows:
 
-          - If |historyHandling| is "`replace`", delete the currently-active session history entry of |predecessorTraversable|.
+          - If |historyHandling| is "`replace`", replace the currently-active session history entry of |predecessorTraversable| with |successorEntry|.
 
-          - If |historyHandling| is "`default`", delete every entry after the the currently-active session history entry of |predecessorTraversable|.
+          - If |historyHandling| is "`default`", clear the forward session history of |predecessorTraversable|, then append |successorEntry| to |predecessorTraversable|'s session history list and make it the active session history entry.
 
-          - Append |successorEntry| into the |predecessorTraversable|'s session history list, and make it the active session history entry. (As a side effect, this then makes |successorBC| the active browsing context of |predecessorTraversable|).
+          (Note that as a side effect, this makes |successorBC| the active browsing context of |predecessorTraversable|).
 
        - |successorTraversable| will now be empty and can be unobservably destroyed.
 
-     - This setup means that traversing across the associated history entries will cause a browsing context group switch, similar to what currently happens for \`<a http-header>`Cross-Origin-Opener-Policy`</a>\`. Importantly, this will sever any opener relationships, in the same way as COOP. Such traversal includes both the actual activation process above, where we make |successorEntry| active and thus switch from |predecessorBC| to |successorBC|, but also e.g. the user pressing the back button, or the page using `history.go(-2)`, after activation, which will switch from |successorBC| to |predecessorBC|.
+     - This setup means that traversing across the associated history entries will cause a browsing context group switch, similar to what currently happens for \`<a http-header>`Cross-Origin-Opener-Policy`</a>\`. Importantly, this will sever any opener relationships, in the same way as COOP. Such traversal includes both the actual activation process above, where we make |successorEntry| active and thus switch from |predecessorBC| to |successorBC|, but also e.g. the user pressing the back button (or the page using `history.back()`) after activation, which will switch from |successorBC| to |predecessorBC|.
 
   1. [=In parallel=]:
 
