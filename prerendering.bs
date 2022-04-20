@@ -215,7 +215,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
 </pre>
 
 <style>
-/* domintro from https://resources.whatwg.org/standard.css */
+/* domintro and XXX from https://resources.whatwg.org/standard.css */
 .domintro {
   position: relative;
   color: green;
@@ -243,6 +243,12 @@ spec: nav-speculation; urlPrefix: prefetch.html
   position: absolute;
   top: -0.8em;
   left: -0.8em;
+}
+
+.XXX {
+  color: #D50606;
+  background: white;
+  border: solid #D50606;
 }
 </style>
 
@@ -430,7 +436,29 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   <!-- End copied section. -->
 
-  1. TODO prepend the existing session history of |predecessorBC| into |successorBC|? Or, probably better, use the new "browsing session" concept to bridge them? Be sure to respect |historyHandling|.
+  1. <p class="XXX">Appropriately merge the session histories of |predecessorBC| and |successorBC|, respecting |historyHandling|.</p>
+
+     This step cannot be specified precisely given the current sorry state of [[HTML]]'s session history specification. Once the <a href="https://github.com/whatwg/html/pull/6315">navigation and session history rewrite</a> pull request is merged, we can make this precise (although we will also have to do several updates to other parts of this prerendering specification).
+
+     In the meantime, let's be clear about the intent of the eventual precise-spec, in order to ensure interoperability:
+
+     - |successorBC| and |predecessorBC| will still be separate browsing contexts. Before activation, they are each in separate <a href="https://whatpr.org/html/6315/history.html#traversable-navigable">traversable navigables</a> (a new concept introduced in the rewrite). Call those |successorTraversable| and |predecessorTraversable|. Both of these traversable navigables have their own session history list; |successorTraversable|'s will necessarily consist of a single session history entry.
+
+     - During activation, we will:
+
+       - Move |successorBC| from |successorTraversable| into |predecessorTraversable|.
+
+       - Move the session history entry |successorEntry| from |successorTraversable| into |predecessorTraversable|, as follows:
+
+          - If |historyHandling| is "`replace`", replace the currently-active session history entry of |predecessorTraversable| with |successorEntry|.
+
+          - If |historyHandling| is "`default`", clear the forward session history of |predecessorTraversable|, then append |successorEntry| to |predecessorTraversable|'s session history list and make it the active session history entry.
+
+          (Note that as a side effect, this makes |successorBC| the active browsing context of |predecessorTraversable|).
+
+       - |successorTraversable| will now be empty and can be unobservably destroyed.
+
+     - This setup means that traversing across the associated history entries will cause a browsing context group switch, similar to what currently happens for \`<a http-header>`Cross-Origin-Opener-Policy`</a>\`. Importantly, this will sever any opener relationships, in the same way as COOP. Such traversal includes both the actual activation process above, where we make |successorEntry| active and thus switch from |predecessorBC| to |successorBC|, but also e.g. the user pressing the back button (or the page using `history.back()`) after activation, which will switch from |successorBC| to |predecessorBC|.
 
   1. [=In parallel=]:
 
@@ -626,7 +654,7 @@ Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerender
 
 <h3 id="interaction-with-workers">Interaction with Worker Lifetime</h3>
 
-<div algorithm=The worker's lifetime patch">
+<div algorithm="The worker's lifetime patch">
   In <a spec=HTML>The worker's lifetime</a>, modify the definition of [=active needed worker=], to count workers with a [=prerendering browsing context=] owner as not [=active needed worker|active=]:
 
   A worker is said to be an [=active needed worker=] if any of its [=WorkerGlobalScope/owner set|owners=] are either {{Document}} objects that are [=fully active=] and their [=Document/browsing context=] is not a [=prerendering browsing context=], or [=active needed worker|active needed workers=].
