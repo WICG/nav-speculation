@@ -121,9 +121,11 @@ The following algorithms are updated accordingly:
   The following steps are added as the <{script}> element's [=HTML element removing steps=], given |removedNode| and <var ignore>oldParent</var>:
 
   1. If [=the script's result=] is a [=speculation rule set=], then:
-      1. [=list/Remove=] it from |removedNode|'s [=Node/node document=]'s [=document/list of speculation rule sets=].
+      1. Let |document| be |removedNode|'s [=Node/node document=].
+      1. [=list/Remove=] it from |document|'s [=document/list of speculation rule sets=].
       1. Set |removedNode|'s [=already started=] flag to false.
       1. Set [=the script's result=] to null.
+      1. [=Queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
       <div class="note">This means that the rule set can be reparsed if the script is reinserted.</div>
 </div>
@@ -132,10 +134,12 @@ The following algorithms are updated accordingly:
   The following steps are added as the <{script}> element's [=children changed steps=] for an element |scriptElement|.
 
   1. If [=the script's result=] is a [=speculation rule set=], then:
+      1. Let |document| be |scriptElement|'s [=Node/node document=].
       1. Let |ruleSet| be [=the script's result=].
-      1. Let |newResult| be the result of [=parsing speculation rules=] given |scriptElement|'s [=child text content=] and |scriptElement|'s [=Node/node document=]'s [=document base URL=].
+      1. Let |newResult| be the result of [=parsing speculation rules=] given |scriptElement|'s [=child text content=] and |document|'s [=document base URL=].
       1. Set [=the script's result=] to |newResult|.
-      1. [=list/Replace=] |ruleSet| with |newResult| in |scriptElement|'s [=Node/node document=]'s [=document/list of speculation rule sets=].
+      1. [=list/Replace=] |ruleSet| with |newResult| in |document|'s [=document/list of speculation rule sets=].
+      1. [=Queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
       <div class="note">This means that the rule set is reparsed immediately if inline changes are made.</div>
 </div>
@@ -166,6 +170,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
       1. When <a spec=html>the script is ready</a>, run the following steps:
 
         1. If [=the script's result=] is not null, [=list/append=] it to the element's [=Node/node document=]'s [=document/list of speculation rule sets=].
+        1. [=Queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with the element's [=Node/node document=]'s [=relevant global object=] to [=consider speculation=] for |document|.
     </dd>
   </dl>
 
@@ -223,7 +228,8 @@ A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn
 Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
 <p class="note">
-  The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available.
+  The user agent will likely do when resources are idle and available, or otherwise the circumstances of its previous decision whether to start a speculation may have changed.
+</p>
 
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
