@@ -7,7 +7,7 @@
   <meta content="Bikeshed version fb1e763a4, updated Tue Mar 1 13:13:50 2022 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
 <style>
-/* domintro from https://resources.whatwg.org/standard.css */
+/* domintro and XXX from https://resources.whatwg.org/standard.css */
 .domintro {
   position: relative;
   color: green;
@@ -35,6 +35,12 @@
   position: absolute;
   top: -0.8em;
   left: -0.8em;
+}
+
+.XXX {
+  color: #D50606;
+  background: white;
+  border: solid #D50606;
 }
 </style>
 <style>/* style-autolinks */
@@ -618,7 +624,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-13">13 April 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-04-20">20 April 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -913,7 +919,32 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
      <li data-md>
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#abort-a-document" id="ref-for-abort-a-document①">Abort</a> the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document②">active document</a> of <var>predecessorBC</var>.</p>
      <li data-md>
-      <p>TODO prepend the existing session history of <var>predecessorBC</var> into <var>successorBC</var>? Or, probably better, use the new "browsing session" concept to bridge them? Be sure to respect <var>historyHandling</var>.</p>
+      <p class="XXX">Appropriately merge the session histories of <var>predecessorBC</var> and <var>successorBC</var>, respecting <var>historyHandling</var>.</p>
+      <p>This step cannot be specified precisely given the current sorry state of <a data-link-type="biblio" href="#biblio-html">[HTML]</a>'s session history specification. Once the <a href="https://github.com/whatwg/html/pull/6315">navigation and session history rewrite</a> pull request is merged, we can make this precise (although we will also have to do several updates to other parts of this prerendering specification).</p>
+      <p>In the meantime, let’s be clear about the intent of the eventual precise-spec, in order to ensure interoperability:</p>
+      <ul>
+       <li data-md>
+        <p><var>successorBC</var> and <var>predecessorBC</var> will still be separate browsing contexts. Before activation, they are each in separate <a href="https://whatpr.org/html/6315/history.html#traversable-navigable">traversable navigables</a> (a new concept introduced in the rewrite). Call those <var>successorTraversable</var> and <var>predecessorTraversable</var>. Both of these traversable navigables have their own session history list; <var>successorTraversable</var>’s will necessarily consist of a single session history entry.</p>
+       <li data-md>
+        <p>During activation, we will:</p>
+        <ul>
+         <li data-md>
+          <p>Move <var>successorBC</var> from <var>successorTraversable</var> into <var>predecessorTraversable</var>.</p>
+         <li data-md>
+          <p>Move the session history entry <var>successorEntry</var> from <var>successorTraversable</var> into <var>predecessorTraversable</var>, as follows:</p>
+          <ul>
+           <li data-md>
+            <p>If <var>historyHandling</var> is "<code>replace</code>", replace the currently-active session history entry of <var>predecessorTraversable</var> with <var>successorEntry</var>.</p>
+           <li data-md>
+            <p>If <var>historyHandling</var> is "<code>default</code>", clear the forward session history of <var>predecessorTraversable</var>, then append <var>successorEntry</var> to <var>predecessorTraversable</var>’s session history list and make it the active session history entry.</p>
+          </ul>
+          <p>(Note that as a side effect, this makes <var>successorBC</var> the active browsing context of <var>predecessorTraversable</var>).</p>
+         <li data-md>
+          <p><var>successorTraversable</var> will now be empty and can be unobservably destroyed.</p>
+        </ul>
+       <li data-md>
+        <p>This setup means that traversing across the associated history entries will cause a browsing context group switch, similar to what currently happens for `<a data-link-type="http-header" href="https://html.spec.whatwg.org/multipage/origin.html#cross-origin-opener-policy-2" id="ref-for-cross-origin-opener-policy-2"><code>Cross-Origin-Opener-Policy</code></a>`. Importantly, this will sever any opener relationships, in the same way as COOP. Such traversal includes both the actual activation process above, where we make <var>successorEntry</var> active and thus switch from <var>predecessorBC</var> to <var>successorBC</var>, but also e.g. the user pressing the back button (or the page using <code>history.back()</code>) after activation, which will switch from <var>successorBC</var> to <var>predecessorBC</var>.</p>
+      </ul>
      <li data-md>
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">In parallel</a>:</p>
       <ol>
@@ -1136,7 +1167,7 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
     </ol>
    </div>
    <h3 class="heading settled" data-level="4.6" id="interaction-with-workers"><span class="secno">4.6. </span><span class="content">Interaction with Worker Lifetime</span><a class="self-link" href="#interaction-with-workers"></a></h3>
-   <div class="algorithm" data-algorithm="The" lifetime patchU00022 workerU02019s>
+   <div class="algorithm" data-algorithm="The worker’s lifetime patch">
      In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#the-worker&apos;s-lifetime" id="ref-for-the-worker&apos;s-lifetime">The worker’s lifetime</a>, modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker">active needed worker</a>, to count workers with a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②④">prerendering browsing context</a> owner as not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker①">active</a>: 
     <p>A worker is said to be an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker②">active needed worker</a> if any of its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#concept-WorkerGlobalScope-owner-set" id="ref-for-concept-WorkerGlobalScope-owner-set">owners</a> are either <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑨">Document</a></code> objects that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#fully-active" id="ref-for-fully-active">fully active</a> and their <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc" id="ref-for-concept-document-bc③">browsing context</a> is not a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context②⑤">prerendering browsing context</a>, or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker③">active needed workers</a>.</p>
     <p class="note" role="note">This means that the worker’s script would load, but the execution would be suspended until the document is activated. </p>
@@ -1979,6 +2010,12 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-top-level-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#creating-a-new-top-level-browsing-context</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-creating-a-new-top-level-browsing-context">3.2. Prerendering browsing contexts</a> <a href="#ref-for-creating-a-new-top-level-browsing-context①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-cross-origin-opener-policy-2">
+   <a href="https://html.spec.whatwg.org/multipage/origin.html#cross-origin-opener-policy-2">https://html.spec.whatwg.org/multipage/origin.html#cross-origin-opener-policy-2</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-cross-origin-opener-policy-2">3.2. Prerendering browsing contexts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-current-global-object">
@@ -3074,6 +3111,7 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
      <li><span class="dfn-paneled" id="term-for-creating-a-new-nested-browsing-context">create a new nested browsing context</span>
      <li><span class="dfn-paneled" id="term-for-initialise-the-document-object">create and initialize a document object</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-new-top-level-browsing-context">creating a new top-level browsing context</span>
+     <li><span class="dfn-paneled" id="term-for-cross-origin-opener-policy-2">cross-origin-opener-policy</span>
      <li><span class="dfn-paneled" id="term-for-current-global-object">current global object</span>
      <li><span class="dfn-paneled" id="term-for-current-playback-position">current playback position</span>
      <li><span class="dfn-paneled" id="term-for-delay-the-load-event">delays the load event</span>
