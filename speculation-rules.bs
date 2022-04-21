@@ -21,11 +21,18 @@ spec:html; type:element; text:script
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
+    urlPrefix: infrastructure.html
+      text: HTML element removing steps; url: html-element-removing-steps
+    urlPrefix: scripting.html
+      text: already started; url: already-started
     urlPrefix: webappapis.html
+      text: await a stable state; url: await-a-stable-state
       text: script; url: concept-script
+      text: synchronous section; url: synchronous-section
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
+    text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
     text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
     text: origin; for: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy-origin
 spec: nav-speculation; urlPrefix: prerender.html
@@ -113,6 +120,33 @@ The following algorithms are updated accordingly:
 
   > 3. If type is "`speculationrules`", then return true.
 
+<div algorithm="script element removing steps">
+  The following steps are added as the <{script}> element's [=HTML element removing steps=], given |removedNode| and <var ignore>oldParent</var>:
+
+  1. If [=the script's result=] is a [=speculation rule set=], then:
+      1. Let |document| be |removedNode|'s [=Node/node document=].
+      1. [=list/Remove=] it from |document|'s [=document/list of speculation rule sets=].
+      1. Set |removedNode|'s [=already started=] flag to false.
+      1. Set [=the script's result=] to null.
+      1. [=Consider speculation=] for |document|.
+
+      <div class="note">This means that the rule set can be reparsed if the script is reinserted.</div>
+</div>
+
+<div algorithm="script element children changed steps">
+  The following steps are added as the <{script}> element's [=children changed steps=] for an element |scriptElement|.
+
+  1. If [=the script's result=] is a [=speculation rule set=], then:
+      1. Let |document| be |scriptElement|'s [=Node/node document=].
+      1. Let |ruleSet| be [=the script's result=].
+      1. Let |newResult| be the result of [=parsing speculation rules=] given |scriptElement|'s [=child text content=] and |document|'s [=document base URL=].
+      1. Set [=the script's result=] to |newResult|.
+      1. [=list/Replace=] |ruleSet| with |newResult| in |document|'s [=document/list of speculation rule sets=].
+      1. [=Consider speculation=] for |document|.
+
+      <div class="note">This means that the rule set is reparsed immediately if inline changes are made.</div>
+</div>
+
 <h3 id="speculation-rules-prepare-a-script-patch">Prepare a script</h3>
 
 Inside the [=prepare a script=] algorithm we make the following changes:
@@ -139,6 +173,7 @@ Inside the [=prepare a script=] algorithm we make the following changes:
       1. When <a spec=html>the script is ready</a>, run the following steps:
 
         1. If [=the script's result=] is not null, [=list/append=] it to the element's [=Node/node document=]'s [=document/list of speculation rule sets=].
+        1. [=Consider speculation=] for |document|.
     </dd>
   </dl>
 
@@ -196,26 +231,48 @@ A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn
 Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
 <p class="note">
-  The user agent will likely do this after the insertion of new speculation rules, or when resources are idle and available.
+  The user agent will likely do when resources are idle and available, or otherwise the circumstances of its previous decision whether to start a speculation could have changed.
+</p>
+
+A <dfn>prefetch candidate</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="prefetch candidate">URL</dfn>, an [=URL=]
+* <dfn for="prefetch candidate">referrer policy</dfn>, a [=referrer policy=]
+* <dfn for="prefetch candidate">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
+
+A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="prerender candidate">URL</dfn>, an [=URL=]
+* <dfn for="prerender candidate">referrer policy</dfn>, a [=referrer policy=]
 
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
-  1. If |document| is not [=Document/fully active=], then return.
+  1. [=Await a stable state=]. Steps in the [=synchronous section=] are marked with &#x231B;.
+  1. &#x231B; If |document| is not [=Document/fully active=], then return.
      <p class="issue">It's likely that we should also handle prerendered and back-forward cached documents.
-  1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
-    1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
-      1. Let |anonymizationPolicy| be null.
-      1. If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
-      1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. The user agent may [=prefetch=] |url| given |document|, |url|, "`strict-origin-when-cross-origin`" and |anonymizationPolicy|.
-    1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
-      1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. The user agent may [=create a prerendering browsing context=] given |url|, "`strict-origin-when-cross-origin`" and |document|.
+  1. &#x231B; Let |prefetchCandidates| be an empty [=list=].
+  1. &#x231B; Let |prerenderCandidates| be an empty [=list=].
+  1. &#x231B; For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
+    1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
+      1. &#x231B; Let |anonymizationPolicy| be null.
+      1. &#x231B; If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
+      1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/referrer policy=] "`strict-origin-when-cross-origin`", and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
+    1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
+      1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+        1. &#x231B; [=list/Append=] a [=prerender candidate=] with [=prerender candidate/URL=] |url| and [=prerender candidate/referrer policy=] "`strict-origin-when-cross-origin`" to |prerenderCandidates|.
+  1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
+  1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
+    1. The user agent may [=prefetch=] given |document|, |prefetchCandidate|'s [=prefetch candidate/URL=], |prefetchCandidate|'s [=prefetch candidate/referrer policy=] and |prefetchCandidate|'s [=prefetch candidate/anonymization policy=].
+  1. [=list/For each=] |prerenderCandidate| of |prefetchCandidates|:
+      1. The user agent may [=create a prerendering browsing context=] given |prerenderCandidate|'s [=prerender candidate/URL=], |prerenderCandidate|'s [=prerender candidate/referrer policy=] and |document|.
 </div>
 
 <p class="issue">
   We should also notice removals and consider cancelling speculated actions.
+</p>
+
+<p class="issue">
+  We should revisit the [=referrer policies=] used here.
 </p>
 
 <h2 id="security-considerations">Security considerations</h2>
