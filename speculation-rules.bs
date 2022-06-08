@@ -25,6 +25,11 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: HTML element removing steps; url: html-element-removing-steps
     urlPrefix: scripting.html
       text: already started; url: already-started
+      text: mark as ready; url: mark-as-ready
+      text: prepare the script element; url: prepare-the-script-element
+      for: HTMLScriptElement
+        text: type; url: concept-script-type
+        text: result; url: concept-script-result
     urlPrefix: webappapis.html
       text: await a stable state; url: await-a-stable-state
       text: script; url: concept-script
@@ -91,14 +96,14 @@ A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/it
 
 To process speculation rules consistently with the existing script types, we make the following changes:
 
-* Add "`speculationrules`" to the list of valid values for <a spec=html>the script's type</a>.
+* Add "`speculationrules`" to the list of valid values for a <{script}> element's [=HTMLScriptElement/type=].
 
-* Rename [=the script's script=] to <dfn>the script's result</dfn>, which can be either a <a spec="html">script</a> or a [=speculation rule set=].
+* Add a [=speculation rule set=] to the list of valid values for a <{script}> element's [=HTMLScriptElement/result=].
 
 The following algorithms are updated accordingly:
 
-* [=Prepare a script=]: see [[#speculation-rules-prepare-a-script-patch]].
-* <a spec=html>Execute a script block</a>: Add the following case to the switch on <a spec=html>the script's type</a>:
+* [=Prepare the script element=]: see [[#speculation-rules-prepare-the-script-element-patch]].
+* <a spec=html>Execute the script element</a>: Add the following case to the switch on [=HTMLScriptElement/type=]:
   <dl>
     <dt>"`speculationrules`"</dt>
     <dd>
@@ -123,11 +128,11 @@ The following algorithms are updated accordingly:
 <div algorithm="script element removing steps">
   The following steps are added as the <{script}> element's [=HTML element removing steps=], given |removedNode| and <var ignore>oldParent</var>:
 
-  1. If [=the script's result=] is a [=speculation rule set=], then:
+  1. If |removedNode|'s [=HTMLScriptElement/result=] is a [=speculation rule set=], then:
       1. Let |document| be |removedNode|'s [=Node/node document=].
       1. [=list/Remove=] it from |document|'s [=document/list of speculation rule sets=].
       1. Set |removedNode|'s [=already started=] flag to false.
-      1. Set [=the script's result=] to null.
+      1. Set |removedNode|'s [=HTMLScriptElement/result=] to null.
       1. [=Consider speculation=] for |document|.
 
       <div class="note">This means that the rule set can be reparsed if the script is reinserted.</div>
@@ -136,44 +141,32 @@ The following algorithms are updated accordingly:
 <div algorithm="script element children changed steps">
   The following steps are added as the <{script}> element's [=children changed steps=] for an element |scriptElement|.
 
-  1. If [=the script's result=] is a [=speculation rule set=], then:
+  1. If |scriptElement|'s [=HTMLScriptElement/result=] is a [=speculation rule set=], then:
       1. Let |document| be |scriptElement|'s [=Node/node document=].
-      1. Let |ruleSet| be [=the script's result=].
+      1. Let |ruleSet| be |scriptElement|'s [=HTMLScriptElement/result=].
       1. Let |newResult| be the result of [=parsing speculation rules=] given |scriptElement|'s [=child text content=] and |document|'s [=document base URL=].
-      1. Set [=the script's result=] to |newResult|.
+      1. Set |scriptElement|'s [=HTMLScriptElement/result=] to |newResult|.
       1. [=list/Replace=] |ruleSet| with |newResult| in |document|'s [=document/list of speculation rule sets=].
       1. [=Consider speculation=] for |document|.
 
       <div class="note">This means that the rule set is reparsed immediately if inline changes are made.</div>
 </div>
 
-<h3 id="speculation-rules-prepare-a-script-patch">Prepare a script</h3>
+<h3 id="speculation-rules-prepare-the-script-element-patch">Prepare the script element</h3>
 
-Inside the [=prepare a script=] algorithm we make the following changes:
+Inside the [=prepare the script element=] algorithm we make the following changes:
 
-* Insert the following step as the second-last sub-step under "Determine the script's type as follows:":
-  * If the script block's type string is an [=ASCII case-insensitive=] match for the string "`speculationrules`", <a spec=html>the script's type</a> is "`speculationrules`".
+* Insert the following step after the step that checks for an [=ASCII case-insensitive=] match for the string "`module`":
+  * If the script block's type string is an [=ASCII case-insensitive=] match for the string "`speculationrules`", then set <var ignore>el</var>'s [=HTMLScriptElement/type=] to "`speculationrules`".
 
-* Insert the following case in the switch on <a spec=html>the script's type</a> within the step which begins "If the element does not have a {{HTMLScriptElement/src}} content attribute..."
+* Insert the following case in the switch on [=HTMLScriptElement/type=] within the step which begins "If <var ignore>el</var> does not have a {{HTMLScriptElement/src}} content attribute..."
   <dl>
     <dt>"`speculationrules`"</dt>
     <dd>
       1. Let |result| be the result of [=parsing speculation rules=] given source text and base URL.
-
-      1. Set [=the script's result=] to |result|.
-
-      1. <a spec=html>The script is ready</a>.
-    </dd>
-  </dl>
-
-* Insert the following case to the switch in the subsequent step beginning "Then, follow the first of the following options...." after the cases which apply only to "`classic`" and "`module`" scripts:
-  <dl>
-    <dt>If <a spec=html>the script's type</a> is "`speculationrules`"</dt>
-    <dd>
-      1. When <a spec=html>the script is ready</a>, run the following steps:
-
-        1. If [=the script's result=] is not null, [=list/append=] it to the element's [=Node/node document=]'s [=document/list of speculation rule sets=].
-        1. [=Consider speculation=] for |document|.
+      1. If |result| is not null, [=list/append=] it to <var ignore>el</var>'s [=Node/node document=]'s [=document/list of speculation rule sets=].
+      1. [=Mark as ready=] <var ignore>el</var> given |result|.
+      1. [=Consider speculation=] for |document|.
     </dd>
   </dl>
 
