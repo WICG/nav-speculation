@@ -37,6 +37,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
+    text: prefetch controller; url: prefetch-controller
+    text: abort; for: prefetch controller; url: prefetch-controller-abort
+    text: document; for: prefetch controller; url: prefetch-controller-document
     text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
     text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
     text: origin; for: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy-origin
@@ -236,6 +239,18 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 * <dfn for="prerender candidate">URL</dfn>, an [=URL=]
 * <dfn for="prerender candidate">referrer policy</dfn>, a [=referrer policy=]
 
+A <dfn>started prefetch</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="started prefetch">candidate</dfn>, a [=prefetch candidate=]
+* <dfn for="started prefetch">controller</dfn>, a [=prefetch controller=]
+
+<div algorithm>
+  A [=started prefetch=] |startedPrefetch| is <dfn for="started prefetch">continued by</dfn> a [=prefetch candidate=] |prefetchCandidate| if the following are all true:
+  * |startedPrefetch|'s [=started prefetch/candidate=]'s [=prefetch candidate/URL=] equals |prefetchCandidate|'s [=prefetch candidate/URL=]
+  * |startedPrefetch|'s [=started prefetch/candidate=]'s [=prefetch candidate/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
+</div>
+
+A {{Document}} has <dfn for=Document export>started prefetches</dfn>, which is a [=list=] of [=started prefetches=], initially empty.
+
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
@@ -253,15 +268,22 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; [=list/Append=] a [=prerender candidate=] with [=prerender candidate/URL=] |url| and [=prerender candidate/referrer policy=] "`strict-origin-when-cross-origin`" to |prerenderCandidates|.
+  1. &#x231B; [=list/For each=] |startedPrefetch| of |document|'s [=Document/started prefetches=]:
+    1. &#x231B; If |startedPrefetch| is not [=started prefetch/continued by=] any element of |prefetchCandidates|, then:
+      1. &#x231B; [=prefetch controller/Abort=] |startedPrefetch|'s [=started prefetch/controller=].
+      1. &#x231B; [=list/Remove=] |startedPrefetch| from |document|'s [=Document/started prefetches=].
   1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
-    1. The user agent may [=prefetch=] given |document|, |prefetchCandidate|'s [=prefetch candidate/URL=], |prefetchCandidate|'s [=prefetch candidate/referrer policy=] and |prefetchCandidate|'s [=prefetch candidate/anonymization policy=].
+    1. The user agent may run the following steps:
+      1. Let |prefetchController| be a new [=prefetch controller=] whose [=prefetch controller/document=] is |document|.
+      1. [=Prefetch=] given |document|, |prefetchCandidate|'s [=prefetch candidate/URL=], |prefetchCandidate|'s [=prefetch candidate/referrer policy=], |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], and |prefetchController|.
+      1. [=list/Append=] a new [=started prefetch=] whose [=started prefetch/candidate=] is |prefetchCandidate| and [=started prefetch/controller=] is |prefetchController| to |document|'s [=Document/started prefetches=].
   1. [=list/For each=] |prerenderCandidate| of |prefetchCandidates|:
       1. The user agent may [=create a prerendering browsing context=] given |prerenderCandidate|'s [=prerender candidate/URL=], |prerenderCandidate|'s [=prerender candidate/referrer policy=] and |document|.
 </div>
 
 <p class="issue">
-  We should also notice removals and consider cancelling speculated actions.
+  We should also cancel speculated prerenders.
 </p>
 
 <p class="issue">
