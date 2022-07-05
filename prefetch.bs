@@ -434,10 +434,10 @@ These algorithms are based on [=process a navigate fetch=].
     1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, null, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|, and |prefetchRecord|'s [=prefetch record/fetch controller=].
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
-    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| and return.
+    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
     1. [=Assert=]: |response| is [=exchange record/response=] the last element of |prefetchRecord|'s [=prefetch record/redirect chain=].
-    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| and return.
-    1. [=prefetch record/Complete=] |prefetchRecord|.
+    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
 </div>
 
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
@@ -447,7 +447,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
-    1. If |prefetchRecord|'s [=prefetch record/referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| and return.
+    1. If |prefetchRecord|'s [=prefetch record/referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
     1. Let |browsingContext| be |document|'s [=Document/browsing context=].
     1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |isolationOrigin| be a new [=opaque origin=].
@@ -518,13 +518,13 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, |shouldBlockNavigationResponse|, and |prefetchRecord|'s [=prefetch record/fetch controller=].
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
-    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| and return.
-    1. If |originsWithConflictingCredentials| is not empty, then [=prefetch record/cancel and discard=] |prefetchRecord| and return.
+    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. If |originsWithConflictingCredentials| is not empty, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
 
         <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
     1. [=Assert=]: |response| is [=exchange record/response=] the last element of |prefetchRecord|'s [=prefetch record/redirect chain=].
-    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| and return.
-    1. [=prefetch record/Complete=] |prefetchRecord|.
+    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
 
     <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
