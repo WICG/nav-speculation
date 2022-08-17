@@ -34,15 +34,19 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: await a stable state; url: await-a-stable-state
       text: script; url: concept-script
       text: synchronous section; url: synchronous-section
+    urlPrefix: browsers.html
+      text: valid browsing context name or keyword; url: valid-browsing-context-name-or-keyword
+      text: rules for choosing a browsing context; url: the-rules-for-choosing-a-browsing-context-given-a-browsing-context-name
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
     text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
     text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
     text: origin; for: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy-origin
-spec: nav-speculation; urlPrefix: prerender.html
+spec: nav-speculation; urlPrefix: prerendering.html
   type: dfn
     text: create a prerendering browsing context; url: create-a-prerendering-browsing-context
+    text: activate; for: prerendering browsing context; url: prerendering-browsing-context-activate
 </pre>
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -83,6 +87,7 @@ spec: nav-speculation; urlPrefix: prerender.html
 A <dfn>speculation rule</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule">URLs</dfn>, an [=ordered set=] of [=URLs=]
 * <dfn for="speculation rule">requirements</dfn>, an [=ordered set=] of [=strings=]
+* <dfn for="speculation rule">target browsing context name hint</dfn>, a [=string=] or null
 
 The only valid string for [=speculation rule/requirements=] to contain is "`anonymous-client-ip-when-cross-origin`".
 
@@ -187,6 +192,7 @@ Inside the [=prepare the script element=] algorithm we make the following change
     1. If |prefetchRule| is not a [=map=], then [=iteration/continue=].
     1. Let |rule| be the result of [=parsing a speculation rule=] given |prefetchRule| and |baseURL|.
     1. If |rule| is null, then [=iteration/continue=].
+    1. If |rule|'s [=speculation rule/target browsing context name hint=] is not null, then [=iteration/continue=].
     1. [=list/Append=] |rule| to |result|'s [=speculation rule set/prefetch rules=].
   1. If |parsed|["`prerender`"] [=map/exists=] and is a [=list=], then [=list/for each=] |prerenderRule| of |parsed|["`prerender`"]:
     1. If |prerenderRule| is not a [=map=], then [=iteration/continue=].
@@ -199,7 +205,7 @@ Inside the [=prepare the script element=] algorithm we make the following change
 <div algorithm="parse a speculation rule">
   To <dfn>parse a speculation rule</dfn> given a [=map=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
 
-  1. If |input| has any [=map/key=] other than "`source`", "`urls`", and "`requires`", then return null.
+  1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`requires`", and `"target_hint"`, then return null.
   1. If |input|["`source`"] does not [=map/exist=] or is not the [=string=] "`list`", then return null.
   1. Let |urls| be an empty [=list=].
   1. If |input|["`urls`"] does not [=map/exist=], is not a [=list=], or has any element which is not a [=string=], then return null.
@@ -213,7 +219,11 @@ Inside the [=prepare the script element=] algorithm we make the following change
   1. [=list/For each=] |requirement| of |input|["`requires`"]:
     1. If |requirement| is not the [=string=] "`anonymous-client-ip-when-cross-origin`", then return null.
     1. [=set/Append=] |requirement| to |requirements|.
-  1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls| and [=speculation rule/requirements=] |requirements|.
+  1. Let |targetHint| be null.
+  1. If |input|["`target_hint`"] [=map/exists=]:
+    1. If |input|["`target_hint`"] is not a [=valid browsing context name or keyword=], then return null.
+    1. Set |targetHint| to |input|["`target_hint`"].
+  1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls|, [=speculation rule/requirements=] |requirements|, and [=speculation rule/target browsing context name hint=] |targetHint|.
 </div>
 
 <h3 id="speculation-rules-processing">Processing model</h3>
@@ -234,6 +244,7 @@ A <dfn>prefetch candidate</dfn> is a [=struct=] with the following [=struct/item
 
 A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="prerender candidate">URL</dfn>, an [=URL=]
+* <dfn for="prerender candidate">target browsing context name hint</dfn>, a [=valid browsing context name or keyword=] or null
 * <dfn for="prerender candidate">referrer policy</dfn>, a [=referrer policy=]
 
 <div algorithm="consider speculation">
@@ -252,12 +263,17 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
         1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/referrer policy=] "`strict-origin-when-cross-origin`", and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. &#x231B; [=list/Append=] a [=prerender candidate=] with [=prerender candidate/URL=] |url| and [=prerender candidate/referrer policy=] "`strict-origin-when-cross-origin`" to |prerenderCandidates|.
+        1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url|, [=prerender candidate/referrer policy=] is "`strict-origin-when-cross-origin`", and [=prerender candidate/target browsing context name hint=] is |rule|'s [=speculation rule/target browsing context name hint=].
+        1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
   1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
     1. The user agent may [=prefetch=] given |document|, |prefetchCandidate|'s [=prefetch candidate/URL=], |prefetchCandidate|'s [=prefetch candidate/referrer policy=] and |prefetchCandidate|'s [=prefetch candidate/anonymization policy=].
   1. [=list/For each=] |prerenderCandidate| of |prefetchCandidates|:
       1. The user agent may [=create a prerendering browsing context=] given |prerenderCandidate|'s [=prerender candidate/URL=], |prerenderCandidate|'s [=prerender candidate/referrer policy=] and |document|.
+
+         The user agent can use |prerenderCandidate|'s [=prerender candidate/target browsing context name hint=] as a hint to their implementation of the [=create a prerendering browsing context=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering browsing context/activate|activation=] of the created browsing context to be in place of a particular predecessor browsing context: the one that would be chosen by the invoking the [=rules for choosing a browsing context=] given |prerenderCandidate|'s [=prerender candidate/target browsing context name hint=] and |document|'s [=Document/browsing context=].
+
+         <p class="note">This is just a hint. The [=speculation rule/target browsing context name hint=] actually has no normative implications, after being parsed. It is still perfectly fine to [=prerendering browsing context/activate=] in place of a different predecessor browsing context that was not hinted at.
 </div>
 
 <p class="issue">

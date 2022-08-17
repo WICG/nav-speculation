@@ -13,6 +13,7 @@
 - [The proposal](#the-proposal)
   - [List rules](#list-rules)
   - [Requirements](#requirements)
+  - [Window name targeting hints](#window-name-targeting-hints)
 - [Future extensions](#future-extensions)
   - [Scores](#scores)
   - [Document rules](#document-rules)
@@ -23,9 +24,11 @@
 - [Developer tooling](#developer-tooling)
 - [Feature detection](#feature-detection)
 - [Alternatives considered](#alternatives-considered)
-  - [General interop and compat concerns](#general-interop-and-compat-concerns)
-  - [Forward-compatibility problems](#forward-compatibility-problems)
-  - [Duplication](#duplication)
+  - [Extending the `<link>` element](#extending-the-link-element)
+    - [General interop and compat concerns](#general-interop-and-compat-concerns)
+    - [Forward-compatibility problems](#forward-compatibility-problems)
+    - [Duplication](#duplication)
+  - [Alternatives to `"target_hint"`](#alternatives-to-target_hint)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -125,6 +128,45 @@ Currently the only requirement that is specified is denoted by `"anonymous-clien
 ```
 
 We require that user agents discard any rules with requirements that are not recognized or supported in the current configuration, so this system fails closed. Additionally, due to the conservative parsing rules, any UA which did not support requirements at all would discard all rules with requirements.
+
+### Window name targeting hints
+
+For implementation reasons, it can be difficult for user agents to prerender content without knowing which window it will end up in. For example, the browser might prerender content assuming that it will be activated in the current window, replacing the current content, but then the user might end up clicking on an `<a href="page.html" target="_blank">` link, so the prerendered content is wasted.
+
+To help with this, `"prerender"` rules can have a `"target_hint"` field, which contains a [valid browsing context name or keyword](https://html.spec.whatwg.org/#valid-browsing-context-name-or-keyword) indicating where the page expects the prerendered content to be activated. (The name "target" comes from the HTML `target=""` attribute on hyperlinks.)
+
+```html
+<script type=speculationrules>
+{
+  "prerender": [{
+    "source": "list",
+    "target_hint": "_blank",
+    "urls": ["page.html"]
+  }]
+}
+</script>
+<a target="_blank" href="page.html">click me</a>
+```
+
+This is just a hint, and is not binding on the implementation. Indeed, we hope that it one day becomes unnecessary, and all implementations can activate prerendered content into any target window. At that point, the field can be safely ignored, and removed from the specification. But at least for Chromium, getting to that point might take a year or so of engineering effort, so in the meantime `"target_hint"` gives developers a way to use prerendering in combination with new windows.
+
+Note that if a page is truly unsure whether a given URL will be prerendered into the current window or a new one, they could include prerendering rules for multiple target windows:
+
+```json
+{
+  "prerender": [
+   {"source": "list",
+    "target_hint": "_self",
+    "urls": ["page.html"]
+   },
+   {"source": "list",
+    "target_hint": "_blank",
+    "urls": ["page.html"]
+   }]
+}
+```
+
+However, in browsers such as Chromium that need the target hint, this will prerender the page twice, and thus use twice as many resources. So this is best avoided if possible.
 
 ## Future extensions
 
@@ -239,9 +281,11 @@ if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')
 
 ## Alternatives considered
 
+### Extending the `<link>` element
+
 The obvious alternative is to extend the `<link>` element. Let's discuss why that's undesirable.
 
-### General interop and compat concerns
+#### General interop and compat concerns
 
 The existing `<link rel="prefetch">` and `<link rel="prerender">` link relations are not consistently implemented, or well specified. They do different things in different browsers, and in some cases even have magical behavior for `as="document"` (navigational preloading) vs. other `as=""` values (subresource preloading).
 
@@ -249,7 +293,7 @@ Current implementations are also not necessarily compatible with [storage partit
 
 As such, it's much nicer if we can start from a clean slate with a new trigger, which does not have any preexisting implementations which could be hard to change the semantics of. We do want to eventually get interop on these; our current best guess for how this will turn out is that `<link rel="prefetch">` [will become about subresource prefetching only](https://github.com/whatwg/html/pull/8111), and `<link rel="prerender">` (which is Chromium-only) will be removed.
 
-### Forward-compatibility problems
+#### Forward-compatibility problems
 
 `<link>` does not lend itself well to adding requirements, of the type we [have included](#requirements) in speculation rules. For example, if we tried to add support for requiring an anonymous client IP, doing so in the naive way would accidentally cause existing browsers to ignore the requirement:
 
@@ -260,12 +304,24 @@ As such, it's much nicer if we can start from a clean slate with a new trigger, 
 
 The only real workaround for this is to invent a new `rel=""` value which has different behavior, e.g., pays attention to a new `requirements=""` attribute.
 
-### Duplication
+#### Duplication
 
 As mentioned in [the Goals section](#goals), `<link>` also doesn't lend itself to reducing duplication with anchors alread in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
 
 With [document rules](#document-rules), we can do much better.
 
+### Alternatives to `"target_hint"`
+
+One alternative to the explicit [`"target_hint"`](#window-name-targeting-hints) field is for implementations such as Chromium, which need to know the target window before prerendering, to use heuristics to try to figure out the target window. For example, given a prerender rule targeting a given URL, they could scan for links to that URL in the current DOM, and use that link's `target=""` to guess at the target window.
+
+This has a few disadvantages:
+
+- It doesn't work for certain navigations:
+  - Those triggered via JavaScript, e.g. `<button onclick="window.open(url)">`.
+  - Those triggered via links that are not yet in the DOM at the time the prerendering occurs, e.g. those due to clicking inside a pop-up which is inserted dynamically.
+- It is slightly more costly for performance, requiring a scan of the entire DOM whenever speculation rules are updated.
+
+We worry that such a technique might encourage developers to insert hidden fake links into the DOM to trigger the heuristic.
 
 [import-maps]: https://github.com/WICG/import-maps
 [resource-hints]: https://github.com/w3c/resource-hints
