@@ -813,6 +813,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="prerender candidate" data-dfn-type="dfn" data-noexport id="prerender-candidate-referrer-policy">referrer policy</dfn>, a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a></p>
    </ul>
+   <div class="algorithm" data-algorithm="continues" data-algorithm-for="prefetch candidate">
+     A <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate">prefetch candidate</a> <var>prefetchCandidate</var> <dfn class="dfn-paneled" data-dfn-for="prefetch candidate" data-dfn-type="dfn" data-noexport id="prefetch-candidate-continues">continues</dfn> a <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record">prefetch record</a> <var>prefetchRecord</var> if the following are all true: 
+    <ul>
+     <li data-md>
+      <p><var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label">label</a> is "<code>speculation-rules</code>"</p>
+     <li data-md>
+      <p><var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state">state</a> is not "<code>canceled</code>"</p>
+     <li data-md>
+      <p><var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url">URL</a> equals <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url">URL</a></p>
+     <li data-md>
+      <p><var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy">anonymization policy</a> equals <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy">anonymization policy</a></p>
+    </ul>
+   </div>
    <div class="algorithm" data-algorithm="consider speculation">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="consider-speculation">consider speculation</dfn> for a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document②">document</a> <var>document</var>: 
     <ol>
@@ -839,7 +852,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
           <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑤">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls①">URLs</a>:</p>
           <ol>
            <li data-md>
-            <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append④">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate">prefetch candidate</a> with <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url">URL</a> <var>url</var>, <a data-link-type="dfn" href="#prefetch-candidate-referrer-policy" id="ref-for-prefetch-candidate-referrer-policy">referrer policy</a> "<code>strict-origin-when-cross-origin</code>", and <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy">anonymization policy</a> <var>anonymizationPolicy</var> to <var>prefetchCandidates</var>.</p>
+            <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append④">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate①">prefetch candidate</a> with <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url①">URL</a> <var>url</var>, <a data-link-type="dfn" href="#prefetch-candidate-referrer-policy" id="ref-for-prefetch-candidate-referrer-policy">referrer policy</a> "<code>strict-origin-when-cross-origin</code>", and <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy①">anonymization policy</a> <var>anonymizationPolicy</var> to <var>prefetchCandidates</var>.</p>
           </ol>
         </ol>
        <li data-md>
@@ -856,15 +869,31 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         </ol>
       </ol>
      <li data-md>
-      <p>End the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section" id="ref-for-synchronous-section①">synchronous section</a>, continuing the remaining steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>.</p>
-     <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑧">For each</a> <var>prefetchCandidate</var> of <var>prefetchCandidates</var>:</p>
+      <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑧">For each</a> <var>prefetchRecord</var> of <var>document</var>’s <a data-link-type="dfn" href="prefetch.html#document-prefetch-records" id="ref-for-document-prefetch-records">prefetch records</a>:</p>
       <ol>
        <li data-md>
-        <p>The user agent may <a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch">prefetch</a> given <var>document</var>, <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url①">URL</a>, <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-referrer-policy" id="ref-for-prefetch-candidate-referrer-policy①">referrer policy</a> and <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy①">anonymization policy</a>.</p>
+        <p>⌛ If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label①">label</a> is not "<code>speculation-rules</code>", then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑦">continue</a>.</p>
+       <li data-md>
+        <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①">Assert</a>: <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state①">state</a> is not "<code>canceled</code>".</p>
+       <li data-md>
+        <p>⌛ If no element of <var>prefetchCandidates</var> <a data-link-type="dfn" href="#prefetch-candidate-continues" id="ref-for-prefetch-candidate-continues">continues</a> <var>prefetchRecord</var>, then <a data-link-type="dfn" href="prefetch.html#prefetch-record-cancel-and-discard" id="ref-for-prefetch-record-cancel-and-discard">cancel and discard</a> <var>prefetchRecord</var> given <var>document</var>.</p>
       </ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑨">For each</a> <var>prerenderCandidate</var> of <var>prefetchCandidates</var>:</p>
+      <p>End the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section" id="ref-for-synchronous-section①">synchronous section</a>, continuing the remaining steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑨">For each</a> <var>prefetchCandidate</var> of <var>prefetchCandidates</var>:</p>
+      <ol>
+       <li data-md>
+        <p>The user agent may run the following steps:</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a> whose <a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url②">URL</a>, <a data-link-type="dfn" href="prefetch.html#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy">referrer policy</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-referrer-policy" id="ref-for-prefetch-candidate-referrer-policy①">referrer policy</a>, <a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy①">anonymization policy</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy②">anonymization policy</a>, and <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label②">label</a> is "<code>speculation-rules</code>".</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch">Prefetch</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
+        </ol>
+      </ol>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⓪">For each</a> <var>prerenderCandidate</var> of <var>prefetchCandidates</var>:</p>
       <ol>
        <li data-md>
         <p>The user agent may <a data-link-type="dfn" href="prerendering.html#create-a-prerendering-browsing-context" id="ref-for-create-a-prerendering-browsing-context">create a prerendering browsing context</a> given <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-url" id="ref-for-prerender-candidate-url①">URL</a>, <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-referrer-policy" id="ref-for-prerender-candidate-referrer-policy①">referrer policy</a> and <var>document</var>.</p>
@@ -873,7 +902,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       </ol>
     </ol>
    </div>
-   <p class="issue" id="issue-ba67a3f6"><a class="self-link" href="#issue-ba67a3f6"></a> We should also notice removals and consider cancelling speculated actions. </p>
+   <p class="issue" id="issue-1cafd308"><a class="self-link" href="#issue-1cafd308"></a> We should also cancel speculated prerenders. </p>
    <p class="issue" id="issue-ffd6d56f"><a class="self-link" href="#issue-ffd6d56f"></a> We should revisit the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy②">referrer policies</a> used here. </p>
    <h2 class="heading settled" data-level="2" id="security-considerations"><span class="secno">2. </span><span class="content">Security considerations</span><a class="self-link" href="#security-considerations"></a></h2>
    <h3 class="heading settled" data-level="2.1" id="security-csrf"><span class="secno">2.1. </span><span class="content">Cross-site request forgery</span><a class="self-link" href="#security-csrf"></a></h3>
@@ -939,6 +968,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <ul class="index">
    <li><a href="#prefetch-candidate-anonymization-policy">anonymization policy</a><span>, in § 1.5</span>
    <li><a href="#consider-speculation">consider speculation</a><span>, in § 1.5</span>
+   <li><a href="#prefetch-candidate-continues">continues</a><span>, in § 1.5</span>
    <li><a href="#document-list-of-speculation-rule-sets">list of speculation rule sets</a><span>, in § 1.5</span>
    <li><a href="#parse-a-speculation-rule">parse a speculation rule</a><span>, in § 1.4</span>
    <li><a href="#parse-speculation-rules">parse speculation rules</a><span>, in § 1.4</span>
@@ -1178,6 +1208,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#assert">https://infra.spec.whatwg.org/#assert</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-assert">1.2. The script element</a>
+    <li><a href="#ref-for-assert①">1.5. Processing model</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-contain">
@@ -1190,6 +1221,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#iteration-continue">https://infra.spec.whatwg.org/#iteration-continue</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-iteration-continue">1.4. Parsing</a> <a href="#ref-for-iteration-continue①">(2)</a> <a href="#ref-for-iteration-continue②">(3)</a> <a href="#ref-for-iteration-continue③">(4)</a> <a href="#ref-for-iteration-continue④">(5)</a> <a href="#ref-for-iteration-continue⑤">(6)</a> <a href="#ref-for-iteration-continue⑥">(7)</a>
+    <li><a href="#ref-for-iteration-continue⑦">1.5. Processing model</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-map-exists">
@@ -1202,7 +1234,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-list-iterate">1.4. Parsing</a> <a href="#ref-for-list-iterate①">(2)</a> <a href="#ref-for-list-iterate②">(3)</a> <a href="#ref-for-list-iterate③">(4)</a>
-    <li><a href="#ref-for-list-iterate④">1.5. Processing model</a> <a href="#ref-for-list-iterate⑤">(2)</a> <a href="#ref-for-list-iterate⑥">(3)</a> <a href="#ref-for-list-iterate⑦">(4)</a> <a href="#ref-for-list-iterate⑧">(5)</a> <a href="#ref-for-list-iterate⑨">(6)</a>
+    <li><a href="#ref-for-list-iterate④">1.5. Processing model</a> <a href="#ref-for-list-iterate⑤">(2)</a> <a href="#ref-for-list-iterate⑥">(3)</a> <a href="#ref-for-list-iterate⑦">(4)</a> <a href="#ref-for-list-iterate⑧">(5)</a> <a href="#ref-for-list-iterate⑨">(6)</a> <a href="#ref-for-list-iterate①⓪">(7)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-struct-item">
@@ -1277,6 +1309,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-prerendering-browsing-context-activate">1.5. Processing model</a> <a href="#ref-for-prerendering-browsing-context-activate①">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record-anonymization-policy">
+   <a href="prefetch.html#prefetch-record-anonymization-policy">prefetch.html#prefetch-record-anonymization-policy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-anonymization-policy">1.5. Processing model</a> <a href="#ref-for-prefetch-record-anonymization-policy①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record-cancel-and-discard">
+   <a href="prefetch.html#prefetch-record-cancel-and-discard">prefetch.html#prefetch-record-cancel-and-discard</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-cancel-and-discard">1.5. Processing model</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-create-a-prerendering-browsing-context">
    <a href="prerendering.html#create-a-prerendering-browsing-context">prerendering.html#create-a-prerendering-browsing-context</a><b>Referenced in:</b>
    <ul>
@@ -1287,6 +1331,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy">prefetch.html#cross-origin-prefetch-ip-anonymization-policy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-cross-origin-prefetch-ip-anonymization-policy">1.5. Processing model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record-label">
+   <a href="prefetch.html#prefetch-record-label">prefetch.html#prefetch-record-label</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-label">1.5. Processing model</a> <a href="#ref-for-prefetch-record-label①">(2)</a> <a href="#ref-for-prefetch-record-label②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-cross-origin-prefetch-ip-anonymization-policy-origin">
@@ -1305,6 +1355,36 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="prefetch.html#prefetch-ip-anonymization-policy">prefetch.html#prefetch-ip-anonymization-policy</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-prefetch-ip-anonymization-policy">1.5. Processing model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record">
+   <a href="prefetch.html#prefetch-record">prefetch.html#prefetch-record</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record">1.5. Processing model</a> <a href="#ref-for-prefetch-record①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-document-prefetch-records">
+   <a href="prefetch.html#document-prefetch-records">prefetch.html#document-prefetch-records</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-document-prefetch-records">1.5. Processing model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record-referrer-policy">
+   <a href="prefetch.html#prefetch-record-referrer-policy">prefetch.html#prefetch-record-referrer-policy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-referrer-policy">1.5. Processing model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record-state">
+   <a href="prefetch.html#prefetch-record-state">prefetch.html#prefetch-record-state</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-state">1.5. Processing model</a> <a href="#ref-for-prefetch-record-state①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record-url">
+   <a href="prefetch.html#prefetch-record-url">prefetch.html#prefetch-record-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-url">1.5. Processing model</a> <a href="#ref-for-prefetch-record-url①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-referrer-policy">
@@ -1403,11 +1483,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[NAV-SPECULATION]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-prerendering-browsing-context-activate">activate</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record-anonymization-policy">anonymization policy</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record-cancel-and-discard">cancel and discard</span>
      <li><span class="dfn-paneled" id="term-for-create-a-prerendering-browsing-context">create a prerendering browsing context</span>
      <li><span class="dfn-paneled" id="term-for-cross-origin-prefetch-ip-anonymization-policy">cross-origin prefetch ip anonymization policy</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record-label">label</span>
      <li><span class="dfn-paneled" id="term-for-cross-origin-prefetch-ip-anonymization-policy-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-prefetch">prefetch</span>
      <li><span class="dfn-paneled" id="term-for-prefetch-ip-anonymization-policy">prefetch ip anonymization policy</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record">prefetch record</span>
+     <li><span class="dfn-paneled" id="term-for-document-prefetch-records">prefetch records</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record-referrer-policy">referrer policy</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record-state">state</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record-url">url</span>
     </ul>
    <li>
     <a data-link-type="biblio">[REFERRER-POLICY]</a> defines the following terms:
@@ -1451,7 +1539,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <div class="issue">We should also incorporate the case where a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src">src</a></code> attribute is set. <a class="issue-return" href="#issue-bb120c28" title="Jump to section">↵</a></div>
    <div class="issue">We could fire <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-error">error</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-load">load</a></code> events if we wanted to. <a class="issue-return" href="#issue-9cd39e70" title="Jump to section">↵</a></div>
    <div class="issue">It’s likely that we should also handle prerendered and back-forward cached documents. <a class="issue-return" href="#issue-30bcda38" title="Jump to section">↵</a></div>
-   <div class="issue"> We should also notice removals and consider cancelling speculated actions. <a class="issue-return" href="#issue-ba67a3f6" title="Jump to section">↵</a></div>
+   <div class="issue"> We should also cancel speculated prerenders. <a class="issue-return" href="#issue-1cafd308" title="Jump to section">↵</a></div>
    <div class="issue"> We should revisit the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy">referrer policies</a> used here. <a class="issue-return" href="#issue-ffd6d56f" title="Jump to section">↵</a></div>
    <div class="issue">Expand this section once externally loaded (via "<code>src</code>") speculation rules are specified. <a class="issue-return" href="#issue-8b05d1b2" title="Jump to section">↵</a></div>
    <div class="issue">Expand this section once more detail on prefetch and prerender partitioning mechanism is specified. <a class="issue-return" href="#issue-641b3e22" title="Jump to section">↵</a></div>
@@ -1530,13 +1618,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="prefetch-candidate">
    <b><a href="#prefetch-candidate">#prefetch-candidate</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prefetch-candidate">1.5. Processing model</a>
+    <li><a href="#ref-for-prefetch-candidate">1.5. Processing model</a> <a href="#ref-for-prefetch-candidate①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prefetch-candidate-url">
    <b><a href="#prefetch-candidate-url">#prefetch-candidate-url</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prefetch-candidate-url">1.5. Processing model</a> <a href="#ref-for-prefetch-candidate-url①">(2)</a>
+    <li><a href="#ref-for-prefetch-candidate-url">1.5. Processing model</a> <a href="#ref-for-prefetch-candidate-url①">(2)</a> <a href="#ref-for-prefetch-candidate-url②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prefetch-candidate-referrer-policy">
@@ -1548,7 +1636,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="prefetch-candidate-anonymization-policy">
    <b><a href="#prefetch-candidate-anonymization-policy">#prefetch-candidate-anonymization-policy</a></b><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-prefetch-candidate-anonymization-policy">1.5. Processing model</a> <a href="#ref-for-prefetch-candidate-anonymization-policy①">(2)</a>
+    <li><a href="#ref-for-prefetch-candidate-anonymization-policy">1.5. Processing model</a> <a href="#ref-for-prefetch-candidate-anonymization-policy①">(2)</a> <a href="#ref-for-prefetch-candidate-anonymization-policy②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerender-candidate">
@@ -1573,6 +1661,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#prerender-candidate-referrer-policy">#prerender-candidate-referrer-policy</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-prerender-candidate-referrer-policy">1.5. Processing model</a> <a href="#ref-for-prerender-candidate-referrer-policy①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="prefetch-candidate-continues">
+   <b><a href="#prefetch-candidate-continues">#prefetch-candidate-continues</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-candidate-continues">1.5. Processing model</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="consider-speculation">
