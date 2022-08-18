@@ -40,6 +40,15 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
+    text: prefetch record; url: prefetch-record
+    text: prefetch records; for: Document; url: document-prefetch-records
+    for: prefetch record
+      text: URL; url: prefetch-record-url
+      text: referrer policy; url: prefetch-record-referrer-policy
+      text: anonymization policy; url: prefetch-record-anonymization-policy
+      text: label; url: prefetch-record-label
+      text: state; url: prefetch-record-state
+      text: cancel and discard; url: prefetch-record-cancel-and-discard
     text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
     text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
     text: origin; for: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy-origin
@@ -247,6 +256,14 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 * <dfn for="prerender candidate">target browsing context name hint</dfn>, a [=valid browsing context name or keyword=] or null
 * <dfn for="prerender candidate">referrer policy</dfn>, a [=referrer policy=]
 
+<div algorithm>
+  A [=prefetch candidate=] |prefetchCandidate| <dfn for="prefetch candidate">continues</dfn> a [=prefetch record=] |prefetchRecord| if the following are all true:
+  * |prefetchRecord|'s [=prefetch record/label=] is "`speculation-rules`"
+  * |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`"
+  * |prefetchRecord|'s [=prefetch record/URL=] equals |prefetchCandidate|'s [=prefetch candidate/URL=]
+  * |prefetchRecord|'s [=prefetch record/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
+</div>
+
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
@@ -265,9 +282,15 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url|, [=prerender candidate/referrer policy=] is "`strict-origin-when-cross-origin`", and [=prerender candidate/target browsing context name hint=] is |rule|'s [=speculation rule/target browsing context name hint=].
         1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
+  1. &#x231B; [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
+    1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
+    1. &#x231B; [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
+    1. &#x231B; If no element of |prefetchCandidates| [=prefetch candidate/continues=] |prefetchRecord|, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|.
   1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
-    1. The user agent may [=prefetch=] given |document|, |prefetchCandidate|'s [=prefetch candidate/URL=], |prefetchCandidate|'s [=prefetch candidate/referrer policy=] and |prefetchCandidate|'s [=prefetch candidate/anonymization policy=].
+    1. The user agent may run the following steps:
+      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/referrer policy=] is |prefetchCandidate|'s [=prefetch candidate/referrer policy=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], and [=prefetch record/label=] is "`speculation-rules`".
+      1. [=Prefetch=] given |document| and |prefetchRecord|.
   1. [=list/For each=] |prerenderCandidate| of |prefetchCandidates|:
       1. The user agent may [=create a prerendering browsing context=] given |prerenderCandidate|'s [=prerender candidate/URL=], |prerenderCandidate|'s [=prerender candidate/referrer policy=] and |document|.
 
@@ -277,7 +300,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 </div>
 
 <p class="issue">
-  We should also notice removals and consider cancelling speculated actions.
+  We should also cancel speculated prerenders.
 </p>
 
 <p class="issue">

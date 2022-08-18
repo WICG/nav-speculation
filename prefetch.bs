@@ -61,6 +61,7 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: process response; url: process-response
     text: network partition key; url: network-partition-key
+    text: controller; for: fetch params; url: fetch-params-controller
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: Item; url: name-items
@@ -129,28 +130,50 @@ A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
 
 <hr>
 
-Each {{Document}} has a <dfn export>prefetch buffer</dfn>, which is a [=list=] of [=prefetch records=].
+Each {{Document}} has <dfn export for="Document">prefetch records</dfn>, which is a [=list=] of [=prefetch records=].
 
-A <dfn>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
+A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
-* <dfn export for="prefetch record">sandbox flags present</dfn>, a boolean
-* <dfn export for="prefetch record">redirect chain</dfn>, a [=redirect chain=]
-* <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}}
+* <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
+* <dfn export for="prefetch record">label</dfn>, a [=string=]
+
+  <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
+* <dfn export for="prefetch record">state</dfn>, which is "`ongoing`" (the default), "`completed`", or "`canceled`"
+
+  <div class="note">"`canceled`" indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
+* <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
+* <dfn export for="prefetch record">sandboxing flag set</dfn>, a [=sandboxing flag set=]
+* <dfn export for="prefetch record">redirect chain</dfn>, a [=redirect chain=] (empty by default)
+* <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
 * <dfn for="prefetch record">isolated partition key</dfn>, a [=network partition key=] or null (the default)
+
+<div class="note">This tracks prefetches from when they are started to when they are ultimately used or discarded. Consequently some of these fields are immutable, some pertain to the ongoing activity (like [=prefetch record/fetch controller=]), and some (like [=prefetch record/expiry time=]) are populated when the prefetch completes.</div>
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
-The user agent may remove elements from the [=prefetch buffer=] even if they are not expired, e.g., due to resource constraints. Since records with expiry times in the past are never returned, they can be removed with no observable consequences.
+The user agent may [=prefetch record/cancel and discard=] records from the [=Document/prefetch records=] even if they are not expired, e.g., due to resource constraints. Since completed records with expiry times in the past will never be [=find a matching prefetch record|matching prefetch records=], they can be removed with no observable consequences.
 
-<div algorithm="store a prefetch record">
-    To <dfn export>store a prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, [=sandboxing flag set=] |sandboxFlags|, [=redirect chain=] |redirectChain|, and [=network partition key=] or null |isolatedPartitionKey|, perform the following steps.
+<div algorithm>
+    To <dfn export for="prefetch record">cancel and discard</dfn> a [=prefetch record=] |prefetchRecord| given a {{Document}} |document|, perform the following steps.
+
+    1. [=Assert=]: |prefetchRecord| is in |document|'s [=Document/prefetch records=].
+    1. [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
+    1. Set |prefetchRecord|'s [=prefetch record/state=] to "`canceled`".
+    1. [=fetch controller/Abort=] |prefetchRecord|'s [=prefetch record/fetch controller=]. <span class="note">This will cause any ongoing fetch to be canceled and yield a [=network error=].</span>
+    1. [=list/Remove=] |prefetchRecord| from |document|'s [=Document/prefetch records=].
+
+    <div class="note">This means that even a completed prefetch will not be served from the prefetch buffer. However, if it was part of the same partition as the document which requested it, it might still be stored in the ordinary HTTP cache.</div>
+</div>
+
+<div algorithm>
+    To <dfn export for="prefetch record">complete</dfn> a [=prefetch record=] |prefetchRecord| given {{Document}} |document|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
-    1. [=list/Remove=] all elements whose [=prefetch record/URL=] equals |url| and [=prefetch record/referrer policy=] equals |referrerPolicy| from |document|'s [=prefetch buffer=].
-    1. [=list/Append=] a [=prefetch record=] with [=prefetch record/URL=] |url|, [=prefetch record/referrer policy=] |referrerPolicy|, [=prefetch record/sandbox flags present=] true if |sandboxFlags| is not empty and false otherwise, [=prefetch record/redirect chain=] |redirectChain|, [=prefetch record/expiry time=] |expiryTime|, and [=prefetch record/isolated partition key=] |isolatedPartitionKey| to |document|'s [=prefetch buffer=].
+    1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] and [=prefetch record/referrer policy=] as |prefetchRecord| and whose [=prefetch record/state=] equals "`completed`".
+    1. Set |prefetchRecord|'s [=prefetch record/state=] to "`completed`" and [=prefetch record/expiry time=] to |expiryTime|.
 </div>
 
 <div algorithm="find a matching prefetch record">
@@ -158,18 +181,21 @@ The user agent may remove elements from the [=prefetch buffer=] even if they are
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
-    1. [=list/For each=] |record| of |document|'s [=prefetch buffer=]:
+    1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
         1. If |record|'s [=prefetch record/URL=] is not equal to |url| or |record|'s [=prefetch record/referrer policy=] is not equal to |referrerPolicy|, then [=iteration/continue=].
-        1. If |record|'s [=prefetch record/sandbox flags present=] is false and |sandboxFlags| is not empty, then [=iteration/continue=].
+        1. If |record|'s [=prefetch record/state=] is not "`completed`", then [=iteration/continue=].
+        1. If |record|'s [=prefetch record/sandboxing flag set=] is empty and |sandboxFlags| is not empty, then [=iteration/continue=].
 
             <div class="note">
               Strictly speaking, it would still be possible for this to be valid if sandbox flags have been added to the container since prefetch but those flags would not cause an error due to cross origin opener policy. This is expected to be rare and so isn't handled.
             </div>
-        1. [=list/Remove=] |record| from |document|'s [=prefetch buffer=].
+        1. [=list/Remove=] |record| from |document|'s [=Document/prefetch records=].
         1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
         1. If |record|'s [=prefetch record/redirect chain=] [=redirect chain/has updated credentials=], return null.
         1. Return |record|.
     1. Return null.
+
+    <p class="note">It's not obvious, but this doesn't actually require that the prefetch have received the complete body, just the response headers. In particular, a navigation to a prefetched response might nonetheless not load instantaneously.</p>
 
     <p class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it's unclear whether this is worthwhile.</p>
 </div>
@@ -230,7 +256,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 <div algorithm="perform a common navigational fetch">
     <div class="note">This is an abstraction of the existing [=process a navigate fetch=]. It includes behavior like redirect handling that is particular to navigational fetches, including those that are relate to a speculate future navigation, rather than an immediate one.</div>
 
-    To <dfn export>perform a common navigational fetch</dfn> given a [=request=] |request|, [=string=] |navigationType|, [=browsing context=] |browsingContext|, [=environment=] or null |forceEnvironment|, algorithm |preRedirectHook| (which takes [=URLs=] currentURL and locationURL) algorithm |shouldBlockNavigationRequest| (which takes a [=request=], navigation type [=string=], and [=environment=], and returns "`Blocked`" or "`Allowed`"), algorithm |shouldBlockNavigationResponse| (which takes a [=request=] and a [=response=], and returns "`Blocked`" or "`Allowed`"), perform the following steps.
+    To <dfn export>perform a common navigational fetch</dfn> given a [=request=] |request|, [=string=] |navigationType|, [=browsing context=] |browsingContext|, [=environment=] or null |forceEnvironment|, algorithm |preRedirectHook| (which takes [=URLs=] currentURL and locationURL) algorithm |shouldBlockNavigationRequest| (which takes a [=request=], navigation type [=string=], and [=environment=], and returns "`Blocked`" or "`Allowed`"), algorithm |shouldBlockNavigationResponse| (which takes a [=request=] and a [=response=], and returns "`Blocked`" or "`Allowed`"), and [=fetch controller=] |fetchController| (default a new [=fetch controller=]), perform the following steps.
 
     1. Let |response| be null.
     1. Set |request|'s [=request/mode=] to "`navigate`" and [=request/redirect mode=] to "`manual`".
@@ -238,6 +264,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
     1. Let |environment| be null.
     1. Let |locationURL| be null.
     1. Let |currentURL| be |request|'s [=request/current URL=].
+    1. Let |fetchParams| be null.
 
     1. While true:
         1. If |locationURL| is non-null, then:
@@ -259,8 +286,10 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             <div class="note">These steps ensure that |environment| is an [=environment=] which the correct [=network partition key=], [=environment/active service worker=], etc., depending on whether it's a top-level navigation and if not, what the top-level site is.</div>
 
         1. If the result of |shouldBlockNavigationRequest| given |request|, |navigationType|, and |environment| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=].
-        1. If |response| is null, [=fetch=] |request|.
-        1. Otherwise, perform [=HTTP-redirect fetch=] using |request| and |response|.
+        1. If |response| is null, [=fetch=] |request|. When it initializes |fetchParams|, use |fetchController| as its [=fetch params/controller=]. Set |fetchParams| to the final value it has in that algorithm.
+
+            <div class="issue">This is messy due to ongoing work to refactor navigation in HTML, and should be cleaned up when possible.</div>
+        1. Otherwise, perform [=HTTP-redirect fetch=] using |fetchParams| and |response|.
         1. Wait for the [=task=] on the [=networking task source=] to [=process response=] and set |response| to the result.
         1. If the result of |shouldBlockNavigationResponse| given |request| and |response| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=].
         1. If |response| is not a [=network error=], |browsingContext| is a [=child browsing context=], and the result of performing a [=cross-origin resource policy check=] with |browsingContext|'s [=browsing context/container document=]'s [=Document/origin=], |browsingContext|'s [=browsing context/container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
@@ -341,18 +370,19 @@ These algorithms are based on [=process a navigate fetch=].
 <p class="issue">Check Service Worker integration</p>
 
 <div algorithm="partitioned prefetch">
-    To <dfn export>partitioned prefetch</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, and [=prefetch IP anonymization policy=] |anonymizationPolicy|, perform the following steps.
+    To <dfn export>partitioned prefetch</dfn> given a {{Document}} |document| and [=prefetch record=] |prefetchRecord|, perform the following steps.
 
-    1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
+    1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
+    1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
     1. Let |browsingContext| be |document|'s [=Document/browsing context=].
-    1. Let |sandboxFlags| be the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
+    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |request| be a [=request=] as follows:
 
         :  [=request/URL=]
-        :: |url|
+        :: |prefetchRecord|'s [=prefetch record/URL=]
         :  [=request/referrer policy=]
-        :: |referrerPolicy|
+        :: |prefetchRecord|'s [=prefetch record/referrer policy=]
         :  [=request/initiator=]
         :: "`prefetch`"
 
@@ -365,9 +395,7 @@ These algorithms are based on [=process a navigate fetch=].
         :: (set)
         :  [=request/client=]
         :: |document|'s [=relevant settings object=]
-        :  [=request/header list=]
 
-    1. Let |redirectChain| be an empty [=redirect chain=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |navigationType| is "`other`".
         1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
@@ -392,47 +420,49 @@ These algorithms are based on [=process a navigate fetch=].
         1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
 
             <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-        1. [=redirect chain/Append=] |request| to |redirectChain|.
+        1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
         1. Return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
         1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-        1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
-        1. [=redirect chain/Update the response=] for |redirectChain| given |request| and |response|.
+        1. If |prefetchRecord|'s [=prefetch record/sandboxing flag set=] is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
+        1. [=redirect chain/Update the response=] for |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
 
             <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred, since this has visible side effects such as queuing violation reports.</div>
         1. Return "`Allowed`".
 
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, null, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|.
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, null, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|, and |prefetchRecord|'s [=prefetch record/fetch controller=].
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
-    1. If |response| is a [=network error=], then return.
-    1. [=Assert=]: |response| is [=exchange record/response=] of |redirectChain|'s last element.
-    1. If |response| does not [=support prefetch=], then return.
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags|, |redirectChain| and null.
+    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. [=Assert=]: |response| is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
+    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
 </div>
 
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
 <div algorithm="uncredentialed prefetch">
-    To <dfn export>uncredentialed prefetch</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, and [=prefetch IP anonymization policy=] |anonymizationPolicy|, perform the following steps.
+    To <dfn export>uncredentialed prefetch</dfn> given a {{Document}} |document| and [=prefetch record=] |prefetchRecord|, perform the following steps.
 
-    1. [=Assert=]: |url|'s [=url/scheme=] is an [=HTTP(S) scheme=].
-    1. If |referrerPolicy| is not in the [=list of sufficiently strict speculative navigation referrer policies=], then return.
+    1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
+    1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
+    1. If |prefetchRecord|'s [=prefetch record/referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
     1. Let |browsingContext| be |document|'s [=Document/browsing context=].
-    1. Let |sandboxFlags| be the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
+    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |isolationOrigin| be a new [=opaque origin=].
 
         <div class="note">This is used to ensure a distinct network partition key is used.</div>
     1. Let |isolatedEnvironment| be a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is `about:blank`, [=environment/top-level creation URL=] is `about:blank`, and [=environment/top-level origin=] is |isolationOrigin|.
     1. Let |isolatedPartitionKey| be the result of [=determining the network partition key=] given |isolatedEnvironment|.
     1. Let |originalPartitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
+    1. Set |prefetchRecord|'s [=prefetch record/isolated partition key=] to |isolatedPartitionKey|.
     1. Let |request| be a [=request=] as follows:
 
         :  [=request/URL=]
-        :: |url|
+        :: |prefetchRecord|'s [=prefetch record/URL=]
         :  [=request/referrer policy=]
-        :: |referrerPolicy|
+        :: |prefetchRecord|'s [=prefetch record/referrer policy=]
         :  [=request/initiator=]
         :: "`prefetch`"
 
@@ -449,7 +479,6 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: |document|'s [=relevant settings object=]
 
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
-    1. Let |redirectChain| be an empty [=redirect chain=].
     1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
         1. [=Assert=]: |request|'s [=request/reserved client=] is |isolatedEnvironment| and not |environment|.
         1. [=Assert=]: |navigationType| is "`other`".
@@ -475,27 +504,27 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
 
             <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-        1. [=redirect chain/Append=] |request| to |redirectChain|.
+        1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
         1. Return "`Allowed`".
 
     1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
         1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-        1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
-        1. [=redirect chain/Update the response=] for |redirectChain| given |request| and |response|.
+        1. If |prefetchRecord|'s [=prefetch record/sandboxing flag set=] is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
+        1. [=redirect chain/Update the response=] for |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
 
             <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred, since this has visible side effects such as queuing violation reports.</div>
         1. Return "`Allowed`".
 
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|.
+    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, |shouldBlockNavigationResponse|, and |prefetchRecord|'s [=prefetch record/fetch controller=].
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
-    1. If |response| is a [=network error=], then return.
-    1. If |originsWithConflictingCredentials| is not empty, then return.
+    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. If |originsWithConflictingCredentials| is not empty, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
 
         <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-    1. [=Assert=]: |response| is [=exchange record/response=] of |redirectChain|'s last element.
-    1. If |response| does not [=support prefetch=], then return.
-    1. [=Store a prefetch record=] given |document|, |url|, |referrerPolicy|, |sandboxFlags|, |redirectChain| and |isolatedPartitionKey|.
+    1. [=Assert=]: |response| is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
+    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
 
     <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
@@ -503,14 +532,14 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 </div>
 
 <div algorithm>
-    To <dfn export>prefetch</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy|, and [=prefetch IP anonymization policy=] |anonymizationPolicy|, perform the following steps.
+    To <dfn export>prefetch</dfn> given a {{Document}} |document| and [=prefetch record=] |prefetchRecord|, perform the following steps.
 
     1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
-    1. Let |topLevelOrigin| be |url|'s [=url/origin=] if |document|'s [=Document/browsing context=] is a [=top-level browsing context=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
+    1. Let |topLevelOrigin| be |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=] if |document|'s [=Document/browsing context=] is a [=top-level browsing context=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
     1. Let |topLevelSite| be the result of [=obtaining a site=], given |topLevelOrigin|.
     1. Let |secondKey| be null or an [=implementation-defined=] value.
-    1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document|, |url|, |referrerPolicy| and |anonymizationPolicy|.
-    1. Otherwise, [=uncredentialed prefetch=] given |document|, |url|, |referrerPolicy| and |anonymizationPolicy|.
+    1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document| and |prefetchRecord|.
+    1. Otherwise, [=uncredentialed prefetch=] given |document| and |prefetchRecord|.
 
     <div class="note">
       This determines whether the navigation would use the same network partition key.
