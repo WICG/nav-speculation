@@ -17,6 +17,13 @@ Today, the underspecified `<link rel="prefetch">` and `<link rel="prerender">` t
 
 See [the full explainer](./triggers.md) for more.
 
+## Prerendering details
+
+Prerendering is more complex than prefetching, as it involves running the target page's scripts and loading its subresources. We've produced a couple of relevant explainers:
+
+* [Same-origin prerendering](./prerendering-same-origin.md), discusses what we believe to be solid so far: user agent-triggered and same-origin-triggered prerendering.
+* [Prerendering state APIs](./prerendering-state.md), discussing the new `document.prerendering` API and its associated event in more detail.
+
 ## Cross-origin and cross-site concerns
 
 Much of the complexity of preloading comes in when dealing with site that is cross-origin or cross-site. Origins are the web's security boundary, and sites are its privacy boundary, so any preloading across these boundaries needs to preserve the relevant properties.
@@ -27,15 +34,7 @@ Our current proposals are focused around allowing cross-origin/site prefetching.
 * [`Supports-Loading-Mode`](./opt-in.md), a new header which allows target pages to opt in to being loaded in an uncredentialed mode, with the understanding that they will upgrade their content later upon activation.
 * [`<meta http-equiv="supports-loading-mode">`](https://github.com/WICG/nav-speculation/blob/main/meta-processing.md), an extension to the header definition that uses a HTML preparsing pass to allow it to appear in-document.
 * [Client IP anonymization](./anonymous-client-ip.md), an extension to prefetching (and maybe one day prerendering?) to require using an anonymizing proxy to hide the user's IP address.
-
-## Prerendering details
-
-Prerendering is more complex than prefetching, as it involves running the target page's scripts and loading its subresources. We've produced a couple of relevant explainers:
-
-* [Same-origin prerendering](./same-origin-explainer.md), discussing what is launched in Chromium for same-origin prerendering using `<script type="speculationrules">`.
-* [UA-initiated prerendering](./ua-initiated-prerendering.md), discussing what is launched in Chromium for user agent-initiated prerendering (e.g. from the URL bar).
-* [Prerendering browsing contexts](./browsing-context.md), an earlier draft discussing in more detail our grand vision for how content behaves while prerendering.
-* [Prerendering state APIs](./prerendering-state.md), discussing the new `document.prerendering` API and its associated event.
+* [Cross-origin prerendering](./cross-origin-prerendering.md), containing what we've brainstormed so far about how cross-origin prerendering could work in the future.
 
 ## Portals
 

@@ -2,7 +2,7 @@
 
 Because [prerendering fetching modes](./fetch.md) intentionally obscure the user's identity, the response document cannot be personalized for the user. If it is used when the user navigates, the user will notice that they are not logged in (even if they should be), and other surprising behavior.
 
-Similarly, [prerendering browsing contexts](./browsing-context.md) allow HTML parsing, subresource fetching, and script execution, but such actions are restricted to avoid identifying the user or causing user-visible annoyance.
+Similarly, prerendering browsing contexts allow HTML parsing, subresource fetching, and script execution, but such actions are restricted to avoid identifying the user or causing user-visible annoyance.
 
 Pages designed with these restrictions in mind can "upgrade" themselves when they load, by personalizing based on data in unpartitioned storage and by fetching personalized content from the server. But existing web pages are unlikely to behave well with these restrictions today. (And, it is impractical for user agents to distinguish such pages.)
 
