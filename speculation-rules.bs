@@ -247,8 +247,8 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 
 <div algorithm>
   A [=prefetch candidate=] |prefetchCandidate| <dfn for="prefetch candidate">continues</dfn> a [=prefetch record=] |prefetchRecord| if the following are all true:
-  * |prefetchRecord|'s [=prefetch record/label=] is `"speculation-rules"`
-  * |prefetchRecord|'s [=prefetch record/state=] is not `"canceled"`
+  * |prefetchRecord|'s [=prefetch record/label=] is "`speculation-rules`"
+  * |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`"
   * |prefetchRecord|'s [=prefetch record/URL=] equals |prefetchCandidate|'s [=prefetch candidate/URL=]
   * |prefetchRecord|'s [=prefetch record/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
 </div>
@@ -271,13 +271,13 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; [=list/Append=] a [=prerender candidate=] with [=prerender candidate/URL=] |url| and [=prerender candidate/referrer policy=] "`strict-origin-when-cross-origin`" to |prerenderCandidates|.
   1. &#x231B; [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
-    1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not `"speculation-rules"`, then [=iteration/continue=].
-    1. &#x231B; [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not `"canceled"`.
+    1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
+    1. &#x231B; [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
     1. &#x231B; If no element of |prefetchCandidates| [=prefetch candidate/continues=] |prefetchRecord|, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|.
   1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
     1. The user agent may run the following steps:
-      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/referrer policy=] is |prefetchCandidate|'s [=prefetch candidate/referrer policy=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], and [=prefetch record/label=] is `"speculation-rules"`.
+      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/referrer policy=] is |prefetchCandidate|'s [=prefetch candidate/referrer policy=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], and [=prefetch record/label=] is "`speculation-rules`".
       1. [=Prefetch=] given |document| and |prefetchRecord|.
   1. [=list/For each=] |prerenderCandidate| of |prefetchCandidates|:
       1. The user agent may [=create a prerendering browsing context=] given |prerenderCandidate|'s [=prerender candidate/URL=], |prerenderCandidate|'s [=prerender candidate/referrer policy=] and |document|.

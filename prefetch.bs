@@ -139,9 +139,9 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">label</dfn>, a [=string=]
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
-* <dfn export for="prefetch record">state</dfn>, which is `"ongoing"` (the default), `"completed"`, or `"canceled"`
+* <dfn export for="prefetch record">state</dfn>, which is "`ongoing`" (the default), "`completed`", or "`canceled`"
 
-  <div class="note">`"canceled"` indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
+  <div class="note">"`canceled`" indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
 * <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
 * <dfn export for="prefetch record">sandboxing flag set</dfn>, a [=sandboxing flag set=]
 * <dfn export for="prefetch record">redirect chain</dfn>, a [=redirect chain=] (empty by default)
@@ -158,8 +158,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     To <dfn export for="prefetch record">cancel and discard</dfn> a [=prefetch record=] |prefetchRecord| given a {{Document}} |document|, perform the following steps.
 
     1. [=Assert=]: |prefetchRecord| is in |document|'s [=Document/prefetch records=].
-    1. [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not `"canceled"`.
-    1. Set |prefetchRecord|'s [=prefetch record/state=] to `"canceled"`.
+    1. [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
+    1. Set |prefetchRecord|'s [=prefetch record/state=] to "`canceled`".
     1. [=fetch controller/Abort=] |prefetchRecord|'s [=prefetch record/fetch controller=]. <span class="note">This will cause any ongoing fetch to be canceled and yield a [=network error=].</span>
     1. [=list/Remove=] |prefetchRecord| from |document|'s [=Document/prefetch records=].
 
@@ -172,8 +172,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
-    1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] and [=prefetch record/referrer policy=] as |prefetchRecord| and whose [=prefetch record/state=] equals `"completed"`.
-    1. Set |prefetchRecord|'s [=prefetch record/state=] to `"completed"` and [=prefetch record/expiry time=] to |expiryTime|.
+    1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] and [=prefetch record/referrer policy=] as |prefetchRecord| and whose [=prefetch record/state=] equals "`completed`".
+    1. Set |prefetchRecord|'s [=prefetch record/state=] to "`completed`" and [=prefetch record/expiry time=] to |expiryTime|.
 </div>
 
 <div algorithm="find a matching prefetch record">
@@ -183,7 +183,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
         1. If |record|'s [=prefetch record/URL=] is not equal to |url| or |record|'s [=prefetch record/referrer policy=] is not equal to |referrerPolicy|, then [=iteration/continue=].
-        1. If |record|'s [=prefetch record/state=] is not `"completed"`, then [=iteration/continue=].
+        1. If |record|'s [=prefetch record/state=] is not "`completed`", then [=iteration/continue=].
         1. If |record|'s [=prefetch record/sandboxing flag set=] is empty and |sandboxFlags| is not empty, then [=iteration/continue=].
 
             <div class="note">
