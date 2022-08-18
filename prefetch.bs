@@ -152,7 +152,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
-The user agent may [=prefetch record/cancel and discard=] records from the [=Document/prefetch records=] even if they are not expired, e.g., due to resource constraints. Since completed records with expiry times in the past are never returned, they can be removed with no observable consequences.
+The user agent may [=prefetch record/cancel and discard=] records from the [=Document/prefetch records=] even if they are not expired, e.g., due to resource constraints. Since completed records with expiry times in the past will never be [=find a matching prefetch record|matching prefetch records=], they can be removed with no observable consequences.
 
 <div algorithm>
     To <dfn export for="prefetch record">cancel and discard</dfn> a [=prefetch record=] |prefetchRecord| given a {{Document}} |document|, perform the following steps.
@@ -435,7 +435,7 @@ These algorithms are based on [=process a navigate fetch=].
     1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
     1. TODO: navigate-to, frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
     1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-    1. [=Assert=]: |response| is [=exchange record/response=] the last element of |prefetchRecord|'s [=prefetch record/redirect chain=].
+    1. [=Assert=]: |response| is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
     1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
     1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
 </div>
@@ -522,7 +522,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. If |originsWithConflictingCredentials| is not empty, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
 
         <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-    1. [=Assert=]: |response| is [=exchange record/response=] the last element of |prefetchRecord|'s [=prefetch record/redirect chain=].
+    1. [=Assert=]: |response| is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
     1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
     1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
 
