@@ -1,35 +1,49 @@
-# Triggers for Prefetching, Prerendering, etc.
+# Speculation rules
 
-A web-facing "trigger" is a mechanism for web content to permit prefetching or prerendering of certain URLs.
+[Read the spec](https://wicg.github.io/nav-speculation/speculation-rules.html)
 
-For example, a prerendering trigger conveys to the browser:
-* the user is reasonably **likely to navigate** to the URL
-* prefetching the URL is not believed to have undesirable **side effects**, at least under certain conditions
-* the response body is expected to be **compatible** with prerendering (i.e., the browser probably won't need to abort prerendering)
-
-The browser need not fully trust these assertions about cross-origin URLs (those relevant for security and privacy should be verified), but having them lets the browser focus on work likely to improve navigation performance.
-
-The existence of web-facing triggers doesn't necessarily preclude the user agent from triggering prerendering at other times, such as prerendering a user's most frequently visited sites.
-
-[Resource Hints][resource-hints] defines the current web-facing trigger, a family of relations usable in a `<link>` element or `Link` response header. A more flexible alternative is proposed below.
+## Table of contents
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Background](#background)
 - [Goals](#goals)
 - [Non-goals](#non-goals)
-- [Speculation rules](#speculation-rules)
-  - [Rules](#rules)
-    - [List rules](#list-rules)
-    - [Document rules](#document-rules)
-    - [Extension: Requirements](#extension-requirements)
-    - [Extension: Handler URLs](#extension-handler-urls)
-  - [Proposed Processing Model](#proposed-processing-model)
-  - [Developer Tooling](#developer-tooling)
-  - [Feature detection](#feature-detection)
+- [The proposal](#the-proposal)
+  - [List rules](#list-rules)
+  - [Requirements](#requirements)
+- [Future extensions](#future-extensions)
+  - [Scores](#scores)
+  - [Document rules](#document-rules)
+  - [Handler URLs](#handler-urls)
+  - [External speculation rules](#external-speculation-rules)
+  - [More speculation actions](#more-speculation-actions)
+- [Proposed processing model](#proposed-processing-model)
+- [Developer tooling](#developer-tooling)
+- [Feature detection](#feature-detection)
 - [Alternatives considered](#alternatives-considered)
+  - [General interop and compat concerns](#general-interop-and-compat-concerns)
+  - [Forward-compatibility problems](#forward-compatibility-problems)
+  - [Duplication](#duplication)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Background
+
+A web-facing "trigger" is a mechanism for web content to permit or encourage preloading (prefetching or prerendering) of certain URLs.
+
+For example, a prerendering trigger conveys to the browser:
+
+- the user is reasonably **likely to navigate** to the URL
+- prerendering the URL is not believed to have undesirable **side effects**, at least under certain conditions
+- the response body is expected to be **compatible** with prerendering (i.e., the browser probably won't need to abort the prerender due to some disallowed behavior)
+
+The browser need not fully trust these assertions about cross-origin URLs (those relevant for security and privacy should be verified), but having them lets the browser focus on work likely to improve navigation performance.
+
+The existence of web-facing triggers doesn't necessarily preclude the user agent from triggering preloading at other times, such as preloading a user's most frequently visited sites.
+
+The [Resource Hints][resource-hints] specification defines a number of current triggers, a family of relations usable in a `<link>` element or `Link` response header. These are inconsistently implemented and do not serve all the desirable [goals](#goals). See more discussion in the [Alternatives considered](#alternatives-considered) section.
 
 ## Goals
 
@@ -49,17 +63,15 @@ Accordingly, we need a trigger that is flexible enough to accommodate these and 
 
 While we intend to better specify the behavior of "prefetch", "prerender" and similar speculated actions, these specifications are largely separable from the trigger API itself. In fact, this specified behavior should be shared as much as possible between existing resource hints, those proposed in this document, and browser features for prefetching and prerendering.
 
-This proposal doesn't aim to address concerns about any particular provider, service or software a browser may use to provide IP anonymization. Feedback on [private prefetch proxies](https://github.com/buettner/private-prefetch-proxy/issues) is welcome, but tracked separately.
+This proposal doesn't aim to address concerns about any particular provider, service or software a browser may use to provide [IP anonymization](./anonymous-client-ip.md). Feedback on [private prefetch proxies](https://github.com/buettner/private-prefetch-proxy/issues) is welcome, but tracked separately.
 
-## Speculation rules
+## The proposal
 
 This explainer proposes a new way for content to declare what kind of speculation the user agent may do about future user activity, especially outgoing navigation, in order to reduce user-visible latency. This speculation may have side effects, but an author's declaration that certain speculative activity is productive enables the user agent to speculate more often.
 
 It is intended to be more general than existing resource hints for navigation, and allows the author to make even weak declarations about the likelihood that the navigation will occur. The user agent can combine this with its own heuristics to decide whether to speculate.
 
-The rules are expressed as a JSON object included within a script tag (like [import maps][import-maps]), which can be expressed inline or included as an external resource.
-
-> This is basically because only a few elements allow the HTML parser to enter RCDATA mode, and `<script>` has already been used in this way. This doesn't necessarily mean that these rules should respect the `script-src` CSP directive. If fetched, it's not obvious whether this should permit the `application/json` MIME type or should require a specialized one like `application/speculationrules+json`. See also [discussion on WICG/import-maps](https://github.com/WICG/import-maps/issues/105#issuecomment-475330548).
+The rules are expressed as a JSON object included within a script tag (like [import maps][import-maps]). Currently, like import maps, we only allow inline script tags for speculation rules; future extensions may allow external ones.
 
 The following example illustrates the basic idea:
 
@@ -68,37 +80,78 @@ The following example illustrates the basic idea:
 {
   "prerender": [
     {"source": "list",
-     "urls": ["/page/2"],
-     "score": 0.5},
-    {"source": "document",
-     "if_href_matches": ["https://*.wikipedia.org/**"],
-     "if_not_selector_matches": [".restricted-section *"],
-     "score": 0.1}
+     "urls": ["/home", "/about"]}
+  ],
+  "prefetch": [
+    {"source": "list",
+     "urls": ["https://en.wikipedia.org/wiki/Hamster_racing"],
+     "requires": ["anonymous-client-ip-when-cross-origin"]}
   ]
 }
 </script>
 ```
-The rules are divided into sections by the action, such as "dns-prefetch", "preconnect", "prefetch", "prefetch\_with\_subresources" or "prerender", that they authorize. A user agent may always choose to stop early, for instance by prefetching where prerendering was permitted.
+
+(The use of `<script>` is basically because only a few elements allow the HTML parser to enter RCDATA mode, and `<script>` has already been used in this way. This doesn't necessarily mean that these rules should respect the `script-src` CSP directive.)
+
+The rules are divided into sections by the action, such as `"dns-prefetch"`, `"preconnect"`, `"prefetch"`, `"prefetch_with_subresources"`, or `"prerender"`, that they authorize. A user agent may always choose to stop early, for instance by prefetching where prerendering was permitted. Currently we have only specified `"prefetch"` and `"prerender"`, but we want to keep the other possibilities in mind for the future.
 
 Since these are rules for optional behavior (the UA is always free not to speculate), parsing of these can be somewhat conservative. If a UA sees a rule it does not understand, that rule is discarded. Because a rule always authorizes additional speculation (but does not confine speculation allowed by other rules), discarding rules never authorizes more speculation than the author intended, only less.
 
 The rules are divided into a number of simple pieces that build on one another, and could be shipped largely independently, due to the conservative parsing strategy.
 
-### Rules
+### List rules
 
-A rule has a _source_ which identifies the URLs to which the rule applies.
-
-A rule may include a _score_ between 0.0 and 1.0 (inclusive), defaulting to 0.5, which is a hint about how likely the user is to navigate to the URL. It is expected that UAs will treat this monotonically (i.e., all else equal, increasing the score associated with a rule will make the UA speculate no less than before for that URL, and decreasing the score will not make the UA speculate where it previously did not). However, the user agent may select a link with a lower author-assigned score than another if its heuristics suggest it is a better choice.
-
-#### List rules
-
-A list rule has an express list of the _URLs_ to which the rule applies. The list can contain any URLs, even ones for which no link or other reference to the URL exists in the document. This is especially useful in cases where the expected navigation corresponds to a link that will be added dynamically, or to an anticipated script-initiated navigation.
+Currently, the only type of rule specified is a _list_ rule, denoted by `"source": "list"`. A list rule has an express list of the _URLs_ to which the rule applies. The list can contain any URLs, even ones for which no link or other reference to the URL exists in the document. This is especially useful in cases where the expected navigation corresponds to a link that will be added dynamically, or to an anticipated script-initiated navigation.
 
 These URLs will be parsed relative to the document base URL (if inline in a document) or relative to the external resource URL (if externally fetched).
 
-#### Document rules
+### Requirements
 
-A document rule allows the user agent to find URLs for speculation from link elements in the page. It may include criteria which restrict which of these links can be used.
+A rule may include a list of _requirements_, which are assertions in the rule about the capabilities of the user agent while executing them.
+
+Currently the only requirement that is specified is denoted by `"anonymous-client-ip-when-cross-origin"`, which we only support on `"prefetch"` rules. If present, it means that the rule matches only if the user agent can [prevent the client IP address from being visible to the origin server](./anonymous-client-ip.md) if a cross-origin prefetch request is issued. An example usage is as follows, wherein a news aggregator site is asking to prefetch the first four links, but only if doing so does not leak the user's IP:
+
+```json
+{"prefetch": [
+  {"source": "list",
+   "urls": [
+    "/item?id=32480009",
+    "https://support.signal.org/hc/en-us/articles/4850133017242",
+    "https://discord.com/blog/how-discord-supercharges-network-disks-for-extreme-low-latency",
+    "https://github.com/containers/krunvm"
+   ],
+   "requires": ["anonymous-client-ip-when-cross-origin"]}
+]}
+```
+
+We require that user agents discard any rules with requirements that are not recognized or supported in the current configuration, so this system fails closed. Additionally, due to the conservative parsing rules, any UA which did not support requirements at all would discard all rules with requirements.
+
+## Future extensions
+
+### Scores
+
+A rule may include a _score_ between 0.0 and 1.0 (inclusive), defaulting to 0.5, which is a hint about how likely the user is to navigate to the URL. It is expected that UAs will treat this monotonically (i.e., all else equal, increasing the score associated with a rule will make the UA speculate no less than before for that URL, and decreasing the score will not make the UA speculate where it previously did not). However, the user agent may select a link with a lower author-assigned score than another if its heuristics suggest it is a better choice.
+
+A modification of the above example, which works off of the highly-sophisticated model that people tend to click on the top-voted link more often than the later ones, would be:
+
+```json
+{"prefetch": [
+  {"source": "list",
+   "urls": ["/item?id=32480009"],
+   "score": 0.8},
+  {"source": "list",
+   "urls": [
+    "https://support.signal.org/hc/en-us/articles/4850133017242",
+    "https://discord.com/blog/how-discord-supercharges-network-disks-for-extreme-low-latency",
+    "https://github.com/containers/krunvm"
+   ],
+   "score": 0.5}
+]}
+```
+
+### Document rules
+
+In addition to list rules, we envision _document_ rules, denoted by `"source": "document"`. These allow the user agent to find URLs for speculation from link elements in the page. They may include criteria which restrict which of these links can be used.
 
 The URL can be compared against [URL patterns][urlpattern] (parsed relative to the same base URL as URLs in list rules).
 
@@ -118,24 +171,25 @@ The link element itself can also be [matched][selector-match] using [CSS selecto
 <dd>requires that the link element not match any selector from the list</dd>
 </dl>
 
-#### Extension: Requirements
+An example of using these would be the following, which marks up as safe-to-prerender all same-origin pages except those known to be problematic:
 
-This feature is designed to allow future extension, such as a notion of requirements: assertions in rules about the capabilities of the user agent while executing them. Since user agents disregard rules they do not understand, this can be safely added later on without violating the requirements listed.
-
-For example, an "anonymous-client-ip-when-cross-origin" requirement might mean that the rule matches only if the user agent can [prevent the client IP address from being visible to the origin server](anonymous-client-ip.md) if a cross-origin request is issued.
-
-```json
-{"prerender": [
-  {"source": "document",
-   "if_selector_matches": [".user-generated"],
-   "requires": ["anonymous-client-ip-when-cross-origin"]}
-]}
+```js
+{
+  "prerender": [
+    {"source": "document",
+     "if_href_matches": ["/*"],
+     "if_not_href_matches": ["/logout"],
+     "if_not_selector_matches": [".no-prerender"],
+     "score": 0.1}
+  ]
+}
 ```
-This would be defined to discard any rules with requirements that are not recognized or are not supported in the current configuration. Due to the conservative parsing rules, any UA which did not support requirements at all would discard all rules with requirements.
 
-#### Extension: Handler URLs
+Note how this example uses a low `"score"` value to indicate that, although these links are _safe_ to prerender, they aren't necessarily that important or likely to be clicked on. In such a case, the browser would likely use its own heuristics, e.g. only performing the prerender on pointer-down. Additionally, the web developer might combine this with a higher-scoring rule that indicates which URLs they suspect are likely, which the browser could prerender ahead of time.
 
-Another possible future extension, which would likely need to be restricted to same-origin URLs, could allow the actual URL to be prerendered to be different from the navigation URL (but on the same origin), until the navigation actually occurs. This could allow multiple possible destinations with a common "template" (e.g., product detail pages) to prerender just the template. This prerendered page could then be used regardless of which product the user selects.
+### Handler URLs
+
+Another possible future extension, which would likely need to be restricted to same-origin URLs, could allow the actual URL to be preloaded to be different from the navigation URL (but on the same origin), until the navigation actually occurs. This could allow multiple possible destinations with a common "template" (e.g., product detail pages) to preload just the template. This preloaded page could then be used regardless of which product the user selects.
 
 ```json
 {"prerender": [
@@ -145,27 +199,37 @@ Another possible future extension, which would likely need to be restricted to s
 ]}
 ```
 
-### Proposed Processing Model
+### External speculation rules
 
-Conceptually, the user agent may from time to time execute a task to consider speculation (in practice, it will likely do this only in response to some sort of DOM mutation or other event that indicates the applicable rules have changed, and may limit its attention to the affected parts of the document). Changes to the DOM that are undone within a task cannot therefore be observed by this algorithm.
+Like import maps, speculation rules are currently inline-only, with the speculation rules JSON being contained in the `<script>` element's child text content. However, [like import maps](https://github.com/WICG/import-maps/issues/235), it would be convenient for authors if we allowed `<script type="speculationrules">` to instead have an `src=""` attribute pointing to an external URL.
 
-To consider speculation is to look at the computed ruleset for the document (merging, if there are multiple) and the candidate elements for inference (`<a>` and `<area>` elements attached to the document), gather a list of candidate URLs, combine the author-declared likelihood with its own heuristics (which may include device or network characteristics, page structure, the viewport, the location of the cursor, past activity on the page, etc), and thus select a subset of the allowed actions to execute speculatively.
+Some questions to answer here are the interaction with CSP, and whether a dedicated MIME type is necessary. The answers might not necessarily be the same for import maps and speculation rules, since import maps give a more direct ability to interfere with script execution.
+
+### More speculation actions
+
+As mentioned previously, we have currently only specified `"prefetch"` and `"prerender"` speculation actions.
+
+Adding `"dns-prefetch"` and `"preconnect"`, to mirror [Resource Hints](https://w3c.github.io/resource-hints/), would be an obvious extension, simply giving a more-ergonomic and capable way of triggering those actions.
+
+Another envisioned speculative action is `"prefetch_with_subresources"`, which prefetches a document and then uses the HTML preload scanner to find other subresources that are worth preloading. Chromium currently does something similar (known as "[NoState Prefetch](https://developer.chrome.com/blog/nostate-prefetch/)") for `<link rel="prerender">`. But, we're not yet sure this feature is pulling its weight, in between the lightweight prefetch and the fully-instant prerender features, so it's not yet clear whether this will be worth integrating.
+
+## Proposed processing model
+
+Conceptually, the user agent may from time to time execute a task to consider speculation. (In practice, it will likely do this only in response to some sort of DOM mutation or other event that indicates the applicable rules have changed, and may limit its attention to the affected parts of the document.) Changes to the DOM that are undone within a task cannot therefore be observed by this algorithm.
+
+To consider speculation is to look at the computed ruleset for the document (merging, if there are multiple), gather a list of candidate URLs, combine the author-declared likelihood with its own heuristics (which may include device or network characteristics, page structure, the viewport, the location of the cursor, past activity on the page, etc.), and thus select a subset of the allowed actions to execute speculatively.
 
 At any time the user agent may decide to abort any speculation it has started, but it is never required to do so. However, if at the time of considering speculation a speculation would no longer be permitted (e.g., because the rules changed, the initiating element was modified, the document base URL changed, or another part of the document changed such that selectors no longer match), the user agent should abort the speculation if possible.
 
-In the case where the URL is cross-origin, actions will be assumed to be versions of those actions that do not reveal user identity (preconnect with a separate socket pool, uncredentialed prefetch, uncredentialed prerender). The exact semantics of those are to be defined elsewhere.
-
-### Developer Tooling
+## Developer tooling
 
 It will likely be useful to surface in developer tools what rules and URLs have been found, and what the heuristic probability used for each was. Developer tools should also provide an option to force the user agent to execute a speculation that it may have deemed low probability, so that the developer can reproducibly observe behavior in this case.
 
 This information and control is important because otherwise it may be difficult to validate correct behavior as it would otherwise depend on heuristics unknown to the author. Similarly testing tools such as [WebDriver][webdriver] should likely permit overriding the user agent's selection of which valid speculations to execute.
 
-### Feature detection
+## Feature detection
 
-If the browser supports [HTMLScriptElement](https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement)'s
-[supports(type)](https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports) method,
-`HTMLScriptElement.supports('speculationrules')` must return true.
+If the browser supports [`HTMLScriptElement`](https://html.spec.whatwg.org/multipage/scripting.html#htmlscriptelement)'s [`supports(type)`](https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports) static method, `HTMLScriptElement.supports('speculationrules')` will return true.
 
 ```js
 if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')) {
@@ -175,16 +239,33 @@ if (HTMLScriptElement.supports && HTMLScriptElement.supports('speculationrules')
 
 ## Alternatives considered
 
-The obvious alternative is to extend the `<link>` element.
+The obvious alternative is to extend the `<link>` element. Let's discuss why that's undesirable.
 
-Extending `<link>` to meet all of these needs is awkward, and somewhat inconsistent with other uses of `<link>` (which is designed to be a single non-rendered hypertext reference). In particular, adding support for requiring an anonymous client IP in a way that didn't cause existing browsers to prefetch it without such anonymization (the behavior for an unrecognized attribute is to ignore it) would take particular care.
+### General interop and compat concerns
+
+The existing `<link rel="prefetch">` and `<link rel="prerender">` link relations are not consistently implemented, or well specified. They do different things in different browsers, and in some cases even have magical behavior for `as="document"` (navigational preloading) vs. other `as=""` values (subresource preloading).
+
+Current implementations are also not necessarily compatible with [storage partitioning](https://github.com/privacycg/storage-partitioning/), as they were designed before such efforts. So there may need to be future backward-incompatible changes to them to meet browser teams' new goals around privacy.
+
+As such, it's much nicer if we can start from a clean slate with a new trigger, which does not have any preexisting implementations which could be hard to change the semantics of. We do want to eventually get interop on these; our current best guess for how this will turn out is that `<link rel="prefetch">` [will become about subresource prefetching only](https://github.com/whatwg/html/pull/8111), and `<link rel="prerender">` (which is Chromium-only) will be removed.
+
+### Forward-compatibility problems
+
+`<link>` does not lend itself well to adding requirements, of the type we [have included](#requirements) in speculation rules. For example, if we tried to add support for requiring an anonymous client IP, doing so in the naive way would accidentally cause existing browsers to ignore the requirement:
 
 ```html
 <!-- existing browsers would prefetch this directly -->
-<link rel="prefetch" href="//example.org/" mustanonymize>
+<link rel="prefetch" href="https://example.org/" mustanonymize>
 ```
 
-`<link>` also doesn't lend itself to reducing duplication with anchors alread in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
+The only real workaround for this is to invent a new `rel=""` value which has different behavior, e.g., pays attention to a new `requirements=""` attribute.
+
+### Duplication
+
+As mentioned in [the Goals section](#goals), `<link>` also doesn't lend itself to reducing duplication with anchors alread in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
+
+With [document rules](#document-rules), we can do much better.
+
 
 [import-maps]: https://github.com/WICG/import-maps
 [resource-hints]: https://github.com/w3c/resource-hints
