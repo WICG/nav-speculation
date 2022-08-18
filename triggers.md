@@ -166,7 +166,7 @@ Note that if a page is truly unsure whether a given URL will be prerendered into
 }
 ```
 
-However, in browsers such as Chromium that need the target hint, this will prerender the page twice, and thus use twice as many resources. So this is best avoided if possible.
+However, in implementations such as Chromium that need the target hint, this will prerender the page twice, and thus use twice as many resources. So this is best avoided if possible.
 
 ## Future extensions
 
