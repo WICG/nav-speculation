@@ -23,7 +23,7 @@ Much of the complexity of preloading comes in when dealing with site that is cro
 
 Our current proposals are focused around allowing cross-origin/site prefetching. We also have some early thoughts on cross-origin/site prerendering, but have not yet committed to them. The following explainers are relevant:
 
-* [Fetching modes](./fetch.md), discussing how to perform the fetch of the main content and any subresources while preloading.
+* [Cross-site preloading fetching modes](./fetch.md), discussing how to perform the fetch of the main content and any subresources while doing cross-site preloading.
 * [`Supports-Loading-Mode`](./opt-in.md), a new header which allows target pages to opt in to being loaded in an uncredentialed mode, with the understanding that they will upgrade their content later upon activation.
 * [`<meta http-equiv="supports-loading-mode">`](https://github.com/WICG/nav-speculation/blob/main/meta-processing.md), an extension to the header definition that uses a HTML preparsing pass to allow it to appear in-document.
 * [Client IP anonymization](./anonymous-client-ip.md), an extension to prefetching (and maybe one day prerendering?) to require using an anonymizing proxy to hide the user's IP address.
