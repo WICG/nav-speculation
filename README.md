@@ -9,7 +9,7 @@ The space is full of challenges which have not been comprehensively tackled: mos
 * avoiding user-visible side effects and annoyances from running script on the destination site; and
 * fulfilling the privacy objectives of the user and the referring site.
 
-This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such prerendering of content, in an interoperably-implementable way. Each piece is designed to be composable and reusable; for example, [some contribute to prefetching](#prefetching), independent of prerendering, and the [opt-in](./opt-in.md) is designed to be usable by other types of alternate loading modes, such as [fenced frames](https://github.com/shivanigithub/fenced-frame/).
+This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such preloading of content, in an interoperably-implementable way.
 
 ## Triggering preloading with speculation rules
 
@@ -32,7 +32,7 @@ Our current proposals are focused around allowing cross-origin/site prefetching.
 
 Prerendering is more complex than prefetching, as it involves running the target page's scripts and loading its subresources. We've produced a couple of relevant explainers:
 
-* [Same-origin prerendering](./same-origin-explainer.md), discussing what is launched in Chromium for same-origin prerendering using `<script type="speculationrules">`. See also the [origin trial documentation](same-origin-chrome-origin-trial.md).
+* [Same-origin prerendering](./same-origin-explainer.md), discussing what is launched in Chromium for same-origin prerendering using `<script type="speculationrules">`.
 * [UA-initiated prerendering](./ua-initiated-prerendering.md), discussing what is launched in Chromium for user agent-initiated prerendering (e.g. from the URL bar).
 * [Prerendering browsing contexts](./browsing-context.md), an earlier draft discussing in more detail our grand vision for how content behaves while prerendering.
 * [Prerendering state APIs](./prerendering-state.md), discussing the new `document.prerendering` API and its associated event.
