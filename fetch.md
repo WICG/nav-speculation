@@ -1,245 +1,128 @@
-# Prerendering fetching modes
+# Cross-site preloading fetching modes
 
 ## Related issues and discussion
 
-There is a long history of standards and implementation discussion around some of the problems that parts of
-this document aim to bring clarity to, namely, the fetching of speculative resources intended to be used by
-future navigations:
- - [w3c/resource-hints: Specify processing model in terms of Fetch](https://github.com/w3c/resource-hints/issues/86)
- - [w3c/resource-hints: Specify prerender processing model](https://github.com/w3c/resource-hints/issues/63)
- - [whatwg/fetch: Speculative Request Flag](https://github.com/whatwg/fetch/pull/881)
- - [whatwg/html: Add prefetch processing model & double-key cache protections](https://github.com/whatwg/html/pull/4115)
+There is a long history of standards and implementation discussion around some of the problems that parts of this document aim to bring clarity to, namely, the fetching of speculative resources intended to be used by future navigations:
 
-The above discussion revolves largely around `<link rel=prefetch>`, however our interest in standardizing and
-implementing prerendering and portals demands the specification of properties shared by all speculative navigation
-requests. These requests have the following properties:
- - Fetched with a speculative [network partition key][2], thus storing the resources in an isolated
-   HTTP cache partition reserved for speculative navigation requests associated with a given origin
- - Fetched without credentials, as to preserve the user's privacy
- - Fetched with a limited amount of referrer information, as to preserve the user's privacy
+- [w3c/resource-hints: Specify processing model in terms of Fetch](https://github.com/w3c/resource-hints/issues/86)
+- [w3c/resource-hints: Specify prerender processing model](https://github.com/w3c/resource-hints/issues/63)
+- [whatwg/fetch: Speculative Request Flag](https://github.com/whatwg/fetch/pull/881)
+- [whatwg/html: Add prefetch processing model & double-key cache protections](https://github.com/whatwg/html/pull/4115)
 
-In the rest of this document we go into more detail into the above restrictions. We also describe how these
-restrictions interact with a [prerendering browsing context][4] once it is activated after navigation.
+The above discussion revolves largely around `<link rel="prefetch">`, which generally has been for a single resource: sometimes a subresource, and sometimes a main navigation resource. In this document, we focus specifically on prefetching and prerendering, which are about the main navigational resource (and, in the case of prerendering, its subresources).
 
-<details>
-<summary>Prefetch-specific restrictions</summary>
+Our proposal, outlined below, is that when these requests are cross-site, they have the following properties:
 
-In addition to the above restrictions, `<link rel=prefetch>` requests will have the following qualities:
- - The UA can opt to not fetch the request given implementation-defined constraints
-   (commonly network speed, memory, etc.)
- - The request is fetched with a low implementation-defined [priority][5]
-</details>
+- Fetched without credentials
+- Fetched in a way that does not update or access the main HTTP cache or cookie jar
+- Fetched with a limited amount of referrer information
 
+These restrictions are all geared to protect the user's privacy and prevent any cross-site information sharing, of the type that is being prohibited by the ongoing [storage partitioning][] work. In the rest of this document we go into more detail into the above restrictions. We also describe how these restrictions are lifted when a preloaded resource is activated (i.e., when it is user-visibly navigated to).
 
-## HTTP cache partitioning
+_Note: none of these restrictions apply to **same**-site preloading. Same-site preloading does not have privacy concerns and is not impacted by [storage partitioning][]._
 
-For privacy reasons, speculative navigation requests require the ability to fetch a resource while having
-no side effects on HTTP cache partitions observable to any other pages. For example, if `a.com` prerenders
-`b.com` and `b.com` fetches a bunch of subresources or has any number of nested browsing contexts, we need
-some container to hold both the top-level resource and all subresources under it so that the fetching of
-these resources is not observable to any non-speculative pages.
-
-The Fetch Standard computes a [network partition key][2] in the [determine the http cache partition][0]
-algorithm which is used to identify an HTTP cache partition. The key's primary identifier is the
-[top-level origin][1] of the request's client (e.g., a `Window` object). For the privacy reasons mentioned
-above, we cannot consult the cache partition that would typically be identified by a speculative navigation
-request's [top-level origin][1]. Concretely, this can be achieved by adding an extra bit to the request's
-computed [network partition key][2], signifying that the key specifically pertains to an isolated HTTP cache
-partition associated with the top-level origin in the key. As mentioned before, all of the below resources will
-need to utilize this cache key:
- - Top-level speculative resources
- - Subresources under top-level speculative resources
- - Nested browsing contexts and their subresources
-
-
-### Cache partitioning after activation
-
-At the point of activation, the various speculative HTTP cache partitions may contain resources that are now
-safe to expose to the "typical" cache partitions that non-speculative pages use, since the user has clearly
-expressed their intent to navigate. We can provide an optional step that merges all of the speculative
-HTTP cache partitions with their non-speculative counterparts. In practice, this is pretty tricky and it is
-expected that most implementations will not do this.
-
-> TODO: There was discussion about doing this, but now I have reservations about even making this optional,
-since all resources in the speculative partition will be the result of credential-less fetches, which might
-not be useful to reference from this point on? This could use some more thought.
-
->TODO: It's more likely that an implementation will merge cookies so I should probably figure out how
-that will work spec-wise.
-
-
-### Alternatives considered
-
-#### Using an out-of-band ephemeral cache
-
-One alternative to using a speculative HTTP cache partition in the way described above is to use some
-new of out-of-band ephemeral cache to hold these resources, and potentially discard them after activation.
-In theory this approach is reasonable and solves the problem at hand, however the practical implications
-in both spec and implementation of creating a new type of cache bring about a large amount of complexity
-for an unclear benefit. Specifically, some of the problems that would need to be solved are:
-
- - Determining where this cache is layered with respect to the HTTP cache, and some already-existing
-   in-memory caches such as the "list of available images"
- - Determining a reasonable set of cache read/write semantics
- - Exploring how this relates to the non-yet-spec'ed Memory Cache and Preload Cache
- - Potentially creating partitioning mechanics similar to those of the HTTP cache, for user privacy
-
-While this alone is difficult, it also would be challenging to foster interoperability with the
-usage of this brand new cache, particularly because:
- 1. Many interactions with the cache may not be observable
- 1. The few observable effects would be subtle
- 1. Implementation-defined constraints around fetching speculative resources could lead to these resources
-    non-deterministically not being fetched, making it difficult to test the cache
-
-
-##### Ephepermal cache after activation
-
-All requests originating from a [prerendering browsing context][4] after activation would stop targeting the
-ephemeral resource cache, and use their "typical" HTTP cache partition.
-
-Like the main proposal, we could potentially provide an optional cache merging step in which resources stored
-in the ephemeral cache could be transferred to the HTTP cache for a more-permanent lifetime. This is not without
-its own difficulties and complexities as previously described.
-
-
-#### Bypassing the HTTP cache entirely
-
-Another approach to this problem would be to force-send all requests that were initiated even indirectly
-by a [prerendering browsing context][4] with the [cache mode][3] value of `"no-store"`. Fetching would behave
-as though HTTP cache were not present, and it would be impossible to contaminate any HTTP cache partitions observable
-to other pages.
-
-The main downside of this approach is that we lose the ability to use any of the resources fetched by
-the [prerendering browsing context][4] after activation. That is, we lose whatever benefits we could
-gain by having the ability to merge speculative <=> "typical" HTTP cache partitions, should we decide
-to go that route.
-
-On a similar note, this approach does not integrate with `<link rel=prefetch>`, as the whole point is
-to cache a top-level resource somewhere it can be usefully retrieved upon navigation. This means we're likely going to have
-to spec and implement the HTTP cache partitioning mechanics described above anyways, so it is sensible for
-other speculative navigation requests to piggy-back off of the same infrastructure.
-
-Another possible complexity is that if we spec prerendering in a way such that [prerendering browsing contexts][4]
-can be thrown away under implementation-defined constraints at any time, then we lose the ability to ever profit
-from the prerendering work we've done. No resources in the [prerendering browsing contexts][4] are preserved
-elsewhere, so it would be impossible to downgrade prerendering activation to something like prefetch activation.
-
-> TODO(domfarolino): Clarify that the above is only considering the downgrading of prerender *activations*. There is
-another kind of downgrade that we may want to consider, which is the scenario where under implementation-defined
-constraints, the UA opts not to create a [prerendering browsing context][4], but instead downgrade the whole prerender
-process to a simple prefetch. None of this is set in stone though.
-
+_Note: right now only cross-site prefetching is specified and implemented. So for pre**rendering**, this document mostly contains speculation and tentative proposals._
 
 ## Fetching with no credentials
 
-Speculative navigation requests should in no way leak the user's identity to third-party origins. A consequence of
-this is that we must fetch all requests originating from a [prerendering browsing context][4] with no credentials.
-As with the HTTP cache partitioning restrictions, this must apply to all of the following:
- - Top-level speculative resources
- - Subresources under top-level speculative resources
- - Nested browsing contexts and their subresources
+Speculative navigation requests should in no way leak the user's identity to third-party origins. A consequence of this is that all cross-site preloading requests must be done with no credentials. (Here, "credentials" essentially means cookies: other HTTP credentials, such as HTTP basic auth certificates, currently cause preloading to fail.)
 
-Concretely this can be done by overriding the [credentials mode][6] of all requests coming from a
-[prerendering browsing context][4] to the `"omit"` value.
+This must apply to all of the following:
 
+- Top-level speculative resources
+- Subresources under top-level speculative resources
+- Nested browsing contexts and their subresources
+
+For cross-site prefetching, where we only fetch the top-level resource, this is done through the [HTTP state partitioning](#http-state-partitioning) strategy mentioned below.
+
+For cross-site prerendering, we are not yet sure on the strategy for subresources. It could either be to omit all credentials, or it could be to try a similar HTTP state partitioning approach.
+
+### What if the site already has credentials?
+
+If a given site already has credentials, then the preloaded page needs to [opt in](./opt-in.md); otherwise, preloading will immediately fail, discarding the response. This opt-in indicates that they are prepared to deal with their prefetched content being loaded with no credentials, which is a state that might not reflect the user's actual previous interaction patterns.
+
+Currently, this opt in is not yet specified or implemented anywhere. Instead, we silently fail to do cross-site prefetch, if the destination site already has credentials.
 
 ### Credentials after activation
 
-After a [prerendering browsing context][4] is activated, requests originating from it would no longer have
-their credentials mode overridden, and would be fetched with whatever credentials were present in the user
-agent's cookie store as is typical on the web platform.
+After activation, any future requests can be made with credentials.
 
-> TODO: Discuss the possibility of partitioning the user agent's cookie store. In the proposal above, the
-user agent effectively ignores cookies that it already has, for requests initiated from a
-[prerendering browsing context][4]. One downside of that proposal is that new credentials set on resources
-in a [prerendering browsing context][4] will entirely be ignored. If the user agent's cookie store was
-partitioned in a way similar to the HTTP cache, we could use an isolated speculative cookie store for all
-requests in a given [prerendering browsing context][4], and optionally merge cookies in some fashion after
-activation.
+Any credentials that arrived during the pre-activation period will be [merged](#http-state-after-activation) with existing credentials, as if they were acquired during a navigation that occurred at that time.
 
+## HTTP state partitioning
+
+To avoid cross-site information sharing about the user, cross-site speculative navigation requests must neither use nor modify any HTTP state that is observable to other pages. Here, "HTTP state" means the HTTP cache, plus credentials (~ cookies).
+
+For example, if `a.com` prefetches `b.com`, this must not let `b.com` modify its own first-party cookies; this would allow `a.com` and `b.com` to communicate. Similarly, `b.com` must not be able to read its own first-party cookies, as this could give `b.com` the impression a specific user is visiting (even though the user has not yet expressed an affirmative intent to navigate).
+
+To avoid this, during prefetching we create a temporary isolated [environment][] to serve as the top-level environment, with a new opaque origin as its origin. Then, all fetches that take place during the speculative navigation will utilize this environment to compute their [network partition key][] and [determine the HTTP cache partition][]. Since the key's primary identifier is the [top-level origin][] of the environment, this means we will be acting in a completely separate network partition for the duration of the preloading operation.
+
+### HTTP state after activation
+
+At the point of activation, the speculative HTTP state contained in our isolated partition is now safe to expose to the main partition that non-speculative pages use, since the user has clearly expressed their intent to navigate.
+
+So far we have only thought through the correct behavior for prefetches. (Cross-site prerendering is in general not yet something we are confident in.) For them, we:
+
+- Merge the isolated partition's cookies into the main partition, as if they had been received at the time of the activation via `Set-Cookie` headers;
+- Allow, but do not require, merging in the HTTP cache partition's contents.
+
+Note that usually this cookie merging will be straightforward, since [per the above](#what-if-the-site-already-has-credentials) we will currently only perform the initial prefetch when the site has no credentials. Thus, the only possibility of a merge conflict is if the user caused the site to gain credentials in the time between prefetching and activation.
+
+The reason we do not require merging in the HTTP cache partition's contents is that the HTTP cache is in general an optimization, and doing this merging is likely to have marginal benefit for prefetches. In particular, the HTTP cache partition will only contain the single prefetched main-document, and often documents do not have cache-friendly headers anyway.
+
+### Alternative: use a separate type of ephemeral cache
+
+Instead of using the existing [network partition key][] infrastructure, we could have used a separate type of cache, probably an in-memory ephemeral one that is discarded after activation.
+
+The main reason to avoid this is the complexity of reinventing new caching semantics. In particular, we would have to:
+
+- determine a reasonable set of cache read/write semantics;
+- explore how this relates to the non-yet-spec'ed memory cache and `<link rel="preload">` cache; and
+- potentially create partitioning mechanics similar to those of the HTTP cache, for user privacy.
+
+It also would be challenging to foster interoperability with the usage of this brand new cache, as we've found out from the memory cache and `<link rel="preload">` cache situation.
+
+### Alternative: bypass the HTTP cache entirely
+
+Another approach to this problem would be to override the [cache mode][] of all preloading requests to `"no-store"`. Fetching would behave as though HTTP cache were not present, and it would be impossible to contaminate any HTTP cache partitions observable to other pages.
+
+The main downside of this approach is that we lose the ability to use any of the resources fetched during preloading, after activation. That is, we lose whatever benefits we could gain by having the ability to merge speculatively-cached resources into the main HTTP cache partition, should we decide to go that route. This is especially important if we do cross-site prerendering: if the actual prerendering browsing context is discarded (e.g. due to memory constraints), it would be ideal to keep the downloaded resources anyway, so as to provide at least some benefit.
+
+This approach also doesn't have anything to say about credentials, whereas with our chosen approach we partition both cache and credentials state in the same way.
 
 ## Stripping referrer information
 
-To preserve the user's privacy, there should be a limited amount of referrer information sent along with
-speculative navigation requests. Given the sensitive nature of these requests, we believe it should not
-be possible to expose the full referrer path when these requests are cross-origin. Instead, the total referrer
-information will be limited to at most the referrer's origin. If a developer supplies the `referrerpolicy`
-attribute on e.g., a `<link rel=prerender>` it should only be used for tightening the referrer policy beyond
-the platform [default][7] of `strict-origin-when-cross-origin`. We can achieve this by defining a list of
-a list of __sufficiently-strict referrer policies__ that are allowed for these requests.
+To preserve the user's privacy and prevent cross-site communication, there should be a limited amount of referrer information sent along with cross-site speculative navigation requests. In particular, it should not be possible to expose the full referrer path. Instead, the total referrer information will be limited to at most the referrer's origin.
 
-As mentioned, the list of sufficiently-strict referrer policies are the policies that are as or more
-strict compared to the platform [default][7] of `strict-origin-when-cross-origin`, which includes the
-following policies:
- - `strict-origin-when-cross-origin`
- - `same-origin`
- - `strict-origin`
- - `no-referrer`
+We achieve this by requiring that the referring page be using a **sufficiently-strict referrer policy**, which is one that is at least as strict as the platform [default][default referrer policy] of `"strict-origin-when-cross-origin"`. So, it must be one of the following:
 
-A speculative navigation request supplied with a referrer policy outside of this list will be silently
-ignored.
+- `"strict-origin-when-cross-origin"`
+- `"same-origin"`
+- `"strict-origin"`
+- `"no-referrer"`
 
-> TODO: We can also consider dispatching a console warning or firing the element's error event in these
-cases to let developers know that the request was not able to be dispatched.
-
-Furthermore, since the activation of a speculative navigation request keys on the referrer policy, we
-guarantee that there is never a discrepancy between the referrer sent with the request, and the value
-of `document.referrer` on the prerender page that may eventually get activated and promoted to using
-first-party storage. For an example of this, see [this issue & comment][8].
-
+A speculative navigation request that would be made with a referrer policy outside of this list will be ignored. (Browsers are free to let developers know about the issue through their developer tooling.)
 
 ### Referrer information on subresource requests
 
-This proposal applies the referrer redaction described above only to top-level speculative navigation
-requests. For example, we don't override the referrer policy that would otherwise be set on the top-level
-document in [prerendering browsing contexts][4], because any referrer information exposed from that document
-does not expose any information about the page's referrer document. The most that a speculative page in a 
-[prerendering browsing context][4] could expose about its referrer page is the value of its `document.referrer`,
-which is subject to the same redaction described earlier in this section, because it is set to the referrer
-page's `Referer` header.
+This proposal applies the referrer redaction described above only to top-level speculative navigation requests. That is, we don't override the referrer policy of any prerendered documents, in a way that would change how referrer information is sent to subresources. This is because any referrer information exposed from the prerendered document does not expose any information about the original referrer document. The most that a prerendered page could expose about its referrer page is the value of its own `document.referrer`, which is subject to the redaction described earlier in this section.
 
-The corollary to this that there is no referrer redaction applied to any other requests initiated from a
-[prerendering browsing context][4], irrespective of activation.
+### Alternative: cap the referrer policy to `"strict-origin-when-cross-origin"`
 
+One alternative to our sufficiently-strict referrer policy proposal above is to change any less-strict referrer policies into `"strict-origin-when-cross-origin"` as part of making the preloading request.
 
-### Alternatives considered
+This would allow pages which otherwise set globally-lax referrer policies, such as `"unsafe-url"`, to perform cross-site preloads. Whereas with our current proposal, such preload requests are ignored.
 
-#### Capping the referrer policy to `strict-origin-when-cross-origin`
-
-One alternative to our referrer redaction proposal above that has been considered is capping the referrer policy
-of all speculative navigation requests to `strict-origin-when-cross-origin`. This is a pretty good alternative
-especially in terms of simplicity, but the major downside of this proposal is that it makes activating a
-[prerendering browsing context][4] prone to unintentional mismatches.
-
-Note that prerender activations are keyed on the prerender request's referrer policy, so changing the prerender's
-referrer policy to something other than what the developer intended (by capping it) could lead to activation mismatches
-and developer confusion. Consider the following example:
-
-```html
-<link rel=prerender referrerpolicy=unsafe-url href="...">
-
-...
-
-<a referrerpolicy=unsafe-url href="...">
-```
-
-While the example above looks reasonable, if we cap the referrer policy of the prerender request to
-`strict-origin-when-cross-origin` while not capping the referrer policy of the navigation request
-that takes place when clicking on the anchor element, the navigation request will not match the prerender,
-resulting in wasted bytes and likely causing developer confusion.
-
+The main downside of this is that deviates from developer intent. We think it's better to instead [introduce the ability to trigger preloads with a different referrer policy than your document uses](https://github.com/WICG/nav-speculation/issues/167).
 
 ## Using a privacy-preserving proxy
 
-> TODO: Touch on the possibility of establishing a connection from a different client IP address (e.g., using a
-proxy server or virtual private network, if available)
+In addition to the above baseline requirements, we also want to offer the option for cross-site preloading to be done via an IP-anonymizing proxy. See the ["Anonymous Client IP"](./anonymous-client-ip.md) document for more.
 
-[0]: https://fetch.spec.whatwg.org/#determine-the-http-cache-partition
-[1]: https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin
-[2]: https://fetch.spec.whatwg.org/#network-partition-key
-[3]: https://fetch.spec.whatwg.org/#concept-request-cache-mode
-[4]: https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context
-[5]: https://fetch.spec.whatwg.org/#concept-request-priority
-[6]: https://fetch.spec.whatwg.org/#concept-request-credentials-mode
-[7]: https://w3c.github.io/webappsec-referrer-policy/#default-referrer-policy
-[8]: https://github.com/WICG/nav-speculation/issues/18#issuecomment-759703856
+[determine the HTTP cache partition]: https://fetch.spec.whatwg.org/#determine-the-http-cache-partition
+[top-level origin]: https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-top-level-origin
+[network partition key]: https://fetch.spec.whatwg.org/#network-partition-key
+[environment]: https://html.spec.whatwg.org/multipage/webappapis.html#environment
+[cache mode]: https://fetch.spec.whatwg.org/#concept-request-cache-mode
+[default referrer policy]: https://w3c.github.io/webappsec-referrer-policy/#default-referrer-policy
+[storage partitioning]: https://github.com/privacycg/storage-partitioning/
