@@ -198,20 +198,25 @@ In addition to list rules, we envision _document_ rules, denoted by `"source": "
 The URL can be compared against [URL patterns][urlpattern] (parsed relative to the same base URL as URLs in list rules).
 
 <dl>
-<dt><code>"if_href_matches": [...]</code></dt>
+<dt><code>"href_matches": [...]</code></dt>
 <dd>requires that the link URL match at least one pattern from the list</dd>
-<dt><code>"if_not_href_matches": [...]</code></dt>
-<dd>requires that the link URL not match any pattern from the list</dd>
 </dl>
 
 The link element itself can also be [matched][selector-match] using [CSS selectors][selectors].
 
 <dl>
-<dt><code>"if_selector_matches": [...]</code></dt>
+<dt><code>"selector_matches": [...]</code></dt>
 <dd>requires that the link element match at least one selector from the list</dd>
-<dt><code>"if_not_selector_matches": [...]</code></dt>
-<dd>requires that the link element not match any selector from the list</dd>
 </dl>
+
+Any of these simple conditions can be negated.
+
+<dl>
+<dt><code>"not": {...}</code></dt>
+<dd>requires that the condition not match</dd>
+</dl>
+
+In the future, a more complete boolean algebra could be added if needed.
 
 An example of using these would be the following, which marks up as safe-to-prerender all same-origin pages except those known to be problematic:
 
@@ -219,9 +224,11 @@ An example of using these would be the following, which marks up as safe-to-prer
 {
   "prerender": [
     {"source": "document",
-     "if_href_matches": ["/*"],
-     "if_not_href_matches": ["/logout"],
-     "if_not_selector_matches": [".no-prerender"],
+     "where": [
+       {"href_matches": ["/*"]},
+       {"not": {"href_matches": ["/logout"]}},
+       {"not": {"selector_matches": [".no-prerender"]}}
+     ],
      "score": 0.1}
   ]
 }
