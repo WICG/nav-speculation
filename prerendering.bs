@@ -199,6 +199,7 @@ spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: supports prefetch; url: supports-prefetch
+    text: list of sufficiently-strict speculative navigation referrer policies
 </pre>
 <pre class="biblio">
 {
@@ -252,49 +253,6 @@ spec: nav-speculation; urlPrefix: prefetch.html
 }
 </style>
 
-<h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
-
-<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in [[RESOURCE-HINTS]]</em>
-
-The <{link/rel/prerender}> keyword may be used with <{link}> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
-
-The appropriate times to <a spec=HTML>fetch and process the linked resource</a> for such a link are:
-
-<ul>
-  <li>When the <a spec=HTML>external resource link</a> is created on a <{link}> element that is already [=browsing-context connected=]</a>.</li>
-  <li>When the <a spec=HTML>external resource link</a>'s <{link}> element [=becomes browsing-context connected=].</li>
-  <li>When the <{link/href}> attribute is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
-  <li>When the <{link/referrerpolicy}> attribute's state is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
-</ul>
-
-<div algorithm="prerender-processing-model">
-  The <a spec=HTML>fetch and process the linked resource</a> algorithm for <{link/rel/prerender}> links, given a <{link}> element <var>el</var>, is as follows:
-
-  1. If |el|'s <{link/href}> attribute's value is the empty string, then return.
-
-  1. [=Parse a URL=] given |el|'s <{link/href}> attribute, relative to |el|'s [=Node/node document=]. If that fails, then return. Otherwise, let |url| be the [=resulting URL record=].
-
-  1. If |url|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then return.
-
-  1. Let |referrerPolicy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
-
-  1. If |url|'s [=url/origin=] is not [=same origin=] with |el|'s [=Node/node document=]'s [=Document/origin=], then:
-
-    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] |referrerPolicy|, then return.
-
-  1. [=Create a prerendering browsing context=] with |url|, |referrerPolicy|, and |el|'s [=Node/node document=].
-</div>
-
-A user agent must not <a spec=HTML lt="delays the load event">delay the load event</a> of the <{link}> element's [=Node/node document=] for this link type.
-
-<p class="note">Note that this link type does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other link types that create <a spec=HTML>external resource links</a>.
-
-The <dfn>list of sufficiently-strict speculative navigation referrer policies</dfn> is a [=list=] containing the following subset of [=referrer policies=]: the empty string, "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
-
-<h2 id="speculation-rules">Speculation rules</h2>
-
-It is anticipated that prerendering will be triggered using <a href="speculation-rules.html">speculation rules</a>.
-
 <h2 id="prerendering-bcs">Prerendering browsing context infrastructure</h2>
 
 <h3 id="document-prerendering">Extensions to the {{Document}} interface</h3>
@@ -341,7 +299,7 @@ The <dfn attribute for="Document">prerendering</dfn> getter steps are to return 
 
 A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
 
-Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of ([=URL=], [=referrer policy=]) [=tuples=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
+Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of [=URLs=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
 
 Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
 
@@ -388,11 +346,11 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div algorithm="create a prerendering browsing context">
-  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
+  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
 
   1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
-  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)] [=map/exists=], then return.
+  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] [=map/exists=], then return.
 
   1. Let |bc| be the result of [=creating a new top-level browsing context=].
 
@@ -402,7 +360,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
 
-    1. [=Assert=]: The [=list of sufficiently-strict speculative navigation referrer policies=] [=list/contains=] |referrerPolicy|.
+    1. If |referrerDoc|'s [=Document/policy container=]'s [=policy container/referrer policy=] is not in the [=list of sufficiently-strict speculative navigation referrer policies=], then return. (No prerendering is performed.)
 
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
 
@@ -410,9 +368,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">As with regular [=browsing contexts=], the [=prerendering browsing context=] can be [=discarded=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too much resources.
 
-  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
-
-  1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
+  1. [=Navigate=] |bc| to |startingURL| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
 </div>
 
 <div algorithm>
@@ -526,7 +482,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
       * |historyHandling| is "`default`" or "`replace`"
       * |navigationType| is "`other`"
       * |request|'s [=request/method=] is \``GET`\`
-      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|request|'s [=request/URL=], |request|'s [=request/referrer policy=])] [=map/exists=] and is not [=prerendering browsing context/empty=]
+      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|request|'s [=request/URL=]] [=map/exists=] and is not [=prerendering browsing context/empty=]
       * The result of calling [=should navigation request of type be blocked by content security policy?=] given |request| and <var ignore>navigationType</var> is "`Allowed`".
 
         <p class="note">There is no need for an additional CSP check for the response, see [=navigate-to=].
@@ -542,7 +498,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
 
   1. If |resource| is a [=request=] and we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource|, then:
 
-    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])].
+    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]].
 
     1. Wait until all navigation attempts of |successorBC| have been [=navigate/mature|matured=].
 
@@ -576,7 +532,7 @@ Patch the [=process a navigate fetch=] algorithm like so:
 
     1. Set |browsingContext|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
 
-    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] <var ignore>request</var>'s [=referrer policy=], then:
+    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] <var ignore>request</var>'s [=request/referrer policy=], then:
 
       1. [=Assert=]: |response| is not null.
 
