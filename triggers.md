@@ -198,25 +198,27 @@ In addition to list rules, we envision _document_ rules, denoted by `"source": "
 The URL can be compared against [URL patterns][urlpattern] (parsed relative to the same base URL as URLs in list rules).
 
 <dl>
-<dt><code>"href_matches": [...]</code></dt>
-<dd>requires that the link URL match at least one pattern from the list</dd>
+<dt><code>"href_matches": ...</code></dt>
+<dd>requires that the link URL match the provided pattern (or any of the provided patterns, if there are multiple)</dd>
 </dl>
 
 The link element itself can also be [matched][selector-match] using [CSS selectors][selectors].
 
 <dl>
-<dt><code>"selector_matches": [...]</code></dt>
-<dd>requires that the link element match at least one selector from the list</dd>
+<dt><code>"selector_matches": ...</code></dt>
+<dd>requires that the link element match the provided selector (or any of the provided selectors, if there are multiple)</dd>
 </dl>
 
-Any of these simple conditions can be negated.
+Any of these simple conditions can be negated and combined with conjunction and disjunction.
 
 <dl>
 <dt><code>"not": {...}</code></dt>
 <dd>requires that the condition not match</dd>
+<dt><code>"and": [...]</code></dt>
+<dd>requires that every condition in the list match</dd>
+<dt><code>"or": [...]</code></dt>
+<dd>requires that at least one condition in the list match</dd>
 </dl>
-
-In the future, a more complete boolean algebra could be added if needed.
 
 An example of using these would be the following, which marks up as safe-to-prerender all same-origin pages except those known to be problematic:
 
@@ -224,11 +226,11 @@ An example of using these would be the following, which marks up as safe-to-prer
 {
   "prerender": [
     {"source": "document",
-     "where": [
-       {"href_matches": ["/*"]},
-       {"not": {"href_matches": ["/logout"]}},
-       {"not": {"selector_matches": [".no-prerender"]}}
-     ],
+     "where": {"and": [
+       {"href_matches": "/*"},
+       {"not": {"href_matches": "/logout"}},
+       {"not": {"selector_matches": ".no-prerender"}}
+     ]},
      "score": 0.1}
   ]
 }
