@@ -233,7 +233,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Set |request|'s [=request/URL list=] to |urlList|.
     1. Let |responsePolicyContainer| be the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
     1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |response|'s [=response/URL=], |historyPolicyContainer|, |initiatorPolicyContainer|, null, and |responsePolicyContainer|.
-    1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |record|'s [=prefetch record/response=], [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
+    1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |record|'s [=prefetch record/response=], [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|, and [=navigation params/delivery type=] is "`navigational-prefetch`".
     1. Return |navigationParams|.
 </div>
 
@@ -252,6 +252,12 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 </div>
 
 <h2 id="html-patches">HTML Patches</h2>
+
+This section contains patches to [[HTML]].
+
+Add an additional item to [=navigation params=] as follows:
+:  <dfn for="navigation params">delivery type</dfn>
+:: a [=string=] (corresponding to {{PerformanceResourceTiming}} [=PerformanceResourceTiming/delivery type=]), default ""
 
 <div algorithm="perform a common navigational fetch">
     <div class="note">This is an abstraction of the existing [=process a navigate fetch=]. It includes behavior like redirect handling that is particular to navigational fetches, including those that are relate to a speculate future navigation, rather than an immediate one.</div>
@@ -361,6 +367,18 @@ Given this, the non-prefetch case becomes, with the small addition of prefetch l
     1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |response|'s [=response/URL=], |historyPolicyContainer|, |initiatorPolicyContainer|, null, and |responsePolicyContainer|.
     1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |response|, [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
     1. Run [=process a navigate response=] with |navigationType|, |allowedToDownload|, |hasTransientActivation|, and |navigationParams|.
+</div>
+
+<div algorithm="create and initialize a Document object">
+    Update the steps to [=create and initialize a Document object=] to add an additional argument to [=create the navigation timing entry=], as follows: <var ignore>navigationParams</var>'s [=navigation params/delivery type=].
+</div>
+
+<h2 id="navigation-timing-patches">Navigation Timing Patches</h2>
+
+This section contains patches to [[NAVIGATION-TIMING]].
+
+<div algorithm="create the navigation timing entry">
+    Add an additional parameter to [=create the navigation timing entry=], which is a [=string=] |deliveryType|, and pass it as an additional argument to [=setup the resource timing entry=].
 </div>
 
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
