@@ -519,12 +519,6 @@ Navigation redirects can also [=prerendering browsing context/activate=] [=prere
 
 <h3 id="navigate-fetch-patch">Navigation fetch changes</h3>
 
-This section contains two types of changes to the [=process a navigate fetch=] algorithm:
- * Logic allowing navigation redirects that are not inside of a [=prerendering browsing context=] to [=prerendering browsing context/activate=] a [=prerendering browsing context=].
- * Logic that discards a [=prerendering browsing context=] when it navigates cross-origin.
-
-Patch the [=process a navigate fetch=] algorithm like so:
-
 <div algorithm="process a navigate fetch patch">
   In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:":
 
@@ -536,9 +530,29 @@ Patch the [=process a navigate fetch=] algorithm like so:
 
   1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
 
+    1. Run the [=environment discarding steps=] for <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
+
+    1. Return.
+</div>
+
+<div algorithm="process a navigate response patch">
+  In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
+
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], and any of the following hold:
+
+      * |failure| is true;
+      * |navigationParams|'s [=navigation params/request=] is null;
+      * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
+      * |response| does not [=support prefetch=];
+
+        <div class="note">Responses which are ineligible for prefetch, e.g. because they have an error status, are not eligible for prerender either. A future version of this specification might allow responses to more clearly delineate the two.</div>
+      * |response| has a \``Content-Disposition`\` header specifying the `attachment`
+          disposition type; or
+      * |response|'s [=response/status=] is 204 or 205,
+
     then:
 
-    1. Run the [=environment discarding steps=] for <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
+    1. Run the [=environment discarding steps=] for |navigationParams|'s [=navigation params/reserved environment=].
 
     1. Return.
 </div>
