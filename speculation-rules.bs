@@ -95,6 +95,7 @@ spec: nav-speculation; urlPrefix: prerendering.html
 
 A <dfn>speculation rule</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule">URLs</dfn>, an [=ordered set=] of [=URLs=]
+* <dfn for="speculation rule">predicate</dfn>, a [=document rule predicate=] or null
 * <dfn for="speculation rule">requirements</dfn>, an [=ordered set=] of [=strings=]
 * <dfn for="speculation rule">target browsing context name hint</dfn>, a [=string=] or null
 
@@ -103,6 +104,28 @@ The only valid string for [=speculation rule/requirements=] to contain is "`anon
 A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule set">prefetch rules</dfn>, a [=list=] of [=speculation rules=]
 * <dfn for="speculation rule set">prerender rules</dfn>, a [=list=] of [=speculation rules=]
+
+A <dfn>document rule predicate</dfn> is one of the following:
+* [=document rule conjunction=]
+* [=document rule disjunction=]
+* [=document rule negation=]
+* [=document rule URL pattern predicate=]
+* [=document rule CSS selector predicate=]
+
+A <dfn>document rule conjunction</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule conjunction">clauses</dfn>, a [=list=] of [=document rule predicates=]
+
+A <dfn>document rule disjunction</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule disjunction">clauses</dfn>, a [=list=] of [=document rule predicates=]
+
+A <dfn>document rule negation</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule negation">clause</dfn>, a [=document rule predicates=]
+
+A <dfn>document rule URL pattern predicate</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule URL pattern predicate">patterns</dfn>, a [=list=] of {{URLPatterns}}
+
+A <dfn>document rule CSS selector predicate</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule CSS selector predicate">selectors</dfn>, a [=list=] of [=selectors=]
 
 <h3 id="speculation-rules-script">The <{script}> element</h3>
 
@@ -306,6 +329,35 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 <p class="issue">
   We should revisit the [=referrer policies=] used here.
 </p>
+
+<h2 id="document-rule-predicate-matching">Document rule predicate matching</h2>
+
+<div algorithm>
+  A [=document rule predicate=] |predicate| <dfn for="document rule predicate">matches</dfn> an {{Element}} |el| implementing the {{HTMLHyperlinkElementUtils}} mixin if the following steps return true:
+
+  1. If |predicate| is a [=document rule conjunction=], then:
+    1. [=list/For each=] |clause| of |predicate|'s [=document rule conjuction/clauses=]:
+      1. If |clause| does not [=document rule predicate/match=] |el|, return false.
+    1. Return true.
+  1. If |predicate| is a [=document rule disjunction=], then:
+    1. [=list/For each=] |clause| of |predicate|'s [=document rule disjuction/clauses=]:
+      1. If |clause| [=document rule predicate/matches=] |el|, return true.
+    1. Return false.
+  1. If |predicate| is a [=document rule negation=], then:
+    1. If |predicate|'s [=document rule negation/clause=] [=document rule predicate/matches=] |el|, return false.
+    1. Return true.
+  1. If |predicate| is a [=document rule URL pattern predicate=], then:
+    1. Let |href| be the result of running |el|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
+    1. [=list/For each=] |pattern| of |predicate|'s [=document rule URL pattern predicate/patterns=]:
+      1. Let |result| be the result of |pattern|'s {{URLPattern/test(input, baseURL)}} steps given |href|.
+      1. If |result| is true, return true.
+    1. Return false.
+  1. If |predicate| is a [=document rule CSS selector predicate=], then:
+    1. [=list/For each=] |selector| of |predicate|'s [=document rule selector predicate/selectors=]:
+      1. [=match a selector against an element|Match=] |selector| against |el| with [=scoping root=] |el|'s [=Node/node document=]. If the result is true, return  true.
+    1. Return false.
+  1. [=Assert=]: This step is not reached.
+</div>
 
 <h2 id="security-considerations">Security considerations</h2>
 
