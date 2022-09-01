@@ -21,20 +21,20 @@ See [the full explainer](./triggers.md) for more.
 
 Prerendering is more complex than prefetching, as it involves running the target page's scripts and loading its subresources. We've produced a couple of relevant explainers:
 
-* [Same-origin prerendering](./prerendering-same-origin.md), discusses what we believe to be solid so far: user agent-triggered and same-origin-triggered prerendering.
+* [Same-site prerendering](./prerendering-same-site.md), discusses what we believe to be solid so far: user agent-triggered and same-site-triggered prerendering.
 * [Prerendering state APIs](./prerendering-state.md), discussing the new `document.prerendering` API and its associated event in more detail.
 
 ## Cross-origin and cross-site concerns
 
 Much of the complexity of preloading comes in when dealing with site that is cross-origin or cross-site. Origins are the web's security boundary, and sites are its privacy boundary, so any preloading across these boundaries needs to preserve the relevant properties.
 
-Our current proposals are focused around allowing cross-origin/site prefetching. We also have some early thoughts on cross-origin/site prerendering, but have not yet committed to them. The following explainers are relevant:
+Our current proposals are focused around allowing cross-origin/site prefetching, and cross-origin but same-site prerendering. We also have some early thoughts on cross-site prerendering, but have not yet committed to them. The following explainers are relevant:
 
 * [Cross-site preloading fetching modes](./fetch.md), discussing how to perform the fetch of the main content and any subresources while doing cross-site preloading.
 * [`Supports-Loading-Mode`](./opt-in.md), a new header which allows target pages to opt in to being loaded in an uncredentialed mode, with the understanding that they will upgrade their content later upon activation.
 * [`<meta http-equiv="supports-loading-mode">`](https://github.com/WICG/nav-speculation/blob/main/meta-processing.md), an extension to the header definition that uses a HTML preparsing pass to allow it to appear in-document.
 * [Client IP anonymization](./anonymous-client-ip.md), an extension to prefetching (and maybe one day prerendering?) to require using an anonymizing proxy to hide the user's IP address.
-* [Cross-origin prerendering](./cross-origin-prerendering.md), containing what we've brainstormed so far about how cross-origin prerendering could work in the future.
+* [Cross-site prerendering](./cross-site-prerendering.md), containing what we've brainstormed so far about how cross-site prerendering could work in the future.
 
 ## Portals
 

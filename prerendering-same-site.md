@@ -1,4 +1,4 @@
-# Same-origin prerendering
+# Same-site prerendering
 
 [Read the spec](https://wicg.github.io/nav-speculation/prerendering.html)
 
@@ -6,7 +6,7 @@ Prerendering allows user-agents to preemptively load content into an invisible s
 
 Prerendering can potentially be triggered by another referrer document, or by the [user agent](https://wicg.github.io/nav-speculation/prerendering.html#start-user-agent-initiated-prerendering), for example from browser UI such as the URL bar.
 
-Our current specification, and the Chromium implementation, only allow same-origin referrer documents. Allowing cross-origin referrer documents requires additional security and privacy considerations, which we have many ideas for but have not yet proven out. As such, this explainer is scoped to same-origin-document- and user-agent-initiated prerendering, often abbreviated to "same-origin prerendering".
+Our current specification, and the Chromium implementation, only allow same-site referrer documents. Allowing cross-site referrer documents requires additional security and privacy considerations, which we have many ideas for but have not yet proven out. As such, this explainer is scoped to same-site-document- and user-agent-initiated prerendering, often abbreviated to "same-site prerendering".
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -18,7 +18,8 @@ Our current specification, and the Chromium implementation, only allow same-orig
   - [Page-initiated prerendering](#page-initiated-prerendering)
 - [Opting out](#opting-out)
 - [Restrictions](#restrictions)
-  - [No cross-origin navigations](#no-cross-origin-navigations)
+  - [No cross-site navigations](#no-cross-site-navigations)
+  - [Cross-origin same-site navigations require opt-in](#cross-origin-same-site-navigations-require-opt-in)
   - [Restrictions on the basis of being hidden](#restrictions-on-the-basis-of-being-hidden)
   - [Restrictions on loaded content](#restrictions-on-loaded-content)
   - [Purpose-specific APIs](#purpose-specific-apis)
@@ -31,6 +32,7 @@ Our current specification, and the Chromium implementation, only allow same-orig
 - [Session history](#session-history)
 - [Rendering-related behavior](#rendering-related-behavior)
 - [CSP integration](#csp-integration)
+- [More details on cross-origin same-site](#more-details-on-cross-origin-same-site)
 - [Considered alternatives](#considered-alternatives)
   - [Main-document prefetching](#main-document-prefetching)
   - [Prefetching with subresources](#prefetching-with-subresources)
@@ -76,7 +78,7 @@ This completes the journey to a fully-rendered view of `https://b.example/`, in 
 
 ### Page-initiated prerendering
 
-The [speculation rules API](./triggers.md) can be used to trigger a prerender to any same-origin page. For example:
+The [speculation rules API](./triggers.md) can be used to trigger a prerender to any same-site page. For example:
 
 ```html
 <script type="speculationrules">
@@ -90,7 +92,7 @@ The [speculation rules API](./triggers.md) can be used to trigger a prerender to
 <a href="https://a.test/foo">Click me!</a>
 ```
 
-The `<script type="speculationrules">` block here hints to prerender `https://a.test/foo`. As in the previous section, such prerendering includes sending the `Sec-Purpose` header.
+The `<script type="speculationrules">` block here hints to prerender `https://a.test/foo`. As in the previous section, such prerendering includes sending the `Sec-Purpose` header. If the prerendered URL (or ultimate response URL, after redirects) is cross-site, then prerendering will fail. If it is same-site but cross-origin, then the destination needs the opt-in [`Supports-Loading-Mode: credentialed-prerender` header](./opt-in.md#cross-origin-same-site-prerendering).
 
 Note that the user agent remains in control of exactly when this prerendering is done; it could do it immediately upon script insertion, or it could do it in idle time, or it could do it as the user starts clicking on the link, or it could do it never. But if it does prerender that URL, then any navigation there will activate the prerendering browsing context, with the resulting desired instant navigation.
 
@@ -108,11 +110,19 @@ The recommended response codes for opting out of prerendering are [204 No Conten
 
 For an API-by-API analysis of the restrictions in prerendering browsing contexts, see [this section of the spec](https://wicg.github.io/nav-speculation/prerendering.html#intrusive-behaviors). The following section outlines the reasoning behind the proposed restrictions.
 
-### No cross-origin navigations
+### No cross-site navigations
 
-If the prerendering browsing context navigates to a different origin, then it will be immediately discarded before a request to that other origin is sent. As such, it will no longer be used for any future activation.
+If the prerendering browsing context navigates to a different site, then it will be immediately discarded before a request to that other site is sent. As such, it will no longer be used for any future activation.
 
-This includes both cases where the initial request redirects to a different origin through the `Location` header, or cases where the navigation occurs after the initial document is loaded, via mechanisms like the `location.href` setter or the `<meta http-equiv="refresh">` element.
+This includes both cases where the initial request redirects to a different site through the `Location` header, or cases where the navigation occurs after the initial document is loaded, via mechanisms like the `location.href` setter or the `<meta http-equiv="refresh">` element.
+
+### Cross-origin same-site navigations require opt-in
+
+If the prerendering browsing context navigates to a different origin that is still same-site, then (unlike the cross-site case) the request will be made. However, the response will immediately be checked for the `Supports-Loading-Mode: credentialed-prerender` header; if it is not present, then the response will be discarded and the prerender will fail.
+
+Again, this includes both cases where the initial request redirects to a different origin through the `Location` header, or cases where the navigation occurs after the initial document is loaded, via mechanisms like the `location.href` setter or the `<meta http-equiv="refresh">` element.
+
+For more analysis on cross-origin same-site prerendering, see [our dedicated section below](#more-details-on-cross-origin-same-site).
 
 ### Restrictions on the basis of being hidden
 
@@ -151,7 +161,7 @@ The removal of the script-visible `about:blank` in prerendering browsing context
 
 If a prerendering browsing context navigates itself to a non-HTTP(S) URL, e.g. via `window.location = "data:text/plain,foo"`, then the prerendering browsing context will be immediately discarded, and no longer be used by the user agent for anything.
 
-Iframes inside of a prerendering browsing context are restricted in a slightly different way: we delay loading the contents of any cross-origin iframe while prerendering, until activation occurs. This is done to avoid breakage caused by loading a cross-origin site that is unaware of prerendering, and to avoid the complexities around what credentials and storage to expose to these frames.
+Iframes inside of a prerendering browsing context are restricted in a slightly different way: we delay loading the contents of any cross-origin iframe while prerendering, until activation occurs. This is done to avoid breakage caused by loading a cross-origin page that is unaware of prerendering, and to avoid the complexities around what credentials and storage to expose to these frames.
 
 ### Purpose-specific APIs
 
@@ -175,7 +185,7 @@ Note that service workers that are already registered would handle fetches from 
 
 ## Storage and cookies
 
-For same-origin prerendering, the prerendered page has the same access to storage and cookies as a normal page. In particular, the prerendered request includes cookies, and the `Set-Cookie` response header modifies cookies. Storage APIs such as Indexed DB and `localStorage` also function in a prerendered page.
+For same-site prerendering, the prerendered page has the same access to storage and cookies as a normal page. In particular, the prerendered request includes cookies, and the `Set-Cookie` response header modifies cookies. Storage APIs such as Indexed DB and `localStorage` also function in a prerendered page.
 
 ### `sessionStorage`
 
@@ -254,13 +264,29 @@ A prerendered `Document` can apply CSP to itself as normal. Being in a prerender
 
 Prerendered content will be affected by [`prefetch-src`](https://w3c.github.io/webappsec-csp/#directive-prefetch-src) on the referring page, which provides a way of preventing prefetching in addition to the [triggers](./triggers.md).
 
+## More details on cross-origin same-site
+
+Recall that the web's privacy boundary is the site, whereas its security boundary is an origin. So although it's obviously safe to allow same-origin prerendering, cross-origin same-site prerendering requires some additional analysis, to ensure that we are not introducing any security issues.
+
+Here is what we've found after doing such analysis:
+
+- Side effects from prerendering are the biggest potential attack.
+  - Side effects from simply issuing credentialed requests to the target URL, e.g. triggering non-idempotent GETs, are not a concern. These are already possible today via `<iframe>`s, `<img>`s, etc.
+  - Thus, the main worry is side effects from actually prerendering the page, e.g. running its JavaScript. To prevent these, we require the [`Supports-Loading-Mode: credentialed-prerender`](./opt-in.md#cross-origin-same-site-prerendering) header.
+
+- Preventing side channel attacks such as [Spectre](https://en.wikipedia.org/wiki/Spectre_(security_vulnerability)) requires respecting the [cross-origin isolation](https://web.dev/coop-coep/) settings of both the referrer and destination. In particular, we must treat prerendered pages like we treat popups, such that they go into agent clusters segregated by cross-origin isolation status, and thus in implementations they go into different processes when appropriate. Thankfully, this is fairly automatic in the relevant spec infrastructure.
+
+- One might be concerned about cross-origin information leakage via [`activationStart`](#timing), since normally timing APIs are carefully guarded to make sure they don't leak information across origins. However, this particular piece of timing information is not an issue: it is just the time that the prerender was activated, and represents something about the prerendered page, not information about the referrer page.
+
+- The default referrer policy on the web is `"strict-origin-when-cross-origin"`. This means that if `https://a.example.com/1.html` prerenders `https://a.example.com/2.html`, the full referrer will be sent. But if the same referrer document prerenders `https://b.example.com/2.html`, only the origin (`https://a.example.com/`) will be sent, losing the `1.html` path. This is fine and working as expected; it's just something for developers to be aware of.
+
 ## Considered alternatives
 
 ### Main-document prefetching
 
 Prefetching the main response for an upcoming navigation, without prefetching any subresources or actually creating the document and running any of its JavaScript, is a technique we also believe is important. It has its [own specification](https://wicg.github.io/nav-speculation/prefetch.html) in this repository.
 
-Main-document prefetching has an advantage over prerendering in its simplicity. Because no JavaScript runs, there are many fewer considerations. And because only one resource is fetched, it's possible to come up with reasonable cross-origin semantics, at least in the case where the target has no existing HTTP state (credentials and cache).
+Main-document prefetching has an advantage over prerendering in its simplicity. Because no JavaScript runs, there are many fewer considerations. And because only one resource is fetched, it's possible to come up with reasonable cross-site semantics, at least in the case where the target has no existing HTTP state (credentials and cache).
 
 However, it is not necessarily going to lead to instant navigations, like prerendering can.
 
@@ -268,7 +294,7 @@ However, it is not necessarily going to lead to instant navigations, like preren
 
 Chromium previously supported prerendering, but replaced it with "[NoState Prefetch](https://developers.google.com/web/updates/2018/07/nostate-prefetch)". No State Prefetch prefetches a page and scans its markup for resources that are also fetched. A less Chromium-specific name for this technology would then be "prefetching with subresources".
 
-This is another point on the spectrum between main-document prefetching, and prerendering. It avoids the complexities of running JavaScript, so it is simpler than prerendering; but it does fetch more than one resource, so it is not as straightforward what to do in the cross-origin case compared to main-document prefetching.
+This is another point on the spectrum between main-document prefetching, and prerendering. It avoids the complexities of running JavaScript, so it is simpler than prerendering; but it does fetch more than one resource, so it is not as straightforward what to do in the cross-site case compared to main-document prefetching.
 
 Based on some initial performance testing, Chromium found that prefetching with subresources was a bad middle ground for our users: it would result in significantly more resource consumption, but only slightly faster loads, compared to main-document prefetching. As such, we're currently investing in main-document prefetching and in prerendering instead. We may revisit prefetching with subresources at some point in the future.
 

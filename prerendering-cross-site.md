@@ -1,6 +1,6 @@
-# Cross-origin prerendering
+# Cross-site prerendering
 
-Building on our vision for [same-origin prerendering](./prerendering-same-origin.md), we would eventually like to enable prerendering of cross-origin content.
+Building on our vision for [same-site prerendering](./prerendering-same-site.md), we would eventually like to enable prerendering of cross-site content.
 
 None of this is implemented or specified in detail yet. But, we've spent some time thinking about it, and wanted to capture that process publicly.
 
@@ -18,11 +18,11 @@ None of this is implemented or specified in detail yet. But, we've spent some ti
 
 ## Privacy-based restrictions
 
-In addition to the [restrictions for same-origin prerendering](./prerendering-same-origin.md#restrictions), cross-origin prerendering has more privacy-based restrictions. In particular, prerendering is intended to comply with the [W3C Target Privacy Threat Model](https://w3cping.github.io/privacy-threat-model/). This section discusses the aspects of that threat model that are particularly relevant to the browsing context part of the story, and how the design satisfies them.
+In addition to the [restrictions for same-site prerendering](./prerendering-same-site.md#restrictions), cross-site prerendering has more privacy-based restrictions. In particular, prerendering is intended to comply with the [W3C Target Privacy Threat Model](https://w3cping.github.io/privacy-threat-model/). This section discusses the aspects of that threat model that are particularly relevant to the browsing context part of the story, and how the design satisfies them.
 
 A prerendering browsing context can contain either a same-site or cross-site resource. Same-site prerendered content don't present any privacy risks, but cross-site resources risk enabling [cross-site recognition](https://w3cping.github.io/privacy-threat-model/#model-cross-site-recognition) by creating a messaging channel across otherwise-partitioned domains. For simplicity, when a cross-site channel needs to be blocked, we also block it for same-site cross-origin content. In some cases we even block it for same-origin content.
 
-Because prerendered browsing contexts can be activated, they (eventually) live in the first-party [storage shelf](https://storage.spec.whatwg.org/#storage-shelf) of their origin. This means that the usual plan of [storage partitioning](https://github.com/privacycg/storage-partitioning) does not suffice for prerendering browsing contexts as it does for nested browsing contexts (i.e. iframes). Instead, we take the following measures to restrict cross-origin prerendered content:
+Because prerendered browsing contexts can be activated, they (eventually) live in the first-party [storage shelf](https://storage.spec.whatwg.org/#storage-shelf) of their origin. This means that the usual plan of [storage partitioning](https://github.com/privacycg/storage-partitioning) does not suffice for prerendering browsing contexts as it does for nested browsing contexts (i.e. iframes). Instead, we take the following measures to restrict cross-site prerendered content:
 
 - Prevent communication with the referring document, to the same extent we prevent it with a cross-site link opened in a new tab.
 - Block all storage access while content is prerendered.
@@ -35,11 +35,11 @@ The below subsections explore the implementation of these restrictions in more d
 
 ### Storage access blocking
 
-Prerendered pages that are cross-origin to their referring site will have no access to storage.
+Prerendered pages that are cross-site to their referring site will have no access to storage.
 
 We could attempt to address the threat by providing partitioned or ephemeral storage access, but then it is unclear how to transition to _unpartitioned_ storage upon activation. It would likely require some kind of web-developer-written merging logic. Completely blocking storage access is thus deemed simpler; prerendered pages should not be doing anything which requires persistent storage before activation.
 
-This means that most existing content will appear "broken" when prerendered by a cross-origin referrer. This necessitates an explicit opt-in to allow cross-origin content to be prerendered, [discussed elsewhere](./opt-in.md). Such content might optionally "upgrade" itself to a credentialed view upon activation, as shown in the [example](#example) above.
+This means that most existing content will appear "broken" when prerendered by a cross-site referrer. This necessitates an explicit opt-in to allow cross-site content to be prerendered, [discussed elsewhere](./opt-in.md). Such content might optionally "upgrade" itself to a credentialed view upon activation, as shown in the [example](#example) above.
 
 For a more concrete example, consider `https://aggregator.example/` which wants to prerender this GitHub repository. To make this work, GitHub would need to add the opt-in to allow the page to be prerendered. Additionally, GitHub should add code to adapt their UI to show the logged-in view upon activation, by removing the "Join GitHub today" banner, and retrieving the user's credentials from storage and using them to replace the signed-out header with the signed-in header. Without such adapter code, activating the prerendering browsing context would show the user a logged-out view of GitHub in the top-level tab that the prerendering browsing context has been activated into. This would be a bad and confusing user experience, since the user is logged in to GitHub in all of their other top-level tabs.
 
@@ -56,8 +56,8 @@ As for the exact mechanism of this blocking:
 - `SharedWorker` construction is delayed in prerendering browsing contexts. In particular, while the `new SharedWorker()` constructor returns immediately, no worker is started or connected to until after activation. Any messages sent to the `SharedWorker` pre-activation are buffered up and delivered upon activation. (And, since the `SharedWorker` is not connected to an actual shared worker pre-activation, no message can be received on it pre-activation.)
 - Web locks APIs will return promises which wait to settle (and wait to do any lock-related work) until activation.
 - TODO `ServiceWorker`?
-- Fetches within cross-origin prerendering browsing contexts, including the initial request for the page, do not use credentials. Credentialed fetches could be used for cross-site recognition, for example by:
-  - Using the sequence of loads. The referring page could encode a user ID into the order in which a sequence of URLs are prerendered. To prevent the target from correlating this ID with its own user ID without a navigation, a document loaded into a cross-origin prerendering browsing context is fetched without credentials and doesn't have access to storage, as described above.
+- Fetches within cross-site prerendering browsing contexts, including the initial request for the page, do not use credentials. Credentialed fetches could be used for cross-site recognition, for example by:
+  - Using the sequence of loads. The referring page could encode a user ID into the order in which a sequence of URLs are prerendered. To prevent the target from correlating this ID with its own user ID without a navigation, a document loaded into a cross-site prerendering browsing context is fetched without credentials and doesn't have access to storage, as described above.
   - The host creates a prerendering browsing context, and the prerendered site decides between a 204 and a real response based on the user's ID. Or the prerendered site delays the response by an amount of time that depends on the user's ID. Because the prerendering load is done without credentials, the prerendered site can't get its user ID in order to make this sort of decision.
 - Sizing side channels: prerendering browsing contexts always perform layout based on the initial size of their referring browsing context, as its most likely that upon activation, they'll end up with that same size. However, further resizes to the referring browsing context are not used to update the size of the prerendering browsing context, as this could be used to communicate a user ID. For simplicity, we apply this sizing model to same-origin prerendered content as well.
 

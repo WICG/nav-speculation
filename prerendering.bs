@@ -200,6 +200,12 @@ spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: supports prefetch; url: supports-prefetch
     text: list of sufficiently-strict speculative navigation referrer policies
+spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
+  type: dfn
+    text: structured header; url: #section-1
+    for: structured header
+      text: list; url: name-lists
+      text: token; url: name-tokens
 </pre>
 <pre class="biblio">
 {
@@ -358,9 +364,9 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">This avoids having to deal with any potential opener relationship between the prerendering browsing context and |referrerDoc|'s [=Document/browsing context=]'s [=opener browsing context=].
 
-  1. If |referrerDoc|'s [=Document/origin=] is not [=/same origin=] with |startingURL|'s [=url/origin=], then return.
+  1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |startingURL|'s [=url/origin=], then return.
 
-     <p class="note">Currently, cross-origin prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
+     <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
 
   1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] [=map/exists=], then return.
 
@@ -528,11 +534,23 @@ Navigation redirects can also [=prerendering browsing context/activate=] [=prere
 
     1. Return.
 
-  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
+  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=/same site=] with |incumbentNavigationOrigin|, then:
 
     1. Run the [=environment discarding steps=] for <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
     1. Return.
+
+  Additionally, append the following steps toward the end of the algorithm, after the steps which check <var ignore>locationURL</var>:
+
+  1. If |browsingContext| is a prerendering browsing context, and <var ignore>responseOrigin</var> is not [=same origin=] with |incumbentNavigationOrigin|, then:
+
+    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
+
+    1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`, then set |response| to a [=network error=].
+
+       <p class="note">This will cause the prerender to fail in the following steps of the algorithm.</p>
+
+       <p class="XXX">In the future we could possibly also allow the `uncredentialed-prerender` token to work here. However, since that is primarily intended for the cross site case, which isn't specified or implemented yet, we don't want to encourage its use in the wild yet, so implementations must reject the `uncredentialed-prerender` token for now.</p>
 </div>
 
 <div algorithm="process a navigate response patch">
@@ -639,6 +657,24 @@ Extend the {{PerformanceNavigationTiming}} interface as follows:
 The <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> getter steps are:
 
 1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
+
+<h2 id="supports-loading-mode">The \`<dfn http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
+
+<em>The following section would be added as a sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsers">Loading web pages</a> section.</em>
+
+In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header can be used. This header is a [=structured header=]; if present its value must be the single [=structured header/token=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`.
+
+<p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored. However, authors are best off avoiding any form except the single-token one, for future compatibility.
+
+The \`<code><dfn for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering browsing context=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
+
+To <dfn>get the supported loading modes</dfn> for a [=response=] |response|:
+
+1. If |response| is a [=network error=], then return an empty list.
+
+1. Let |slmHeader| be the result of [=header list/getting a structured field value=] given \`<a http-header><code>Supports-Loading-Mode</code></a>\` and "`list`" from |response|'s [=response/header list=].
+
+1. Return a [=list=] containing all elements of |slmHeader| that are [=structured header/tokens=].
 
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
