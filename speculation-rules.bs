@@ -287,6 +287,19 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   * |prefetchRecord|'s [=prefetch record/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
 </div>
 
+<div algorithm>
+  To <dfn>find matching links</dfn> given a {{Document}} |document| and [=document rule predicate=] |predicate|:
+
+  1. Let |links| be an empty [=list=].
+  1. For each [=shadow-including descendant=] |descendant| of |document|, in [=shadow-including tree order=]:
+    1. If |descendant| is not an <{a}> with an <{a/href}> attribute or <{area}> element with an <{area/href}> attribute, [=iteration/continue=].
+
+        <div class="note">This corresponds to the elements which match the <a dfn-type="selector">:link</a> and <a dfn="selector">:visited</a> [=pseudo-classes=], or which appear in the {{Document/links}} collection.</div>
+
+    1. If |rule|'s [=speculation rule/predicate=] [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
+  1. Return |links|.
+</div>
+
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
@@ -301,10 +314,27 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/referrer policy=] "`strict-origin-when-cross-origin`", and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
+      1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
+        1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+        1. &#x231B; [=list/For each=] |link| of |links|:
+          1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
+          1. &#x231B; Let |referrerPolicy| be the current state of |link|'s <{a/referrerpolicy}> attribute.
+          1. &#x231B; If |link|'s link types includes the [=a/rel/noreferrer=] keyword, then set |referrerPolicy| to "`no-referrer`".
+          1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |href|, [=prefetch candidate/referrer policy=] |referrerPolicy|, and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url|, [=prerender candidate/referrer policy=] is "`strict-origin-when-cross-origin`", and [=prerender candidate/target browsing context name hint=] is |rule|'s [=speculation rule/target browsing context name hint=].
         1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
+      1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
+        1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+        1. &#x231B; [=list/For each=] |link| of |links|:
+          1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
+          1. &#x231B; Let |referrerPolicy| be the current state of |link|'s <{a/referrerpolicy}> attribute.
+          1. &#x231B; If |link|'s link types includes the [=a/rel/noreferrer=] keyword, then set |referrerPolicy| to "`no-referrer`".
+          1. &#x231B; Let |target| be |rule|'s [=speculation rule/target browsing context name hint=].
+          1. &#x231B; If |target| is null, set it to the result of [=getting an element's target=] given |link|.
+          1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |href|, [=prerender candidate/referrer policy=] is |referrerPolicy|, and [=prerender candidate/target browsing context name hint=] is |target|.
+          1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
   1. &#x231B; [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
     1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
     1. &#x231B; [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
