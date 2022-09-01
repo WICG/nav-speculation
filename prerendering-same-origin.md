@@ -1,54 +1,60 @@
-# Prerendering
+# Same-origin prerendering
 
-## The Feature
+[Read the spec](https://wicg.github.io/nav-speculation/prerendering.html)
 
-Prerendering allows user-agents to preemprively load content into an invisible separate tab, allowing a near-instantaneous loading experience when the user navigates to that content, by displaying that tab instead of reloading the content.
+Prerendering allows user-agents to preemptively load content into an invisible separate tab, allowing a near-instantaneous loading experience when the user navigates to that content, by displaying that tab instead of reloading the content.
 
-## Triggering
-Prerendering can potentially be [triggered]('./triggers.md') by another document (an "initiator") or by the [user agent](https://wicg.github.io/nav-speculation/prerendering.html#start-user-agent-initiated-prerendering), for example from browser UI such as the URL bar ("omnibox"). The purpose of this explainer is to focus solely on user-agent triggering.
+Prerendering can potentially be triggered by another referrer document, or by the [user agent](https://wicg.github.io/nav-speculation/prerendering.html#start-user-agent-initiated-prerendering), for example from browser UI such as the URL bar.
 
-## How It Works
-
-Prerendering is implemented by loading content into a [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context), which is a new type of [top-level browsing context](https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context). A prerendering browsing context can be thought of as a tab that is not yet shown to the user, and which the user has not yet affirmatively indicated an intention to visit. As such, it has additional restrictions placed on it to protect the user's privacy and prevent disruptions.
-
-Prerendering browsing contexts can be [activated](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context-activate), which causes them to transition to being full top-level browsing contexts (i.e. tabs). From a user experience perspective, activation acts like an instantaneous navigation, since unlike normal navigation it does not require a network round-trip, creation of a `Document`, or running initialization JavaScript provided by the web developer. The majority of that has already been done in the prerendering browsing context. The majority but not always all of it - the site might delay some of its initialization until activation, or some of the initialization might not have finished, especially if the browser deprioritizes unactivated browsing contexts.
-
-Activation of a prerendering browsing context is done by the user agent, when it notices a navigation that could use the prerendered contents.
-
-Documents rendered within a prerendering browsing context have the ability to react to activation, which they can use to upgrade themselves once free of the restrictions. For example, they could start using permission-requiring APIs, or get access to unpartitioned storage, or choose to load some of the resources only after the context has been activated.
-
-_Note: a browsing context is the right primitive here, as opposed to a `Window` or `Document`, as we need these restrictions to apply even across navigations. For example, if you prerender `https://a.example/` which contains `<meta http-equiv="refresh" content="0; URL=https://a.example/home">` then we need to continue applying these restrictions while loading the `/home` page._
+Our current specification, and the Chromium implementation, only allow same-origin referrer documents. Allowing cross-origin referrer documents requires additional security and privacy considerations, which we have many ideas for but have not yet proven out. As such, this explainer is scoped to same-origin-document- and user-agent-initiated prerendering, often abbreviated to "same-origin prerendering".
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of contents
 
-- [Prerendering](#prerendering)
-  - [The Feature](#the-feature)
-  - [Triggering](#triggering)
-  - [How It Works](#how-it-works)
-  - [Table of contents](#table-of-contents)
-  - [Example](#example)
-  - [Opting Out](#opting-out)
-  - [Restrictions](#restrictions)
-    - [Privacy-based restrictions](#privacy-based-restrictions)
-    - [Restrictions on the basis of being hidden](#restrictions-on-the-basis-of-being-hidden)
-    - [Restrictions on loaded content](#restrictions-on-loaded-content)
-    - [Purpose-specific APIs](#purpose-specific-apis)
-    - [Workers](#workers)
-  - [Prerendering State API](#prerendering-state-api)
-  - [Timing](#timing)
-  - [Page lifecycle and freezing](#page-lifecycle-and-freezing)
-  - [Session history](#session-history)
-  - [Rendering-related behavior](#rendering-related-behavior)
-  - [CSP integration](#csp-integration)
+- [How it works](#how-it-works)
+- [Examples](#examples)
+  - [User-agent initiated prerendering](#user-agent-initiated-prerendering)
+  - [Page-initiated prerendering](#page-initiated-prerendering)
+- [Opting out](#opting-out)
+- [Restrictions](#restrictions)
+  - [No cross-origin navigations](#no-cross-origin-navigations)
+  - [Restrictions on the basis of being hidden](#restrictions-on-the-basis-of-being-hidden)
+  - [Restrictions on loaded content](#restrictions-on-loaded-content)
+  - [Purpose-specific APIs](#purpose-specific-apis)
+  - [Workers](#workers)
+- [Storage and cookies](#storage-and-cookies)
+  - [`sessionStorage`](#sessionstorage)
+- [Prerendering state API](#prerendering-state-api)
+- [Timing](#timing)
+- [Page lifecycle and freezing](#page-lifecycle-and-freezing)
+- [Session history](#session-history)
+- [Rendering-related behavior](#rendering-related-behavior)
+- [CSP integration](#csp-integration)
+- [Considered alternatives](#considered-alternatives)
+  - [Main-document prefetching](#main-document-prefetching)
+  - [Prefetching with subresources](#prefetching-with-subresources)
+  - [Integration with `<link rel=prerender>`](#integration-with-link-relprerender)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Example
+## How it works
 
-Consider that the user types the url `b.exa` in the address bar, and the user-agent decides that
-they're very likely to browse to `https://b.example`.
+Prerendering is implemented by loading content into a [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context), which is a new type of [top-level browsing context](https://html.spec.whatwg.org/multipage/browsers.html#top-level-browsing-context). A prerendering browsing context can be thought of as a tab that is not yet shown to the user, and which the user has not yet affirmatively indicated an intention to visit. As such, it has additional restrictions placed on it to prevent user-visible disruptions and avoid the prerendered page from performing any tasks which only a user-visible page should be allowed to do.
+
+Prerendering browsing contexts can be [activated](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context-activate), which causes them to transition to being full top-level browsing contexts (i.e. tabs). From a user experience perspective, activation acts like an instantaneous navigation, since unlike normal navigation it does not require a network round-trip, creation of a `Document`, or running initialization JavaScript provided by the web developer. The majority of that has already been done in the prerendering browsing context. The majority but not always all of it — the site might delay some of its initialization until activation, or some of the initialization might not have finished, especially if the browser deprioritizes unactivated browsing contexts.
+
+Activation of a prerendering browsing context is done by the user agent, when it notices a navigation that could use the prerendered contents.
+
+Documents rendered within a prerendering browsing context have the ability to react to activation, which they can use to upgrade themselves once free of the restrictions. For example, they could start using permission-requiring APIs, or choose to load some of the resources only after the context has been activated.
+
+_Note: a browsing context is the right primitive here, as opposed to a `Window` or `Document`, as we need these restrictions to apply even across navigations. For example, if you prerender `https://a.example/` which contains `<meta http-equiv="refresh" content="0; URL=https://a.example/home">` then we need to continue applying these restrictions while loading the `/home` page._
+
+## Examples
+
+### User-agent initiated prerendering
+
+Consider that the user types the url `b.exa` in the address bar, and the user-agent decides that they're very likely to browse to `https://b.example`.
 
 The browser creates a prerendering browsing context, which it navigates to `https://b.example/`. This navigation takes place with a [`Sec-Purpose` header](https://wicg.github.io/nav-speculation/prefetch.html#sec-purpose-header), which gives `https://b.example/` a chance to [opt-out](#opting-out) from being prerendered.
 
@@ -68,7 +74,27 @@ Notification.requestPermission().then(() => {
 
 This completes the journey to a fully-rendered view of `https://b.example/`, in a user-visible top-level browsing context.
 
-## Opting Out
+### Page-initiated prerendering
+
+The [speculation rules API](./triggers.md) can be used to trigger a prerender to any same-origin page. For example:
+
+```html
+<script type="speculationrules">
+{
+  "prerender": [
+    {"source": "list", "urls": ["https://a.test/foo"]}
+  ]
+}
+</script>
+
+<a href="https://a.test/foo">Click me!</a>
+```
+
+The `<script type="speculationrules">` block here hints to prerender `https://a.test/foo`. As in the previous section, such prerendering includes sending the `Sec-Purpose` header.
+
+Note that the user agent remains in control of exactly when this prerendering is done; it could do it immediately upon script insertion, or it could do it in idle time, or it could do it as the user starts clicking on the link, or it could do it never. But if it does prerender that URL, then any navigation there will activate the prerendering browsing context, with the resulting desired instant navigation.
+
+## Opting out
 
 When a document is fetched for the purpose of prerendering, the user-agent sends an additional header: `Sec-Purpose: prefetch; prerender`. See [the spec](https://wicg.github.io/nav-speculation/prefetch.html#sec-purpose-header) for more details.
 
@@ -82,11 +108,11 @@ The recommended response codes for opting out of prerendering are [204 No Conten
 
 For an API-by-API analysis of the restrictions in prerendering browsing contexts, see [this section of the spec](https://wicg.github.io/nav-speculation/prerendering.html#intrusive-behaviors). The following section outlines the reasoning behind the proposed restrictions.
 
-### Privacy-based restrictions
+### No cross-origin navigations
 
-Since the first version of prerendering only supports user-agent initiated prerendering, the cross-origin concerns between the prerendered page and its initiator do not apply. Once prerendering can be [triggered](./triggers.md), some of the restrictions mentioned [here]('./browsing-context.md) will apply.
+If the prerendering browsing context navigates to a different origin, then it will be immediately discarded before a request to that other origin is sent. As such, it will no longer be used for any future activation.
 
-The main privacy-based restriction at this phase is that loading cross-origin iframes is deferred until activation, and top-level navigation to a different origin would cancel the prerendering.
+This includes both cases where the initial request redirects to a different origin through the `Location` header, or cases where the navigation occurs after the initial document is loaded, via mechanisms like the `location.href` setter or the `<meta http-equiv="refresh">` element.
 
 ### Restrictions on the basis of being hidden
 
@@ -106,6 +132,7 @@ While prerendered, pages are additionally restricted in various ways due to the 
 
 - `window.confirm()` and `window.prompt()` will silently return their default values (`false` and `null`) pre-activation.
 
+Note that, because implementations are allowed to discard a prerendering browsing context at any time, some implementations might choose to discard in reaction to some of these APIs being called, instead of delaying. This is expected to change over time: it can be easier to start by implementing discarding, but eventual put in extra engineering work to move to a delay model. The specification includes the delay model in all cases where it makes sense, to allow such future movement.
 
 ### Restrictions on loaded content
 
@@ -124,7 +151,7 @@ The removal of the script-visible `about:blank` in prerendering browsing context
 
 If a prerendering browsing context navigates itself to a non-HTTP(S) URL, e.g. via `window.location = "data:text/plain,foo"`, then the prerendering browsing context will be immediately discarded, and no longer be used by the user agent for anything.
 
-Note that iframes (nested browsing contexts) inside of a prerendered browsing context have no such restrictions.
+Iframes inside of a prerendering browsing context are restricted in a slightly different way: we delay loading the contents of any cross-origin iframe while prerendering, until activation occurs. This is done to avoid breakage caused by loading a cross-origin site that is unaware of prerendering, and to avoid the complexities around what credentials and storage to expose to these frames.
 
 ### Purpose-specific APIs
 
@@ -146,7 +173,17 @@ To prevent overuse of resources by prerendered pages, worker execution is delaye
 
 Note that service workers that are already registered would handle fetches from prerendered page and those pages would be visible to them as [Clients](https://w3c.github.io/ServiceWorker/#client-interface).
 
-## Prerendering State API
+## Storage and cookies
+
+For same-origin prerendering, the prerendered page has the same access to storage and cookies as a normal page. In particular, the prerendered request includes cookies, and the `Set-Cookie` response header modifies cookies. Storage APIs such as Indexed DB and `localStorage` also function in a prerendered page.
+
+### `sessionStorage`
+
+`sessionStorage` is a special case. Session storage is intended to be restricted to a tab, but allowing a prerendering page to access its tab's session storage may cause breakage for sites that expect only one page capable of accessing the tab's session storage at a time. Therefore a prerendered page starts out with a clone of the tab's session storage state when it is created. Upon activation, the prerendered page's clone is discarded, and again the tab's main storage state is used instead. Pages that use session storage can use the `prerenderingchange` event to detect when this swapping of state occurs.
+
+See [this discussion](https://github.com/whatwg/storage/issues/119) for more rationale about this design.
+
+## Prerendering state API
 
 For cases related to rendering and visibility, the document is extended to include a [dedicated prerendering state API](./prerendering-state.md):
 
@@ -170,10 +207,12 @@ if (document.prerendering) {
 Please read that sibling [explainer](./prerendering-state.md) for more details on the design choices and motivations there.
 
 ## Timing
-Resource Timing and Navigation Timing use the <em>initial prerender navigation</em> as the time origin for milestones. This can be misleading because a prerendered page may have been created long before it was actually navigated to. Therefore, a new milestone for the start time of activation is added. Pages can use this milestone to measure user-perceived times.
+
+Resource Timing and Navigation Timing use the _initial prerender navigation_ as the time origin for milestones. This can be misleading because a prerendered page may have been created long before it was actually navigated to. Therefore, a new milestone for the start time of activation is added. Pages can use this milestone to measure user-perceived times.
 
 Example:
-```javascript
+
+```js
 // When the activation navigation started.
 let activationStart = performance.getEntriesByType('navigation')[0].activationStart;
 
@@ -213,3 +252,28 @@ Generally speaking, our plan is to treat content as if it were in a "background 
 
 A prerendered `Document` can apply CSP to itself as normal. Being in a prerendering browsing context vs. a normal top-level browsing context does not change any of the impacts of CSP. Note that since prerendered documents are [always loaded from HTTP(S) URLs](#restrictions-on-loaded-content), there is no need to worry about complex CSP inheritance semantics.
 
+Prerendered content will be affected by [`prefetch-src`](https://w3c.github.io/webappsec-csp/#directive-prefetch-src) on the referring page, which provides a way of preventing prefetching in addition to the [triggers](./triggers.md).
+
+## Considered alternatives
+
+### Main-document prefetching
+
+Prefetching the main response for an upcoming navigation, without prefetching any subresources or actually creating the document and running any of its JavaScript, is a technique we also believe is important. It has its [own specification](https://wicg.github.io/nav-speculation/prefetch.html) in this repository.
+
+Main-document prefetching has an advantage over prerendering in its simplicity. Because no JavaScript runs, there are many fewer considerations. And because only one resource is fetched, it's possible to come up with reasonable cross-origin semantics, at least in the case where the target has no existing HTTP state (credentials and cache).
+
+However, it is not necessarily going to lead to instant navigations, like prerendering can.
+
+### Prefetching with subresources
+
+Chromium previously supported prerendering, but replaced it with "[NoState Prefetch](https://developers.google.com/web/updates/2018/07/nostate-prefetch)". No State Prefetch prefetches a page and scans its markup for resources that are also fetched. A less Chromium-specific name for this technology would then be "prefetching with subresources".
+
+This is another point on the spectrum between main-document prefetching, and prerendering. It avoids the complexities of running JavaScript, so it is simpler than prerendering; but it does fetch more than one resource, so it is not as straightforward what to do in the cross-origin case compared to main-document prefetching.
+
+Based on some initial performance testing, Chromium found that prefetching with subresources was a bad middle ground for our users: it would result in significantly more resource consumption, but only slightly faster loads, compared to main-document prefetching. As such, we're currently investing in main-document prefetching and in prerendering instead. We may revisit prefetching with subresources at some point in the future.
+
+### Integration with `<link rel=prerender>`
+
+An existing API `<link rel=prerender>` is specified today but it is not widely supported. While Chromium is listed as supporting this API, it performs a NoState Prefetch (prefetch with subresources) rather than a prerender.
+
+It is possible that later the `<link rel=prerender>` API can be used as a simpler version of the [speculation rules API](./triggers.md). However, that might have compatibility concerns, so perhaps it's best to leave this link relationship behind.

@@ -1,6 +1,6 @@
 # Security & Privacy Questionnaire (same-origin prerendering)
 
-Covers the specific case of [same-origin prerendering](same-origin-explainer.md) triggered by [speculation rules](triggers.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
+Covers the specific case of [same-origin prerendering](./prerendering-same-origin.md) triggered by [speculation rules](./triggers.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
 
 For general [speculation rules](triggers.md) including cross-origin cases, see that [questionnaire](speculation-rules-security-privacy-questionnaire.md). Some answers below are inspired by that document.
 
