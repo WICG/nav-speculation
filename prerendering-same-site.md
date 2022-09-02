@@ -92,7 +92,7 @@ The [speculation rules API](./triggers.md) can be used to trigger a prerender to
 <a href="https://a.test/foo">Click me!</a>
 ```
 
-The `<script type="speculationrules">` block here hints to prerender `https://a.test/foo`. As in the previous section, such prerendering includes sending the `Sec-Purpose` header. If the prerendered URL (or ultimate response URL, after redirects) is cross-site, then prerendering will fail. If it is same-site but cross-origin, then the destination needs the opt-in [`Supports-Loading-Mode: credentialed-prerender` header](./opt-in.md#cross-origin-same-site-prerendering).
+The `<script type="speculationrules">` block here hints to prerender `https://a.test/foo`. As in the previous section, such prerendering includes sending the `Sec-Purpose` header. If the prerendered URL is cross-site, then prerendering will fail. If it is same-site but cross-origin, then the destination needs the opt-in [`Supports-Loading-Mode: credentialed-prerender` header](./opt-in.md#cross-origin-same-site-prerendering). See [below](#more-details-on-cross-origin-same-site) for more details on the same-site cross-origin case.
 
 Note that the user agent remains in control of exactly when this prerendering is done; it could do it immediately upon script insertion, or it could do it in idle time, or it could do it as the user starts clicking on the link, or it could do it never. But if it does prerender that URL, then any navigation there will activate the prerendering browsing context, with the resulting desired instant navigation.
 

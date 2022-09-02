@@ -548,9 +548,9 @@ Navigation redirects can also [=prerendering browsing context/activate=] [=prere
 
     1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`, then set |response| to a [=network error=].
 
-       <p class="note">This will cause the prerender to fail in the following steps of the algorithm.</p>
+       <p class="note">This will cause the prerender to fail in the following steps of the algorithm.
 
-       <p class="XXX">In the future we could possibly also allow the `uncredentialed-prerender` token to work here. However, since that is primarily intended for the cross site case, which isn't specified or implemented yet, we don't want to encourage its use in the wild yet, so implementations must reject the `uncredentialed-prerender` token for now.</p>
+       <p class="note">In the future we could possibly also allow the `uncredentialed-prerender` token to work here. However, since that is primarily intended for the cross site case, which isn't specified or implemented yet, we don't want to encourage its use in the wild, so for now implementations are required to fail prerendering if only the `uncredentialed-prerender` token is found.
 </div>
 
 <div algorithm="process a navigate response patch">
