@@ -10,7 +10,7 @@ doc](https://docs.google.com/document/d/1Xzw0k8DgltI2ohapuDKmjRZLv7NVrRFGusW8IBt
 
 ## Background
 
-Pages need to know when they're being rendered inside a [prerendering browsing context](./prerendering-same-origin.md).
+Pages need to know when they're being rendered inside a [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context).
 Some examples of divergent behavior:
 
 * Avoid fetching large video resources
