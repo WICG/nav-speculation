@@ -34,7 +34,7 @@ Our current proposals are focused around allowing cross-origin/site prefetching,
 * [`Supports-Loading-Mode`](./opt-in.md), a new header which allows target pages to opt in to being loaded in an uncredentialed mode, with the understanding that they will upgrade their content later upon activation.
 * [`<meta http-equiv="supports-loading-mode">`](https://github.com/WICG/nav-speculation/blob/main/meta-processing.md), an extension to the header definition that uses a HTML preparsing pass to allow it to appear in-document.
 * [Client IP anonymization](./anonymous-client-ip.md), an extension to prefetching (and maybe one day prerendering?) to require using an anonymizing proxy to hide the user's IP address.
-* [Cross-site prerendering](./cross-site-prerendering.md), containing what we've brainstormed so far about how cross-site prerendering could work in the future.
+* [Cross-site prerendering](./prerendering-cross-site.md), containing what we've brainstormed so far about how cross-site prerendering could work in the future.
 
 ## Portals
 
