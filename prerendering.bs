@@ -206,6 +206,10 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
     for: structured header
       text: list; url: name-lists
       text: token; url: name-tokens
+spec: client-hints-infrastructure; urlPrefix: https://wicg.github.io/client-hints-infrastructure
+  type: dfn
+    text: Accept-CH cache; url: accept-ch-cache
+    text: append client hints to request; url: abstract-opdef-append-client-hints-to-request
 </pre>
 <pre class="biblio">
 {
@@ -657,6 +661,22 @@ Extend the {{PerformanceNavigationTiming}} interface as follows:
 The <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> getter steps are:
 
 1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
+
+<h3 id="client hint cache">Interaction with Client Hint Cache</h3>
+
+We need to ensure that the [=Accept-CH cache=], which is owned by user agent as a global storage, is not modified while prerendering, but is properly updated after activation. The following modifications ensure this.
+
+Each [=prerendering browsing context=] has a <dfn for="prerendering browsing context">prerender-scoped Accept-CH cache</dfn>, which is an [=ordered map=] of [=origin=] to [=client hints sets=].
+
+This stores which client hints each origin has opted into receiving, until it can be copied to the global [=Accept-CH cache=] when [=prerendering browsing context/finalize activation|activation is finalized=].
+
+<div algorithm="append client hints to request patch">
+  Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>append client hints to request</a> algorithm, by prepending the following steps before iterating over the |hintSet|:
+
+  1. Let |browsingContext| be |settingsObject|’s [=global object=]'s [=browsing context=].
+    If |browsingContext| is a [=prerendering browsing context=], retrieve |prerender client hint set| in [=prerendering browsing context/prerender-scoped Accept-CH cache=], and then update the |hintSet| with |prerender client hint set|.
+  
+</div>
 
 <h2 id="supports-loading-mode">The \`<dfn http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
 
