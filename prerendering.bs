@@ -460,6 +460,10 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. If |doc|'s [=Document/origin=] is the same as |origin|, then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
 
+    1. [=map/For each=] |origin| → |hintSet| in |bc|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=]:
+      
+      1. [=Add a new Accept-CH cache entry=] to the [=Accept-CH cache=] with the |origin| and |hintSet|.
+
     1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
     1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
