@@ -4,7 +4,7 @@ Caching is useful for making web pages load faster, and thus creating better use
 
 One of the most important cache keys for web resources is the resource's URL. However, sometimes multiple URLs can represent the same resource. This leads to caches not always being as helpful as they could be: if the browser has the resource cached under one URL, but the resource is then requested under another, the cached version will be ignored.
 
-This proposal tackles a specific subset of this general problem, for when multiple URLs for the same resource differ according to their URL's query components. Via a new HTTP header, `No-Vary-Query`, resources can declare to the browser that some or all parts of the query can be ignored for cache matching purposes. For example, if the order of the query parameters should not cause cache misses, this is indicated using
+This proposal tackles a specific subset of this general problem, for when a resource has multiple URLs which differ only in certain query components. Via a new HTTP header, `No-Vary-Query`, resources can declare that some or all parts of the query can be ignored for cache matching purposes. For example, if the order of the query parameters should not cause cache misses, this is indicated using
 
 ```http-header
 No-Vary-Query: order
@@ -71,7 +71,7 @@ No-Vary-Query: *; except=("productId")
 
 ## Prior art
 
-This proposal takes some of its inspiration from the existing [`Vary`](https://httpwg.org/specs/rfc7231.html#header.vary) HTTP header, which lets servers indicate what _header names_ should be _included_ when constructing the cache key. Unlike for headers, by default responses vary on their URL (including query string), so our proposal uses the `No-Vary-` prefix to show how it's indicating which query parameters should be _excluded_ when constructing the cache key. We see these two headers, the existing `Vary` and our proposed `No-Vary-Query`, as part of a general cache-key-construction mechanism, and want all places on the web platform that respect the former to also respect the latter.
+This proposal takes some of its inspiration from the existing [`Vary`](https://httpwg.org/specs/rfc7231.html#header.vary) HTTP header, which lets servers indicate what _header names_ should be _included_ when constructing the cache key. Unlike for headers, by default responses vary on their URL (including query string), so our proposal uses the `No-Vary-` prefix to show how it's indicating which query parameters should be _excluded_ when constructing the cache key. We see these two headers, the existing `Vary` and our proposed `No-Vary-Query`, as part of a general cache-key-construction mechanism, and ideally all places that respect the former will also respect the latter. (However, if they don't, the consequence is just fewer cache hits. So it isn't mandatory that all parts of the ecosystem immediately upgrade to support `No-Vary-Query`.)
 
 It is widely recognized that query parameters might interfere with constructing an appropriate cache key. Specific CDNs have solutions for this in place already. For example, [CloudFlare](https://developers.cloudflare.com/cache/about/cache-keys) allows almost the same level of customization we are proposing here, with their `include` and `exclude` settings which can be given query string parameter names or `*`. (Their documentation does not give any indication of how they treat query parameter ordering.) And [Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/QueryStringParameters.html#query-string-parameters-optimizing-caching) lets you pick an allowlist of query parameters to cache based on, with the optional of ignoring all of them for caching purposes. Indeed, if you just [search for "cache vary query parameters"](https://www.google.com/search?q=cache+vary+query+parameters), you get a large variety of technical documentation on similar solutions throughout the tech stack. Although our proposal is aimed at browsers, we are optimistic that CDNs, proxies, and other parts of the HTTP ecosystem might be able to use the information in this header in addition to their vendor-specific solutions.
 
@@ -130,7 +130,7 @@ TODO
 
 ### The header
 
-The `No-Vary-Query` header is a [HTTP structured field](https://www.rfc-editor.org/rfc/rfc8941.html) whose value must be a list. The list can contain either predefined [tokens](https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens), which have special behavior, or [strings](https://www.rfc-editor.org/rfc/rfc8941.html#name-strings), which indicate query parameters to not-vary on. The special tokens are:
+The `No-Vary-Query` header is a [HTTP structured field](https://www.rfc-editor.org/rfc/rfc8941.html) whose value must be a list. The list can contain either predefined [tokens](https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens), which have special behavior, or [strings](https://www.rfc-editor.org/rfc/rfc8941.html#name-strings), which indicate query parameters not to vary on. The special tokens are:
 
 - `order`: indicates the order of the query parameters should be ignored when constructing the cache key.
 
@@ -179,6 +179,11 @@ The proposal does _not_ update cache key computation for these caches. This is b
 Prerendering has an extra consideration because it's possible for the response to get used based on the original URL, and then eventually activated at which point we know the final URL. For example, consider the [previous underwater phone article example](#carrying-data-not-yet-determined-at-the-time-of-preloading), assuming that `/articles/new-underwater-phone` responds with `No-Vary-Query: "via"`. If the browser chooses to use the `<script type="speculationrules">` to prerender `/articles/new-underwater-phone`, then that resource will be fetched and prerendered with no query parameters. Later, the user might click on the hero image, at which point we know the "real" URL that should be shown to the user is `/articles/new-underwater-phone?via=heroimage`.
 
 To resolve this, we specify that prerendering [activation](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context-activate) involves changing the page's URL before firing the `prerenderingchange` event. This URL change is done using the [URL and history update steps](https://html.spec.whatwg.org/#url-and-history-update-steps), i.e. the same mechanism underlying `history.replaceState()`.
+
+Concretely, this means:
+
+- While being prerendered, the document's URL (which affects, e.g., `location.href`, the `Referer` of outgoing fetches, etc.) will be the originally-prerendered URL.
+- After prerendering activation, the document's URL is updated to the actually-navigated-to URL. This means further reads from `location.href`, or outgoing `Referer`s, etc., will use this new URL.
 
 With this setup, prerendered pages which care about a given query parameter, but don't want mismatches to prevent a prerender, can delay processing of the query parameter until activation time. For example:
 
