@@ -41,7 +41,8 @@ No-Vary-Query: *; except=("productId")
     - [… preloading caches](#-preloading-caches)
     - [… the cache API](#-the-cache-api)
     - [… other browser caches](#-other-browser-caches)
-  - [Interaction with prerendering activation](#interaction-with-prerendering-activation)
+  - [Navigated-to pages](#navigated-to-pages)
+    - [Prerendering activation](#prerendering-activation)
   - [Interaction with redirects](#interaction-with-redirects)
   - [Interaction with storage partitioning](#interaction-with-storage-partitioning)
 - [Alternatives considered](#alternatives-considered)
@@ -174,9 +175,20 @@ The proposal does _not_ update cache key computation for these caches. This is b
 - None of them respect the `Vary` header today
 - All of them are keyed by the _request_ URL, and not by the _response_ URL, whereas `No-Vary-Query` is a property provided by the response.
 
-### Interaction with prerendering activation
+### Navigated-to pages
 
-Prerendering has an extra consideration because it's possible for the response to get used based on the original URL, and then eventually activated at which point we know the final URL. For example, consider the [previous underwater phone article example](#carrying-data-not-yet-determined-at-the-time-of-preloading), assuming that `/articles/new-underwater-phone` responds with `No-Vary-Query: "via"`. If the browser chooses to use the `<script type="speculationrules">` to prerender `/articles/new-underwater-phone`, then that resource will be fetched and prerendered with no query parameters. Later, the user might click on the hero image, at which point we know the "real" URL that should be shown to the user is `/articles/new-underwater-phone?via=heroimage`.
+When navigating to a URL which can be matched with a cached resource via `No-Vary-Query`, we still treat the resource _as if_ it were fetched from the target URL, and not from the originally-cached URL. For example:
+
+- Service workers and resource timing APIs see fetches go by targeting the original request URL.
+- Once the document is constructed and displayed:
+  - `location.href` is the navigated-to-URL.
+  - Any subresource fetches are done with a `Referer` header pointing to the navigated-to URL.
+
+#### Prerendering activation
+
+The above story gets slightly more complicated for prerendering, because the point of the prerender "cache" is to allow much more processing of the response than just supplying its headers and body. In particular, we will construct the [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context) and its associated document based on the originally-requested URL, but later we could be activated with a different final URL.
+
+For example, consider the [previous underwater phone article example](#carrying-data-not-yet-determined-at-the-time-of-preloading), assuming that `/articles/new-underwater-phone` responds with `No-Vary-Query: "via"`. If the browser chooses to use the `<script type="speculationrules">` to prerender `/articles/new-underwater-phone`, then that resource will be fetched and prerendered with no query parameters. Later, the user might click on the hero image, at which point we know the "real" URL that should be shown to the user is `/articles/new-underwater-phone?via=heroimage`.
 
 To resolve this, we specify that prerendering [activation](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context-activate) involves changing the page's URL before firing the `prerenderingchange` event. This URL change is done using the [URL and history update steps](https://html.spec.whatwg.org/#url-and-history-update-steps), i.e. the same mechanism underlying `history.replaceState()`.
 
