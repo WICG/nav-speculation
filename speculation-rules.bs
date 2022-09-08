@@ -399,7 +399,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
         1. &#x231B; [=list/For each=] |link| of |links|:
           1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
           1. &#x231B; Let |referrerPolicy| be the current state of |link|'s <{a/referrerpolicy}> attribute.
-          1. &#x231B; If |link|'s link types includes the <{a/rel/noreferrer}> keyword, then set |referrerPolicy| to "`no-referrer`".
+          1. &#x231B; If |link|'s [[HTML#linkTypes|link types]] includes the <{a/rel/noreferrer}> keyword, then set |referrerPolicy| to "`no-referrer`".
           1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |href|, [=prefetch candidate/referrer policy=] |referrerPolicy|, and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
@@ -410,7 +410,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
         1. &#x231B; [=list/For each=] |link| of |links|:
           1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
           1. &#x231B; Let |referrerPolicy| be the current state of |link|'s <{a/referrerpolicy}> attribute.
-          1. &#x231B; If |link|'s link types includes the <{a/rel/noreferrer}> keyword, then set |referrerPolicy| to "`no-referrer`".
+          1. &#x231B; If |link|'s [[HTML#linkTypes|link types]] includes the <{a/rel/noreferrer}> keyword, then set |referrerPolicy| to "`no-referrer`".
           1. &#x231B; Let |target| be |rule|'s [=speculation rule/target browsing context name hint=].
           1. &#x231B; If |target| is null, set it to the result of [=getting an element's target=] given |link|.
           1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |href|, [=prerender candidate/referrer policy=] is |referrerPolicy|, and [=prerender candidate/target browsing context name hint=] is |target|.
