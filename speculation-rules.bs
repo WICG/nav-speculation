@@ -463,7 +463,13 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
     1. Return false.
   1. If |predicate| is a [=document rule CSS selector predicate=], then:
     1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
-      1. [=match a selector against an element|Match=] |selector| against |el| with [=scoping root=] |el|'s [=Node/node document=]. If the result is true, return  true.
+      1. [=match a selector against an element|Match=] |selector| against |el| with [=scoping root=] |el|'s [=Node/node document=]. If the result is true, return true.
+
+        During this step, user agents must apply the same privacy restrictions to the <a dfn-type="selector">:visited</a> pseudo-class as they would to other selector matching logic that could be observed by authors (e.g., {{ParentNode/querySelector(selectors)}}).
+
+        <div class="advisement">
+          This is important to prevent this from opening an avenue for attackers to gather information about a user's browsing history, e.g., by using a selector such as <code>:root:has(.sensitive-site:visited) .report-sensitive-site</code>. See the [[#privacy-visited-links|Privacy Considerations]] section.
+        </div>
     1. Return false.
   1. [=Assert=]: This step is not reached.
 </div>
@@ -478,11 +484,17 @@ When any supported action acts on a URL which is [=same origin=] to the document
 
 Otherwise, requests are always issued without using any previously existing [=credentials=]. This limits the ambient authority available to any potentially forged request, and such requests can already be made through [[FETCH]], a subresource or frame, or various other means. Site operators are therefore already well-advised to use CSRF tokens or other mitigations for this threat.
 
+Because links in a document could be selected using a document rule, if the document may contain user-generated markup then authors should construct their speculation rules to exclude such links that may have harmful side effects, e.g., by using a [=document rule CSS selector predicate=] to exclude links in regions with user-generated links or by using a [=document rule URL pattern predicate=] to allow only URL patterns known to be safe to fetch without side effects.
+
 <h3 id="security-xss">Cross-site scripting</h3>
 
 This specification causes activity in response to content found in the document, so it is worth considering the options open to an attacker able to inject unescaped HTML.
 
-Such an attacker is otherwise able to inject JavaScript, frames or other elements. The activity possible with this specification (requesting fetches etc) is generally less dangerous than arbitrary script execution, and comparable to other elements. The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `prefetch-src` directive applies to prefetch requests arising from the rules.
+Such an attacker is otherwise able to inject JavaScript, frames or other elements. The activity possible with this specification (requesting fetches etc) is generally less dangerous than arbitrary script execution, and comparable to other elements. It would, however, make it possible to cause prefetches of links in the document, and the existence of those prefetches could provide a vector for exfiltrating information about those links.
+
+The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `prefetch-src` directive applies to prefetch requests arising from the rules.
+
+The possibility of leaking link URLs via this mechanism is additionally mitigated by the fact that prefetch and prerender to plaintext HTTP (other than to localhost) is not permitted, and so such an on-path attacker could not directly observe preloading request URLs, but would only have access to metadata and traffic analysis. This does not, however, replace standard XSS protections.
 
 <h3 id="type-confusion">Type confusion</h3>
 
@@ -544,3 +556,9 @@ This specification describes a mechanism through which HTTP requests for later t
 Since existing [=credentials=] for the destination origin are not sent (assuming it is not [=same origin=] with the referrer), that site is limited in its ability to identify the user before navigation in a similar way to if the referrer site had simply used [[FETCH]] to make an uncredentialed request. Upon navigation, this becomes similar to ordinary navigation (e.g., by clicking a link that was not prefetched).
 
 To the extent that user agents attempt to mitigate identity joining for ordinary fetches and navigations, they can apply similar mitigations to prefetched navigations.
+
+<h3 id="privacy-visited-links">Visited links</h3>
+
+It is imperative that the features in this specification do not allow sites to determine which other web sites a user has visited in the past.
+
+Because a [=document rule CSS selector predicate=] can use arbitrary CSS selectors, it is critical that browsers apply the same privacy mitigations (which may not be covered by a specification) to the <a dfn-type="selector">:visited</a> pseudo-class as in other cases where it could be used by an attacker to extract information about the user's browsing history. The [=document rule predicate/match|matching algorithm=] requires this behavior. For more information, see <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector">Privacy and the :visited selector</a>.
