@@ -19,7 +19,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
       text: browsing context scope origin; url: browsing-context-scope-origin
-      text: container; for: browsing context; url: bc-container 
+      text: container; for: browsing context; url: bc-container
       text: determine the origin; url: determining-the-origin
     urlPrefix: browsing-the-web.html
       text: history handling behavior; url: history-handling-behavior
@@ -134,7 +134,6 @@ Each {{Document}} has <dfn export for="Document">prefetch records</dfn>, which i
 
 A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
-* <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn export for="prefetch record">label</dfn>, a [=string=]
 
@@ -172,17 +171,17 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
-    1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] and [=prefetch record/referrer policy=] as |prefetchRecord| and whose [=prefetch record/state=] equals "`completed`".
+    1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] as |prefetchRecord| and whose [=prefetch record/state=] equals "`completed`".
     1. Set |prefetchRecord|'s [=prefetch record/state=] to "`completed`" and [=prefetch record/expiry time=] to |expiryTime|.
 </div>
 
 <div algorithm="find a matching prefetch record">
-    To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, [=referrer policy=] |referrerPolicy| and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+    To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
-        1. If |record|'s [=prefetch record/URL=] is not equal to |url| or |record|'s [=prefetch record/referrer policy=] is not equal to |referrerPolicy|, then [=iteration/continue=].
+        1. If |record|'s [=prefetch record/URL=] is not equal to |url|, then [=iteration/continue=].
         1. If |record|'s [=prefetch record/state=] is not "`completed`", then [=iteration/continue=].
         1. If |record|'s [=prefetch record/sandboxing flag set=] is empty and |sandboxFlags| is not empty, then [=iteration/continue=].
 
@@ -320,7 +319,7 @@ Given this, the non-prefetch case becomes, with the small addition of prefetch l
     1. If |browsingContext|'s [=browsing context/container=] is non-null:
         1. If |browsingContext|'s [=browsing context/container=] has a [=browsing context scope origin=], then set |request|'s [=request/origin=] to that [=browsing context scope origin=].
         1. Set |request|'s [=request/destination=] to |browsingContext|'s [=browsing context/container=]'s [=Element/local name=].
-    1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given |browsingContext|'s [=active document=], |request|'s [=request/URL=], |request|'s [=request/referrer policy=], and |sandboxFlags|.
+    1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given |browsingContext|'s [=active document=], |request|'s [=request/URL=], and |sandboxFlags|.
 
         <div class="note">This step, and the following condition, is added by this specification.</div>
     1. If |prefetchRecord| is not null, then:
@@ -381,8 +380,6 @@ These algorithms are based on [=process a navigate fetch=].
 
         :  [=request/URL=]
         :: |prefetchRecord|'s [=prefetch record/URL=]
-        :  [=request/referrer policy=]
-        :: |prefetchRecord|'s [=prefetch record/referrer policy=]
         :  [=request/initiator=]
         :: "`prefetch`"
 
@@ -447,7 +444,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
-    1. If |prefetchRecord|'s [=prefetch record/referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+    1. If |document|'s [=Document/policy container=]'s [=policy container/referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
     1. Let |browsingContext| be |document|'s [=Document/browsing context=].
     1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
     1. Let |isolationOrigin| be a new [=opaque origin=].
@@ -461,8 +458,6 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
         :  [=request/URL=]
         :: |prefetchRecord|'s [=prefetch record/URL=]
-        :  [=request/referrer policy=]
-        :: |prefetchRecord|'s [=prefetch record/referrer policy=]
         :  [=request/initiator=]
         :: "`prefetch`"
 
