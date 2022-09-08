@@ -15,8 +15,13 @@ Indent: 2
 Boilerplate: omit conformance
 </pre>
 <pre class="link-defaults">
+spec:html; type:element; text:a
+spec:html; type:element-attr; for:a; text:href
+spec:html; type:element-attr; for:a; text:referrerpolicy
 spec:html; type:element; text:link
 spec:html; type:element; text:script
+spec:selectors-4; type:selector; text::link
+spec:selectors-4; type:selector; text::visited
 </pre>
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
@@ -37,6 +42,14 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsers.html
       text: valid browsing context name or keyword; url: valid-browsing-context-name-or-keyword
       text: rules for choosing a browsing context; url: the-rules-for-choosing-a-browsing-context-given-a-browsing-context-name
+    urlPrefix: semantics.html
+      text: get an element's target; url: get-an-element's-target
+  type: attr-value; for: a/rel; text: noreferrer; urlPrefix: links.html; url: link-type-noreferrer
+spec: urlpattern; urlPrefix: https://wicg.github.io/urlpattern/
+  type: interface; text: URLPattern; url: urlpattern
+  type: constructor; for: URLPattern; text: "URLPattern(input, baseURL)"; url: dom-urlpattern-urlpattern
+  type: method; for: URLPattern; text: "test(input, baseURL)"; url: dom-urlpattern-test
+  type: dictionary; text: URLPatternInit
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
@@ -122,7 +135,7 @@ A <dfn>document rule negation</dfn> is a struct with the following [=struct/item
 * <dfn for="document rule negation">clause</dfn>, a [=document rule predicates=]
 
 A <dfn>document rule URL pattern predicate</dfn> is a struct with the following [=struct/items=]:
-* <dfn for="document rule URL pattern predicate">patterns</dfn>, a [=list=] of {{URLPatterns}}
+* <dfn for="document rule URL pattern predicate">patterns</dfn>, a [=list=] of {{URLPattern}}s
 
 A <dfn>document rule CSS selector predicate</dfn> is a struct with the following [=struct/items=]:
 * <dfn for="document rule CSS selector predicate">selectors</dfn>, a [=list=] of [=selectors=]
@@ -283,8 +296,8 @@ Inside the [=prepare the script element=] algorithm we make the following change
       1. Let |clause| be the result of [=parsing a document rule predicate=] given |rawClause|.
       1. If |clause| is null, then return null.
       1. [=list/Append=] |clause| to |clauses|.
-    1. If |predicateType| is "`and`", then return a [=document rule conjuction=] whose [=document rule conjunction/clauses=] is |clauses|.
-    1. If |predicateType| is "`or`", then return a [=document rule disjuction=] whose [=document rule disjunction/clauses=] is |clauses|.
+    1. If |predicateType| is "`and`", then return a [=document rule conjunction=] whose [=document rule conjunction/clauses=] is |clauses|.
+    1. If |predicateType| is "`or`", then return a [=document rule disjunction=] whose [=document rule disjunction/clauses=] is |clauses|.
   1. If |predicateType| is "`not`", then:
     1. If |input| has any [=map/key=] other than "`not`", then return null.
     1. Let |rawClause| be the |input|[|predicateType|].
@@ -297,10 +310,10 @@ Inside the [=prepare the script element=] algorithm we make the following change
     1. If |rawPatterns| is not a [=list=], then set |rawPatterns| to « |rawPatterns| ».
     1. Let |patterns| be an empty [=list=].
     1. [=list/For each=] |rawPattern| of |rawPatterns|:
-      1. Let |serializedBaseURL| be the [=url/serialization=] of |baseURL|.
+      1. Let |serializedBaseURL| be the [=URL serializer|serialization=] of |baseURL|.
       1. Let |pattern| be null.
       1. If |rawPattern| is a [=string=], then:
-        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern(input, baseURL)}} constructor steps given |rawPattern| and |serializedBaseURL|. If those steps throw, catch the exception and return null.
+        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern/URLPattern(input, baseURL)}} constructor steps given |rawPattern| and |serializedBaseURL|. If those steps throw, catch the exception and return null.
       1. Otherwise, if |rawPattern| is a [=map=], then:
         1. Let |init| be «[ "`baseURL`" → |serializedBaseURL| ]», representing a dictionary of type {{URLPatternInit}}.
         1. [=map/For each=] |key| → |value| of |rawPattern|:
@@ -308,7 +321,7 @@ Inside the [=prepare the script element=] algorithm we make the following change
 
             <div class="note">This will need to be updated if {{URLPattern}} gains members of other types.</div>
           1. Set |init|[|key|] to |value|.
-        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern(input, baseURL)}} constructor steps given |init|. If those steps throw, catch the exception and return null.
+        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern/URLPattern(input, baseURL)}} constructor steps given |init|. If those steps throw, catch the exception and return null.
       1. Otherwise, return null.
       1. [=Assert=]: |pattern| is a {{URLPattern}}.
       1. [=list/Append=] |pattern| to |patterns|.
@@ -361,9 +374,9 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. For each [=shadow-including descendant=] |descendant| of |document|, in [=shadow-including tree order=]:
     1. If |descendant| is not an <{a}> with an <{a/href}> attribute or <{area}> element with an <{area/href}> attribute, [=iteration/continue=].
 
-        <div class="note">This corresponds to the elements which match the <a dfn-type="selector">:link</a> and <a dfn="selector">:visited</a> [=pseudo-classes=], or which appear in the {{Document/links}} collection.</div>
+        <div class="note">This corresponds to the elements which match the <a dfn-type="selector">:link</a> and <a dfn-type="selector">:visited</a> [=pseudo-classes=], or which appear in the {{Document/links}} collection.</div>
 
-    1. If |rule|'s [=speculation rule/predicate=] [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
+    1. If |predicate| [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
   1. Return |links|.
 </div>
 
@@ -386,7 +399,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
         1. &#x231B; [=list/For each=] |link| of |links|:
           1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
           1. &#x231B; Let |referrerPolicy| be the current state of |link|'s <{a/referrerpolicy}> attribute.
-          1. &#x231B; If |link|'s link types includes the [=a/rel/noreferrer=] keyword, then set |referrerPolicy| to "`no-referrer`".
+          1. &#x231B; If |link|'s link types includes the <{a/rel/noreferrer}> keyword, then set |referrerPolicy| to "`no-referrer`".
           1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |href|, [=prefetch candidate/referrer policy=] |referrerPolicy|, and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
@@ -397,7 +410,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
         1. &#x231B; [=list/For each=] |link| of |links|:
           1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
           1. &#x231B; Let |referrerPolicy| be the current state of |link|'s <{a/referrerpolicy}> attribute.
-          1. &#x231B; If |link|'s link types includes the [=a/rel/noreferrer=] keyword, then set |referrerPolicy| to "`no-referrer`".
+          1. &#x231B; If |link|'s link types includes the <{a/rel/noreferrer}> keyword, then set |referrerPolicy| to "`no-referrer`".
           1. &#x231B; Let |target| be |rule|'s [=speculation rule/target browsing context name hint=].
           1. &#x231B; If |target| is null, set it to the result of [=getting an element's target=] given |link|.
           1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |href|, [=prerender candidate/referrer policy=] is |referrerPolicy|, and [=prerender candidate/target browsing context name hint=] is |target|.
@@ -433,11 +446,11 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   A [=document rule predicate=] |predicate| <dfn for="document rule predicate">matches</dfn> an {{Element}} |el| implementing the {{HTMLHyperlinkElementUtils}} mixin if the following steps return true:
 
   1. If |predicate| is a [=document rule conjunction=], then:
-    1. [=list/For each=] |clause| of |predicate|'s [=document rule conjuction/clauses=]:
+    1. [=list/For each=] |clause| of |predicate|'s [=document rule conjunction/clauses=]:
       1. If |clause| does not [=document rule predicate/match=] |el|, return false.
     1. Return true.
   1. If |predicate| is a [=document rule disjunction=], then:
-    1. [=list/For each=] |clause| of |predicate|'s [=document rule disjuction/clauses=]:
+    1. [=list/For each=] |clause| of |predicate|'s [=document rule disjunction/clauses=]:
       1. If |clause| [=document rule predicate/matches=] |el|, return true.
     1. Return false.
   1. If |predicate| is a [=document rule negation=], then:
@@ -450,7 +463,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. If |result| is true, return true.
     1. Return false.
   1. If |predicate| is a [=document rule CSS selector predicate=], then:
-    1. [=list/For each=] |selector| of |predicate|'s [=document rule selector predicate/selectors=]:
+    1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
       1. [=match a selector against an element|Match=] |selector| against |el| with [=scoping root=] |el|'s [=Node/node document=]. If the result is true, return  true.
     1. Return false.
   1. [=Assert=]: This step is not reached.
