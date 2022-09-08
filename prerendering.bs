@@ -706,9 +706,10 @@ To <dfn>add a new prerender Accept-CH cache entry</dfn> given a [=prerendering b
 <div algorithm="update the Client Hints set patch">
   Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>update the Client Hints set</a> algorithm, by updating the last step.
 
-  1. If |browsingContext| is a [=prerendering browsing context=],
-    [=add a new prerender Accept-CH cache entry=] with |response|'s [=response/url=]'s [=url/origin=] and |settingsObject|'s [=environment settings object/client hints set=].
-  1. Else [=add a new Accept-CH cache entry=] with |response|'s [=response/url=]'s [=url/origin=] and |settingsObject|'s [=environment settings object/client hints set=].
+  1. Let |origin| be <var ignore>response</var>'s [=response/url=]'s [=url/origin=].
+  1. Let |hintSet| be <var ignore>settingsObject</var>'s [=environment settings object/client hints set=].
+  1. If |browsingContext| is a [=prerendering browsing context=], [=add a new prerender Accept-CH cache entry=] with |browsingContext|, |origin| and |hintSet|.
+  1. Otherwise, [=add a new Accept-CH cache entry=] with |origin| and |hintSet|.
 
 </div>
 
