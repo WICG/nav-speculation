@@ -459,8 +459,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. If |predicate| is a [=document rule URL pattern predicate=], then:
     1. Let |href| be the result of running |el|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
     1. [=list/For each=] |pattern| of |predicate|'s [=document rule URL pattern predicate/patterns=]:
-      1. Let |result| be the result of |pattern|'s {{URLPattern/test(input, baseURL)}} steps given |href|.
-      1. If |result| is true, return true.
+      1. Execute |pattern|'s {{URLPattern/test(input, baseURL)}} steps given |href|. If the reuslt is true, return true.
     1. Return false.
   1. If |predicate| is a [=document rule CSS selector predicate=], then:
     1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
