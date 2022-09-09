@@ -8,7 +8,7 @@ URL: https://wicg.github.io/nav-speculation/speculation-rules.html
 Level: 1
 Editor: Jeremy Roman, Google https://www.google.com/, jbroman@chromium.org
 Abstract: A flexible syntax for defining what outgoing links can be prepared speculatively before navigation.
-Markup Shorthands: css no, markdown yes
+Markup Shorthands: css yes, markdown yes
 Assume Explicit For: yes
 Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
@@ -46,8 +46,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
 spec: urlpattern; urlPrefix: https://wicg.github.io/urlpattern/
   type: interface; text: URLPattern; url: urlpattern
   type: constructor; for: URLPattern; text: "URLPattern(input, baseURL)"; url: dom-urlpattern-urlpattern
-  type: method; for: URLPattern; text: "test(input, baseURL)"; url: dom-urlpattern-test
   type: dictionary; text: URLPatternInit
+  type: dfn; text: match; url: match
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
@@ -265,7 +265,7 @@ Inside the [=prepare the script element=] algorithm we make the following change
     1. If |input|["`where`"] does not [=map/exist=], then set |predicate| to a [=document rule conjunction=] whose [=document rule conjunction/clauses=] is an empty [=list=].
 
       <p class="note">Such a predicate will match all links.</p>
-    1. Otherwise, set |predicate| to the result of [=parsing a document rule predicate=] given |input|["`where`"].
+    1. Otherwise, set |predicate| to the result of [=parsing a document rule predicate=] given |input|["`where`"] and |baseURL|.
     1. If |predicate| is null, then return null.
   1. Let |requirements| be an empty [=ordered set=].
   1. If |input|["`requires`"] [=map/exists=], but is not a [=list=], then return null.
@@ -290,7 +290,7 @@ Inside the [=prepare the script element=] algorithm we make the following change
     1. If |rawClauses| is not a [=list=], then return null.
     1. Let |clauses| be an empty [=list=].
     1. [=list/For each=] |rawClause| of |rawClauses|:
-      1. Let |clause| be the result of [=parsing a document rule predicate=] given |rawClause|.
+      1. Let |clause| be the result of [=parsing a document rule predicate=] given |rawClause| and |baseURL|.
       1. If |clause| is null, then return null.
       1. [=list/Append=] |clause| to |clauses|.
     1. If |predicateType| is "`and`", then return a [=document rule conjunction=] whose [=document rule conjunction/clauses=] is |clauses|.
@@ -298,7 +298,7 @@ Inside the [=prepare the script element=] algorithm we make the following change
   1. If |predicateType| is "`not`", then:
     1. If |input| has any [=map/key=] other than "`not`", then return null.
     1. Let |rawClause| be the |input|[|predicateType|].
-    1. Let |clause| be the result of [=parsing a document rule predicate=] given |rawClause|.
+    1. Let |clause| be the result of [=parsing a document rule predicate=] given |rawClause| and |baseURL|.
     1. If |clause| is null, then return null.
     1. Return a [=document rule negation=] whose [=document rule negation/clause=] is |clause|.
   1. If |predicateType| is "`href_matches`":
@@ -369,7 +369,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. For each [=shadow-including descendant=] |descendant| of |document|, in [=shadow-including tree order=]:
     1. If |descendant| is not an <{a}> with an <{a/href}> attribute or <{area}> element with an <{area/href}> attribute, [=iteration/continue=].
 
-        <div class="note">This corresponds to the elements which match the <a dfn-type="selector">:link</a> and <a dfn-type="selector">:visited</a> [=pseudo-classes=], or which appear in the {{Document/links}} collection.</div>
+        <div class="note">This corresponds to the elements which match the '':link'' and '':visited'' [=pseudo-classes=], or which appear in the {{Document/links}} collection.</div>
 
     1. If |predicate| [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
   1. Return |links|.
@@ -446,7 +446,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. If |predicate| is a [=document rule URL pattern predicate=], then:
     1. Let |href| be the result of running |el|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
     1. [=list/For each=] |pattern| of |predicate|'s [=document rule URL pattern predicate/patterns=]:
-      1. Execute |pattern|'s {{URLPattern/test(input, baseURL)}} steps given |href|. If the reuslt is true, return true.
+      1. <a spec="urlpattern">Match</a> given |pattern| and |href|. If the result is not null, return true.
     1. Return false.
   1. If |predicate| is a [=document rule CSS selector predicate=], then:
     1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
