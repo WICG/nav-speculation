@@ -452,7 +452,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
     1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
       1. [=match a selector against an element|Match=] |selector| against |el| with the [=scoping root=] set to |el|'s [=Node/node document=]. If the result is true, return true.
 
-        During this step, user agents must apply the same privacy restrictions to the <a dfn-type="selector">:visited</a> pseudo-class as they would to other selector matching logic that could be observed by authors (e.g., {{ParentNode/querySelector(selectors)}}).
+        During this step, user agents must apply the same privacy restrictions to the '':visited'' pseudo-class as they would to other selector matching logic that could be observed by authors (e.g., {{ParentNode/querySelector(selectors)}}).
 
         <div class="advisement">
           This is important to prevent this from opening an avenue for attackers to gather information about a user's browsing history, e.g., by using a selector such as <code>:root:has(.sensitive-site:visited) .report-sensitive-site</code>. See the [[#privacy-visited-links|Privacy Considerations]] section.
@@ -548,4 +548,4 @@ To the extent that user agents attempt to mitigate identity joining for ordinary
 
 It is imperative that the features in this specification do not allow sites to determine which other web sites a user has visited in the past.
 
-Because a [=document rule CSS selector predicate=] can use arbitrary CSS selectors, it is critical that browsers apply the same privacy mitigations (which may not be covered by a specification) to the <a dfn-type="selector">:visited</a> pseudo-class as in other cases where it could be used by an attacker to extract information about the user's browsing history. The [=document rule predicate/match|matching algorithm=] requires this behavior. For more information, see <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector">Privacy and the :visited selector</a>.
+Because a [=document rule CSS selector predicate=] can use arbitrary CSS selectors, it is critical that browsers apply the same privacy mitigations (which may not be covered by a specification) to the '':visited'' pseudo-class as in other cases where it could be used by an attacker to extract information about the user's browsing history. The [=document rule predicate/match|matching algorithm=] requires this behavior. For more information, see <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector">Privacy and the :visited selector</a>.
