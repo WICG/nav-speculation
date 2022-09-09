@@ -129,7 +129,7 @@ A <dfn>document rule disjunction</dfn> is a struct with the following [=struct/i
 * <dfn for="document rule disjunction">clauses</dfn>, a [=list=] of [=document rule predicates=]
 
 A <dfn>document rule negation</dfn> is a struct with the following [=struct/items=]:
-* <dfn for="document rule negation">clause</dfn>, a [=document rule predicates=]
+* <dfn for="document rule negation">clause</dfn>, a [=document rule predicate=]
 
 A <dfn>document rule URL pattern predicate</dfn> is a struct with the following [=struct/items=]:
 * <dfn for="document rule URL pattern predicate">patterns</dfn>, a [=list=] of {{URLPattern}}s
@@ -248,7 +248,7 @@ Inside the [=prepare the script element=] algorithm we make the following change
   To <dfn>parse a speculation rule</dfn> given a [=map=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
 
   1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", and `"target_hint"`, then return null.
-  1. If |input|["`source`"] does not [=map/exist=] or is not the [=string=] "`list`" nor the [=string=] "`document`", then return null.
+  1. If |input|["`source`"] does not [=map/exist=] or is neither the [=string=] "`list`" nor the [=string=] "`document`", then return null.
   1. Let |source| by |input|["`source`"].
   1. Let |urls| be an empty [=list=].
   1. Let |predicate| be null.
@@ -450,7 +450,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
     1. Return false.
   1. If |predicate| is a [=document rule CSS selector predicate=], then:
     1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
-      1. [=match a selector against an element|Match=] |selector| against |el| with [=scoping root=] |el|'s [=Node/node document=]. If the result is true, return true.
+      1. [=match a selector against an element|Match=] |selector| against |el| with the [=scoping root=] set to |el|'s [=Node/node document=]. If the result is true, return true.
 
         During this step, user agents must apply the same privacy restrictions to the <a dfn-type="selector">:visited</a> pseudo-class as they would to other selector matching logic that could be observed by authors (e.g., {{ParentNode/querySelector(selectors)}}).
 
