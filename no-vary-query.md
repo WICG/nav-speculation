@@ -148,7 +148,7 @@ Note that if you use `*`, additionally using string values in the list is pointl
 
 #### … HTTP caches
 
-The proposal augments [RFC 7234](https://httpwg.org/specs/rfc7234.html#rfc.section.4)'s notion of "Constructing Responses from Caches", providing a mechanism to relax the requirement of "The presented effective request URI and that of the stored response match" in well-defined ways. Since everything about the HTTP cache is best-effort, using `No-Vary-Query` will not guarantee additional cache hits. But it should help.
+The proposal augments [RFC 7234](https://httpwg.org/specs/rfc7234.html#rfc.section.4)'s notion of "Constructing Responses from Caches", providing a mechanism to relax the requirement of "The presented effective request URI \[sic] and that of the stored response match" in well-defined ways. Since everything about the HTTP cache is best-effort, using `No-Vary-Query` will not guarantee additional cache hits. But it should help.
 
 #### … preloading caches
 
