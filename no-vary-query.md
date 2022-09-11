@@ -33,7 +33,7 @@ No-Vary-Query: *; except=("productId")
   - [Carrying data that is or can be processed by client-side script only](#carrying-data-that-is-or-can-be-processed-by-client-side-script-only)
   - [Avoiding unnecessary cache mismatches due to inconsistent referrers](#avoiding-unnecessary-cache-mismatches-due-to-inconsistent-referrers)
   - [Carrying data not yet determined at the time of preloading](#carrying-data-not-yet-determined-at-the-time-of-preloading)
-  - [Customizing behavior when preloading](#customizing-behavior-when-preloading)
+  - [Customizing server behavior](#customizing-server-behavior)
 - [Detailed design](#detailed-design)
   - [The header](#the-header)
   - [Integration with…](#integration-with)
@@ -50,6 +50,7 @@ No-Vary-Query: *; except=("productId")
   - [More complex no-vary rules](#more-complex-no-vary-rules)
   - [`No-Vary-Path`](#no-vary-path)
   - [A referrer hint](#a-referrer-hint)
+  - [A `<meta>` version](#a-meta-version)
 - [Security and privacy considerations](#security-and-privacy-considerations)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -76,11 +77,11 @@ This proposal takes some of its inspiration from the existing [`Vary`](https://h
 
 It is widely recognized that query parameters might interfere with constructing an appropriate cache key. Specific CDNs have solutions for this in place already. For example, [CloudFlare](https://developers.cloudflare.com/cache/about/cache-keys) allows almost the same level of customization we are proposing here, with their `include` and `exclude` settings which can be given query string parameter names or `*`. (Their documentation does not give any indication of how they treat query parameter ordering.) And [Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/QueryStringParameters.html#query-string-parameters-optimizing-caching) lets you pick an allowlist of query parameters to cache based on, with the optional of ignoring all of them for caching purposes. Indeed, if you just [search for "cache vary query parameters"](https://www.google.com/search?q=cache+vary+query+parameters), you get a large variety of technical documentation on similar solutions throughout the tech stack. Although our proposal is aimed at browsers, we are optimistic that CDNs, proxies, and other parts of the HTTP ecosystem might be able to use the information in this header in addition to their vendor-specific solutions.
 
-Finally, the web platform's [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache) (often used with service workers) combines the resource-specified `Vary` header with a caller-specified [`ignoreSearch` option](https://developer.mozilla.org/en-US/docs/Web/API/Cache/match) which allows ignoring all query parameters when performing a cache match. As discussed below TODO, we plan to integrate `No-Vary-Query` with the cache API's functionality in this way.
+Finally, the web platform's [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache) (often used with service workers) combines the resource-specified `Vary` header with a caller-specified [`ignoreSearch` option](https://developer.mozilla.org/en-US/docs/Web/API/Cache/match) which allows ignoring all query parameters when performing a cache match. As discussed [below](#-the-cache-api), we plan to integrate `No-Vary-Query` with the cache API's functionality in this way.
 
 ## Use cases
 
-We've found several examples of scenarios where data is carried by the query string, but authors would prefer if it does not affect caching:
+We've found several examples of scenarios where data is carried by the query string, but authors would prefer that it does not affect caching:
 
 ### Carrying data that is or can be processed by client-side script only
 
@@ -96,7 +97,7 @@ Another use case for this is entirely client-side-rendered skeleton pages. Howev
 
 ### Avoiding unnecessary cache mismatches due to inconsistent referrers
 
-TODO E.g. other sites don't care; legacy server upgrades; ...
+In some circumstances, referrer pages may append spurious query parameters, or may use a non-canonical ordering of the query parameters as part of their process of constructing a URL referring to your page. This then causes unnecessary cache misses. Although this is usually fixable when the referrer page is your origin, it isn't fixable in the general case. And even for your own origin, legacy code might be hard to upgrade.
 
 ### Carrying data not yet determined at the time of preloading
 
@@ -119,13 +120,13 @@ The most prominent example here is analytics. Consider:
 <a href="/articles/new-underwater-phone?via=headline">New underwater phone, just released!</a>
 ```
 
-When the page loads, we don't know yet whether the user will click on the hero image or the headline link. So it's useful to prerender the page with no query parameter, and then later [fill in that information](#interaction-with-prerendering-activation) once the user clicks on a link.
+When the page loads, we don't know yet whether the user will click on the hero image or the headline link. So it's useful to prerender the page with no query parameter, and then later [fill in that information](#prerendering-activation) once the user clicks on a link.
 
 _Note: analytics, where you carry generic data such as the marketing campaign or referring source, is different than [navigational tracking](https://privacycg.github.io/nav-tracking-mitigations/#terminology), which passes along user identifiers. Nothing about this proposal is intended to aid navigational tracking, and we expect it to be fully compatible with future and [currently-deployed mitigations](https://privacycg.github.io/nav-tracking-mitigations/#deployed-mitigations) for navigational tracking._
 
-### Customizing behavior when preloading
+### Customizing server behavior
 
-TODO
+In some cases, query parameters can be used to modify server behavior, in a way that does not affect the end product. For example, requesting load-balancing to a particular instance; or, enabling server-side debug logging for a request; or, changing the priority of a request. Such customizations generally should not cause future cache misses. Although it would be ideal to communicate this information via request headers, not all places on the web platform allow customizable request headers. (For example, `<a>` or `<iframe>` elements do not.)
 
 ## Detailed design
 
@@ -139,6 +140,8 @@ The `No-Vary-Query` header is a [HTTP structured field](https://www.rfc-editor.o
 
 If an unknown or invalid construct is encountered, e.g. a non-list value, or an unknown token, then the header is treated as if it is omitted. This is a good safe default, since it just causes more cache misses, which are less harmful than erroneous cache hits.
 
+Note that if you use `*`, additionally using string values in the list is pointless, and those string values will be ignored. I.e., `No-Vary-Query: *, "foo"` is equivalent to `No-Vary-Query: *`, and the same goes for `No-Vary-Query: *;except=("foo"), "foo"`.
+
 ### Integration with…
 
 #### … HTTP caches
@@ -149,7 +152,7 @@ The proposal augments [RFC 7234](https://httpwg.org/specs/rfc7234.html#rfc.secti
 
 This repository contains specifications for in-memory URL-keyed caches for [prefetch records](https://wicg.github.io/nav-speculation/prefetch.html#document-prefetch-records) and [prerendering browsing contexts](https://wicg.github.io/nav-speculation/prerendering.html#document-prerendering-browsing-contexts-map). This proposal updates the key construction and matching procedure for these caches.
 
-_Note: our [intent](https://github.com/WICG/nav-speculation/issues/170), not yet reflected in the spec, is for these caches to respect at least some of the general `Vary` header semantics._
+_Note: our [intent](https://github.com/WICG/nav-speculation/issues/170), not yet reflected in the specs, is for these caches to respect at least some of the general `Vary` header semantics._
 
 #### … the cache API
 
@@ -184,9 +187,11 @@ When navigating to a URL which can be matched with a cached resource via `No-Var
   - `location.href` is the navigated-to-URL.
   - Any subresource fetches are done with a `Referer` header pointing to the navigated-to URL.
 
+In other words, this proposal purely modifies how URL matching works on the cache layer, allowing certain headers and body to match a given request URL, when previously they were not allowed to.
+
 #### Prerendering activation
 
-The above story gets slightly more complicated for prerendering, because the point of the prerender "cache" is to allow much more processing of the response than just supplying its headers and body. In particular, we will construct the [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context) and its associated document based on the originally-requested URL, but later we could be activated with a different final URL.
+The above story gets slightly more complicated for prerendering, because the point of the prerender "cache" is to allow much more processing of the response than just supplying its headers and body. In particular, we will construct the [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context) and its associated document based on the originally-requested URL, but later it could be activated with a different final URL.
 
 For example, consider the [previous underwater phone article example](#carrying-data-not-yet-determined-at-the-time-of-preloading), assuming that `/articles/new-underwater-phone` responds with `No-Vary-Query: "via"`. If the browser chooses to use the `<script type="speculationrules">` to prerender `/articles/new-underwater-phone`, then that resource will be fetched and prerendered with no query parameters. Later, the user might click on the hero image, at which point we know the "real" URL that should be shown to the user is `/articles/new-underwater-phone?via=heroimage`.
 
@@ -206,6 +211,8 @@ document.addEventListener("prerenderingchange", () => {
 });
 ```
 
+Note that both the prerendering feature and the use of `No-Vary-Query` is opt-in, so pages won't be surprised by this extra complication.
+
 ### Interaction with redirects
 
 TODO
@@ -216,7 +223,15 @@ This proposal takes place fully within the bounds of the [client side storage pa
 
 ## Alternatives considered
 
-TODO
+`<link rel="canonical">` and its `Link` header counterpart have some relation to the use cases solved here, in theory, cover some of the use cases given here, if we expanded them to modify cache-matching semantics. Such expansion would likely have compatibility issues, given the large existing deployment of `<link rel="canonical">`. However, this only works for the simplest cases, such as `https://example.com/?k=v` saying that its canonical URL is `https://example.com/`, and then later being used to fulfill a request to `https://example.com/`. This does not allow a `https://example.com/?k=v1` response to fulfill a request for `https://example.com/?k=v2`, since to do so, we'd need to have previously requested `https://example.com/?k=v2` and seen that it has the same canonical URL as the stored `?k=v1` variant.
+
+For same-origin cases, it might be possible for the referrer to indicate when query parameters are insignificant (or more generally, that substituting one URL for another is acceptable). This wouldn't be workable for cross-origin uses, however, for security reasons. See the section on a future [referrer hint](#a-referrer-hint) for more on when a referrer-based variant might be useful _in addition_ to a header-based variant.
+
+The proposed solution could be given a narrower scope, such a header respected only by the preloading caches. We're open to this if necessary, but we think there's enough evidence of this being a larger problem that it's worth tackling other caches at the same time.
+
+The response header could be flipped, i.e. `Vary-Query`, so as to better match `Vary`. We chose the `No-Vary-Query` framing because it means that the "empty" default state matches existing HTTP caching semantics (i.e., that the response varies by all query parameters). A `Vary-Query` version would probably need to have different behavior when the header is absent (vary on everything) vs. when the header is present but empty (vary on the empty list, i.e. nothing), which seems awkward.
+
+The name could be `No-Vary-Search`, to better match web platform APIs. Actually, maybe we should just make this change?
 
 ## Future extensions
 
@@ -226,7 +241,7 @@ As mentioned in the [non-goals section](#non-goals), it's possible to imagine a 
 
 - We could allow case-insensitivity of a given query parameter, using syntax like `No-Vary-Query: "color";value-case-insensitive=?1`.
 
-- We could allow restrictions on the value space, using syntax like `No-Vary-Query: "color";regexp="(?:blue|azure)"`.
+- We could allow restrictions on the value space, using syntax like `No-Vary-Query: "color";value-regexp="(?:blue|azure)"`.
 
 - We could allow treating multiple keys as the same key, using syntax like `No-Vary-Query: ("color", "colour")`.
 
@@ -236,11 +251,11 @@ We think capabilities such as these serve less urgent [use cases](#use-cases) th
 
 Many of the arguments for avoiding cache misses on differing query parameters, also apply to avoiding cache misses on differing paths. This is most prominent in the case of client-rendered single-page applications, where e.g. `/products/123` and `/products/456` might both have the same HTTP response, containing the skeleton product page, with their differing content being done via client-side rendering.
 
-Even for applications that are not usually client-side rendered, such a pattern might be beneficial specifically when combined with prerendering. For example, on a product search results page, you might not be confident enough to prerender any given product page, but you could instead prerender a generic "skeleton" product page such as `/products/skeleton` which, upon [prerendering activation](#interaction-with-prerendering-activation), performs client-side rendering for the product-specific details. Although such patterns are possible with `No-Vary-Query` as long as the variable parts of your URL are encoded as query parameters, they're not envisioned as a primary use case.
+Even for applications that are not usually client-side rendered, such a pattern might be beneficial specifically when combined with prerendering. For example, on a product search results page, you might not be confident enough to prerender any given product page, but you could instead prerender a generic "skeleton" product page such as `/products/skeleton` which, upon [prerendering activation](#prerendering-activation), performs client-side rendering for the product-specific details. Although such patterns are possible with `No-Vary-Query` as long as the variable parts of your URL are encoded as query parameters, they're not envisioned as a primary use case.
 
 We think these use cases are best addressed by a future addition, similar to `No-Vary-Query` in spirit but different in details. We call this hypothetical future proposal `No-Vary-Path`.
 
-In particular, splitting apart query and path handling makes sense because their in-practice semantics are very different. Although at some level both are opaque strings, in various parts of the HTTP ecosystem (e.g. server runtimes, CDNs, URL APIs, etc.) paths are treated as an ordered series of slash-delimited strings, and queries are treated as a usually-unordered multimap. So the syntax for specifying how a path would contribute to key calculation, versus a query, would likely be very different. (Concretely, we suspect path handling would be based on [URL patterns](https://github.com/WICG/urlpattern), which are good for describing varying paths but bad for describing varying queries.)
+In particular, splitting apart query and path handling makes sense because their in-practice semantics are very different. Although at some level both are opaque strings, in various parts of the HTTP ecosystem (e.g. server runtimes, CDNs, URL APIs, etc.) paths are treated as an ordered series of slash-delimited strings, and queries are treated as a usually-unordered multimap. So the syntax for specifying how a path would contribute to key calculation, versus a query, would likely be different. (Concretely, we suspect path handling would be based on [URL patterns](https://github.com/WICG/urlpattern), which are good for describing varying paths but bad for describing varying queries.)
 
 Any future work on `No-Vary-Path` could benefit from the infrastructure work we do on `No-Vary-Query`, since it would have the same [integrations](#integration-with) and a generally similar processing model.
 
@@ -276,6 +291,18 @@ To solve this, we could have the speculation rules syntax provide a hint for wha
 
 Any solution in this area is probably best thought through together with the design work on [document rules](./triggers.md#document-rules), [scores](./triggers.md#scores), and maybe [`No-Vary-Path`](#no-vary-path), since they would all likely be used together.
 
+### A `<meta>` version
+
+As with all HTTP headers, sometimes it can be difficult for developers to add headers to their pages, and they instead would prefer a markup-based in-document version. The most natural way to do this would be `<meta http-equiv="no-vary-query">` with the same value space.
+
+This would be a bit messy, as it would cause the various [integrations](#integration-with) to need to look into the response body to find this signal. For example, to our knowledge this would be the first time the HTTP cache knew anything about HTML. We would mitigate this by requiring the signal to be early in the document (picking some cutoff, say between 1–16 KiB), and giving a clear detection algorithm that does not require an entire browser or HTML parser (similar to [that envisioned for `<meta http-equiv="supports-loading-mode">`](./meta-processing.md)).
+
+We're hopeful a response header will suffice, instead of needing to go this route. But we'll listen for feedback on the deployability, and revisit this option as necessary.
+
 ## Security and privacy considerations
 
-TODO
+Security-wise, the main risk to be aware of is the impact of mismatched URLs. In particular, this could cause the user to see a response that was originally fetched from a URL different from the one displayed when they hovered a link, or the URL displayed in the URL bar.
+
+However, since the impact is limited to query parameters, this does not cross the relevant security boundary, which is the origin. (Or perhaps just the host, from [the perspective of security UI](https://url.spec.whatwg.org/#url-rendering-simplification).) Indeed, we already given origins complete control over how they present the (URL, reponse body) pair, including on the client side via technology such `history.replaceState()` or service workers.
+
+For privacy, as [mentioned previously](#carrying-data-not-yet-determined-at-the-time-of-preloading), this proposal is adjacent to the highly-privacy-relevant space of [navigational tracking](https://privacycg.github.io/nav-tracking-mitigations/#terminology), which often uses query parameters to pass along user identifiers. However, we believe this proposal itself does not have privacy impacts. It does not interfere with [existing navigational tracking mitigations](https://privacycg.github.io/nav-tracking-mitigations/#deployed-mitigations), or any known future ones being contemplated. Indeed, if a page were to encode user identifiers in its URL, the only ability this proposal gives is to _reduce_ such user tracking by preventing server processing of such user IDs (since the server is bypassed in favor of the cache).
