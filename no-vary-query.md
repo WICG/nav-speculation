@@ -39,11 +39,13 @@ No-Vary-Query: *; except=("productId")
   - [Integration with…](#integration-with)
     - [… HTTP caches](#-http-caches)
     - [… preloading caches](#-preloading-caches)
-    - [… the cache API](#-the-cache-api)
+    - [… the Cache API](#-the-cache-api)
     - [… other browser caches](#-other-browser-caches)
   - [Navigated-to pages](#navigated-to-pages)
     - [Prerendering activation](#prerendering-activation)
-  - [Interaction with redirects](#interaction-with-redirects)
+  - [Interaction with redirects …](#interaction-with-redirects-)
+    - [… at the HTTP and Cache API level](#-at-the-http-and-cache-api-level)
+    - [… for other browser caches](#-for-other-browser-caches)
   - [Interaction with storage partitioning](#interaction-with-storage-partitioning)
 - [Alternatives considered](#alternatives-considered)
 - [Future extensions](#future-extensions)
@@ -154,7 +156,7 @@ This repository contains specifications for in-memory URL-keyed caches for [pref
 
 _Note: our [intent](https://github.com/WICG/nav-speculation/issues/170), not yet reflected in the specs, is for these caches to respect at least some of the general `Vary` header semantics._
 
-#### … the cache API
+#### … the Cache API
 
 The [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache) already respects the `Vary` header when doing its cache matching, per [special handling in its spec](https://w3c.github.io/ServiceWorker/#request-matches-cached-item). This proposal adds similar special handling for `No-Vary-Query`.
 
@@ -213,9 +215,34 @@ document.addEventListener("prerenderingchange", () => {
 
 Note that both the prerendering feature and the use of `No-Vary-Query` is opt-in, so pages won't be surprised by this extra complication.
 
-### Interaction with redirects
+### Interaction with redirects …
 
-TODO
+Any mechanism for modifying how URLs are processed needs to be precise about whether it's dealing with _request_ URLs, or _response_ URLs, which can differ when HTTP redirects are involved.
+
+#### … at the HTTP and Cache API level
+
+For the HTTP cache itself, the answer is clear, since for each each individual cache lookup, the request and response URL are the same. `No-Vary-Query` does not change this. It allows a cache entry that was originally created from one request/response URL to be used to fulfill a cache lookup for a different request/response URL; it does _not_ do anything like letting a single cache lookup give back a response with a different URL.
+
+This means that in a redirect chain, the header can be used at any or all points along the chain, e.g. one could see the following sequence of HTTP messages:
+
+- Request `/apple-watch-ulatr`
+- When looking up `/apple-watch-ulatr` in the cache, retrieve a response that was originally constructed from `/apple-watch-ulatr?utm_source=homepage` with `No-Vary-Query: "utm_source"`, whose status code at the time was `301` with `Location: /apple-watch-ultra?utm_source=homepage`.
+- When looking up `/apple-watch-ultra?utm_source=homepage` in the cache, retrieve a response that was originally constructed from `/apple-watch-ultra?utm_source=twitter` with `No-Vary-Query: "utm_source"`.
+- The result is the user looking at `/apple-watch-ultra?utm_source=homepage`, constructed from a previously-cached visit to `/apple-watch-ultra?utm_source=twitter`.
+
+Note that, in terms of what the user sees in their URL bar, this is probably not the same result as would have been gotten without `No-Vary-Query`! That probably would have involved `/apple-watch-ulatr` redirecting to `/apple-watch-ultra`, with no query parameters showing up in the URL bar. The site has traded off nice URLs and accurate `utm_source` values, in favor of better cache utilization. If this is not desired, the site could avoid using `No-Vary-Query` on redirect responses, or it could fix up the user-facing URL using `history.replaceState()` shortly after loading. (The latter might be good practice anyway!)
+
+The same reasoning applies to the [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache), which follows HTTP semantics.
+
+#### … for other browser caches
+
+For other browser caches, how `No-Vary-Query` applies across redirects is not as obvious, since they usually collapse redirect processing. For example, the shared worker cache is keyed by request URL, and contains `SharedWorkerGlobalScope` instances contructed from the response body and URL that ultimately results from following all the redirects. There is no opportunity to follow along the whole chain of redirects each time we do a cache lookup.
+
+For these cases, we only account for the `No-Vary-Query` header corresponding to the cache key URL, which is always (to our knowledge) the request URL. For example, consider a situation where `/worker.js` redirects to `/worker-v2.js`, preserving any query parameters as part of the redirect. Then:
+
+- If `/worker.js` contains `No-Vary-Query: "debuglog"`, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will connect to the same shared worker, which was originally created from `/worker-v2.js?debuglog=1`.
+
+- If `/worker-v2.js` contains `No-Vary-Query: "debuglog"`, but `/worker.js` does not, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will spin up two separate workers, derived from `/worker-v2.js?debuglog=1` and `/worker-v2.js?debuglog=0` respectively.
 
 ### Interaction with storage partitioning
 
