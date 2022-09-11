@@ -257,6 +257,8 @@ We think these use cases are best addressed by a future addition, similar to `No
 
 In particular, splitting apart query and path handling makes sense because their in-practice semantics are very different. Although at some level both are opaque strings, in various parts of the HTTP ecosystem (e.g. server runtimes, CDNs, URL APIs, etc.) paths are treated as an ordered series of slash-delimited strings, and queries are treated as a usually-unordered multimap. So the syntax for specifying how a path would contribute to key calculation, versus a query, would likely be different. (Concretely, we suspect path handling would be based on [URL patterns](https://github.com/WICG/urlpattern), which are good for describing varying paths but bad for describing varying queries.)
 
+The security considerations for `No-Vary-Path` _might_ be trickier than [those for `No-Vary-Query`](#security-and-privacy-considerations), given the existence of shared hosting environments that are sometimes sharded by path alone. Although path is not usually recognized as a security boundary on the web platform, some features like [service workers](https://w3c.github.io/ServiceWorker/#path-restriction) have decided to add some path-based restrictions, so if we explore `No-Vary-Path` we'll need to carefully study their discussions and conclusions.
+
 Any future work on `No-Vary-Path` could benefit from the infrastructure work we do on `No-Vary-Query`, since it would have the same [integrations](#integration-with) and a generally similar processing model.
 
 ### A referrer hint
