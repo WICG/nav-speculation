@@ -30,10 +30,10 @@ No-Vary-Query: *; except=("productId")
 - [Non-goals](#non-goals)
 - [Prior art](#prior-art)
 - [Use cases](#use-cases)
-  - [Carrying data that is or can be processed by client-side script only](#carrying-data-that-is-or-can-be-processed-by-client-side-script-only)
   - [Avoiding unnecessary cache mismatches due to inconsistent referrers](#avoiding-unnecessary-cache-mismatches-due-to-inconsistent-referrers)
-  - [Carrying data not yet determined at the time of preloading](#carrying-data-not-yet-determined-at-the-time-of-preloading)
   - [Customizing server behavior](#customizing-server-behavior)
+  - [Carrying data that is or can be processed by client-side script only](#carrying-data-that-is-or-can-be-processed-by-client-side-script-only)
+  - [Carrying data not yet determined at the time of preloading](#carrying-data-not-yet-determined-at-the-time-of-preloading)
 - [Detailed design](#detailed-design)
   - [The header](#the-header)
   - [Integration with…](#integration-with)
@@ -85,6 +85,14 @@ Finally, the web platform's [Cache API](https://developer.mozilla.org/en-US/docs
 
 We've found several examples of scenarios where data is carried by the query string, but authors would prefer that it does not affect caching:
 
+### Avoiding unnecessary cache mismatches due to inconsistent referrers
+
+In some circumstances, referrer pages may append spurious query parameters, or may use a non-canonical ordering of the query parameters as part of their process of constructing a URL referring to your page. This then causes unnecessary cache misses. Although this is usually fixable when the referrer page is your origin, it isn't fixable in the general case. And even for your own origin, legacy code might be hard to upgrade.
+
+### Customizing server behavior
+
+In some cases, query parameters can be used to modify server behavior, in a way that does not affect the end product. For example, requesting load-balancing to a particular instance; or, enabling server-side debug logging for a request; or, changing the priority of a request. Such customizations generally should not cause future cache misses. Although it would be ideal to communicate this information via request headers, not all places on the web platform allow customizable request headers. (For example, `<a>` or `<iframe>` elements do not.)
+
 ### Carrying data that is or can be processed by client-side script only
 
 Some examples:
@@ -95,11 +103,9 @@ Some examples:
 
 Although in theory such data could be passed via the fragment instead of query string, prevailing practice often uses the query string. Additionally, preloading changes the calculus here: a page might want to do server-side processing if possible, but client-side processing if doing so would unlock the fast-loading benefits of preloading.
 
+_Note: analytics, where you carry generic data such as the marketing campaign or referring source, is different than [navigational tracking](https://privacycg.github.io/nav-tracking-mitigations/#terminology), which passes along user identifiers. Nothing about this proposal is intended to aid navigational tracking, and we expect it to be fully compatible with future and [currently-deployed mitigations](https://privacycg.github.io/nav-tracking-mitigations/#deployed-mitigations) for navigational tracking. See more discussion in our [privacy considerations](#security-and-privacy-considerations)._
+
 Another use case for this is entirely client-side-rendered skeleton pages. However, we're not focused on such cases, since they often use the path component to carry the variable information. See [future work on `No-Vary-Path`](#no-vary-path) for more discussion.
-
-### Avoiding unnecessary cache mismatches due to inconsistent referrers
-
-In some circumstances, referrer pages may append spurious query parameters, or may use a non-canonical ordering of the query parameters as part of their process of constructing a URL referring to your page. This then causes unnecessary cache misses. Although this is usually fixable when the referrer page is your origin, it isn't fixable in the general case. And even for your own origin, legacy code might be hard to upgrade.
 
 ### Carrying data not yet determined at the time of preloading
 
@@ -122,13 +128,7 @@ The most prominent example here is analytics. Consider:
 <a href="/articles/new-underwater-phone?via=headline">New underwater phone, just released!</a>
 ```
 
-When the page loads, we don't know yet whether the user will click on the hero image or the headline link. So it's useful to prerender the page with no query parameter, and then later [fill in that information](#prerendering-activation) once the user clicks on a link.
-
-_Note: analytics, where you carry generic data such as the marketing campaign or referring source, is different than [navigational tracking](https://privacycg.github.io/nav-tracking-mitigations/#terminology), which passes along user identifiers. Nothing about this proposal is intended to aid navigational tracking, and we expect it to be fully compatible with future and [currently-deployed mitigations](https://privacycg.github.io/nav-tracking-mitigations/#deployed-mitigations) for navigational tracking._
-
-### Customizing server behavior
-
-In some cases, query parameters can be used to modify server behavior, in a way that does not affect the end product. For example, requesting load-balancing to a particular instance; or, enabling server-side debug logging for a request; or, changing the priority of a request. Such customizations generally should not cause future cache misses. Although it would be ideal to communicate this information via request headers, not all places on the web platform allow customizable request headers. (For example, `<a>` or `<iframe>` elements do not.)
+When the page loads, we don't know yet whether the user will click on the hero image or the headline link. So it's useful to prerender the page with no query parameter, and then later [communicate that information](#prerendering-activation) once the user clicks on a link.
 
 ## Detailed design
 
@@ -334,4 +334,4 @@ Security-wise, the main risk to be aware of is the impact of mismatched URLs. In
 
 However, since the impact is limited to query parameters, this does not cross the relevant security boundary, which is the origin. (Or perhaps just the host, from [the perspective of security UI](https://url.spec.whatwg.org/#url-rendering-simplification).) Indeed, we already given origins complete control over how they present the (URL, reponse body) pair, including on the client side via technology such `history.replaceState()` or service workers.
 
-For privacy, as [mentioned previously](#carrying-data-not-yet-determined-at-the-time-of-preloading), this proposal is adjacent to the highly-privacy-relevant space of [navigational tracking](https://privacycg.github.io/nav-tracking-mitigations/#terminology), which often uses query parameters to pass along user identifiers. However, we believe this proposal itself does not have privacy impacts. It does not interfere with [existing navigational tracking mitigations](https://privacycg.github.io/nav-tracking-mitigations/#deployed-mitigations), or any known future ones being contemplated. Indeed, if a page were to encode user identifiers in its URL, the only ability this proposal gives is to _reduce_ such user tracking by preventing server processing of such user IDs (since the server is bypassed in favor of the cache).
+For privacy, as [mentioned previously](#carrying-data-that-is-or-can-be-processed-by-client-side-script-only), this proposal is adjacent to the highly-privacy-relevant space of [navigational tracking](https://privacycg.github.io/nav-tracking-mitigations/#terminology), which often uses query parameters to pass along user identifiers. However, we believe this proposal itself does not have privacy impacts. It does not interfere with [existing navigational tracking mitigations](https://privacycg.github.io/nav-tracking-mitigations/#deployed-mitigations), or any known future ones being contemplated. Indeed, if a page were to encode user identifiers in its URL, the only ability this proposal gives is to _reduce_ such user tracking by preventing server processing of such user IDs (since the server is bypassed in favor of the cache).
