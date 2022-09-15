@@ -727,6 +727,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <li><a href="#webxr-patch"><span class="secno">6.3.25</span> <span class="content">WebXR Device API</span></a>
         <li><a href="#credential-manamgenet-patch"><span class="secno">6.3.26</span> <span class="content">Credential Management</span></a>
         <li><a href="#web-speech-patch"><span class="secno">6.3.27</span> <span class="content">Web Speech API</span></a>
+        <li><a href="#web-locks-patch"><span class="secno">6.3.28</span> <span class="content">Web Locks API</span></a>
        </ol>
       <li><a href="#implicitly-restricted"><span class="secno">6.4</span> <span class="content">Implicitly restricted APIs</span></a>
      </ol>
@@ -1452,6 +1453,8 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <h4 class="heading settled" data-level="6.3.27" id="web-speech-patch"><span class="secno">6.3.27. </span><span class="content">Web Speech API</span><a class="self-link" href="#web-speech-patch"></a></h4>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②④">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-speak" id="ref-for-dom-speechsynthesis-speak">speak(utterance)</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-cancel" id="ref-for-dom-speechsynthesis-cancel">cancel()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-pause" id="ref-for-dom-speechsynthesis-pause">pause()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-resume" id="ref-for-dom-speechsynthesis-resume">resume()</a></code>.</p>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-start" id="ref-for-dom-speechrecognition-start">start()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-stop" id="ref-for-dom-speechrecognition-stop">stop()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-abort" id="ref-for-dom-speechrecognition-abort">abort()</a></code>.</p>
+   <h4 class="heading settled" data-level="6.3.28" id="web-locks-patch"><span class="secno">6.3.28. </span><span class="content">Web Locks API</span><a class="self-link" href="#web-locks-patch"></a></h4>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⑥">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-request" id="ref-for-dom-lockmanager-request">request()</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-query" id="ref-for-dom-lockmanager-query">query()</a></code>.</p>
    <h3 class="heading settled" data-level="6.4" id="implicitly-restricted"><span class="secno">6.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
    <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context⑤③">prerendering browsing context</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-window" id="ref-for-active-window①">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑧">active document</a> will never have. These properties include:</p>
    <ul>
@@ -2799,6 +2802,18 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
     <li><a href="#ref-for-dom-bluetooth-requestdevice">6.3.23. Web Bluetooth</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-lockmanager-query">
+   <a href="https://w3c.github.io/web-locks/#dom-lockmanager-query">https://w3c.github.io/web-locks/#dom-lockmanager-query</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-lockmanager-query">6.3.28. Web Locks API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-lockmanager-request">
+   <a href="https://w3c.github.io/web-locks/#dom-lockmanager-request">https://w3c.github.io/web-locks/#dom-lockmanager-request</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-lockmanager-request">6.3.28. Web Locks API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-ndefreader-scan">
    <a href="https://w3c.github.io/web-nfc/#dom-ndefreader-scan">https://w3c.github.io/web-nfc/#dom-ndefreader-scan</a><b>Referenced in:</b>
    <ul>
@@ -3325,6 +3340,12 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
      <li><span class="dfn-paneled" id="term-for-dom-bluetooth-requestdevice">requestDevice()</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[WEB-LOCKS]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-lockmanager-query">query()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-lockmanager-request">request()</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[WEB-NFC]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-ndefreader-scan">scan()</span>
@@ -3449,6 +3470,8 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-web-bluetooth">[WEB-BLUETOOTH]
    <dd>Jeffrey Yasskin. <a href="https://webbluetoothcg.github.io/web-bluetooth/"><cite>Web Bluetooth</cite></a>. URL: <a href="https://webbluetoothcg.github.io/web-bluetooth/">https://webbluetoothcg.github.io/web-bluetooth/</a>
+   <dt id="biblio-web-locks">[WEB-LOCKS]
+   <dd>Joshua Bell; Kagami Rosylight. <a href="https://w3c.github.io/web-locks/"><cite>Web Locks API</cite></a>. ED. URL: <a href="https://w3c.github.io/web-locks/">https://w3c.github.io/web-locks/</a>
    <dt id="biblio-web-nfc">[WEB-NFC]
    <dd><a href="https://w3c.github.io/web-nfc/"><cite>Web NFC API</cite></a>. ED. URL: <a href="https://w3c.github.io/web-nfc/">https://w3c.github.io/web-nfc/</a>
    <dt id="biblio-web-share">[WEB-SHARE]
@@ -3675,6 +3698,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering②②">6.3.25. WebXR Device API</a>
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering②③">6.3.26. Credential Management</a>
     <li><a href="#ref-for-extendedattrdef-delaywhileprerendering②④">6.3.27. Web Speech API</a> <a href="#ref-for-extendedattrdef-delaywhileprerendering②⑤">(2)</a>
+    <li><a href="#ref-for-extendedattrdef-delaywhileprerendering②⑥">6.3.28. Web Locks API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="post-prerendering-activation-geolocation-watch-process-id">
