@@ -88,11 +88,11 @@ jobs:
           console.log(body);
           const issue = {...context.repo, issue_number: context.issue.number};
           const comments = await github.paginate(
-              github.rest.issues.listComments.endpoint.merge({...issue});
+              github.rest.issues.listComments.endpoint.merge({...issue}));
           let comment = comments.find(
               comment => comment.body.includes("<!-- preview-magic-74656 -->"));
           if (comment) {
             await github.rest.issues.updateComment({...issue, comment_id: comment.id, body});
           } else {
-            await github.rest.issues.createComment({...issue, body})
+            await github.rest.issues.createComment({...issue, body});
           }
