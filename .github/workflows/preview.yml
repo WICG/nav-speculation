@@ -1,0 +1,98 @@
+name: Preview
+on:
+  pull_request:
+    paths:
+    - '**.bs'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      issues: 'write'
+      pull-requests: 'write'
+    env:
+      GCS_BASE: "spec-previews/${{ github.repository }}/pull/${{ github.event.number }}"
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: 'projects/28141583151/locations/global/workloadIdentityPools/github/providers/github-actions'
+        service_account: 'github@spec-previews.iam.gserviceaccount.com'
+    - name: Build (head)
+      run: |
+        make ci
+        cp -rv out out-head
+    - name: Build (base)
+      run: |
+        git checkout HEAD^
+        make ci
+        cp -rv out out-base
+    - name: Checkout w3c/htmldiff-ui
+      uses: actions/checkout@v3
+      with:
+        repository: w3c/htmldiff-ui
+        ref: refs/heads/main
+        path: htmldiff-ui
+    - name: Diff
+      shell: bash
+      run: |
+        mkdir -p out-diff
+        for head_file in $(find out-head -name '*.html'); do
+          base_file=out-base/"${head_file#*/}"
+          diff_file=out-diff/"${head_file#*/}"
+          if [[ -e "$base_file" ]]; then
+            perl htmldiff-ui/htmldiff.pl "$base_file" "$head_file" "$diff_file"
+          fi
+        done
+    - name: Compress
+      shell: bash
+      run: |
+        sudo apt-get install -y brotli
+        mkdir -p out-gcs/diff
+        for head_file in $(find out-head -name '*.html'); do
+          brotli "$head_file" -o out-gcs/"${head_file#*/}"
+        done
+        for diff_file in $(find out-diff -name '*.html'); do
+          brotli "$diff_file" -o out-gcs/diff/"${diff_file#*/}"
+        done
+    - name: Upload to Google Cloud Storage
+      uses: google-github-actions/upload-cloud-storage@v0
+      with:
+        path: out-gcs
+        glob: "**/*.html"
+        destination: "${{ env.GCS_BASE }}"
+        parent: false
+        headers: |-
+          Content-Type: text/html; charset=UTF-8
+          Content-Encoding: br
+    - name: Post comment
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require("fs");
+          const baseUrl = `https://storage.googleapis.com/${process.env.GCS_BASE}`;
+          let body = "<!-- preview-magic-74656 -->Preview:";
+          for (let headFile of await fs.promises.readdir("out-head")) {
+            if (!headFile.endsWith('.html')) continue;
+            body += `\n- [${headFile}](${baseUrl}/${headFile})`;
+            const diffExists = await fs.promises.access(`out-diff/${headFile}`)
+                .then(() => true, () => false);
+            if (diffExists)
+              body += ` ([diff](${baseUrl}/diff/${headFile}))`;
+          }
+          console.log(body);
+          const issue = {...context.repo, issue_number: context.issue.number};
+          const comments = await github.paginate(
+              github.rest.issues.listComments.endpoint.merge({...issue});
+          let comment = comments.find(
+              comment => comment.body.includes("<!-- preview-magic-74656 -->"));
+          if (comment) {
+            await github.rest.issues.updateComment({...issue, comment_id: comment.id, body});
+          } else {
+            await github.rest.issues.createComment({...issue, body})
+          }
