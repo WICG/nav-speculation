@@ -55,7 +55,7 @@ jobs:
     - name: Compress
       shell: bash
       run: |
-        sudo apt-get install -y brotli
+        which brotli >/dev/null || sudo apt-get install -y brotli
         mkdir -p out-gcs/diff
         for head_file in $(find out-head -name '*.html'); do
           brotli "$head_file" -o out-gcs/"${head_file#*/}"
