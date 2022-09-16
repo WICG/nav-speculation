@@ -46,7 +46,7 @@ jobs:
           base_file=out-base/"${head_file#*/}"
           diff_file=out-diff/"${head_file#*/}"
           if [[ -e "$base_file" ]]; then
-            if cmp -q "$head_file" "$base_file"; then
+            if cmp -s "$head_file" "$base_file"; then
               rm "$base_file" "$head_file"
             else
               perl htmldiff-ui/htmldiff.pl "$base_file" "$head_file" "$diff_file"
