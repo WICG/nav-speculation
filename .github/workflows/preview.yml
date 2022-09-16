@@ -26,12 +26,12 @@ jobs:
     - name: Build (head)
       run: |
         make ci
-        cp -rv out out-head
+        mv out out-head
     - name: Build (base)
       run: |
         git checkout HEAD^
         make ci
-        cp -rv out out-base
+        mv out out-base
     - name: Checkout w3c/htmldiff-ui
       uses: actions/checkout@v3
       with:
@@ -46,7 +46,11 @@ jobs:
           base_file=out-base/"${head_file#*/}"
           diff_file=out-diff/"${head_file#*/}"
           if [[ -e "$base_file" ]]; then
-            perl htmldiff-ui/htmldiff.pl "$base_file" "$head_file" "$diff_file"
+            if cmp -q "$head_file" "$base_file"; then
+              rm "$base_file" "$head_file"
+            else
+              perl htmldiff-ui/htmldiff.pl "$base_file" "$head_file" "$diff_file"
+            fi
           fi
         done
     - name: Compress
