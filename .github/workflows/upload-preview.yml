@@ -82,10 +82,11 @@ jobs:
             if (!headFile.endsWith('.html')) continue;
             body += `\n- [${headFile}](${baseUrl}/head/${headFile})`;
             const extraLinks =
-                Promise.all(["diff", "base"]
+                (await Promise.all(
+                    ["diff", "base"]
                     .map(k => fs.promises.access(`upload-compressed/${k}/${headFile}`)
-                              .then(() => `[${k}](${baseUrl}/${k}/${headFile})`, () => undefined)))
-                .filter(x => x);
+                              .then(() => [`[${k}](${baseUrl}/${k}/${headFile})`], () => []))))
+                .flat();
             if (extraLinks)
                 body += ` (${extraLinks.join(" ")})`;
           }
