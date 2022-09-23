@@ -6,7 +6,7 @@ on:
     - completed
 jobs:
   upload:
-    name: Build
+    name: Upload
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -91,7 +91,7 @@ jobs:
                 body += ` (${extraLinks.join(" ")})`;
           }
           console.log(body);
-          const issue = {...context.repo, issue_number: context.issue.number};
+          const issue = {...context.repo, issue_number: process.env.PULL_NUMBER};
           const comments = await github.paginate(
               github.rest.issues.listComments.endpoint.merge({...issue}));
           let comment = comments.find(
