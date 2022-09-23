@@ -9,7 +9,7 @@ The space is full of challenges which have not been comprehensively tackled: mos
 * avoiding user-visible side effects and annoyances from running script on the destination site; and
 * fulfilling the privacy objectives of the user and the referring site.
 
-This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such prerendering of content, in an interoperably-implementable way. Each piece is designed to be composable and reusable; for example, [some contribute to prefetching](#prefetching), independent of prerendering, and the [opt-in](./opt-in.md) is designed to be usable by other types of alternate loading modes, such as [fenced frames](https://github.com/shivanigithub/fenced-frame/).
+This repository contains a set of explainers and (eventually) specifications which, combined, give a rigorous model for performing such preloading of content, in an interoperably-implementable way.
 
 ## Triggering preloading with speculation rules
 
@@ -17,25 +17,24 @@ Today, the underspecified `<link rel="prefetch">` and `<link rel="prerender">` t
 
 See [the full explainer](./triggers.md) for more.
 
-## Cross-origin and cross-site concerns
-
-Much of the complexity of preloading comes in when dealing with site that is cross-origin or cross-site. Origins are the web's security boundary, and sites are its privacy boundary, so any preloading across these boundaries needs to preserve the relevant properties.
-
-Our current proposals are focused around allowing cross-origin/site prefetching. We also have some early thoughts on cross-origin/site prerendering, but have not yet committed to them. The following explainers are relevant:
-
-* [Fetching modes](./fetch.md), discussing how to perform the fetch of the main content and any subresources while preloading.
-* [`Supports-Loading-Mode`](./opt-in.md), a new header which allows target pages to opt in to being loaded in an uncredentialed mode, with the understanding that they will upgrade their content later upon activation.
-* [`<meta http-equiv="supports-loading-mode">`](https://github.com/WICG/nav-speculation/blob/main/meta-processing.md), an extension to the header definition that uses a HTML preparsing pass to allow it to appear in-document.
-* [Client IP anonymization](./anonymous-client-ip.md), an extension to prefetching (and maybe one day prerendering?) to require using an anonymizing proxy to hide the user's IP address.
-
 ## Prerendering details
 
 Prerendering is more complex than prefetching, as it involves running the target page's scripts and loading its subresources. We've produced a couple of relevant explainers:
 
-* [Same-origin prerendering](./same-origin-explainer.md), discussing what is launched in Chromium for same-origin prerendering using `<script type="speculationrules">`. See also the [origin trial documentation](same-origin-chrome-origin-trial.md).
-* [UA-initiated prerendering](./ua-initiated-prerendering.md), discussing what is launched in Chromium for user agent-initiated prerendering (e.g. from the URL bar).
-* [Prerendering browsing contexts](./browsing-context.md), an earlier draft discussing in more detail our grand vision for how content behaves while prerendering.
-* [Prerendering state APIs](./prerendering-state.md), discussing the new `document.prerendering` API and its associated event.
+* [Same-site prerendering](./prerendering-same-site.md), discusses what we believe to be solid so far: user agent-triggered and same-site-triggered prerendering.
+* [Prerendering state APIs](./prerendering-state.md), discussing the new `document.prerendering` API and its associated event in more detail.
+
+## Cross-origin and cross-site concerns
+
+Much of the complexity of preloading comes in when dealing with site that is cross-origin or cross-site. Origins are the web's security boundary, and sites are its privacy boundary, so any preloading across these boundaries needs to preserve the relevant properties.
+
+Our current proposals are focused around allowing cross-origin/site prefetching, and cross-origin but same-site prerendering. We also have some early thoughts on cross-site prerendering, but have not yet committed to them. The following explainers are relevant:
+
+* [Cross-site preloading fetching modes](./fetch.md), discussing how to perform the fetch of the main content and any subresources while doing cross-site preloading.
+* [`Supports-Loading-Mode`](./opt-in.md), a new header which allows target pages to opt in to being loaded in an uncredentialed mode, with the understanding that they will upgrade their content later upon activation.
+* [`<meta http-equiv="supports-loading-mode">`](https://github.com/WICG/nav-speculation/blob/main/meta-processing.md), an extension to the header definition that uses a HTML preparsing pass to allow it to appear in-document.
+* [Client IP anonymization](./anonymous-client-ip.md), an extension to prefetching (and maybe one day prerendering?) to require using an anonymizing proxy to hide the user's IP address.
+* [Cross-site prerendering](./prerendering-cross-site.md), containing what we've brainstormed so far about how cross-site prerendering could work in the future.
 
 ## Portals
 

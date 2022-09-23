@@ -1,14 +1,14 @@
-# Security & Privacy Questionnaire (same-origin prerendering)
+# Security & Privacy Questionnaire (same-site prerendering)
 
-Covers the specific case of [same-origin prerendering](same-origin-explainer.md) triggered by [speculation rules](triggers.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
+Covers the specific case of [same-site prerendering](./prerendering-same-site.md) triggered by [speculation rules](./triggers.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
 
 For general [speculation rules](triggers.md) including cross-origin cases, see that [questionnaire](speculation-rules-security-privacy-questionnaire.md). Some answers below are inspired by that document.
 
 ### What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
-At its core, this feature does not expose any additional information because it is restricted to same-origin triggers. The origin cannot do anything it cannot already do with an iframe.
+At its core, this feature does not expose any additional information because it is restricted to same-site triggers. The page cannot do anything it cannot already do with an iframe.
 
-However, the user agent chooses whether to act upon the origin's hint to prerender a URL at its own discretion. If the user agent uses heuristics such as the user's engagement with the origin to make that decision, the origin can potentially glean information based on whether the user agent acts upon the hint or not.
+However, the user agent chooses whether to act upon the page's hint to prerender a URL at its own discretion. If the user agent uses heuristics such as the user's engagement with the origin to make that decision, the origin can potentially glean information based on whether the user agent acts upon the hint or not.
 
 ### Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
@@ -20,7 +20,7 @@ This is similar to the previous responses. User agents should avoid basing heuri
 
 ### How do the features in your specification deal with sensitive information?
 
-This is similar to the previous responses. There is no additional information that can be communicated from the origin to itself that it cannot already do via an iframe. But the user agent's heuristics deciding whether to honor a prerender hint can potentially leak information.
+This is similar to the previous responses. There is no additional information that can be communicated from the site to itself that it cannot already do via an iframe. But the user agent's heuristics deciding whether to honor a prerender hint can potentially leak information.
 
 ### Do the features in your specification introduce new state for an origin that persists across browsing sessions?
 

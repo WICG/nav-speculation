@@ -6,7 +6,7 @@ Covers the [speculation rules explainer](triggers.md). Based on the [W3C TAG Sel
 
 At its core the feature does not expose new information to web sites or other parties. However, the user agent may expose information as a consequence of use of this feature.
 
-The feature allows the user agent to use its discretion about which outgoing hypertext references should be prefetched. While we anticipate that user agents will take action to [mitigate user tracking risks](browsing-context.md#privacy-based-restrictions) for cross-origin prefetches, including by denying access to cookies and storage, it remains true that the origin server that serves a prefetch may learn information such as:
+The feature allows the user agent to use its discretion about which outgoing hypertext references should be prefetched. While we anticipate that user agents will take action to [mitigate user tracking risks](prerendering-cross-origin.md#privacy-based-restrictions) for cross-origin prefetches, including by denying access to cookies and storage, it remains true that the origin server that serves a prefetch may learn information such as:
 * the request URL
 * the referrer origin from which the prefetch was initiated
 * any information remaining in the request headers which may identify the user agent

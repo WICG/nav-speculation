@@ -181,6 +181,10 @@ spec: speech-api; urlPrefix: https://wicg.github.io/speech-api/
     text: start(); url: dom-speechrecognition-start
     text: stop(); url: dom-speechrecognition-stop
     text: abort(); url: dom-speechrecognition-abort
+spec: web-locks; urlPrefix: https://w3c.github.io/web-locks/
+  type: method; for: LockManager
+    text: request(); url:dom-lockmanager-request
+    text: query(); url:dom-lockmanager-query
 spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
   type: interface
     text: ServiceWorkerRegistration; url: serviceworkerregistration-interface
@@ -199,6 +203,24 @@ spec: service-workers; urlPrefix: https://w3c.github.io/ServiceWorker/
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: supports prefetch; url: supports-prefetch
+    text: list of sufficiently-strict speculative navigation referrer policies
+spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
+  type: dfn
+    text: structured header; url: #section-1
+    for: structured header
+      text: list; url: name-lists
+      text: token; url: name-tokens
+spec: client-hints-infrastructure; urlPrefix: https://wicg.github.io/client-hints-infrastructure
+  type: dfn
+    text: Accept-CH cache; url: accept-ch-cache
+    text: add a new Accept-CH cache entry; url: add-a-new-accept-ch-cache-entry
+    text: append client hints to request; url: abstract-opdef-append-client-hints-to-request
+    text: client hints token; url: client-hints-token-definition
+    text: client hints set; url: client-hints-set
+    text: update the Client Hints set; url: abstract-opdef-update-the-client-hints-set
+    for: environment settings object
+      text: client hints set; url: environment-settings-object-client-hints-set
+
 </pre>
 <pre class="biblio">
 {
@@ -252,49 +274,6 @@ spec: nav-speculation; urlPrefix: prefetch.html
 }
 </style>
 
-<h2 id="link-rel-prerender">Link type "<dfn attr-value for="link/rel"><code>prerender</code></dfn>"</h2>
-
-<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/links.html#linkTypes">Link types</a> section. This should replace the prerender documentation in [[RESOURCE-HINTS]]</em>
-
-The <{link/rel/prerender}> keyword may be used with <{link}> elements. This keyword creates an <a spec=HTML>external resource link</a>. This keyword is <a spec=HTML>body-ok</a>.
-
-The appropriate times to <a spec=HTML>fetch and process the linked resource</a> for such a link are:
-
-<ul>
-  <li>When the <a spec=HTML>external resource link</a> is created on a <{link}> element that is already [=browsing-context connected=]</a>.</li>
-  <li>When the <a spec=HTML>external resource link</a>'s <{link}> element [=becomes browsing-context connected=].</li>
-  <li>When the <{link/href}> attribute is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
-  <li>When the <{link/referrerpolicy}> attribute's state is changed on the <{link}> element of an [=external resource link=] that is already [=browsing-context connected=].</li>
-</ul>
-
-<div algorithm="prerender-processing-model">
-  The <a spec=HTML>fetch and process the linked resource</a> algorithm for <{link/rel/prerender}> links, given a <{link}> element <var>el</var>, is as follows:
-
-  1. If |el|'s <{link/href}> attribute's value is the empty string, then return.
-
-  1. [=Parse a URL=] given |el|'s <{link/href}> attribute, relative to |el|'s [=Node/node document=]. If that fails, then return. Otherwise, let |url| be the [=resulting URL record=].
-
-  1. If |url|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then return.
-
-  1. Let |referrerPolicy| be  the current state of |el|'s <{link/referrerpolicy}> attribute.
-
-  1. If |url|'s [=url/origin=] is not [=same origin=] with |el|'s [=Node/node document=]'s [=Document/origin=], then:
-
-    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] |referrerPolicy|, then return.
-
-  1. [=Create a prerendering browsing context=] with |url|, |referrerPolicy|, and |el|'s [=Node/node document=].
-</div>
-
-A user agent must not <a spec=HTML lt="delays the load event">delay the load event</a> of the <{link}> element's [=Node/node document=] for this link type.
-
-<p class="note">Note that this link type does not fire {{HTMLElement/error}} or {{HTMLElement/load}} events, unlike many other link types that create <a spec=HTML>external resource links</a>.
-
-The <dfn>list of sufficiently-strict speculative navigation referrer policies</dfn> is a [=list=] containing the following subset of [=referrer policies=]: the empty string, "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
-
-<h2 id="speculation-rules">Speculation rules</h2>
-
-It is anticipated that prerendering will be triggered using <a href="speculation-rules.html">speculation rules</a>.
-
 <h2 id="prerendering-bcs">Prerendering browsing context infrastructure</h2>
 
 <h3 id="document-prerendering">Extensions to the {{Document}} interface</h3>
@@ -324,10 +303,10 @@ Every [=browsing context=] has a <dfn for="browsing context">loading mode</dfn>,
 :: No special considerations are applied to content loaded in this browsing context
 : "`prerender`"
 :: This browsing context is displaying prerendered content
-: "`uncredentialed-prerender`"
-:: This browsing context is displaying prerendered content, and furthermore that content cannot make credentialed fetches
 
-By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`default`". A browsing context whose [=browsing context/loading mode=] is either "`prerender`" or "`uncredentialed-prerender`" is known as a <dfn>prerendering browsing context</dfn>.
+By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`default`". A browsing context whose [=browsing context/loading mode=] is "`prerender`" is known as a <dfn>prerendering browsing context</dfn>.
+
+<p class="note">Although there are only two values for the [=browsing context/loading mode=], we use a flexible structure in anticipation of other future loading modes, such as those provided by fenced frames, portals, and uncredentialed (cross-site) prerendering. It's not yet clear whether that anticipation is correct; if, as those features gain full specifications, it turns out not to be, we will instead convert this into a boolean.
 
 <dl class="domintro">
   <dt><code>document . {{Document/prerendering}}</code></dt>
@@ -341,7 +320,7 @@ The <dfn attribute for="Document">prerendering</dfn> getter steps are to return 
 
 A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
 
-Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of ([=URL=], [=referrer policy=]) [=tuples=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
+Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of [=URLs=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
 
 Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
 
@@ -388,31 +367,35 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div algorithm="create a prerendering browsing context">
-  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL|, a [=referrer policy=] |referrerPolicy|, and a {{Document}} |referrerDoc|:
+  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
 
   1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
-  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][(|startingURL|, |referrerPolicy|)] [=map/exists=], then return.
+  1. If |referrerDoc|'s [=Document/browsing context=] is not a [=top-level browsing context=], then return.
+
+     <p class="note">Currently, prerendering from inside a [=nested browsing context=] is not specified or implemented. Doing so would involve tricky considerations around how the prerendered browsing context appears in the browsing context tree.
+
+  1. If |referrerDoc|'s [=Document/browsing context=] is an [=auxiliary browsing context=], then return.
+
+     <p class="note">This avoids having to deal with any potential opener relationship between the prerendering browsing context and |referrerDoc|'s [=Document/browsing context=]'s [=opener browsing context=].
+
+  1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |startingURL|'s [=url/origin=], then return.
+
+     <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
+
+  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] [=map/exists=], then return.
 
   1. Let |bc| be the result of [=creating a new top-level browsing context=].
 
   1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
 
-  1. If |startingURL|'s [=url/origin=] is not [=same origin=] with |referrerDoc|'s [=Document/origin=], run these steps:
-
-    1. Set |bc|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
-
-    1. [=Assert=]: The [=list of sufficiently-strict speculative navigation referrer policies=] [=list/contains=] |referrerPolicy|.
-
   1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
 
-  1. Set |bc|'s [=prerendering browsing context/remove from initiator=] be to [=map/remove=] |referrerDoc|[|startingURL|].
+  1. Set |bc|'s [=prerendering browsing context/remove from initiator=] to be an algorithm which [=map/removes=] |referrerDoc|[|startingURL|].
 
      <p class="note">As with regular [=browsing contexts=], the [=prerendering browsing context=] can be [=discarded=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too much resources.
 
-  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is |referrerPolicy|.
-
-  1. [=Navigate=] |bc| to |request| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
+  1. [=Navigate=] |bc| to |startingURL| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
 </div>
 
 <div algorithm>
@@ -481,6 +464,10 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. If |doc|'s [=Document/origin=] is the same as |origin|, then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
 
+    1. [=map/For each=] |origin| → |hintSet| in |bc|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=]:
+      
+      1. [=Add a new Accept-CH cache entry=] to the [=Accept-CH cache=] with the |origin| and |hintSet|.
+
     1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
     1. [=list/For each=] |steps| in |doc|'s [=Document/post-prerendering activation steps list=]:
@@ -526,10 +513,10 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
       * |historyHandling| is "`default`" or "`replace`"
       * |navigationType| is "`other`"
       * |request|'s [=request/method=] is \``GET`\`
-      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|request|'s [=request/URL=], |request|'s [=request/referrer policy=])] [=map/exists=] and is not [=prerendering browsing context/empty=]
+      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|request|'s [=request/URL=]] [=map/exists=] and is not [=prerendering browsing context/empty=]
       * The result of calling [=should navigation request of type be blocked by content security policy?=] given |request| and <var ignore>navigationType</var> is "`Allowed`".
 
-        <p class="note">There is no need for an additional CSP check for the response, see [=navigate-to=].
+        <p class="note">There is no need for an additional CSP check for the response, see <tt>navigate-to</tt> (before it was <a href="https://github.com/w3c/webappsec-csp/pull/564">removed</a>.
 
   1. Otherwise, return false.
 
@@ -542,7 +529,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
 
   1. If |resource| is a [=request=] and we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource|, then:
 
-    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][(|resource|'s [=request/URL=], |resource|'s [=request/referrer policy=])].
+    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]].
 
     1. Wait until all navigation attempts of |successorBC| have been [=navigate/mature|matured=].
 
@@ -553,18 +540,12 @@ Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/ac
       1. Return.
 </div>
 
-Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#redirect-handling]] section.
+Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#navigate-fetch-patch]] section.
 
-<h3 id="redirect-handling">Redirect handling</h3>
+<h3 id="navigate-fetch-patch">Navigation fetch changes</h3>
 
-This section contains two types of changes to the navigation redirect handling portion of the [=process a navigate fetch=] algorithm:
- * Logic allowing navigation redirects that are not inside of a [=prerendering browsing context=] to [=prerendering browsing context/activate=] a [=prerendering browsing context=].
- * Logic that updates specific state of a [=prerendering browsing context=] when it redirects coss-origin.
-
-Patch the [=process a navigate fetch=] algorithm like so:
-
-<div algorithm="navigate activate patch redirect handling">
-  In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:" in order to handle redirects correctly:
+<div algorithm="process a navigate fetch patch">
+  In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:":
 
   1. If we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and <var ignore>request</var>, then:
 
@@ -572,22 +553,56 @@ Patch the [=process a navigate fetch=] algorithm like so:
 
     1. Return.
 
-  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=same origin=] with <var ignore>incumbentNavigationOrigin</var>, then:
+  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=/same site=] with |incumbentNavigationOrigin|, then:
 
-    1. Set |browsingContext|'s [=browsing context/loading mode=] to "`uncredentialed-prerender`".
+    1. Run the [=environment discarding steps=] for <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
-    1. If the [=list of sufficiently-strict speculative navigation referrer policies=] does not [=list/contain=] <var ignore>request</var>'s [=referrer policy=], then:
+    1. Return.
 
-      1. [=Assert=]: |response| is not null.
+  Additionally, append the following steps toward the end of the algorithm, after the steps which check <var ignore>locationURL</var>:
 
-      1. [=Assert=]: |response|'s [=response/location URL=] is a [=URL=] whose [=url/scheme=] is a [=HTTP(S) scheme=].
+  1. If |browsingContext| is a prerendering browsing context, and <var ignore>responseOrigin</var> is not [=same origin=] with |incumbentNavigationOrigin|, then:
 
-      1. Set |response| to a [=network error=] and [=iteration/break=].
+    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
+
+    1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`, then set |response| to a [=network error=].
+
+       <p class="note">This will cause the prerender to fail in the following steps of the algorithm.
+
+       <p class="note">In the future we could possibly also allow the `uncredentialed-prerender` token to work here. However, since that is primarily intended for the cross site case, which isn't specified or implemented yet, we don't want to encourage its use in the wild, so for now we specify that prerendering fails if only the `uncredentialed-prerender` token is found.
 </div>
 
-<h3 id="delay-crossorigin">Delaying crossorigin navigations</h3>
+<div algorithm="process a navigate response patch">
+  In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
 
-Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding of cross-origin navigations in a [=prerendering browsing context=] as follows:
+  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], and any of the following hold:
+
+      * |failure| is true;
+      * |navigationParams|'s [=navigation params/request=] is null;
+      * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
+      * |response| does not [=support prefetch=];
+
+        <div class="note">Responses which are ineligible for prefetch, e.g. because they have an error status, are not eligible for prerender either. A future version of this specification might allow responses to more clearly delineate the two.</div>
+      * |response| has a \``Content-Disposition`\` header specifying the `attachment`
+          disposition type; or
+      * |response|'s [=response/status=] is 204 or 205,
+
+    then:
+
+    1. Run the [=environment discarding steps=] for |navigationParams|'s [=navigation params/reserved environment=].
+
+    1. Return.
+</div>
+
+<div algorithm="process a navigate URL scheme patch">
+  In <a spec=HTML>process a navigate URL scheme</a>, insert the following step before the step which displays inline content:
+
+  1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
+</div>
+
+<h3 id="delay-crossorigin">Delaying cross-origin nested browsing context navigations</h3>
+
+Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding of cross-origin navigations inside browsing contexts that are [=nested browsing context|nested=] inside a [=prerendering browsing context=] as follows:
 
 <div algorithm="navigate delay cross-origin patch">
   In [=process a navigate fetch=], append the following steps after the cross-origin redirect check (currently step 13.1):
@@ -615,41 +630,6 @@ Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding
   Patch the <a spec=HTML>URL and history update steps</a> by adding the following step after step 1:
 
   1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then set <var ignore>isPush</var> to false.
-</div>
-
-<h3 id="no-bad-navs">Preventing forbidden navigations</h3>
-
-Patch the [=navigate=] algorithm to prevent certain navigations in a [=prerendering browsing context=] as follows:
-
-<p class="issue">Portals might need an extra hook to close the portal in these cases. Or should we reconsider and just do nothing for portals too? That might be more elegant. I think it just requires portals to not be so zealous about clearing the host element/browsing context link, which isn't observable anyway?
-
-<div algorithm="process a navigate response patch">
-  In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
-
-  1. If <var ignore>browsingContext</var> is a [=top level browsing context|top level=] [=prerendering browsing context=], and any of the following hold:
-
-      * |failure| is true;
-      * |navigationParams|'s [=navigation params/request=] is null;
-      * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
-      * |response| does not [=support prefetch=];
-
-        <div class="note">Responses which are ineligible for prefetch, e.g. because they have an error status, are not eligible for prerender either. A future version of this specification might allow responses to more clearly delineate the two.</div>
-      * |response| has a \``Content-Disposition`\` header specifying the `attachment`
-          disposition type; or
-      * |response|'s [=response/status=] is 204 or 205,
-
-    then:
-
-    1. Run the [=environment discarding steps=] for |navigationParams|'s [=navigation params/reserved environment=].
-
-    1. Return.
-</div>
-
-<div algorithm="process a navigate URL scheme patch">
-  In <a spec=HTML>process a navigate URL scheme</a>, insert the following step before the step
-  which displays inline content:
-
-  1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
 </div>
 
 <h3 id="interaction-with-workers">Interaction with Worker Lifetime</h3>
@@ -697,7 +677,63 @@ The <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> gette
 
 1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
 
-<p class="note">This value is 0 in cross-origin prerenders.
+<h3 id="client-hint-cache">Interaction with Client Hint Cache</h3>
+
+We need to ensure that the [=Accept-CH cache=], which is owned by user agent as a global storage, is not modified while prerendering, but is properly updated after activation. The following modifications ensure this.
+
+Each [=prerendering browsing context=] has a <dfn for="prerendering browsing context">prerender-scoped Accept-CH cache</dfn>, which is an [=ordered map=] of [=origin=] to [=client hints sets=].
+
+This stores which client hints each origin has opted into receiving, until it can be copied to the global [=Accept-CH cache=] when [=prerendering browsing context/finalize activation|activation is finalized=].
+
+<div algorithm>
+
+To <dfn>add a new prerender Accept-CH cache entry</dfn> given a [=prerendering browsing context=] |bc|, an [=origin=] |origin|, and a [=client hints set=] |hintSet|:
+
+  1. Let |cache| be |bc|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=].
+
+  1. [=map/set=] |cache|[|origin|] to |hintSet|.
+
+
+<p class="note">This is similar to [=add a new Accept-CH cache entry=].</p>
+</div>
+
+<div algorithm="append client hints to request patch">
+  Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>append client hints to request</a> algorithm, by prepending the following steps before iterating over the |hintSet|:
+
+  1. Let |browsingContext| be <var ignore>settingsObject</var>’s [=environment settings object/global object=]'s [=Window/browsing context=].
+    If |browsingContext| is a [=prerendering browsing context=], then:
+      1. Let |origin| be <var ignore>request</var>'s [=request/url=]'s [=url/origin=].
+      1. Set |hintSet| to the [=set/union=] of |hintSet| and |browsingContext|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=][|origin|].
+  
+</div>
+
+<div algorithm="update the Client Hints set patch">
+  Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>update the Client Hints set</a> algorithm, by updating the last step.
+
+  1. Let |origin| be <var ignore>response</var>'s [=response/url=]'s [=url/origin=].
+  1. Let |hintSet| be <var ignore>settingsObject</var>'s [=environment settings object/client hints set=].
+  1. If |browsingContext| is a [=prerendering browsing context=], [=add a new prerender Accept-CH cache entry=] with |browsingContext|, |origin| and |hintSet|.
+  1. Otherwise, [=add a new Accept-CH cache entry=] with |origin| and |hintSet|.
+
+</div>
+
+<h2 id="supports-loading-mode">The \`<dfn http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
+
+<em>The following section would be added as a sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsers">Loading web pages</a> section.</em>
+
+In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header can be used. This header is a [=structured header=]; if present its value must be the single [=structured header/token=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`.
+
+<p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored. However, authors are best off avoiding any form except the single-token one, for future compatibility.
+
+The \`<code><dfn for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering browsing context=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
+
+To <dfn>get the supported loading modes</dfn> for a [=response=] |response|:
+
+1. If |response| is a [=network error=], then return an empty list.
+
+1. Let |slmHeader| be the result of [=header list/getting a structured field value=] given \`<a http-header><code>Supports-Loading-Mode</code></a>\` and "`list`" from |response|'s [=response/header list=].
+
+1. Return a [=list=] containing all elements of |slmHeader| that are [=structured header/tokens=].
 
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
@@ -973,6 +1009,10 @@ Add {{[DelayWhilePrerendering]}} to {{CredentialsContainer/get()}}, {{Credential
 Add {{[DelayWhilePrerendering]}} to	{{SpeechSynthesis/speak(utterance)}}, {{SpeechSynthesis/cancel()}},	{{SpeechSynthesis/pause()}}, and {{SpeechSynthesis/resume()}}.
 
 Add {{[DelayWhilePrerendering]}} to {{SpeechRecognition/start()}}, {{SpeechRecognition/stop()}}, and {{SpeechRecognition/abort()}}.
+
+<h4 id="web-locks-patch">Web Locks API</h4>
+
+Add {{[DelayWhilePrerendering]}} to {{LockManager/request()}} and {{LockManager/query()}}.
 
 <h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 

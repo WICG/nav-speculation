@@ -44,7 +44,6 @@ spec: nav-speculation; urlPrefix: prefetch.html
     text: prefetch records; for: Document; url: document-prefetch-records
     for: prefetch record
       text: URL; url: prefetch-record-url
-      text: referrer policy; url: prefetch-record-referrer-policy
       text: anonymization policy; url: prefetch-record-anonymization-policy
       text: label; url: prefetch-record-label
       text: state; url: prefetch-record-state
@@ -247,14 +246,12 @@ Periodically, for any [=document=] |document|, the user agent may [=queue a glob
 </p>
 
 A <dfn>prefetch candidate</dfn> is a [=struct=] with the following [=struct/items=]:
-* <dfn for="prefetch candidate">URL</dfn>, an [=URL=]
-* <dfn for="prefetch candidate">referrer policy</dfn>, a [=referrer policy=]
+* <dfn for="prefetch candidate">URL</dfn>, a [=URL=]
 * <dfn for="prefetch candidate">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 
 A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/items=]:
-* <dfn for="prerender candidate">URL</dfn>, an [=URL=]
+* <dfn for="prerender candidate">URL</dfn>, a [=URL=]
 * <dfn for="prerender candidate">target browsing context name hint</dfn>, a [=valid browsing context name or keyword=] or null
-* <dfn for="prerender candidate">referrer policy</dfn>, a [=referrer policy=]
 
 <div algorithm>
   A [=prefetch candidate=] |prefetchCandidate| <dfn for="prefetch candidate">continues</dfn> a [=prefetch record=] |prefetchRecord| if the following are all true:
@@ -277,10 +274,10 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; Let |anonymizationPolicy| be null.
       1. &#x231B; If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/referrer policy=] "`strict-origin-when-cross-origin`", and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
+        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url| and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url|, [=prerender candidate/referrer policy=] is "`strict-origin-when-cross-origin`", and [=prerender candidate/target browsing context name hint=] is |rule|'s [=speculation rule/target browsing context name hint=].
+        1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url| and [=prerender candidate/target browsing context name hint=] is |rule|'s [=speculation rule/target browsing context name hint=].
         1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
   1. &#x231B; [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
     1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
@@ -289,10 +286,10 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
     1. The user agent may run the following steps:
-      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/referrer policy=] is |prefetchCandidate|'s [=prefetch candidate/referrer policy=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], and [=prefetch record/label=] is "`speculation-rules`".
+      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], and [=prefetch record/label=] is "`speculation-rules`".
       1. [=Prefetch=] given |document| and |prefetchRecord|.
   1. [=list/For each=] |prerenderCandidate| of |prefetchCandidates|:
-      1. The user agent may [=create a prerendering browsing context=] given |prerenderCandidate|'s [=prerender candidate/URL=], |prerenderCandidate|'s [=prerender candidate/referrer policy=] and |document|.
+      1. The user agent may [=create a prerendering browsing context=] given |prerenderCandidate|'s [=prerender candidate/URL=] and |document|.
 
          The user agent can use |prerenderCandidate|'s [=prerender candidate/target browsing context name hint=] as a hint to their implementation of the [=create a prerendering browsing context=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering browsing context/activate|activation=] of the created browsing context to be in place of a particular predecessor browsing context: the one that would be chosen by the invoking the [=rules for choosing a browsing context=] given |prerenderCandidate|'s [=prerender candidate/target browsing context name hint=] and |document|'s [=Document/browsing context=].
 
@@ -301,10 +298,6 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 
 <p class="issue">
   We should also cancel speculated prerenders.
-</p>
-
-<p class="issue">
-  We should revisit the [=referrer policies=] used here.
 </p>
 
 <h2 id="security-considerations">Security considerations</h2>
@@ -372,7 +365,7 @@ While efforts have been made to minimize the privacy impact of prefetching, some
 
 <h3 id="privacy-partitioning">Partitioning</h3>
 
-Some user agents <a href="https://privacycg.github.io/storage-partitioning/">partition storage</a> according to the site or origin of the top-level document. In order for prefetching and prerendering to be useful, it is therefore essential that prefetching or prerendering of a document either occur in the partition in which the navigation would occur (e.g., for a same-origin URL) or in an isolated partition, so as to ensure that prefetching does not become a mechanism for bypassing the partitioning scheme.
+Some user agents <a href="https://privacycg.github.io/storage-partitioning/">partition storage</a> according to the site or origin of the top-level document. In order for prefetching and prerendering to be useful, it is therefore essential that prefetching or prerendering of a document either occur in the partition in which the navigation would occur (e.g., for a same-site URL) or in an isolated partition, so as to ensure that prefetching does not become a mechanism for bypassing the partitioning scheme.
 
 <div class="issue">Expand this section once more detail on prefetch and prerender partitioning mechanism is specified.</div>
 
