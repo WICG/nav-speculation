@@ -84,8 +84,8 @@ jobs:
             const extraLinks =
                 Promise.all(["diff", "base"]
                     .map(k => fs.promises.access(`upload-compressed/${k}/${headFile}`)
-                              .then(() => [`[${k}](${baseUrl}/${k}/${headFile})`], () => [])))
-                .flat();
+                              .then(() => `[${k}](${baseUrl}/${k}/${headFile})`, () => undefined)))
+                .filter(x => x);
             if (extraLinks)
                 body += ` (${extraLinks.join(" ")})`;
           }
