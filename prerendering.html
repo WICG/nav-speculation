@@ -624,7 +624,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-09-15">15 September 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-09-23">23 September 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -991,7 +991,11 @@ immediate task. In that case the user agent can <a data-link-type="dfn" href="ht
         <p><var>browsingContext</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#active-document" id="ref-for-active-document⑥">active document</a>'s <a data-link-type="dfn" href="#document-prerendering-browsing-contexts-map" id="ref-for-document-prerendering-browsing-contexts-map②">prerendering browsing contexts map</a>[<var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">URL</a>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a> and is not <a data-link-type="dfn" href="#prerendering-browsing-context-empty" id="ref-for-prerendering-browsing-context-empty①">empty</a></p>
        <li data-md>
         <p>The result of calling <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#should-block-navigation-request" id="ref-for-should-block-navigation-request">should navigation request of type be blocked by content security policy?</a> given <var>request</var> and <var>navigationType</var> is "<code>Allowed</code>".</p>
-        <p class="note" role="note">There is no need for an additional CSP check for the response, see <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#navigate-to" id="ref-for-navigate-to">navigate-to</a>. </p>
+        <p class="note" role="note">
+         There is no need for an additional CSP check for the response, see 
+         <tt>navigate-to</tt>
+          (before it was <a href="https://github.com/w3c/webappsec-csp/pull/564">removed</a>. 
+        </p>
       </ul>
      <li data-md>
       <p>Otherwise, return false.</p>
@@ -1640,12 +1644,6 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <a href="https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store">https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-credentialscontainer-store">6.3.26. Credential Management</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-navigate-to">
-   <a href="https://w3c.github.io/webappsec-csp/#navigate-to">https://w3c.github.io/webappsec-csp/#navigate-to</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-navigate-to">2.1. Allowing activation in place of navigation</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-should-block-navigation-request">
@@ -3009,7 +3007,6 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <li>
     <a data-link-type="biblio">[CSP3]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-navigate-to">navigate-to</span>
      <li><span class="dfn-paneled" id="term-for-should-block-navigation-request">should navigation request of type be blocked by content security policy?</span>
     </ul>
    <li>
@@ -3405,7 +3402,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <dt id="biblio-credential-management-1">[CREDENTIAL-MANAGEMENT-1]
    <dd>Mike West. <a href="https://w3c.github.io/webappsec-credential-management/"><cite>Credential Management Level 1</cite></a>. URL: <a href="https://w3c.github.io/webappsec-credential-management/">https://w3c.github.io/webappsec-credential-management/</a>
    <dt id="biblio-csp3">[CSP3]
-   <dd>Mike West. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
+   <dd>Mike West; Antonio Sartori. <a href="https://w3c.github.io/webappsec-csp/"><cite>Content Security Policy Level 3</cite></a>. URL: <a href="https://w3c.github.io/webappsec-csp/">https://w3c.github.io/webappsec-csp/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-encrypted-media">[ENCRYPTED-MEDIA]
