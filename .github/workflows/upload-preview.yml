@@ -1,0 +1,102 @@
+name: Upload Preview
+on:
+  workflow_run:
+    workflows: [Preview]
+    types:
+    - completed
+jobs:
+  upload:
+    name: Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      issues: 'write'
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v0
+      with:
+        workload_identity_provider: 'projects/28141583151/locations/global/workloadIdentityPools/github/providers/github-actions'
+        service_account: 'github@spec-previews.iam.gserviceaccount.com'
+    - name: Fetch artifact
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          const allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+            ...context.repo,
+            run_id: context.payload.workflow_run.id
+          });
+          let artifact = allArtifacts.data.artifacts.find(
+              artifact => artifact.name === "upload-compressed");
+          if (!artifact)
+            process.exit(1);
+          let download = await github.rest.actions.downloadArtifact({
+            ...context.repo,
+            artifact_id: artifact.id,
+            archive_format: 'zip',
+          });
+          fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/upload-compressed.zip`, Buffer.from(download.data));
+    - name: Unzip artifact
+      shell: bash
+      run: |
+        mkdir -p upload-compressed
+        unzip upload-compressed.zip -d upload-compressed
+        size=`du --summarize --block-size=1K upload-compressed | cut -f1`
+        if [[ "$size" -gt 4096 ]]; then
+          echo "Too large (was $size kilobytes)." >&2
+          exit 1
+        fi
+        pull_number="$(cat upload-compressed/.pull-number)"
+        if ! [[ "$pull_number" =~ ^[0-9]+$ ]]; then
+          echo "Invalid pull request number." >&2
+          exit 1
+        fi
+        echo "PULL_NUMBER=${pull_number)" >> $GITHUB_ENV
+    - name: Upload to Google Cloud Storage
+      uses: google-github-actions/upload-cloud-storage@v0
+      with:
+        path: upload-compressed
+        glob: "**/*.html"
+        destination: "spec-previews/${{ github.repository }}/pull/${{ env.PULL_NUMBER }}"
+        parent: false
+        gzip: false
+        headers: |-
+          content-type: text/html; charset=UTF-8
+          content-encoding: br
+          cache-control: no-transform, max-age=30
+    - name: Post comment
+      uses: actions/github-script@v6
+      env:
+        GCS_BASE: "spec-previews/${{ github.repository }}/pull/${{ env.PULL_NUMBER }}"
+      with:
+        script: |
+          const fs = require("fs");
+          const baseUrl = `https://storage.googleapis.com/${process.env.GCS_BASE}`;
+          let body = "<!-- preview-magic-74656 -->Preview:";
+          for (let headFile of await fs.promises.readdir("upload-compressed/head")) {
+            if (!headFile.endsWith('.html')) continue;
+            body += `\n- [${headFile}](${baseUrl}/head/${headFile})`;
+            const extraLinks =
+                Promise.all(["diff", "base"]
+                    .map(k => fs.promises.access(`upload-compressed/${k}/${headFile}`)
+                              .then(() => [`[${k}](${baseUrl}/${k}/${headFile})`], () => [])))
+                .flat();
+            if (extraLinks)
+                body += ` (${extraLinks.join(" ")})`;
+          }
+          console.log(body);
+          const issue = {...context.repo, issue_number: context.issue.number};
+          const comments = await github.paginate(
+              github.rest.issues.listComments.endpoint.merge({...issue}));
+          let comment = comments.find(
+              comment => comment.body.includes("<!-- preview-magic-74656 -->"));
+          if (comment) {
+            await github.rest.issues.updateComment({...issue, comment_id: comment.id, body});
+          } else {
+            await github.rest.issues.createComment({...issue, body});
+          }

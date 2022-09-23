@@ -7,30 +7,22 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-      issues: 'write'
     env:
-      GCS_BASE: "spec-previews/${{ github.repository }}/pull/${{ github.event.number }}"
+      PULL_NUMBER: "${{ github.event.number }}"
     steps:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 2
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v0
-      with:
-        workload_identity_provider: 'projects/28141583151/locations/global/workloadIdentityPools/github/providers/github-actions'
-        service_account: 'github@spec-previews.iam.gserviceaccount.com'
     - name: Build (head)
       run: |
         make ci
-        mv out out-head
+        mkdir -p upload
+        mv out upload/head
     - name: Build (base)
       run: |
         git checkout HEAD^
         make ci
-        mv out out-base
+        mv out upload/base
     - name: Checkout w3c/htmldiff-ui
       uses: actions/checkout@v3
       with:
@@ -40,10 +32,10 @@ jobs:
     - name: Diff
       shell: bash
       run: |
-        mkdir -p out-diff
-        for head_file in $(find out-head -name '*.html'); do
-          base_file=out-base/"${head_file#*/}"
-          diff_file=out-diff/"${head_file#*/}"
+        mkdir -p upload/diff
+        for head_file in $(find upload/head -name '*.html'); do
+          base_file=upload/base/"${head_file#upload/head/}"
+          diff_file=upload/diff/"${head_file#upload/head/}"
           if [[ -e "$base_file" ]]; then
             if cmp -s "$head_file" "$base_file"; then
               rm "$base_file" "$head_file"
@@ -56,48 +48,15 @@ jobs:
       shell: bash
       run: |
         which brotli >/dev/null || sudo apt-get install -y brotli
-        mkdir -p out-gcs/diff
-        for head_file in $(find out-head -name '*.html'); do
-          brotli "$head_file" -o out-gcs/"${head_file#*/}"
+        mkdir -p upload-compressed/{base,head,diff}
+        for file in $(find upload -name '*.html'); do
+          dir=`dirname upload-compressed/"${file#upload/}"`
+          mkdir -p "$dir"
+          brotli "$file" -o upload-compressed/"${file#upload/}"
         done
-        for diff_file in $(find out-diff -name '*.html'); do
-          brotli "$diff_file" -o out-gcs/diff/"${diff_file#*/}"
-        done
-    - name: Upload to Google Cloud Storage
-      uses: google-github-actions/upload-cloud-storage@v0
+        echo -n "$PULL_NUMBER" >upload-compressed/.pull-number
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
       with:
-        path: out-gcs
-        glob: "**/*.html"
-        destination: "${{ env.GCS_BASE }}"
-        parent: false
-        gzip: false
-        headers: |-
-          content-type: text/html; charset=UTF-8
-          content-encoding: br
-          cache-control: no-transform, max-age=30
-    - name: Post comment
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require("fs");
-          const baseUrl = `https://storage.googleapis.com/${process.env.GCS_BASE}`;
-          let body = "<!-- preview-magic-74656 -->Preview:";
-          for (let headFile of await fs.promises.readdir("out-head")) {
-            if (!headFile.endsWith('.html')) continue;
-            body += `\n- [${headFile}](${baseUrl}/${headFile})`;
-            const diffExists = await fs.promises.access(`out-diff/${headFile}`)
-                .then(() => true, () => false);
-            if (diffExists)
-              body += ` ([diff](${baseUrl}/diff/${headFile}))`;
-          }
-          console.log(body);
-          const issue = {...context.repo, issue_number: context.issue.number};
-          const comments = await github.paginate(
-              github.rest.issues.listComments.endpoint.merge({...issue}));
-          let comment = comments.find(
-              comment => comment.body.includes("<!-- preview-magic-74656 -->"));
-          if (comment) {
-            await github.rest.issues.updateComment({...issue, comment_id: comment.id, body});
-          } else {
-            await github.rest.issues.createComment({...issue, body});
-          }
+        name: upload-compressed
+        path: upload-compressed/
