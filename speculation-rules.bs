@@ -284,8 +284,12 @@ Inside the [=prepare the script element=] algorithm we make the following change
 
   1. If |input| is not a [=map=], then return null.
   1. If |input| does not [=map/contain=] exactly one of "`and`", "`or`", "`not`", "`href_matches`" and "`selector_matches`", then return null. Otherwise, let |predicateType| be that key.
+
+      <p class="note">This makes sure it is unambiguous what type of predicate is being used.</p>
   1. If |predicateType| is "`and`" or "`or`", then:
     1. If |input| has any [=map/key=] other than |predicateType|, then return null.
+
+      <p class="note">This, and other similar checks below, make sure that unexpected extra options cause the predicate to be invalid.</p>
     1. Let |rawClauses| be the |input|[|predicateType|].
     1. If |rawClauses| is not a [=list=], then return null.
     1. Let |clauses| be an empty [=list=].
@@ -369,7 +373,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. For each [=shadow-including descendant=] |descendant| of |document|, in [=shadow-including tree order=]:
     1. If |descendant| is not an <{a}> with an <{a/href}> attribute or <{area}> element with an <{area/href}> attribute, [=iteration/continue=].
 
-        <div class="note">This corresponds to the elements which match the '':link'' and '':visited'' [=pseudo-classes=], or which appear in the {{Document/links}} collection.</div>
+        <div class="note">This corresponds to the elements which match '':any-link'' [=pseudo-class=], or which appear in the {{Document/links}} collection.</div>
 
     1. If |predicate| [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
   1. Return |links|.
