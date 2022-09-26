@@ -8,15 +8,19 @@ URL: https://wicg.github.io/nav-speculation/speculation-rules.html
 Level: 1
 Editor: Jeremy Roman, Google https://www.google.com/, jbroman@chromium.org
 Abstract: A flexible syntax for defining what outgoing links can be prepared speculatively before navigation.
-Markup Shorthands: css no, markdown yes
+Markup Shorthands: css yes, markdown yes
 Assume Explicit For: yes
 Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
 Boilerplate: omit conformance
 </pre>
 <pre class="link-defaults">
+spec:html; type:element; text:a
+spec:html; type:element-attr; for:a; text:href
 spec:html; type:element; text:link
 spec:html; type:element; text:script
+spec:selectors-4; type:selector; text::link
+spec:selectors-4; type:selector; text::visited
 </pre>
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
@@ -37,6 +41,13 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsers.html
       text: valid browsing context name or keyword; url: valid-browsing-context-name-or-keyword
       text: rules for choosing a browsing context; url: the-rules-for-choosing-a-browsing-context-given-a-browsing-context-name
+    urlPrefix: semantics.html
+      text: get an element's target; url: get-an-element's-target
+spec: urlpattern; urlPrefix: https://wicg.github.io/urlpattern/
+  type: interface; text: URLPattern; url: urlpattern
+  type: constructor; for: URLPattern; text: "URLPattern(input, baseURL)"; url: dom-urlpattern-urlpattern
+  type: dictionary; text: URLPatternInit
+  type: dfn; text: match; url: match
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
@@ -94,6 +105,7 @@ spec: nav-speculation; urlPrefix: prerendering.html
 
 A <dfn>speculation rule</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule">URLs</dfn>, an [=ordered set=] of [=URLs=]
+* <dfn for="speculation rule">predicate</dfn>, a [=document rule predicate=] or null
 * <dfn for="speculation rule">requirements</dfn>, an [=ordered set=] of [=strings=]
 * <dfn for="speculation rule">target browsing context name hint</dfn>, a [=string=] or null
 
@@ -102,6 +114,28 @@ The only valid string for [=speculation rule/requirements=] to contain is "`anon
 A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule set">prefetch rules</dfn>, a [=list=] of [=speculation rules=]
 * <dfn for="speculation rule set">prerender rules</dfn>, a [=list=] of [=speculation rules=]
+
+A <dfn>document rule predicate</dfn> is one of the following:
+* [=document rule conjunction=]
+* [=document rule disjunction=]
+* [=document rule negation=]
+* [=document rule URL pattern predicate=]
+* [=document rule CSS selector predicate=]
+
+A <dfn>document rule conjunction</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule conjunction">clauses</dfn>, a [=list=] of [=document rule predicates=]
+
+A <dfn>document rule disjunction</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule disjunction">clauses</dfn>, a [=list=] of [=document rule predicates=]
+
+A <dfn>document rule negation</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule negation">clause</dfn>, a [=document rule predicate=]
+
+A <dfn>document rule URL pattern predicate</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule URL pattern predicate">patterns</dfn>, a [=list=] of {{URLPattern}}s
+
+A <dfn>document rule CSS selector predicate</dfn> is a struct with the following [=struct/items=]:
+* <dfn for="document rule CSS selector predicate">selectors</dfn>, a [=list=] of [=selectors=]
 
 <h3 id="speculation-rules-script">The <{script}> element</h3>
 
@@ -213,15 +247,26 @@ Inside the [=prepare the script element=] algorithm we make the following change
 <div algorithm="parse a speculation rule">
   To <dfn>parse a speculation rule</dfn> given a [=map=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
 
-  1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`requires`", and `"target_hint"`, then return null.
-  1. If |input|["`source`"] does not [=map/exist=] or is not the [=string=] "`list`", then return null.
+  1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", and `"target_hint"`, then return null.
+  1. If |input|["`source`"] does not [=map/exist=] or is neither the [=string=] "`list`" nor the [=string=] "`document`", then return null.
+  1. Let |source| by |input|["`source`"].
   1. Let |urls| be an empty [=list=].
-  1. If |input|["`urls`"] does not [=map/exist=], is not a [=list=], or has any element which is not a [=string=], then return null.
-  1. [=list/For each=] |urlString| of |input|["`urls`"]:
-    1. Let |parsedURL| be the result of [=basic URL parser|parsing=] |urlString| with |baseURL|.
-    1. If |parsedURL| is failure, then [=iteration/continue=].
-    1. If |parsedURL|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then [=iteration/continue=].
-    1. [=list/Append=] |parsedURL| to |urls|.
+  1. Let |predicate| be null.
+  1. If |source| is "`list`":
+    1. If |input|["`where`"] [=map/exists=], then return null.
+    1. If |input|["`urls`"] does not [=map/exist=], is not a [=list=], or has any element which is not a [=string=], then return null.
+    1. [=list/For each=] |urlString| of |input|["`urls`"]:
+      1. Let |parsedURL| be the result of [=basic URL parser|parsing=] |urlString| with |baseURL|.
+      1. If |parsedURL| is failure, then [=iteration/continue=].
+      1. If |parsedURL|'s [=url/scheme=] is not an [=HTTP(S) scheme=], then [=iteration/continue=].
+      1. [=list/Append=] |parsedURL| to |urls|.
+  1. If |source| is "`document`":
+    1. If |input|["`urls`"]  [=map/exists=], then return null.
+    1. If |input|["`where`"] does not [=map/exist=], then set |predicate| to a [=document rule conjunction=] whose [=document rule conjunction/clauses=] is an empty [=list=].
+
+      <p class="note">Such a predicate will match all links.</p>
+    1. Otherwise, set |predicate| to the result of [=parsing a document rule predicate=] given |input|["`where`"] and |baseURL|.
+    1. If |predicate| is null, then return null.
   1. Let |requirements| be an empty [=ordered set=].
   1. If |input|["`requires`"] [=map/exists=], but is not a [=list=], then return null.
   1. [=list/For each=] |requirement| of |input|["`requires`"]:
@@ -231,7 +276,67 @@ Inside the [=prepare the script element=] algorithm we make the following change
   1. If |input|["`target_hint`"] [=map/exists=]:
     1. If |input|["`target_hint`"] is not a [=valid browsing context name or keyword=], then return null.
     1. Set |targetHint| to |input|["`target_hint`"].
-  1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls|, [=speculation rule/requirements=] |requirements|, and [=speculation rule/target browsing context name hint=] |targetHint|.
+  1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls|, [=speculation rule/predicate=] |predicate|, [=speculation rule/requirements=] |requirements|, and [=speculation rule/target browsing context name hint=] |targetHint|.
+</div>
+
+<div algorithm="parse a document rule predicate">
+  To <dfn>parse a document rule predicate</dfn> given a value |input| and [=URL=] |baseURL|:
+
+  1. If |input| is not a [=map=], then return null.
+  1. If |input| does not [=map/contain=] exactly one of "`and`", "`or`", "`not`", "`href_matches`" and "`selector_matches`", then return null. Otherwise, let |predicateType| be that key.
+
+      <p class="note">This makes sure it is unambiguous what type of predicate is being used.</p>
+  1. If |predicateType| is "`and`" or "`or`", then:
+    1. If |input| has any [=map/key=] other than |predicateType|, then return null.
+
+      <p class="note">This, and other similar checks below, make sure that unexpected extra options cause the predicate to be invalid.</p>
+    1. Let |rawClauses| be the |input|[|predicateType|].
+    1. If |rawClauses| is not a [=list=], then return null.
+    1. Let |clauses| be an empty [=list=].
+    1. [=list/For each=] |rawClause| of |rawClauses|:
+      1. Let |clause| be the result of [=parsing a document rule predicate=] given |rawClause| and |baseURL|.
+      1. If |clause| is null, then return null.
+      1. [=list/Append=] |clause| to |clauses|.
+    1. If |predicateType| is "`and`", then return a [=document rule conjunction=] whose [=document rule conjunction/clauses=] is |clauses|.
+    1. If |predicateType| is "`or`", then return a [=document rule disjunction=] whose [=document rule disjunction/clauses=] is |clauses|.
+  1. If |predicateType| is "`not`", then:
+    1. If |input| has any [=map/key=] other than "`not`", then return null.
+    1. Let |rawClause| be the |input|[|predicateType|].
+    1. Let |clause| be the result of [=parsing a document rule predicate=] given |rawClause| and |baseURL|.
+    1. If |clause| is null, then return null.
+    1. Return a [=document rule negation=] whose [=document rule negation/clause=] is |clause|.
+  1. If |predicateType| is "`href_matches`":
+    1. If |input| has any [=map/key=] other than "`href_matches`", then return null.
+    1. Let |rawPatterns| be |input|["`href_matches`"].
+    1. If |rawPatterns| is not a [=list=], then set |rawPatterns| to « |rawPatterns| ».
+    1. Let |patterns| be an empty [=list=].
+    1. [=list/For each=] |rawPattern| of |rawPatterns|:
+      1. Let |serializedBaseURL| be the [=URL serializer|serialization=] of |baseURL|.
+      1. Let |pattern| be null.
+      1. If |rawPattern| is a [=string=], then:
+        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern/URLPattern(input, baseURL)}} constructor steps given |rawPattern| and |serializedBaseURL|. If those steps throw, catch the exception and return null.
+      1. Otherwise, if |rawPattern| is a [=map=], then:
+        1. Let |init| be «[ "`baseURL`" → |serializedBaseURL| ]», representing a dictionary of type {{URLPatternInit}}.
+        1. [=map/For each=] |key| → |value| of |rawPattern|:
+          1. If |key| is not the [=identifier=] of a [=dictionary member=] of {{URLPatternInit}} or one of its [=inherited dictionaries=], |value| is not a [=string=], or the member's type is not declared to be {{USVString}}, then return null.
+
+            <div class="note">This will need to be updated if {{URLPattern}} gains members of other types.</div>
+          1. Set |init|[|key|] to |value|.
+        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern/URLPattern(input, baseURL)}} constructor steps given |init|. If those steps throw, catch the exception and return null.
+      1. Otherwise, return null.
+      1. [=Assert=]: |pattern| is a {{URLPattern}}.
+      1. [=list/Append=] |pattern| to |patterns|.
+    1. Return a [=document rule URL pattern predicate=] whose [=document rule URL pattern predicate/patterns=] is |patterns|.
+  1. If |predicateType| is "`selector_matches`":
+    1. If |input| has any [=map/key=] other than "`selector_matches`", then return null.
+    1. Let |rawSelectors| be |input|["`selector_matches`"].
+    1. If |rawSelectors| is not a [=list=], then set |rawSelectors| to « |rawSelectors| ».
+    1. Let |selectors| be an empty [=list=].
+    1. [=list/For each=] |rawSelector| of |selectors|:
+      1. If |rawSelector| is not a [=string=], then return null.
+      1. [=Parse a selector=] from |rawSelector|. If the result is failure, then return null. Otherwise, let |selector| be the result.
+      1. [=list/Append=] |selector| to |selectors|.
+    1. Return a [=document rule CSS selector predicate=] whose [=document rule CSS selector predicate/selectors=] is |selectors|.
 </div>
 
 <h3 id="speculation-rules-processing">Processing model</h3>
@@ -261,6 +366,19 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   * |prefetchRecord|'s [=prefetch record/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
 </div>
 
+<div algorithm>
+  To <dfn>find matching links</dfn> given a {{Document}} |document| and [=document rule predicate=] |predicate|:
+
+  1. Let |links| be an empty [=list=].
+  1. For each [=shadow-including descendant=] |descendant| of |document|, in [=shadow-including tree order=]:
+    1. If |descendant| is not an <{a}> with an <{a/href}> attribute or <{area}> element with an <{area/href}> attribute, [=iteration/continue=].
+
+        <div class="note">This corresponds to the elements which match '':any-link'' [=pseudo-class=], or which appear in the {{Document/links}} collection.</div>
+
+    1. If |predicate| [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
+  1. Return |links|.
+</div>
+
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
@@ -275,10 +393,23 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url| and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
+      1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
+        1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+        1. &#x231B; [=list/For each=] |link| of |links|:
+          1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
+          1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |href|, and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url| and [=prerender candidate/target browsing context name hint=] is |rule|'s [=speculation rule/target browsing context name hint=].
         1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
+      1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
+        1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+        1. &#x231B; [=list/For each=] |link| of |links|:
+          1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
+          1. &#x231B; Let |target| be |rule|'s [=speculation rule/target browsing context name hint=].
+          1. &#x231B; If |target| is null, set it to the result of [=getting an element's target=] given |link|.
+          1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |href|, and [=prerender candidate/target browsing context name hint=] is |target|.
+          1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
   1. &#x231B; [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
     1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
     1. &#x231B; [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
@@ -300,6 +431,40 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   We should also cancel speculated prerenders.
 </p>
 
+<h3 id="document-rule-predicate-matching">Document rule predicate matching</h3>
+
+<div algorithm>
+  A [=document rule predicate=] |predicate| <dfn for="document rule predicate">matches</dfn> an {{Element}} |el| implementing the {{HTMLHyperlinkElementUtils}} mixin if the following steps return true:
+
+  1. If |predicate| is a [=document rule conjunction=], then:
+    1. [=list/For each=] |clause| of |predicate|'s [=document rule conjunction/clauses=]:
+      1. If |clause| does not [=document rule predicate/match=] |el|, return false.
+    1. Return true.
+  1. If |predicate| is a [=document rule disjunction=], then:
+    1. [=list/For each=] |clause| of |predicate|'s [=document rule disjunction/clauses=]:
+      1. If |clause| [=document rule predicate/matches=] |el|, return true.
+    1. Return false.
+  1. If |predicate| is a [=document rule negation=], then:
+    1. If |predicate|'s [=document rule negation/clause=] [=document rule predicate/matches=] |el|, return false.
+    1. Return true.
+  1. If |predicate| is a [=document rule URL pattern predicate=], then:
+    1. Let |href| be the result of running |el|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
+    1. [=list/For each=] |pattern| of |predicate|'s [=document rule URL pattern predicate/patterns=]:
+      1. <a spec="urlpattern">Match</a> given |pattern| and |href|. If the result is not null, return true.
+    1. Return false.
+  1. If |predicate| is a [=document rule CSS selector predicate=], then:
+    1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
+      1. [=match a selector against an element|Match=] |selector| against |el| with the [=scoping root=] set to |el|'s [=Node/node document=]. If the result is true, return true.
+
+        During this step, user agents must apply the same privacy restrictions to the '':visited'' pseudo-class as they would to other selector matching logic that could be observed by authors (e.g., {{ParentNode/querySelector(selectors)}}).
+
+        <div class="advisement">
+          This is important to prevent this from opening an avenue for attackers to gather information about a user's browsing history, e.g., by using a selector such as <code>:root:has(.sensitive-site:visited) .report-sensitive-site</code>. See the [[#privacy-visited-links|Privacy Considerations]] section.
+        </div>
+    1. Return false.
+  1. [=Assert=]: This step is not reached.
+</div>
+
 <h2 id="security-considerations">Security considerations</h2>
 
 <h3 id="security-csrf">Cross-site request forgery</h3>
@@ -310,11 +475,17 @@ When any supported action acts on a URL which is [=same origin=] to the document
 
 Otherwise, requests are always issued without using any previously existing [=credentials=]. This limits the ambient authority available to any potentially forged request, and such requests can already be made through [[FETCH]], a subresource or frame, or various other means. Site operators are therefore already well-advised to use CSRF tokens or other mitigations for this threat.
 
+Because links in a document could be selected using a document rule, if the document may contain user-generated markup then authors should construct their speculation rules to exclude such links that may have harmful side effects, e.g., by using a [=document rule CSS selector predicate=] to exclude links in regions with user-generated links or by using a [=document rule URL pattern predicate=] to allow only URL patterns known to be safe to fetch without side effects.
+
 <h3 id="security-xss">Cross-site scripting</h3>
 
 This specification causes activity in response to content found in the document, so it is worth considering the options open to an attacker able to inject unescaped HTML.
 
-Such an attacker is otherwise able to inject JavaScript, frames or other elements. The activity possible with this specification (requesting fetches etc) is generally less dangerous than arbitrary script execution, and comparable to other elements. The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `prefetch-src` directive applies to prefetch requests arising from the rules.
+Such an attacker is otherwise able to inject JavaScript, frames or other elements. The activity possible with this specification (requesting fetches etc) is generally less dangerous than arbitrary script execution, and comparable to other elements. It would, however, make it possible to cause prefetches of links in the document, and the existence of those prefetches could provide a vector for exfiltrating information about those links.
+
+The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `prefetch-src` directive applies to prefetch requests arising from the rules.
+
+The possibility of leaking link URLs via this mechanism is additionally mitigated by the fact that prefetch and prerender to plaintext HTTP (other than to localhost) is not permitted, and so such an on-path attacker could not directly observe preloading request URLs, but would only have access to metadata and traffic analysis. This does not, however, replace standard XSS protections.
 
 <h3 id="type-confusion">Type confusion</h3>
 
@@ -376,3 +547,9 @@ This specification describes a mechanism through which HTTP requests for later t
 Since existing [=credentials=] for the destination origin are not sent (assuming it is not [=same origin=] with the referrer), that site is limited in its ability to identify the user before navigation in a similar way to if the referrer site had simply used [[FETCH]] to make an uncredentialed request. Upon navigation, this becomes similar to ordinary navigation (e.g., by clicking a link that was not prefetched).
 
 To the extent that user agents attempt to mitigate identity joining for ordinary fetches and navigations, they can apply similar mitigations to prefetched navigations.
+
+<h3 id="privacy-visited-links">Visited links</h3>
+
+It is imperative that the features in this specification do not allow sites to determine which other web sites a user has visited in the past.
+
+Because a [=document rule CSS selector predicate=] can use arbitrary CSS selectors, it is critical that browsers apply the same privacy mitigations (which may not be covered by a specification) to the '':visited'' pseudo-class as in other cases where it could be used by an attacker to extract information about the user's browsing history. The [=document rule predicate/match|matching algorithm=] requires this behavior. For more information, see <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Privacy_and_the_:visited_selector">Privacy and the :visited selector</a>.
