@@ -68,25 +68,3 @@ As mentioned above, we prevent communications to the same extent we prevent it w
 - The prerendered content's own URL and the referring URL are available to prerendered content to the same extent they're available to normal navigations. Solutions to link decoration will apply to both.
 
 Note that since a non-activated prerendering browsing context has no storage access, it cannot join any information stored in the URL with any of the prerendered site's data. So it's only activation, which gives full first-party storage access, which creates a navigation-equivalent communications channel. This equivalence makes sense, as activating a prerendering browsing context is much like clicking a link.
-
-## CSP integration
-
-The [`navigate-to`](https://w3c.github.io/webappsec-csp/#directive-navigate-to) directive prevents navigations, which means that if prerendered content is prevented from being navigated to via this mechanism, then the corresponding prerendering browsing context will never be activated. This mostly falls out automatically from the CSP spec preventing navigations, but any prerendering APIs that explicitly expose the activation operation (such as [portals](https://github.com/WICG/portals/blob/master/README.md)) will need to account for it in their specification.
-
-Note that `navigate-to` will prohibit navigations based on the URL of the link clicked (or similar), which corresponds to a prerendering browsing context's original URL (discussed [above](#navigation)). This means that given something like
-
-```http
-Content-Security-Policy: navigate-to https://a.example
-```
-
-and markup such as
-
-```html
-<link rel="prerender2" href="https://a.example/redirects-to-another-origin">
-
-<script>
-location.href = 'https://a.example/redirects-to-another-origin';
-</script>
-```
-
-then the navigation will be allowed, _even though_ the prerendering browsing context could be pointing to an origin besides `https://a.example`. In other words, prerendering does not change the behavior of `navigate-to`, despite allowing the browser to know more information about the eventual navigation destination.
