@@ -48,7 +48,7 @@ No-Vary-Search: *; except=("productId")
     - [… for other browser caches](#-for-other-browser-caches)
   - [Interaction with storage partitioning](#interaction-with-storage-partitioning)
 - [Alternatives considered](#alternatives-considered)
-- [Future extensions](#future-extensions)
+- [Extensibility](#extensibility)
   - [More complex no-vary rules](#more-complex-no-vary-rules)
   - [`No-Vary-Path`](#no-vary-path)
   - [A referrer hint](#a-referrer-hint)
@@ -260,7 +260,9 @@ The response header could be flipped, i.e. `Vary-Search`, so as to better match 
 
 The name could be `No-Vary-Query`, instead of `No-Vary-Search`. We chose "search" over "query" in the API because that is already exposed to the web platform through APIs such as `location.search`, `url.search`, `url.searchParams`, and `URLSearchParams`. (At the same time, we've continued talking about "query parameters" and the URL's "query string", since [that is what specs do](https://url.spec.whatwg.org/#concept-url-query). In other words, we stick with the existing mismatch between developer API and specification concepts.)
 
-## Future extensions
+## Extensibility
+
+The above proposal covers everything that we want to include in an initial version of this feature. However, a number of potential future extensions have come up in discussion, which we document here to ensure that the feature is sufficiently extensible to allow them.
 
 ### More complex no-vary rules
 
