@@ -37,10 +37,10 @@ No-Vary-Search: *; except=("productId")
 - [Detailed design](#detailed-design)
   - [The header](#the-header)
   - [Integration with…](#integration-with)
-    - [… HTTP caches](#-http-caches)
     - [… preloading caches](#-preloading-caches)
     - [… the Cache API](#-the-cache-api)
-    - [… other browser caches](#-other-browser-caches)
+    - [… other web platform caches](#-other-web-platform-caches)
+    - [… HTTP caches](#-http-caches)
   - [Navigated-to pages](#navigated-to-pages)
     - [Prerendering activation](#prerendering-activation)
   - [Interaction with redirects …](#interaction-with-redirects-)
@@ -146,10 +146,6 @@ Note that if you use `*`, additionally using string values in the list is pointl
 
 ### Integration with…
 
-#### … HTTP caches
-
-The proposal augments [RFC 9111](https://httpwg.org/specs/rfc9111.html#constructing.responses.from.caches)'s notion of "Constructing Responses from Caches", providing a mechanism to relax the requirement of "The presented effective request URI \[sic] and that of the stored response match" in well-defined ways. Since everything about the HTTP cache is best-effort, using `No-Vary-Search` will not guarantee additional cache hits. But it should help.
-
 #### … preloading caches
 
 This repository contains specifications for in-memory URL-keyed caches for [prefetch records](https://wicg.github.io/nav-speculation/prefetch.html#document-prefetch-records) and [prerendering browsing contexts](https://wicg.github.io/nav-speculation/prerendering.html#document-prerendering-browsing-contexts-map). This proposal updates the key construction and matching procedure for these caches.
@@ -164,21 +160,26 @@ The existing `ignoreVary` option to [`cache.match()`](https://developer.mozilla.
 
 The existing `ignoreSearch` option to `cache.match()` will override the effect of `No-Vary-Search`; that is, if `ignoreSearch` is specified, then `No-Vary-Search` is ignored.
 
-We could contemplate adding an `ignoreNoVaryQuery` option to `cache.match()` in the future, but are not yet aware of any use cases for that level of customization.
+We could contemplate adding an `ignoreNoVarySearch` option to `cache.match()` in the future, but are not yet aware of any use cases for that level of customization.
 
-#### … other browser caches
+#### … other web platform caches
 
-There are several other URL-keyed caches on the web platform. Examples are:
+There are several other URL-keyed caches on the web platform. The ones we are aware of are:
 
 - The [list of available images](https://html.spec.whatwg.org/#the-list-of-available-images)
 - [Module maps](https://html.spec.whatwg.org/#module-map)
 - [Shared workers](https://html.spec.whatwg.org/#shared-workers-and-the-sharedworker-interface:concept-sharedworkerglobalscope-constructor-url)
 - [Resources preloaded via `<link rel="preload">`](https://html.spec.whatwg.org/#map-of-preloaded-resources)
 
-The proposal does _not_ update cache key computation for these caches. This is because:
+The proposal plans to update cache key computation for these caches as well.
 
-- None of them respect the `Vary` header today
-- All of them are keyed by the _request_ URL, and not by the _response_ URL, whereas `No-Vary-Search` is a property provided by the response.
+Note that these caches are keyed by _request_ URL, whereas `No-Vary-Search` is a property of the _response_. See [below](#-for-other-browser-caches) for discussion on how this plays out.
+
+#### … HTTP caches
+
+The proposal augments [RFC 9111](https://httpwg.org/specs/rfc9111.html#constructing.responses.from.caches)'s notion of "Constructing Responses from Caches", providing a mechanism to relax the requirement of "The presented effective request URI \[sic] and that of the stored response match" in well-defined ways.
+
+Since everything about the HTTP cache is best-effort, using `No-Vary-Search` will not guarantee additional cache hits. As such, browsers might implement HTTP cache integration after this feature has already proven its worth on, e.g., preloading caches.
 
 ### Navigated-to pages
 
@@ -236,13 +237,13 @@ The same reasoning applies to the [Cache API](https://developer.mozilla.org/en-U
 
 #### … for other browser caches
 
-For other browser caches, how `No-Vary-Search` applies across redirects is not as obvious, since they usually collapse redirect processing. For example, the shared worker cache is keyed by request URL, and contains `SharedWorkerGlobalScope` instances contructed from the response body and URL that ultimately results from following all the redirects. There is no opportunity to follow along the whole chain of redirects each time we do a cache lookup.
+For other browser caches, how `No-Vary-Search` applies across redirects is not as obvious, since they collapse redirect processing. For example, the shared worker cache is keyed by request URL, and contains `SharedWorkerGlobalScope` instances contructed from the response body and URL that ultimately results from following all the redirects. There is no opportunity to follow along the whole chain of redirects each time we do a cache lookup.
 
 For these cases, we only account for the `No-Vary-Search` header corresponding to the cache key URL, which is always (to our knowledge) the request URL. For example, consider a situation where `/worker.js` redirects to `/worker-v2.js`, preserving any query parameters as part of the redirect. Then:
 
-- If `/worker.js` contains `No-Vary-Search: "debuglog"`, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will connect to the same shared worker, which was originally created from `/worker-v2.js?debuglog=1`.
+- If `/worker.js` sends `No-Vary-Search: "debuglog"`, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will connect to the same shared worker, which was originally created from `/worker-v2.js?debuglog=1`.
 
-- If `/worker-v2.js` contains `No-Vary-Search: "debuglog"`, but `/worker.js` does not, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will spin up two separate workers, derived from `/worker-v2.js?debuglog=1` and `/worker-v2.js?debuglog=0` respectively.
+- If `/worker-v2.js` sends `No-Vary-Search: "debuglog"`, but `/worker.js` does not, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will spin up two separate workers, derived from `/worker-v2.js?debuglog=1` and `/worker-v2.js?debuglog=0` respectively.
 
 ### Interaction with storage partitioning
 
