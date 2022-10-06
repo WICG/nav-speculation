@@ -4,10 +4,10 @@ Caching is useful for making web pages load faster, and thus creating better use
 
 One of the most important cache keys for web resources is the resource's URL. However, sometimes multiple URLs can represent the same resource. This leads to caches not always being as helpful as they could be: if the browser has the resource cached under one URL, but the resource is then requested under another, the cached version will be ignored.
 
-This proposal tackles a specific subset of this general problem, for when a resource has multiple URLs which differ only in certain query components. Via a new HTTP header, `No-Vary-Search`, resources can declare that some or all parts of the query can be ignored for cache matching purposes. For example, if the order of the query parameters should not cause cache misses, this is indicated using
+This proposal tackles a specific subset of this general problem, for when a resource has multiple URLs which differ only in certain query components. Via a new HTTP header, `No-Vary-Search`, resources can declare that some or all parts of the query can be ignored for cache matching purposes. For example, if the order of the query parameter keys should not cause cache misses, this is indicated using
 
 ```http-header
-No-Vary-Search: order
+No-Vary-Search: key-order
 ```
 
 If the specific query parameters (e.g., ones indicating something for analytics) should not cause cache misses, this is indicated using
@@ -59,7 +59,7 @@ No-Vary-Search: *; except=("productId")
 
 ## Goals
 
-- Allow caches to avoid keying on the order of URL query parameters
+- Allow caches to avoid keying on the order of URL query parameter keys
 
 - Allow caches to avoid keying on specifically-named URL query parameters
 
@@ -75,7 +75,7 @@ No-Vary-Search: *; except=("productId")
 
 ## Prior art
 
-This proposal takes some of its inspiration from the existing [`Vary`](https://httpwg.org/specs/rfc7231.html#header.vary) HTTP header, which lets servers indicate what _header names_ should be _included_ when constructing the cache key. Unlike for headers, by default responses vary on their URL (including query string), so our proposal uses the `No-Vary-` prefix to show how it's indicating which query parameters should be _excluded_ when constructing the cache key. We see these two headers, the existing `Vary` and our proposed `No-Vary-Search`, as part of a general cache-key-construction mechanism, and ideally all places that respect the former will also respect the latter. (However, if they don't, the consequence is just fewer cache hits. So it isn't mandatory that all parts of the ecosystem immediately upgrade to support `No-Vary-Search`.)
+This proposal takes some of its inspiration from the existing [`Vary`](https://httpwg.org/specs/rfc9110.html#field.vary) HTTP header, which lets servers indicate what _header names_ should be _included_ when constructing the cache key. Unlike for headers, by default responses vary on their URL (including query string), so our proposal uses the `No-Vary-` prefix to show how it's indicating which query parameters should be _excluded_ when constructing the cache key. We see these two headers, the existing `Vary` and our proposed `No-Vary-Search`, as part of a general cache-key-construction mechanism, and ideally all places that respect the former will also respect the latter. (However, if they don't, the consequence is just fewer cache hits. So it isn't mandatory that all parts of the ecosystem immediately upgrade to support `No-Vary-Search`.)
 
 It is widely recognized that query parameters might interfere with constructing an appropriate cache key. Specific CDNs have solutions for this in place already. For example, [CloudFlare](https://developers.cloudflare.com/cache/about/cache-keys) allows almost the same level of customization we are proposing here, with their `include` and `exclude` settings which can be given query string parameter names or `*`. (Their documentation does not give any indication of how they treat query parameter ordering.) And [Amazon CloudFront](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/QueryStringParameters.html#query-string-parameters-optimizing-caching) lets you pick an allowlist of query parameters to cache based on, with the optional of ignoring all of them for caching purposes. Indeed, if you just [search for "cache vary query parameters"](https://www.google.com/search?q=cache+vary+query+parameters), you get a large variety of technical documentation on similar solutions throughout the tech stack. Although our proposal is aimed at browsers, we are optimistic that CDNs, proxies, and other parts of the HTTP ecosystem might be able to use the information in this header in addition to their vendor-specific solutions.
 
@@ -136,7 +136,7 @@ When the page loads, we don't know yet whether the user will click on the hero i
 
 The `No-Vary-Search` header is a [HTTP structured field](https://www.rfc-editor.org/rfc/rfc8941.html) whose value must be a list. The list can contain either predefined [tokens](https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens), which have special behavior, or [strings](https://www.rfc-editor.org/rfc/rfc8941.html#name-strings), which indicate query parameters not to vary on. The special tokens are:
 
-- `order`: indicates the order of the query parameters should be ignored when constructing the cache key.
+- `key-order`: indicates the order of the query parameter keys should be ignored when constructing the cache key. (As they were canonicalized using [`URLSearchParams`'s `sort()`](https://url.spec.whatwg.org/#dom-urlsearchparams-sort).)
 
 - `*`: indicates all query parameters should be ignored when constructing the cache key. This can be supplemented by a list-of-strings-valued `except=()` [parameter](https://www.rfc-editor.org/rfc/rfc8941.html#name-parameters), which effectively allows indicating "_only_ vary on the given parameters".
 
@@ -185,10 +185,10 @@ Since everything about the HTTP cache is best-effort, using `No-Vary-Search` wil
 
 When navigating to a URL which can be matched with a cached resource via `No-Vary-Search`, we still treat the resource _as if_ it were fetched from the target URL, and not from the originally-cached URL. For example:
 
-- Service workers and resource timing APIs see fetches go by targeting the original request URL.
+- Service workers and resource timing APIs see fetches go by aimed at the target URL.
 - Once the document is constructed and displayed:
-  - `location.href` is the navigated-to-URL.
-  - Any subresource fetches are done with a `Referer` header pointing to the navigated-to URL.
+  - `location.href` is the navigated-to response URL.
+  - Any subresource fetches are done with a `Referer` header pointing to the navigated-to response URL.
 
 In other words, this proposal purely modifies how URL matching works on the cache layer, allowing certain headers and body to match a given request URL, when previously they were not allowed to.
 
@@ -274,6 +274,8 @@ As mentioned in the [non-goals section](#non-goals), it's possible to imagine a 
 - We could allow restrictions on the value space, using syntax like `No-Vary-Search: "color";value-regexp="(?:blue|azure)"`.
 
 - We could allow treating multiple keys as the same key, using syntax like `No-Vary-Search: ("color", "colour")`.
+
+- We could allow order-insensitivity for _values_, not just keys, using a `value-order` token. (This would treat `/a?x=y&x=z` the same as `/a?x=z&x=y`.)
 
 We think capabilities such as these serve less urgent [use cases](#use-cases) than what we have so far, and so don't plan on supporting them now. But it's good to know there's room for them in the future.
 
