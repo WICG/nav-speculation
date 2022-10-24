@@ -76,7 +76,7 @@ This explainer proposes a new way for content to declare what kind of speculatio
 
 It is intended to be more general than existing resource hints for navigation, and allows the author to make even weak declarations about the likelihood that the navigation will occur. The user agent can combine this with its own heuristics to decide whether to speculate.
 
-The rules are expressed as a JSON object included within a script tag (like [import maps][import-maps]). Currently, like import maps, script tags are only used for specifying speculation rules inline; future extensions may allow external ones.
+The rules are expressed as a JSON object included within a script tag (like [import maps][import-maps]). Currently, like import maps, script tags are only used for specifying speculation rules inline; [future extensions](#external-speculation-rules-via-script-elements) may allow a `src` attribute to load external rule sets.
 
 The following example illustrates the basic idea:
 
