@@ -17,8 +17,9 @@
 - [Future extensions](#future-extensions)
   - [Scores](#scores)
   - [Document rules](#document-rules)
+    - [Alternatives](#alternatives)
   - [Handler URLs](#handler-urls)
-  - [External speculation rules](#external-speculation-rules)
+  - [External speculation rules via script elements](#external-speculation-rules-via-script-elements)
   - [More speculation actions](#more-speculation-actions)
 - [Proposed processing model](#proposed-processing-model)
 - [Developer tooling](#developer-tooling)
@@ -29,6 +30,7 @@
     - [Forward-compatibility problems](#forward-compatibility-problems)
     - [Duplication](#duplication)
   - [Alternatives to `"target_hint"`](#alternatives-to-target_hint)
+  - [Alternatives to `Speculation-Rules` header](#alternatives-to-speculation-rules-header)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -52,7 +54,7 @@ The [Resource Hints][resource-hints] specification defines a number of current t
 
 Authors must currently **duplicate** the URLs they wish to prefetch: a `<link>` in the head of the document and an `<a>` in the body, or use script to synchronize these at runtime. Ideally, authors should be able to centrally declare which links are eligible for prefetching and prerendering without needing to rewrite the logic for emitting links into their document or write script to work around the issue.
 
-The success of libraries like [Quicklink](https://getquick.link/) demonstrates that even relatively simple heuristics can bring significant improvements to navigation preformance and engagement. The browser is well-positioned to efficiently provide these and improve them over time, but the current scheme leaves authors to **decide for themselves**, in part by not offering wildcard matching and similar tools to identify the links which can safely be fetched.
+The success of libraries like [Quicklink](https://getquick.link/) demonstrates that even relatively simple heuristics can bring significant improvements to navigation performance and engagement. The browser is well-positioned to efficiently provide these and improve them over time, but the current scheme leaves authors to **decide for themselves**, in part by not offering wildcard matching and similar tools to identify the links which can safely be fetched.
 
 More sophisticated authors often have aggregate **analytics**, user history on their origin, search ranking signal, or other data which provides a useful signal *in combination with* heuristics that apply in general, like the viewport-based heuristic. For best results, the browser needs a way to accept this information to make the best prediction possible.
 
@@ -60,7 +62,7 @@ Some sites would like to prefetch outgoing links to untrusted third-party origin
 
 Another anticipated direction of exploration is "template" or "handler" pages which can substantially prepare for a navigation to a number of **similar pages** (e.g., a blank product detail page on an e-commerce site), without knowing which product will ultimately be selected. This would allow common markup, script and other subresources to be ready.
 
-Accordingly, we need a trigger that is flexible enough to accommodate these and other, unanticipated, future needs. It should also **fail safe**, meaning that if new complications are added in the future, it should default to *not* making requests which may not be intended, rather thaan failing open (e.g., erroneously issuing fetches due to having ignored unsupported syntax).
+Accordingly, we need a trigger that is flexible enough to accommodate these and other, unanticipated, future needs. It should also **fail safe**, meaning that if new complications are added in the future, it should default to *not* making requests which may not be intended, rather than failing open (e.g., erroneously issuing fetches due to having ignored unsupported syntax).
 
 ## Non-goals
 
@@ -74,7 +76,7 @@ This explainer proposes a new way for content to declare what kind of speculatio
 
 It is intended to be more general than existing resource hints for navigation, and allows the author to make even weak declarations about the likelihood that the navigation will occur. The user agent can combine this with its own heuristics to decide whether to speculate.
 
-The rules are expressed as a JSON object included within a script tag (like [import maps][import-maps]). Currently, like import maps, we only allow inline script tags for speculation rules; future extensions may allow external ones.
+The rules are expressed as a JSON object included within a script tag (like [import maps][import-maps]). Currently, like import maps, script tags are only used for specifying speculation rules inline; [future extensions](#external-speculation-rules-via-script-elements) may allow a `src` attribute to load external rule sets.
 
 The following example illustrates the basic idea:
 
@@ -95,6 +97,13 @@ The following example illustrates the basic idea:
 ```
 
 (The use of `<script>` is basically because only a few elements allow the HTML parser to enter RCDATA mode, and `<script>` has already been used in this way. This doesn't necessarily mean that these rules should respect the `script-src` CSP directive.)
+
+For use cases where it is preferable to provide speculation rule sets without modifying a document, we introduce the `Speculation-Rules` HTTP header. The header's values are URLs to external resources containing speculation rule sets. The rules are expressed in the same JSON object format as the inline case. The MIME type of the resource must be `application/speculationrules+json`.
+
+For example, suppose a rule set is available at `https://example.com/speculation-rules.json`. The response headers for a request for `https://example.com/` could include:
+```
+Speculation-Rules: "speculation-rules.json"
+```
 
 The rules are divided into sections by the action, such as `"dns-prefetch"`, `"preconnect"`, `"prefetch"`, `"prefetch_with_subresources"`, or `"prerender"`, that they authorize. A user agent may always choose to stop early, for instance by prefetching where prerendering was permitted. Currently we have only specified `"prefetch"` and `"prerender"`, but we want to keep the other possibilities in mind for the future.
 
@@ -258,11 +267,13 @@ Another possible future extension, which would likely need to be restricted to s
 ]}
 ```
 
-### External speculation rules
+### External speculation rules via script elements
 
-Like import maps, speculation rules are currently inline-only, with the speculation rules JSON being contained in the `<script>` element's child text content. However, [like import maps](https://github.com/WICG/import-maps/issues/235), it would be convenient for authors if we allowed `<script type="speculationrules">` to instead have an `src=""` attribute pointing to an external URL.
+Like import maps, `<script>` elements can currently only load speculation rules inline, with the speculation rules JSON being contained in the `<script>` element's child text content. However, [like import maps](https://github.com/WICG/import-maps/issues/235), it would be convenient for authors if we allowed `<script type="speculationrules">` to instead have an `src=""` attribute pointing to an external URL.
 
-Some questions to answer here are the interaction with CSP, and whether a dedicated MIME type is necessary. The answers might not necessarily be the same for import maps and speculation rules, since import maps give a more direct ability to interfere with script execution.
+The requirements for external rule sets loaded via the `Speculation-Rules` header would also apply here, such as the use of the `application/speculationrules+json` MIME type.
+
+Some questions to answer here include the interaction with CSP. The answers might not necessarily be the same for import maps and speculation rules, since import maps give a more direct ability to interfere with script execution.
 
 ### More speculation actions
 
@@ -277,6 +288,8 @@ Another envisioned speculative action is `"prefetch_with_subresources"`, which p
 Conceptually, the user agent may from time to time execute a task to consider speculation. (In practice, it will likely do this only in response to some sort of DOM mutation or other event that indicates the applicable rules have changed, and may limit its attention to the affected parts of the document.) Changes to the DOM that are undone within a task cannot therefore be observed by this algorithm.
 
 To consider speculation is to look at the computed ruleset for the document (merging, if there are multiple), gather a list of candidate URLs, combine the author-declared likelihood with its own heuristics (which may include device or network characteristics, page structure, the viewport, the location of the cursor, past activity on the page, etc.), and thus select a subset of the allowed actions to execute speculatively.
+
+The user agent may schedule the fetch of external speculation rules at its discretion. For example, the user agent could defer the fetching of speculation rules in order to prioritize render-blocking resources. The user agent could therefore also choose not to fetch an external speculation rule set at all. For example, if the user agent does not intend to speculate, there is no need to fetch speculation rule sets. Furthermore, the user agent may consider speculation without needing to have fetched all external speculation rule sets specified for the document. For example, if a document has inline speculation rules and an external rule set that the user agent has not yet fetched, the user agent is free to consider speculation based just on the inline rule set.
 
 At any time the user agent may decide to abort any speculation it has started, but it is never required to do so. However, if at the time of considering speculation a speculation would no longer be permitted (e.g., because the rules changed, the initiating element was modified, the document base URL changed, or another part of the document changed such that selectors no longer match), the user agent should abort the speculation if possible.
 
@@ -323,7 +336,7 @@ The only real workaround for this is to invent a new `rel=""` value which has di
 
 #### Duplication
 
-As mentioned in [the Goals section](#goals), `<link>` also doesn't lend itself to reducing duplication with anchors alread in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
+As mentioned in [the Goals section](#goals), `<link>` also doesn't lend itself to reducing duplication with anchors already in the document, requiring the author to either statically insert the full set of links into the document resource (and since they appear in the `<head>`, this implies buffering) or dynamically synchronize the links in the page with `<link>` references in the head, potentially updating them as script mutates the document.
 
 With [document rules](#document-rules), we can do much better.
 
@@ -340,7 +353,21 @@ This has a few disadvantages:
 
 We worry that such a technique might encourage developers to insert hidden fake links into the DOM to trigger the heuristic.
 
+### Alternatives to `Speculation-Rules` header
+
+There is an existing header, [`Link`][link-header], which also allows for loading resources through headers. To use this, we would introduce a new [link type][link-type], "`speculationrules`". The header is semantically equivalent to the HTML `<link>` element, so using this header would mean we would have to support speculation rules loading with a `<link>` element as well. This seems sensible, especially given that web developers would already be familiar with loading declarative content with `<link>` elements (e.g. style sheets). However, this has a number of drawbacks:
+1. For new kinds of resources to fetch, we want to require CORS. The `<link>` element has an unsuitable default in the form of the `crossorigin` attribute.
+2. There are a number of other attributes which are undesirable or irrelevant for speculation rules (e.g. `type`).
+3. The `rel` attribute can actually have multiple values, so this may lead to confusing combinations (e.g. `rel="prefetch speculationrules"`).
+4. Since we already use `<script>` elements for inline speculation rules, it would be appropriate to support external speculation rules with `<script src="...">`, as noted [above](#external-speculation-rules-via-script-elements), but then we would have two ways of doing the same thing which could negatively impact developer experience.
+
+A number of these issues are minor and/or have been handled by other features. For example, the `"manifest"` link type requires CORS and uses a different interpretation of the `crossorigin` attribute. However, the concern around multiple tags which implement the same behaviour of loading external speculation rule sets is more significant. If we were to try to avoid this by not introducing `<script src="...">` and exclusively using `<link>` for the external case, this would lead to a confusing inline vs. external element difference, similar to the case of `<style>` elements.
+
+Another alternative would be to introduce a `Script` header, given that we’re using the `<script>` element for inline speculation rules. However, at this stage we’d only be proposing the header for usage with declarative content, and not active script execution. This seems counterintuitive. The `Script` header would not be used to implement the very thing its name implies. At this point, there does not appear to be an appetite for script execution via headers. Supposing there were, we’d need to consider a number of issues with that design. Due to the risks associated with script execution, this would require especially careful security consideration. Script execution via headers would also likely be awkward to feature detect. In order to check whether a header based script ran, the author would presumably need to have a `<script>` element to run a script to check if the former script ran. This seems like it would defeat the purpose of the header mechanism. See also [this discussion](https://github.com/whatwg/html/issues/8321) related to the `Script` header which was unfavorable.
+
 [import-maps]: https://github.com/WICG/import-maps
+[link-header]: https://html.spec.whatwg.org/multipage/semantics.html#processing-link-headers
+[link-type]: https://html.spec.whatwg.org/multipage/links.html#linkTypes
 [resource-hints]: https://github.com/w3c/resource-hints
 [selector-match]: https://drafts.csswg.org/selectors-4/#match-a-selector-against-an-element
 [selectors]: https://drafts.csswg.org/selectors/
