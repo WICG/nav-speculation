@@ -22,7 +22,7 @@ spec:html; type:element; text:script
 <pre class="anchors">
 spec: ecma262; urlPrefix: https://tc39.es/ecma262/
   type: dfn
-    text: current Realm; url: current-realm
+    text: current realm; url: current-realm
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     urlPrefix: browsers.html
@@ -785,9 +785,9 @@ The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and 
 <div algorithm="DelayWhilePrerendering method steps">
   The method steps for any operation annotated with the {{[DelayWhilePrerendering]}} extended attribute are replaced with the following:
 
-  1. Let |realm| be the [=current Realm=].
-  1. If the operation in question is a <a spec="WEBIDL">regular operation</a>, then set |realm| to the [=relevant Realm=] of [=this=].
-  1. If |realm|'s [=Realm/global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+  1. Let |realm| be the [=current realm=].
+  1. If the operation in question is a <a spec="WEBIDL">regular operation</a>, then set |realm| to the [=relevant realm=] of [=this=].
+  1. If |realm|'s [=realm/global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
     1. Let |promise| be [=a new promise=], created in |realm|.
     1. Append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=]:
       1. Let |result| be the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
