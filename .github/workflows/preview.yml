@@ -26,14 +26,14 @@ jobs:
         make ci
         mv out upload/base
     - name: Checkout w3c/htmldiff-ui
-      if: ${{ steps.build_base.conclusion == 'success' }}
+      if: ${{ steps.build_base.outcome == 'success' }}
       uses: actions/checkout@v3
       with:
         repository: w3c/htmldiff-ui
         ref: refs/heads/main
         path: htmldiff-ui
     - name: Diff
-      if: ${{ steps.build_base.conclusion == 'success' }}
+      if: ${{ steps.build_base.outcome == 'success' }}
       shell: bash
       run: |
         mkdir -p upload/diff
