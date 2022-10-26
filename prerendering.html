@@ -4,7 +4,7 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 44af0bf3e, updated Fri Jul 29 17:05:16 2022 -0700" name="generator">
+  <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
 <style>
 /* domintro and XXX from https://resources.whatwg.org/standard.css */
@@ -331,6 +331,14 @@ a.self-link:hover {
 .heading > a.self-link {
     font-size: 83%;
 }
+.example > a.self-link,
+.note > a.self-link,
+.issue > a.self-link {
+    /* These blocks are overflow:auto, so positioning outside
+       doesn't work. */
+    left: auto;
+    right: 0;
+}
 li > a.self-link {
     left: calc(-1 * (3.5rem - 26px) - 2em);
 }
@@ -624,7 +632,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-06">6 October 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-26">26 October 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1259,9 +1267,9 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
      The method steps for any operation annotated with the <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②">[DelayWhilePrerendering]</a></code> extended attribute are replaced with the following: 
     <ol>
      <li data-md>
-      <p>Let <var>realm</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm">current Realm</a>.</p>
+      <p>Let <var>realm</var> be the <a data-link-type="dfn" href="https://tc39.es/ecma262/#current-realm" id="ref-for-current-realm">current realm</a>.</p>
      <li data-md>
-      <p>If the operation in question is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation①">regular operation</a>, then set <var>realm</var> to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant Realm</a> of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>.</p>
+      <p>If the operation in question is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation①">regular operation</a>, then set <var>realm</var> to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>.</p>
      <li data-md>
       <p>If <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc" id="ref-for-window-bc③">browsing context</a> is a <a data-link-type="dfn" href="#prerendering-browsing-context" id="ref-for-prerendering-browsing-context③⑨">prerendering browsing context</a>, then:</p>
       <ol>
@@ -1587,6 +1595,12 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
     <li><a href="#ref-for-abstract-opdef-append-client-hints-to-request">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-client-hints-set">
+   <a href="https://wicg.github.io/client-hints-infrastructure#client-hints-set">https://wicg.github.io/client-hints-infrastructure#client-hints-set</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-client-hints-set">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-client-hints-set①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-environment-settings-object-client-hints-set">
    <a href="https://wicg.github.io/client-hints-infrastructure#environment-settings-object-client-hints-set">https://wicg.github.io/client-hints-infrastructure#environment-settings-object-client-hints-set</a><b>Referenced in:</b>
    <ul>
@@ -1773,6 +1787,14 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-status">2.2. Navigation fetch changes</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-url">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-url">1.2. Prerendering browsing contexts</a>
+    <li><a href="#ref-for-concept-request-url①">2.1. Allowing activation in place of navigation</a> <a href="#ref-for-concept-request-url②">(2)</a>
+    <li><a href="#ref-for-concept-request-url③">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-response-url">
@@ -2001,6 +2023,24 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
     <li><a href="#ref-for-event-beforeunload">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-browsing-context">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#browsing-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-browsing-context">1.2. Prerendering browsing contexts</a> <a href="#ref-for-browsing-context①">(2)</a> <a href="#ref-for-browsing-context②">(3)</a> <a href="#ref-for-browsing-context③">(4)</a> <a href="#ref-for-browsing-context④">(5)</a>
+    <li><a href="#ref-for-browsing-context⑤">2.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-browsing-context⑥">5.1. APIs for creating and navigating browsing contexts by name</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-document-bc">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc">https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-document-bc">1.2. Prerendering browsing contexts</a> <a href="#ref-for-concept-document-bc①">(2)</a> <a href="#ref-for-concept-document-bc②">(3)</a> <a href="#ref-for-concept-document-bc③">(4)</a> <a href="#ref-for-concept-document-bc④">(5)</a>
+    <li><a href="#ref-for-concept-document-bc⑤">1.3. Modifications to creating browsing contexts</a>
+    <li><a href="#ref-for-concept-document-bc⑥">2.5. Interaction with Worker Lifetime</a>
+    <li><a href="#ref-for-concept-document-bc⑦">6.1. Downloading resources</a>
+    <li><a href="#ref-for-concept-document-bc⑧">6.3.5. Web Serial API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-window-bc">
    <a href="https://html.spec.whatwg.org/multipage/window-object.html#window-bc">https://html.spec.whatwg.org/multipage/window-object.html#window-bc</a><b>Referenced in:</b>
    <ul>
@@ -2124,6 +2164,12 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-settings-object-global">3.4. Interaction with Client Hint Cache</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-realm-global">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global">https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-realm-global">6.3.1. The [DelayWhilePrerendering] extended attribute</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-history-handling-behavior">
@@ -2452,6 +2498,12 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
     <li><a href="#ref-for-list-extend">1.2. Prerendering browsing contexts</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-list-iterate">
+   <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-iterate">1.2. Prerendering browsing contexts</a> <a href="#ref-for-list-iterate①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-map-iterate">
    <a href="https://infra.spec.whatwg.org/#map-iterate">https://infra.spec.whatwg.org/#map-iterate</a><b>Referenced in:</b>
    <ul>
@@ -2525,6 +2577,12 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <a href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices">https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-mediadevices-enumeratedevices">6.3.16. Media Capture and Streams</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-mediadevices-getusermedia">
+   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-getusermedia">https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-getusermedia</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-mediadevices-getusermedia">6.3.16. Media Capture and Streams</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-getusermedia">
@@ -2981,6 +3039,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
      <li><span class="dfn-paneled" id="term-for-accept-ch-cache">accept-ch cache</span>
      <li><span class="dfn-paneled" id="term-for-add-a-new-accept-ch-cache-entry">add a new accept-ch cache entry</span>
      <li><span class="dfn-paneled" id="term-for-abstract-opdef-append-client-hints-to-request">append client hints to request</span>
+     <li><span class="dfn-paneled" id="term-for-client-hints-set">client hints set</span>
      <li><span class="dfn-paneled" id="term-for-environment-settings-object-client-hints-set">client hints set <small>(for environment settings object)</small></span>
      <li><span class="dfn-paneled" id="term-for-abstract-opdef-update-the-client-hints-set">update the client hints set</span>
     </ul>
@@ -3038,6 +3097,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
      <li><span class="dfn-paneled" id="term-for-concept-request">request</span>
      <li><span class="dfn-paneled" id="term-for-concept-response">response</span>
      <li><span class="dfn-paneled" id="term-for-concept-response-status">status</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-url">url <small>(for request)</small></span>
      <li><span class="dfn-paneled" id="term-for-concept-response-url">url <small>(for response)</small></span>
     </ul>
    <li>
@@ -3110,6 +3170,8 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
      <li><span class="dfn-paneled" id="term-for-concept-document-window">associated document</span>
      <li><span class="dfn-paneled" id="term-for-auxiliary-browsing-context">auxiliary browsing context</span>
      <li><span class="dfn-paneled" id="term-for-event-beforeunload">beforeunload</span>
+     <li><span class="dfn-paneled" id="term-for-browsing-context">browsing context</span>
+     <li><span class="dfn-paneled" id="term-for-concept-document-bc">browsing context <small>(for Document)</small></span>
      <li><span class="dfn-paneled" id="term-for-window-bc">browsing context <small>(for Window)</small></span>
      <li><span class="dfn-paneled" id="term-for-cannot-show-simple-dialogs">cannot show simple dialogs</span>
      <li><span class="dfn-paneled" id="term-for-bc-container">container</span>
@@ -3129,6 +3191,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
      <li><span class="dfn-paneled" id="term-for-event-loop">event loop</span>
      <li><span class="dfn-paneled" id="term-for-fully-active">fully active</span>
      <li><span class="dfn-paneled" id="term-for-concept-settings-object-global">global object <small>(for environment settings object)</small></span>
+     <li><span class="dfn-paneled" id="term-for-concept-realm-global">global object <small>(for realm)</small></span>
      <li><span class="dfn-paneled" id="term-for-history-handling-behavior">history handling behavior</span>
      <li><span class="dfn-paneled" id="term-for-in-parallel">in parallel</span>
      <li><span class="dfn-paneled" id="term-for-list-of-the-descendant-browsing-contexts">list of the descendant browsing contexts</span>
@@ -3186,6 +3249,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
      <li><span class="dfn-paneled" id="term-for-list-empty">empty</span>
      <li><span class="dfn-paneled" id="term-for-map-exists">exist</span>
      <li><span class="dfn-paneled" id="term-for-list-extend">extend</span>
+     <li><span class="dfn-paneled" id="term-for-list-iterate">for each <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="term-for-map-iterate">for each <small>(for map)</small></span>
      <li><span class="dfn-paneled" id="term-for-list-item">item</span>
      <li><span class="dfn-paneled" id="term-for-list">list</span>
@@ -3210,6 +3274,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-mediadevices">MediaDevices</span>
      <li><span class="dfn-paneled" id="term-for-dom-mediadevices-enumeratedevices">enumerateDevices()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-mediadevices-getusermedia">getUserMedia() <small>(for MediaDevices)</small></span>
      <li><span class="dfn-paneled" id="term-for-dom-navigator-getusermedia">getUserMedia() <small>(for Navigator)</small></span>
     </ul>
    <li>
@@ -3449,7 +3514,7 @@ If <var>browsingContext</var> is a <a data-link-type="dfn" href="#prerendering-b
    <dt id="biblio-screen-capture">[SCREEN-CAPTURE]
    <dd>Martin Thomson; et al. <a href="https://w3c.github.io/mediacapture-screen-share/"><cite>Screen Capture</cite></a>. URL: <a href="https://w3c.github.io/mediacapture-screen-share/">https://w3c.github.io/mediacapture-screen-share/</a>
    <dt id="biblio-screen-orientation">[SCREEN-ORIENTATION]
-   <dd>Mounir Lamouri; Marcos Caceres; Johanna Herman. <a href="https://w3c.github.io/screen-orientation/"><cite>The Screen Orientation API</cite></a>. URL: <a href="https://w3c.github.io/screen-orientation/">https://w3c.github.io/screen-orientation/</a>
+   <dd>Marcos Caceres. <a href="https://w3c.github.io/screen-orientation/"><cite>The Screen Orientation API</cite></a>. URL: <a href="https://w3c.github.io/screen-orientation/">https://w3c.github.io/screen-orientation/</a>
    <dt id="biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]
    <dd>Kenneth Christiansen; Raphael Kubo da Costa. <a href="https://w3c.github.io/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. URL: <a href="https://w3c.github.io/screen-wake-lock/">https://w3c.github.io/screen-wake-lock/</a>
    <dt id="biblio-service-workers">[SERVICE-WORKERS]

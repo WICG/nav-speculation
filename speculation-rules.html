@@ -4,7 +4,7 @@
   <title>Speculation Rules</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 44af0bf3e, updated Fri Jul 29 17:05:16 2022 -0700" name="generator">
+  <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/speculation-rules.html" rel="canonical">
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -325,6 +325,14 @@ a.self-link:hover {
 .heading > a.self-link {
     font-size: 83%;
 }
+.example > a.self-link,
+.note > a.self-link,
+.issue > a.self-link {
+    /* These blocks are overflow:auto, so positioning outside
+       doesn't work. */
+    left: auto;
+    right: 0;
+}
 li > a.self-link {
     left: calc(-1 * (3.5rem - 26px) - 2em);
 }
@@ -492,7 +500,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-06">6 October 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-26">26 October 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1471,6 +1479,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-get-an-element&apos;s-target">1.5. Processing model</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-hyperlink-href">
+   <a href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href">https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-hyperlink-href">1.5. Processing model</a> <a href="#ref-for-dom-hyperlink-href①">(2)</a>
+    <li><a href="#ref-for-dom-hyperlink-href②">1.6. Document rule predicate matching</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-attr-hyperlink-href">
    <a href="https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href">https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href</a><b>Referenced in:</b>
    <ul>
@@ -1584,6 +1599,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-valid-browsing-context-name-or-keyword①">1.5. Processing model</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-list-append">
+   <a href="https://infra.spec.whatwg.org/#list-append">https://infra.spec.whatwg.org/#list-append</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-append">1.3. Prepare the script element</a>
+    <li><a href="#ref-for-list-append①">1.4. Parsing</a> <a href="#ref-for-list-append②">(2)</a> <a href="#ref-for-list-append③">(3)</a> <a href="#ref-for-list-append④">(4)</a> <a href="#ref-for-list-append⑤">(5)</a> <a href="#ref-for-list-append⑥">(6)</a>
+    <li><a href="#ref-for-list-append⑦">1.5. Processing model</a> <a href="#ref-for-list-append⑧">(2)</a> <a href="#ref-for-list-append⑨">(3)</a> <a href="#ref-for-list-append①⓪">(4)</a> <a href="#ref-for-list-append①①">(5)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-set-append">
    <a href="https://infra.spec.whatwg.org/#set-append">https://infra.spec.whatwg.org/#set-append</a><b>Referenced in:</b>
    <ul>
@@ -1605,6 +1628,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-assert③">1.6. Document rule predicate matching</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-list-contain">
+   <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-contain">1.5. Processing model</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-map-exists">
    <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
    <ul>
@@ -1622,6 +1651,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-map-exists">1.4. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a> <a href="#ref-for-map-exists④">(5)</a> <a href="#ref-for-map-exists⑤">(6)</a> <a href="#ref-for-map-exists⑥">(7)</a> <a href="#ref-for-map-exists⑦">(8)</a> <a href="#ref-for-map-exists⑧">(9)</a> <a href="#ref-for-map-exists⑨">(10)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-iterate">
+   <a href="https://infra.spec.whatwg.org/#list-iterate">https://infra.spec.whatwg.org/#list-iterate</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-iterate">1.4. Parsing</a> <a href="#ref-for-list-iterate①">(2)</a> <a href="#ref-for-list-iterate②">(3)</a> <a href="#ref-for-list-iterate③">(4)</a> <a href="#ref-for-list-iterate④">(5)</a> <a href="#ref-for-list-iterate⑤">(6)</a> <a href="#ref-for-list-iterate⑥">(7)</a>
+    <li><a href="#ref-for-list-iterate⑦">1.5. Processing model</a> <a href="#ref-for-list-iterate⑧">(2)</a> <a href="#ref-for-list-iterate⑨">(3)</a> <a href="#ref-for-list-iterate①⓪">(4)</a> <a href="#ref-for-list-iterate①①">(5)</a> <a href="#ref-for-list-iterate①②">(6)</a> <a href="#ref-for-list-iterate①③">(7)</a> <a href="#ref-for-list-iterate①④">(8)</a> <a href="#ref-for-list-iterate①⑤">(9)</a>
+    <li><a href="#ref-for-list-iterate①⑥">1.6. Document rule predicate matching</a> <a href="#ref-for-list-iterate①⑦">(2)</a> <a href="#ref-for-list-iterate①⑧">(3)</a> <a href="#ref-for-list-iterate①⑨">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-map-iterate">
@@ -1929,6 +1966,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-execute-the-script-element">execute the script element</span>
      <li><span class="dfn-paneled" id="term-for-fully-active">fully active</span>
      <li><span class="dfn-paneled" id="term-for-get-an-element&apos;s-target">get an element's target</span>
+     <li><span class="dfn-paneled" id="term-for-dom-hyperlink-href">href <small>(for HTMLHyperlinkElementUtils)</small></span>
      <li><span class="dfn-paneled" id="term-for-attr-hyperlink-href">href <small>(for a)</small></span>
      <li><span class="dfn-paneled" id="term-for-html-element-removing-steps">html element removing steps</span>
      <li><span class="dfn-paneled" id="term-for-in-parallel">in parallel</span>
@@ -1951,12 +1989,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-list-append">append <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="term-for-set-append">append <small>(for set)</small></span>
      <li><span class="dfn-paneled" id="term-for-ascii-case-insensitive">ascii case-insensitive</span>
      <li><span class="dfn-paneled" id="term-for-assert">assert</span>
+     <li><span class="dfn-paneled" id="term-for-list-contain">contain <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="term-for-map-exists">contain <small>(for map)</small></span>
      <li><span class="dfn-paneled" id="term-for-iteration-continue">continue</span>
      <li><span class="dfn-paneled" id="term-for-map-exists①">exist</span>
+     <li><span class="dfn-paneled" id="term-for-list-iterate">for each <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="term-for-map-iterate">for each <small>(for map)</small></span>
      <li><span class="dfn-paneled" id="term-for-struct-item">item</span>
      <li><span class="dfn-paneled" id="term-for-map-key">key</span>

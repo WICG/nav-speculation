@@ -4,7 +4,7 @@
   <title>Prefetch</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 44af0bf3e, updated Fri Jul 29 17:05:16 2022 -0700" name="generator">
+  <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prefetch.html" rel="canonical">
 <style>/* style-autolinks */
 
@@ -294,6 +294,14 @@ a.self-link:hover {
 .heading > a.self-link {
     font-size: 83%;
 }
+.example > a.self-link,
+.note > a.self-link,
+.issue > a.self-link {
+    /* These blocks are overflow:auto, so positioning outside
+       doesn't work. */
+    left: auto;
+    right: 0;
+}
 li > a.self-link {
     left: calc(-1 * (3.5rem - 26px) - 2em);
 }
@@ -461,7 +469,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-06">6 October 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-26">26 October 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1715,6 +1723,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-response-status">3. Prefetch algorithms</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-request-url">
+   <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-request-url">1. Concepts</a> <a href="#ref-for-concept-request-url①">(2)</a> <a href="#ref-for-concept-request-url②">(3)</a> <a href="#ref-for-concept-request-url③">(4)</a>
+    <li><a href="#ref-for-concept-request-url④">2. HTML Patches</a> <a href="#ref-for-concept-request-url⑤">(2)</a> <a href="#ref-for-concept-request-url⑥">(3)</a>
+    <li><a href="#ref-for-concept-request-url⑦">3. Prefetch algorithms</a> <a href="#ref-for-concept-request-url⑧">(2)</a> <a href="#ref-for-concept-request-url⑨">(3)</a> <a href="#ref-for-concept-request-url①⓪">(4)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-response-url">
    <a href="https://fetch.spec.whatwg.org/#concept-response-url">https://fetch.spec.whatwg.org/#concept-response-url</a><b>Referenced in:</b>
    <ul>
@@ -1764,6 +1780,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-active-service-worker">https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-active-service-worker</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-environment-active-service-worker">2. HTML Patches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-browsing-context">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#browsing-context</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-browsing-context">1. Concepts</a>
+    <li><a href="#ref-for-browsing-context①">2. HTML Patches</a> <a href="#ref-for-browsing-context②">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-document-bc">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc">https://html.spec.whatwg.org/multipage/browsers.html#concept-document-bc</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-document-bc">3. Prefetch algorithms</a> <a href="#ref-for-concept-document-bc①">(2)</a> <a href="#ref-for-concept-document-bc②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-browsing-context">
@@ -1825,6 +1854,20 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-environment-creation-url">1. Concepts</a> <a href="#ref-for-concept-environment-creation-url①">(2)</a>
     <li><a href="#ref-for-concept-environment-creation-url②">2. HTML Patches</a> <a href="#ref-for-concept-environment-creation-url③">(2)</a>
     <li><a href="#ref-for-concept-environment-creation-url④">3. Prefetch algorithms</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-document-coop">
+   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-coop">https://html.spec.whatwg.org/multipage/dom.html#concept-document-coop</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-document-coop">1. Concepts</a>
+    <li><a href="#ref-for-concept-document-coop①">2. HTML Patches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-coop-enforcement-coop">
+   <a href="https://html.spec.whatwg.org/multipage/origin.html#coop-enforcement-coop">https://html.spec.whatwg.org/multipage/origin.html#coop-enforcement-coop</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-coop-enforcement-coop">1. Concepts</a>
+    <li><a href="#ref-for-coop-enforcement-coop①">2. HTML Patches</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-coop">
@@ -1940,6 +1983,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-history-handling-behavior①">2. HTML Patches</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-environment-id">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-id">https://html.spec.whatwg.org/multipage/webappapis.html#concept-environment-id</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-environment-id">1. Concepts</a>
+    <li><a href="#ref-for-concept-environment-id①">2. HTML Patches</a> <a href="#ref-for-concept-environment-id②">(2)</a>
+    <li><a href="#ref-for-concept-environment-id③">3. Prefetch algorithms</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-id">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-id">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-id</a><b>Referenced in:</b>
    <ul>
@@ -2001,6 +2052,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-origin-opaque">3. Prefetch algorithms</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-origin">
+   <a href="https://html.spec.whatwg.org/multipage/origin.html#concept-origin">https://html.spec.whatwg.org/multipage/origin.html#concept-origin</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-origin">1. Concepts</a> <a href="#ref-for-concept-origin①">(2)</a>
+    <li><a href="#ref-for-concept-origin②">2. HTML Patches</a>
+    <li><a href="#ref-for-concept-origin③">4. Cookies</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-origin">
    <a href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-origin">https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-origin</a><b>Referenced in:</b>
    <ul>
@@ -2012,6 +2071,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#parent-browsing-context">https://html.spec.whatwg.org/multipage/browsers.html#parent-browsing-context</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-parent-browsing-context">2. HTML Patches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-policy-container">
+   <a href="https://html.spec.whatwg.org/multipage/origin.html#policy-container">https://html.spec.whatwg.org/multipage/origin.html#policy-container</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-policy-container">1. Concepts</a>
+    <li><a href="#ref-for-policy-container①">2. HTML Patches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-document-policy-container">
+   <a href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container">https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-document-policy-container">3. Prefetch algorithms</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-policy-container">
@@ -2170,6 +2242,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-coop-enforcement-bcg-switch-report-only">1. Concepts</a>
     <li><a href="#ref-for-coop-enforcement-bcg-switch-report-only①">2. HTML Patches</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-append">
+   <a href="https://infra.spec.whatwg.org/#list-append">https://infra.spec.whatwg.org/#list-append</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-append">1. Concepts</a> <a href="#ref-for-list-append①">(2)</a>
+    <li><a href="#ref-for-list-append②">3. Prefetch algorithms</a> <a href="#ref-for-list-append③">(2)</a>
+    <li><a href="#ref-for-list-append④">4. Cookies</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-set-append">
@@ -2418,6 +2498,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-concept-response">response</span>
      <li><span class="dfn-paneled" id="term-for-concept-header-list-set-structured-header">set a structured field value</span>
      <li><span class="dfn-paneled" id="term-for-concept-response-status">status</span>
+     <li><span class="dfn-paneled" id="term-for-concept-request-url">url <small>(for request)</small></span>
      <li><span class="dfn-paneled" id="term-for-concept-response-url">url <small>(for response)</small></span>
      <li><span class="dfn-paneled" id="term-for-concept-request-url-list">url list</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-use-url-credentials-flag">use-url-credentials flag</span>
@@ -2434,6 +2515,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <ul>
      <li><span class="dfn-paneled" id="term-for-active-document">active document</span>
      <li><span class="dfn-paneled" id="term-for-concept-environment-active-service-worker">active service worker</span>
+     <li><span class="dfn-paneled" id="term-for-browsing-context">browsing context</span>
+     <li><span class="dfn-paneled" id="term-for-concept-document-bc">browsing context <small>(for Document)</small></span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-browsing-context">browsing context <small>(for navigation params)</small></span>
      <li><span class="dfn-paneled" id="term-for-browsing-context-scope-origin">browsing context scope origin</span>
      <li><span class="dfn-paneled" id="term-for-child-browsing-context">child browsing context</span>
@@ -2443,6 +2526,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-navigation-params-coop-enforcement-result">coop enforcement result</span>
      <li><span class="dfn-paneled" id="term-for-creating-a-policy-container-from-a-fetch-response">creating a policy container from a fetch response</span>
      <li><span class="dfn-paneled" id="term-for-concept-environment-creation-url">creation url</span>
+     <li><span class="dfn-paneled" id="term-for-concept-document-coop">cross-origin opener policy <small>(for Document)</small></span>
+     <li><span class="dfn-paneled" id="term-for-coop-enforcement-coop">cross-origin opener policy <small>(for cross-origin opener policy enforcement result)</small></span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-coop">cross-origin opener policy <small>(for navigation params)</small></span>
      <li><span class="dfn-paneled" id="term-for-coop-enforcement-result">cross-origin opener policy enforcement result</span>
      <li><span class="dfn-paneled" id="term-for-coop-enforcement-source">current context is navigation source</span>
@@ -2459,6 +2544,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-navigation-params-has-cross-origin-redirects">has cross-origin redirects</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-hh">history handling</span>
      <li><span class="dfn-paneled" id="term-for-history-handling-behavior">history handling behavior</span>
+     <li><span class="dfn-paneled" id="term-for-concept-environment-id">id <small>(for environment)</small></span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-id">id <small>(for navigation params)</small></span>
      <li><span class="dfn-paneled" id="term-for-navigation-id">navigation id</span>
      <li><span class="dfn-paneled" id="term-for-navigation-pparams">navigation params</span>
@@ -2468,8 +2554,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-obtain-coop">obtain a cross-origin opener policy</span>
      <li><span class="dfn-paneled" id="term-for-obtain-a-site">obtain a site</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin-opaque">opaque origin</span>
+     <li><span class="dfn-paneled" id="term-for-concept-origin">origin</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-origin">origin <small>(for navigation params)</small></span>
      <li><span class="dfn-paneled" id="term-for-parent-browsing-context">parent browsing context</span>
+     <li><span class="dfn-paneled" id="term-for-policy-container">policy container</span>
+     <li><span class="dfn-paneled" id="term-for-concept-document-policy-container">policy container <small>(for Document)</small></span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-policy-container">policy container <small>(for navigation params)</small></span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-fetch">process a navigate fetch</span>
      <li><span class="dfn-paneled" id="term-for-process-a-navigate-response">process a navigate response</span>
@@ -2496,6 +2585,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-list-append">append <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="term-for-set-append">append <small>(for set)</small></span>
      <li><span class="dfn-paneled" id="term-for-assert">assert</span>
      <li><span class="dfn-paneled" id="term-for-iteration-break">break</span>
