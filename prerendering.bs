@@ -465,7 +465,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
     1. If |doc|'s [=Document/origin=] is the same as |origin|, then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
 
     1. [=map/For each=] |origin| → |hintSet| in |bc|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=]:
-      
+
       1. [=Add a new Accept-CH cache entry=] to the [=Accept-CH cache=] with the |origin| and |hintSet|.
 
     1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
@@ -515,8 +515,6 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
       * |request|'s [=request/method=] is \``GET`\`
       * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|request|'s [=request/URL=]] [=map/exists=] and is not [=prerendering browsing context/empty=]
       * The result of calling [=should navigation request of type be blocked by content security policy?=] given |request| and <var ignore>navigationType</var> is "`Allowed`".
-
-        <p class="note">There is no need for an additional CSP check for the response, see <tt>navigate-to</tt> (before it was <a href="https://github.com/w3c/webappsec-csp/pull/564">removed</a>.
 
   1. Otherwise, return false.
 
@@ -704,7 +702,7 @@ To <dfn>add a new prerender Accept-CH cache entry</dfn> given a [=prerendering b
     If |browsingContext| is a [=prerendering browsing context=], then:
       1. Let |origin| be <var ignore>request</var>'s [=request/url=]'s [=url/origin=].
       1. Set |hintSet| to the [=set/union=] of |hintSet| and |browsingContext|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=][|origin|].
-  
+
 </div>
 
 <div algorithm="update the Client Hints set patch">
