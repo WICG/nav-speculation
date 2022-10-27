@@ -237,7 +237,7 @@ An example of using these would be the following, which marks up as safe-to-prer
     {"source": "document",
      "where": {"and": [
        {"href_matches": "/*\\?*"},
-       {"not": {"href_matches": "/logout*\\?*"}},
+       {"not": {"href_matches": "/logout\\?*"}},
        {"not": {"selector_matches": ".no-prerender"}}
      ]},
      "score": 0.1}
