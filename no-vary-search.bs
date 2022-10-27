@@ -1,0 +1,170 @@
+<pre class="metadata">
+Title: No-Vary-Search
+Shortname: no-vary-search
+Group: WICG
+Status: CG-DRAFT
+Repository: WICG/nav-speculation
+URL: https://wicg.github.io/nav-speculation/no-vary-search.html
+Level: 1
+Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me
+Abstract: A proposed HTTP header field for changing how URL search parameters impact caching
+Markup Shorthands: css no, markdown yes
+Assume Explicit For: yes
+Complain About: accidental-2119 yes, missing-example-ids yes
+Indent: 2
+Boilerplate: omit conformance
+</pre>
+<pre class="anchors">
+spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
+  type: dfn
+    text: structured header; url: #section-1
+    for: structured header
+      text: dictionary; url: name-dictionaries
+      text: boolean; url: name-boolean
+      text: inner list; url: name-inner-lists
+</pre>
+
+<h2 id="status-and-venue">Status and venue note</h2>
+
+This document is being written as a web-style specification in the WICG for now, because that's the tooling and venue the author is familiar with. Its purpose is to nail down some details of the processing model in order to make writing and testing prototypes easier.
+
+In the longer term, we envision this header being specified in a HTTPWG RFC, alongside whatever portion of the processing model can be shared among its various consumers. (That is, between both web platform specifications such as [[FETCH]], and HTTP specifications such as future modifications to [[RFC9111]].) It's just incubating in WICG for now.
+
+<h2 id="header-definition">HTTP header field definition</h2>
+
+The \`<dfn http-header><code>No-Vary-Search</code></dfn>\` HTTP header field is a [=structured header=] whose value must be a [=structured header/dictionary=].
+
+TODO: probably give some more introductory non-normative text. Look at what other HTTP field defintions do.
+
+It has the following authoring conformance requirements:
+
+* The dictionary must only contain entries whose keys are one of `key-order`, `params`, `except`.
+* If present, the `key-order` entry's value must be a [=structured header/boolean=].
+* If present, the `params` entry's value must be either a [=structured header/boolean=] or an [=structured header/inner list=].
+* If present, the `except` entry's value must be a [=structured header/inner list=].
+* The `except` entry must only be present if the `params` entry is also present, and the `params` entry's value is the boolean value true.
+
+<p class="note">As always, the authoring conformance requirements are not binding on implementations. Implementations instead need to implement the processing model given by the [=obtain a URL search variance=] algorithm.
+
+<h2 id="model">Data model</h2>
+
+A <dfn>URL search variance</dfn> is a [=struct=] whose [=struct/items=] are the following:
+
+* <dfn for="URL search variance">no-vary params</dfn>, either the special value <dfn for="URL search variance/no-vary params">wildcard</dfn> or a [=list=] of [=strings=]
+* <dfn for="URL search variance">vary params</dfn>, either the special value <dfn for="URL search variance/vary params">wildcard</dfn> or a [=list=] of [=strings=]
+* <dfn for="URL search variance">vary on key order</dfn>, a [=boolean=]
+
+The <dfn>default URL search variance</dfn> is a [=URL search variance=] whose [=URL search variance/no-vary params=] is an empty list, [=URL search variance/vary params=] is [=URL search variance/vary params/wildcard=], and [=URL search variance/vary on key order=] is true.
+
+The [=obtain a URL search variance=] algorithm ensures that all [=URL search variances=] obey the following constraints:
+
+* [=URL search variance/vary params=] is a [=list=] if and only if the [=URL search variance/no-vary params=] is [=URL search variance/no-vary params/wildcard=]; and
+* [=URL search variance/no-vary params=] is a [=list=] if and only if the [=URL search variance/vary params=] is [=URL search variance/vary params/wildcard=].
+
+<h2 id="parsing">Parsing</h2>
+
+<div algorithm>
+  To <dfn>obtain a URL search variance</dfn> given a [=response=] |response|:
+
+  1. Let |value| be the result of [=header list/getting a structured field value=] given [:No-Vary-Search:] and "`dictionary`" from |response|'s [=response/header list=].
+  1. If |value| is null, then return the [=default URL search variance=].
+  1. If |value|'s [=map/keys=] [=list/contains=] anything other than "`key-order`", "`params`", or "`except`", then return the [=default URL search variance=].
+  1. Let |result| be a new [=URL search variance=].
+  1. Set |result|'s [=URL search variance/vary on key order=] to true.
+  1. If |value|["`key-order`"] [=map/exists=]:
+    1. If |value|["`key-order`"] is not a [=boolean=], then return the [=default URL search variance=].
+    1. Set |result|'s [=URL search variance/vary on key order=] to the boolean negation of |value|["`key-order`"].
+  1. If |value|["`params`"] [=map/exists=]:
+    1. If |value|["`params`"] is a [=boolean=]:
+      1. If |value|["`params`"] is true, then:
+        1. Set |result|'s [=URL search variance/no-vary params=] to [=URL search variance/no-vary params/wildcard=].
+        1. Set |result|'s [=URL search variance/vary params=] to the empty list.
+      1. Otherwise:
+        1. Set |result|'s [=URL search variance/no-vary params=] to the empty list.
+        1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
+    1. Otherwise, if |value|["`params`"] is a [=list=]:
+      1. If any [=list/item=] in |value|["`params`"] is not a [=string=], then return the [=default URL search variance=].
+      1. Set |result|'s [=URL search variance/no-vary params=] to |value|["`params`"].
+      1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
+    1. Otherwise, return the [=default URL search variance=].
+  1. If |value|["`except`"] [=map/exists=]:
+    1. If |value|["`params`"] is not true, then return the [=default URL search variance=].
+    1. If |value|["`except`"] is not a [=list=], then return the [=default URL search variance=].
+    1. If any [=list/item=] in |value|["`except`"] is not a [=string=], then return the [=default URL search variance=].
+    1. Set |result|'s [=URL search variance/vary params=] to |value|["`except`"].
+  1. Return |result|.
+
+  <p class="note">In general, this algorithm is strict and tends to return the [=default URL search variance=] whenever it sees something it doesn't recognize. This is because the [=default URL search variance=] behavior will just cause fewer cache hits, which is an acceptable fallback behavior.
+</div>
+
+<div class="example" id="example-parsing-vary-vs-no-vary">
+  The following illustrates how various inputs are parsed, in terms of their impacting on the resulting [=URL search variance/no-vary params=] and [=URL search variance/vary params=]:
+
+  <table class="data">
+    <thead>
+      <th>Input</th>
+      <th>Result</th>
+    <tbody>
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: params</pre>
+        <td>
+          * [=URL search variance/no-vary params=]: [=URL search variance/no-vary params/wildcard=]
+          * [=URL search variance/vary params=]: (empty list)
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: params=("a")</pre>
+        <td>
+          * [=URL search variance/no-vary params=]: « "`a`" »
+          * [=URL search variance/vary params=]:  [=URL search variance/vary params/wildcard=]
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: params, except=("x")</pre>
+        <td>
+          * [=URL search variance/no-vary params=]: [=URL search variance/no-vary params/wildcard=]
+          * [=URL search variance/vary params=]: « "`x`" »
+  </table>
+</div>
+
+<div class="example" id="example-parsing-invalid">
+  The following inputs are all invalid and will cause the [=default URL search variance=] to be returned:
+
+  * `No-Vary-Search: unknown-key`
+  * `No-Vary-Search: key-order="not a boolean"`
+  * `No-Vary-Search: params="not a boolean or inner list"`
+  * `No-Vary-Search: params=(not-a-string)`
+  * `No-Vary-Search: params=("a"), except=("x")`
+  * `No-Vary-Search: params=(), except=()`
+  * `No-Vary-Search: params=?0, except=("x")`
+  * `No-Vary-Search: params, except=(not-a-string)`
+  * `No-Vary-Search: params, except="not an inner list"`
+  * `No-Vary-Search: params, except=?1`
+  * `No-Vary-Search: except=("x")`
+  * `No-Vary-Search: except=()`
+</div>
+
+<div class="example" id="example-parsing-unconventional">
+  The following inputs are valid, but somewhat unconventional. They are shown alongside their more conventional form.
+
+  <table>
+    <thead>
+      <th>Input
+      <th>Conventional form
+    <tbody>
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: params=?1</pre>
+        <td><pre highlight="http">No-Vary-Search: params</pre>
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: key-order=?1</pre>
+        <td><pre highlight="http">No-Vary-Search: key-order</pre>
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: params, key-order, except=("x")</pre>
+        <td><pre highlight="http">No-Vary-Search: key-order, params, except=("x")</pre>
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: params=?0</pre>
+        <td>(omit the header)
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: params=()</pre>
+        <td>(omit the header)
+      <tr>
+        <td><pre highlight="http">No-Vary-Search: key-order=?0</pre>
+        <td>(omit the header)
+  </table>
+</div>

@@ -13,13 +13,13 @@ No-Vary-Search: key-order
 If the specific query parameters (e.g., ones indicating something for analytics) should not cause cache misses, this is indicated using
 
 ```http-header
-No-Vary-Search: "utm_source", "utm_medium", "utm_campaign"
+No-Vary-Search: params=("utm_source" "utm_medium" "utm_campaign")
 ```
 
 And if the page instead wants to take an allowlist-based approach, where only certain known query parameters should cause cache misses, they can use
 
 ```http-header
-No-Vary-Search: *; except=("productId")
+No-Vary-Search: params, except=("productId")
 ```
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -48,6 +48,10 @@ No-Vary-Search: *; except=("productId")
     - [… for other browser caches](#-for-other-browser-caches)
   - [Interaction with storage partitioning](#interaction-with-storage-partitioning)
 - [Alternatives considered](#alternatives-considered)
+- [Syntax alternatives considered](#syntax-alternatives-considered)
+  - [Slight dictionary variants](#slight-dictionary-variants)
+  - [A symmetrical dictionary variant](#a-symmetrical-dictionary-variant)
+  - [A symmetrical two-header variant](#a-symmetrical-two-header-variant)
 - [Extensibility](#extensibility)
   - [More complex no-vary rules](#more-complex-no-vary-rules)
   - [`No-Vary-Path`](#no-vary-path)
@@ -134,15 +138,35 @@ When the page loads, we don't know yet whether the user will click on the hero i
 
 ### The header
 
-The `No-Vary-Search` header is a [HTTP structured field](https://www.rfc-editor.org/rfc/rfc8941.html) whose value must be a list. The list can contain either predefined [tokens](https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens), which have special behavior, or [strings](https://www.rfc-editor.org/rfc/rfc8941.html#name-strings), which indicate query parameters not to vary on. The special tokens are:
+The `No-Vary-Search` header is a [HTTP structured field](https://www.rfc-editor.org/rfc/rfc8941.html) whose value must be a [dictionary](https://httpwg.org/specs/rfc8941.html#dictionary). The dictionary has the following allowed keys:
 
-- `key-order`: indicates the order of the query parameter keys should be ignored when constructing the cache key. (As they were canonicalized using [`URLSearchParams`'s `sort()`](https://url.spec.whatwg.org/#dom-urlsearchparams-sort).)
+- `params`: this can either be a [boolean](https://httpwg.org/specs/rfc8941.html#boolean), indicating whether to not-vary on all parameters; or it can be an [inner list](https://httpwg.org/specs/rfc8941.html#inner-list) of [strings](https://www.rfc-editor.org/rfc/rfc8941.html#name-strings), indicating which query parameters not to vary on.
 
-- `*`: indicates all query parameters should be ignored when constructing the cache key. This can be supplemented by a list-of-strings-valued `except=()` [parameter](https://www.rfc-editor.org/rfc/rfc8941.html#name-parameters), which effectively allows indicating "_only_ vary on the given parameters".
+- `except`: this dictionary member must only be present if `params` is set to `?1` (i.e. the structured field boolean true value). In that case, it must be an inner list of strings, indicating which query parameters _will_ be varied on.
 
-If an unknown or invalid construct is encountered, e.g. a non-list value, or an unknown token, then the header is treated as if it is omitted. This is a good safe default, since it just causes more cache misses, which are less harmful than erroneous cache hits.
+- `key-order`: a boolean, indicating that the order of the query parameter keys should be ignored when constructing the cache key. (As if they were canonicalized using [`URLSearchParams`'s `sort()`](https://url.spec.whatwg.org/#dom-urlsearchparams-sort).)
 
-Note that if you use `*`, additionally using string values in the list is pointless, and those string values will be ignored. I.e., `No-Vary-Search: *, "foo"` is equivalent to `No-Vary-Search: *`, and the same goes for `No-Vary-Search: *;except=("foo"), "foo"`.
+If an unknown or invalid construct is encountered, then the header is treated as if it is omitted. This is a good safe default, since it just causes more cache misses, which are less harmful than erroneous cache hits.
+
+Here are some examples of what this looks like in practice:
+
+```http
+No-Vary-Search: params
+```
+
+```http
+No-Vary-Search: key-order
+```
+
+```http
+No-Vary-Search: params=("utm_source")
+```
+
+```http
+No-Vary-Search: key-order, params, except=("productId")
+```
+
+(Note how we make use of the implicit default of `?1` for dictionary values.)
 
 ### Integration with…
 
@@ -227,8 +251,8 @@ For the HTTP cache itself, the answer is clear, since for each each individual c
 This means that in a redirect chain, the header can be used at any or all points along the chain, e.g. one could see the following sequence of HTTP messages:
 
 - Request `/apple-watch-ulatr`
-- When looking up `/apple-watch-ulatr` in the cache, retrieve a response that was originally constructed from `/apple-watch-ulatr?utm_source=homepage` with `No-Vary-Search: "utm_source"`, whose status code at the time was `301` with `Location: /apple-watch-ultra?utm_source=homepage`.
-- When looking up `/apple-watch-ultra?utm_source=homepage` in the cache, retrieve a response that was originally constructed from `/apple-watch-ultra?utm_source=twitter` with `No-Vary-Search: "utm_source"`.
+- When looking up `/apple-watch-ulatr` in the cache, retrieve a response that was originally constructed from `/apple-watch-ulatr?utm_source=homepage` with `No-Vary-Search: params=("utm_source")`, whose status code at the time was `301` with `Location: /apple-watch-ultra?utm_source=homepage`.
+- When looking up `/apple-watch-ultra?utm_source=homepage` in the cache, retrieve a response that was originally constructed from `/apple-watch-ultra?utm_source=twitter` with `No-Vary-Search: params=("utm_source")`.
 - The result is the user looking at `/apple-watch-ultra?utm_source=homepage`, constructed from a previously-cached visit to `/apple-watch-ultra?utm_source=twitter`.
 
 Note that, in terms of what the user sees in their URL bar, this is probably not the same result as would have been gotten without `No-Vary-Search`! That probably would have involved `/apple-watch-ulatr` redirecting to `/apple-watch-ultra`, with no query parameters showing up in the URL bar. The site has traded off nice URLs and accurate `utm_source` values, in favor of better cache utilization. If this is not desired, the site could avoid using `No-Vary-Search` on redirect responses, or it could fix up the user-facing URL using `history.replaceState()` shortly after loading. (The latter might be good practice anyway!)
@@ -241,9 +265,9 @@ For other browser caches, how `No-Vary-Search` applies across redirects is not a
 
 For these cases, we only account for the `No-Vary-Search` header corresponding to the cache key URL, which is always (to our knowledge) the request URL. For example, consider a situation where `/worker.js` redirects to `/worker-v2.js`, preserving any query parameters as part of the redirect. Then:
 
-- If `/worker.js` sends `No-Vary-Search: "debuglog"`, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will connect to the same shared worker, which was originally created from `/worker-v2.js?debuglog=1`.
+- If `/worker.js` sends `No-Vary-Search: params=("debuglog")`, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will connect to the same shared worker, which was originally created from `/worker-v2.js?debuglog=1`.
 
-- If `/worker-v2.js` sends `No-Vary-Search: "debuglog"`, but `/worker.js` does not, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will spin up two separate workers, derived from `/worker-v2.js?debuglog=1` and `/worker-v2.js?debuglog=0` respectively.
+- If `/worker-v2.js` sends `No-Vary-Search: params=("debuglog")`, but `/worker.js` does not, then `new SharedWorker('/worker.js?debuglog=1')` followed by `new SharedWorker('/worker.js?debuglog=0')` will spin up two separate workers, derived from `/worker-v2.js?debuglog=1` and `/worker-v2.js?debuglog=0` respectively.
 
 ### Interaction with storage partitioning
 
@@ -261,6 +285,69 @@ The response header could be flipped, i.e. `Vary-Search`, so as to better match 
 
 The name could be `No-Vary-Query`, instead of `No-Vary-Search`. We chose "search" over "query" in the API because that is already exposed to the web platform through APIs such as `location.search`, `url.search`, `url.searchParams`, and `URLSearchParams`. (At the same time, we've continued talking about "query parameters" and the URL's "query string", since [that is what specs do](https://url.spec.whatwg.org/#concept-url-query). In other words, we stick with the existing mismatch between developer API and specification concepts.)
 
+## Syntax alternatives considered
+
+Figuring out how to fit the desired data model into structured headers is always a process. The [detailed design section](#detailed-design) shows our current proposal, but we came up with a number of others.
+
+In evaluating a given syntax proposal, it's important to think of how the header expresses the following scenarios:
+
+1. Don't vary on key order
+2. Don't vary on any parameters
+3. Don't vary on specific parameters `a` and `b`, but vary on all others.
+4. Vary only on the specific parameters `x` and `y`.
+5. Vary on all parameters, and on key order
+
+Note that (5) is the default today, so it's most natural if the absence of the header, or the header with all fields set to their default values (empty list / false), expresses this possibility. So the [current proposal](#detailed-design) has:
+
+1. `No-Vary-Search: key-order`
+2. `No-Vary-Search: params`
+3. `No-Vary-Search: params=("a" "b")`
+4. `No-Vary-Search: params, except=("x" "y")`
+5. Omit the header, or be explicit with `No-Vary-Search: params=(), key-order=?0`
+
+### Slight dictionary variants
+
+We could require an explicit token `*` instead of the implicit boolean `?1` for varying on all parameters. This results in a delta of:
+
+2. `No-Vary-Search: params=*`
+
+We could allow the presence of `except` to imply the presence of `params=?1`. This results in a delta of:
+
+4. `No-Vary-Search: except=("x" "y")`
+
+We could change the name of `except` to something like `all-params-except`, in combination with the implicit variant. This results in a delta of:
+
+4. `No-Vary-Search: all-params-except=("x" "y")`
+
+We could allow `except` to be used in combination with the inner-list form of `params`, instead of only allowing to be used in combination with the boolean true value. This would allow things like `No-Vary-Search: params=("a" "b" "c") except=("b")` as an equivalent to `No-Vary-Search: params=("a" "c")`.
+
+### A symmetrical dictionary variant
+
+It's a bit unfortunate that the current design will include double negatives for 4, i.e., "no vary ... all except". If we are willing to give up the property that (5) matches the default values, then we could introduce something like the following:
+
+1. `Search-Variance: key-order=?0`
+2. `Search-Variance: no-vary=*`
+3. `Search-Variance: no-vary=("a" "b")`
+4. `Search-Variance: vary=("x" "y")`
+5. Omit the header, or be explicit with `Search-Variance: vary=*, key-order=?1`
+
+### A symmetrical two-header variant
+
+Another symmetrical variant involves creating two headers:
+
+1. `No-Vary-Search: key-order`
+2. `No-Vary-Search: *`
+3. `No-Vary-Search: "a", "b"`
+4. ```http
+   No-Vary-Search: *
+   Vary-Search: "x", "y"
+   ```
+5. Omit the headers, or be explicit with `Vary-Search: *, key-order`
+
+A slight variation of this is to have the presence of `Vary-Search` imply `No-Vary-Search: *`, so (4) becomes just `Vary-Search: "x", "y"`.
+
+The main advantage of this design is that it plays nicely with HTTP's comma-based header concatenation rules, and thus allows splitting these headers across multiple header lines.
+
 ## Extensibility
 
 The above proposal covers everything that we want to include in an initial version of this feature. However, a number of potential future extensions have come up in discussion, which we document here to ensure that the feature is sufficiently extensible to allow them.
@@ -269,13 +356,11 @@ The above proposal covers everything that we want to include in an initial versi
 
 As mentioned in the [non-goals section](#non-goals), it's possible to imagine a variety of complex matching rules for treating different query strings equivalently. The structured header format we're using allows some extensibility in this regard, if we decide such non-goals should become goals in the future. For example:
 
-- We could allow case-insensitivity of a given query parameter, using syntax like `No-Vary-Search: "color";value-case-insensitive=?1`.
+- We could allow case-insensitivity of a given query parameter, using syntax like `No-Vary-Search: params=("color";value-case-insensitive=?1)`.
 
-- We could allow restrictions on the value space, using syntax like `No-Vary-Search: "color";value-regexp="(?:blue|azure)"`.
+- We could allow restrictions on the value space, using syntax like `No-Vary-Search: params=("color";value-regexp="(?:blue|azure)")`.
 
-- We could allow treating multiple keys as the same key, using syntax like `No-Vary-Search: ("color", "colour")`.
-
-- We could allow order-insensitivity for _values_, not just keys, using a `value-order` token. (This would treat `/a?x=y&x=z` the same as `/a?x=z&x=y`.)
+- We could allow order-insensitivity for _values_, not just keys, using a `value-order` dictionary entry. (This would treat `/a?x=y&x=z` the same as `/a?x=z&x=y`.)
 
 We think capabilities such as these serve less urgent [use cases](#use-cases) than what we have so far, and so don't plan on supporting them now. But it's good to know there's room for them in the future.
 
