@@ -220,7 +220,7 @@ In other words, this proposal purely modifies how URL matching works on the cach
 
 The above story gets slightly more complicated for prerendering, because the point of the prerender "cache" is to allow much more processing of the response than just supplying its headers and body. In particular, we will construct the [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context) and its associated document based on the originally-requested URL, but later it could be activated with a different final URL.
 
-For example, consider the [previous underwater phone article example](#carrying-data-not-yet-determined-at-the-time-of-preloading), assuming that `/articles/new-underwater-phone` responds with `No-Vary-Search: "via"`. If the browser chooses to use the `<script type="speculationrules">` to prerender `/articles/new-underwater-phone`, then that resource will be fetched and prerendered with no query parameters. Later, the user might click on the hero image, at which point we know the "real" URL that should be shown to the user is `/articles/new-underwater-phone?via=heroimage`.
+For example, consider the [previous underwater phone article example](#carrying-data-not-yet-determined-at-the-time-of-preloading), assuming that `/articles/new-underwater-phone` responds with `No-Vary-Search: params=("via")`. If the browser chooses to use the `<script type="speculationrules">` to prerender `/articles/new-underwater-phone`, then that resource will be fetched and prerendered with no query parameters. Later, the user might click on the hero image, at which point we know the "real" URL that should be shown to the user is `/articles/new-underwater-phone?via=heroimage`.
 
 To resolve this, we specify that prerendering [activation](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context-activate) involves changing the page's URL before firing the `prerenderingchange` event. This URL change is done using the [URL and history update steps](https://html.spec.whatwg.org/#url-and-history-update-steps), i.e. the same mechanism underlying `history.replaceState()`.
 
@@ -401,8 +401,8 @@ But, let's say the user presses down on the link. Now it seems pretty likely tha
 
 We now have two paths:
 
-1. `/products` _does_ have `No-Vary-Search: "id"`. For example, `/products?id=123` means to render the products view, and use client-side script to highlight the `X`th product. Then, our prefetch was great.
-1. `/products` _does not_ have `No-Vary-Search: "id"`. For example, `/products` is an index listing all the products, whereas `/products?id=123` is a specific product page. Then, our prefetch was wasted, and we need to go fetch the separate `/products?id=123` page.
+1. `/products` _does_ have `No-Vary-Search: params=("id")`. For example, `/products?id=123` means to render the products view, and use client-side script to highlight the `X`th product. Then, our prefetch was great.
+1. `/products` _does not_ have `No-Vary-Search: params=("id")`. For example, `/products` is an index listing all the products, whereas `/products?id=123` is a specific product page. Then, our prefetch was wasted, and we need to go fetch the separate `/products?id=123` page.
 
 Also consider what happens if the headers for `/products` have not come back by the time the user releases the press, i.e. confirmed the intent to navigate. Do we wait on `/products` to finish? This makes (1) better and (2) worse. Or do we start a concurrent fetch to `/products?id=123`? This makes (1) worse and (2) better.
 
