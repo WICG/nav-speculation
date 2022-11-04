@@ -12,7 +12,6 @@ None of this is implemented or specified in detail yet. But, we've spent some ti
   - [Storage access blocking](#storage-access-blocking)
   - [Communications channels that are blocked](#communications-channels-that-are-blocked)
   - [Communications channels that match navigation](#communications-channels-that-match-navigation)
-- [CSP integration](#csp-integration)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
