@@ -249,18 +249,18 @@ Note: This section contains modifications to [[HTML]].
     1. If |item| is not a [=string=], then [=iteration/continue=].
     1. Let |parsedURL| be the result of [=basic URL parser|parsing=] |item| with |baseUrl|.
     1. If |parsedURL| is failure, then [=iteration/continue=].
-    1. Let |pendingResource| be a [=pending external speculation rule resource=] with [=pending external speculation rule resource/URL=] |parsedURL| and [=pending external speculation rule resource/controller=] null
+    1. Let |pendingResource| be a [=pending external speculation rule resource=] with [=pending external speculation rule resource/URL=] |parsedURL| and [=pending external speculation rule resource/controller=] null.
     1. [=list/Append=] |pendingResource| to |document|'s [=document/list of pending external speculation rule resources=].
   1. [=Process pending external speculation rule resources=] given |document|.
 </div>
 
-In [=shared document creation infrastructure=], before the step
+In <a spec="HTML">create and initialize a `Document` object</a>, before the step
 
   > 19. Return <var ignore>document</var>.
 
 add the following step
 
-  > 19. [=process the Speculation-Rules header|Process the Speculation-Rules header=] given <var ignore>document</var> and <var ignore>navigationParams</var>'s [=response=].
+  > 19. [=Process the Speculation-Rules header=] given <var ignore>document</var> and <var ignore>navigationParams</var>'s [=response=].
 
 <h3 id="external-speculation-rule-sets">External speculation rule sets</h3>
 
@@ -286,7 +286,7 @@ add the following step
   1. Let |settingsObject| be |document|'s [=relevant settings object=].
   1. Let |requestURL| be |pendingResource|'s [=pending external speculation rule resource/URL=].
   1. Let |request| be a new [=request=] whose [=request/URL=] is |requestURL|, [=request/client=] is |settingsObject|, and [=request/mode=] is "`cors`".
-  1. Let |controller| be the result of [=fetching=] given |request| with [=fetch/processResponseConsumeBody=] set to the following steps given [=response=] |response| and null, failure, or a [=byte sequence=] |body|:
+  1. Let |controller| be the result of [=fetching=] given |request| with <i>[=fetch/processResponseConsumeBody=]</i> set to the following steps given [=response=] |response| and null, failure, or a [=byte sequence=] |body|:
     1. [=list/Remove=] |pendingResource| from |pendingResources|.
     1. If any of the following conditions are true, abort these steps:
       * |body| is null.
