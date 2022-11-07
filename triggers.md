@@ -196,6 +196,11 @@ For example:
 
 For speculation actions that would be prevented by the [**sufficiently-strict referrer policy** requirement](./fetch.md#stripping-referrer-information) on a referring page with a lax policy, this allows the referring page to set a stricter policy specifically for the speculative request.
 
+Note that referrer policy matching is not done between the speculative request and the user facing navigation. So given the above rule, a request would be made with `no-referrer` and would still be used even if the user clicked on:
+```html
+<a href="https://en.wikipedia.org/wiki/Lethe" referrerpolicy="unsafe-url">
+```
+
 ## Future extensions
 
 ### Scores
