@@ -37,6 +37,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: hand-off to external software; url: browsing-the-web.html#hand-off-to-external-software
     text: history handling behavior; url: browsing-the-web.html#history-handling-behavior
     text: navigation and traversal task source; url: webappapis.html#navigation-and-traversal-task-source
+    text: navigation ID; url: browsing-the-web.html#navigation-id
     text: playing the media resource; url: media.html#playing-the-media-resource
     text: session history entry; url: browsing-the-web.html#session-history-entry
     text: the worker's lifetime; url: workers.html#the-worker's-lifetime
@@ -62,6 +63,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: session history entries; url: document-sequences.html#tn-session-history-entries
     for: Window
       text: navigable; url: nav-history-apis.html#window-navigable
+spec: webdriver-idi; urlPrefix: https://w3c.github.io/webdriver-bidi/
+  type: dfn
+    text: WebDriver BiDi navigation started; url: webdriver-bidi-navigation-started
 spec: geolocation; urlPrefix: https://w3c.github.io/geolocation-api/
   type: method; for: Geolocation
     text: getCurrentPosition(successCallback, errorCallback, options); url: getcurrentposition-method
@@ -393,11 +397,11 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div algorithm>
-  To <dfn for="prerendering traversable">activate</dfn> a [=prerendering traversable=] |successorTraversable| in place of a [=top-level traversable=] |predecessorTraversable| given a [=history handling behavior=] |historyHandling|:
+  To <dfn for="prerendering traversable">activate</dfn> a [=prerendering traversable=] |successorTraversable| in place of a [=top-level traversable=] |predecessorTraversable| given a [=history handling behavior=] |historyHandling| and an optional [=navigation ID=] |navigationId|:
 
   1. [=Assert=]: |successorTraversable|'s [=navigable/active document=]'s [=Document/is initial about:blank=] is false.
 
-  1. Let |navigationId| be the result of [=generating a random UUID=].
+  1. If |navigationId| is not given, then let |navigationId| be the result of [=generating a random UUID=].
 
   1. Let |referrerOrigin| be |predecessorTraversable|'s [=navigable/active document=]'s [=Document/origin=].
 
@@ -432,6 +436,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
       1. Update the user agent's user interface to reflect this change, e.g., by updating the tab/window contents and the browser chrome.
 
       1. [=prerendering traversable/Finalize activation=] for |successorTraversable| given |referrerOrigin|.
+
+      1. <p class="XXX">Perhaps we should do something with WebDriver BiDi here? See <a href="https://github.com/w3c/webdriver-bidi/issues/321">w3c/webdriver-bidi#321</a>. Right now the pre-[=in parallel=] part of the [=navigate=] algorithm will send [=WebDriver BiDi navigation started=] as if it were a normal navigation, but then nothing will happen to indicate the navigation finishes.
 </div>
 
 <div algorithm>
@@ -512,7 +518,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 
     1. If |matchingPrerenderedNavigable| was not destroyed, then:
 
-      1. [=prerendering traversable/Activate=] |matchingPrerenderedNavigable| in place of |navigable| given <var ignore>historyHandling</var>.
+      1. [=prerendering traversable/Activate=] |matchingPrerenderedNavigable| in place of |navigable| given <var ignore>historyHandling</var> and <var ignore>navigationId</var>.
 
       1. Abort these steps.
 </div>
