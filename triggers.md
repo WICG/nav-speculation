@@ -21,6 +21,7 @@
   - [Handler URLs](#handler-urls)
   - [External speculation rules via script elements](#external-speculation-rules-via-script-elements)
   - [More speculation actions](#more-speculation-actions)
+  - [Content-Security-Policy](#content-security-policy)
 - [Proposed processing model](#proposed-processing-model)
 - [Developer tooling](#developer-tooling)
 - [Feature detection](#feature-detection)
@@ -282,6 +283,10 @@ As mentioned previously, we have currently only specified `"prefetch"` and `"pre
 Adding `"dns-prefetch"` and `"preconnect"`, to mirror [Resource Hints](https://w3c.github.io/resource-hints/), would be an obvious extension, simply giving a more-ergonomic and capable way of triggering those actions.
 
 Another envisioned speculative action is `"prefetch_with_subresources"`, which prefetches a document and then uses the HTML preload scanner to find other subresources that are worth preloading. Chromium currently does something similar (known as "[NoState Prefetch](https://developer.chrome.com/blog/nostate-prefetch/)") for `<link rel="prerender">`. But, we're not yet sure this feature is pulling its weight, in between the lightweight prefetch and the fully-instant prerender features, so it's not yet clear whether this will be worth integrating.
+
+## Content-Security-Policy
+
+`Speculation-Rules` is embedded in a script tag with `type="speculationrules"`. But the tag is exempted from the `script-src` restriction of the [Content-Security-Policy](https://w3c.github.io/webappsec-csp/). Instead, prefetch and prerender are restricted by the `prefetch-src` of the [Content-Security-Policy](https://w3c.github.io/webappsec-csp/). This gives the page more strict and detailed security controls. This makes more sense than using `script-src`, since `Speculation-Rules` are only using the `<script>` element for its HTML parsing behavior; `Speculation-Rules` are not executable code. At the same time, this allows the page to embed a dynamically generated `Speculation-Rules` to give a better prerendering candidate based on user actions without permitting a relaxed restriction `script-src: unsafe-inline`.
 
 ## Proposed processing model
 
