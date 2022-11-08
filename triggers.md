@@ -180,7 +180,7 @@ However, in implementations such as Chromium that need the target hint, this wil
 
 ### Explicit referrer policy
 
-By default, the referring document's referrer policy is used for the speculative request. If the future navigation will use a different referrer policy (e.g. using `rel="noreferrer"`), the policy to use for the speculative request can be specified in a rule using the `"referrer_policy"` key and the desired referrer policy string.
+By default, the referring document's referrer policy is used for the speculative request. The policy to use for the speculative request can be specified in a rule using the `"referrer_policy"` key and the desired referrer policy string.
 
 For example:
 ```json
