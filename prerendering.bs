@@ -357,7 +357,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. [=prerendering traversable/Activate=] |prerenderingTraversable| in place of |predecessorTraversable| given "`push`".
 
-  <p class="note">The user might never indicate such a commitment, or might take long enough to do so that the user agent needs to reclaim the resources used by the prerender for some more immediate task. In that case the user agent can [=destroy a top-level traversable=] |prerenderingTraversable|.
+  <p class="note">The user might never indicate such a commitment, or might take long enough to do so that the user agent needs to reclaim the resources used by the prerender for some more immediate task. In that case the user agent can [=destroy a top-level traversable|destroy=] |prerenderingTraversable|.
 </div>
 
 <div>
@@ -397,10 +397,6 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. [=Assert=]: |successorTraversable|'s [=navigable/active document=]'s [=Document/is initial about:blank=] is false.
 
-  1. [=Assert=]: |successorTraversable|'s [=traversable navigable/current session history step=] is 0.
-
-  1. [=Assert=]: |successorTraversable|'s [=traversable navigable/session history entries=]'s [=list/size=] is 1.
-
   1. Let |navigationId| be the result of [=generating a random UUID=].
 
   1. Let |referrerOrigin| be |predecessorTraversable|'s [=navigable/active document=]'s [=Document/origin=].
@@ -418,6 +414,10 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
     1. [=Queue a global task=] on the [=navigation and traversal task source=] given |predecessorTraversable|'s [=navigable/active window=] to [=Document/abort=] |predecessorTraversable|'s [=navigable/active document=].
 
     1. [=traversable navigable/Append session history traversal steps=] to |predecessorTraversable| to perform the following steps:
+
+      1. [=Assert=]: |successorTraversable|'s [=traversable navigable/current session history step=] is 0.
+
+      1. [=Assert=]: |successorTraversable|'s [=traversable navigable/session history entries=]'s [=list/size=] is 1.
 
       1. Let |successorEntry| be |successorTraversable|'s [=traversable navigable/session history entries=][0].
 
@@ -483,7 +483,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
 <div>
-  To <dfn>get the matching prerendering navigable</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a |documentResource|, if the following steps return true:
+  To <dfn>get the matching prerendering navigable</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
 
   1. If any of the following conditions hold:
 
@@ -567,7 +567,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 <div algorithm="hand-off to external software patch">
   In [=hand-off to external software=], prepend the following step:
 
-  1. If <var ignore>navigable</var> is a [=prerendering navigable=], then return without invokign the external software package.
+  1. If <var ignore>navigable</var> is a [=prerendering navigable=], then return without invoking the external software package.
 </div>
 
 <p class="XXX">We could also allow prerendering activations in place of redirects, not just in place of navigations. We've omitted that for now as it adds complexity and is not yet implemented anywhere to our knowledge.
