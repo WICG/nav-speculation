@@ -209,7 +209,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 </div>
 
 <div algorithm="perform prefetch response checks">
-    To <dfn export>perform prefetch response checks</dfn> given a [=navigable=] |navigable|, a [=document state=] |documentState| (this has a history policy container), a [=navigation id=] |navigationId|, a [=request=] |request|, a [=prefetch record=] |record|, a [=sandboxing flag set=] |sandboxFlags|, and a [=policy containers=] |sourcePolicyContainer|, perform the following steps.
+    To <dfn export>perform prefetch response checks</dfn> given a [=navigable=] |navigable|, a [=document state=] |documentState| (this has a history policy container), a [=navigation id=] |navigationId|, a {{NavigationTimingType}} |navTimingType|, a [=request=] |request|, a [=prefetch record=] |record|, a [=sandboxing flag set=] |sandboxFlags|, and a [=policy containers=] |sourcePolicyContainer|, perform the following steps.
     TODO(jbroman): which sandboxing flag set is this, the one from source snapshot params or target snapshot params?
 
     1. Let |responseOrigin| be null.
@@ -217,7 +217,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |coopEnforcementResult| b e a new [=cross-origin opener policy enforcement result=], with:
         :  [=cross-origin opener policy enforcement result/needs a browsing context group switch=]
         :: false
-        :  [=cross origin opener policy enforcement result/would need a browsing context group switch due to report-only=]
+        :  [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=]
         :: false
         :  [=cross-origin opener policy enforcement result/url=]
         :: |navigable|'s [=navigable/active document=]'s [=Document/URL=]
@@ -264,13 +264,13 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         :  [=navigation params/navigable=]
         :: |navigable|
         :  [=navigation params/navigation timing type=]
-        :: "`navigate`"
+        :: |navTimingType|
         :  [=navigation params/fetch controller=]
-        :: null
+        :: |prefetchRecord|'s [=prefetch record/fetch controller=]
         :  [=navigation params/commit early hints=]
         :: null
 
-        TODO(jbroman): need to correct plumbing for: navTimingType, fetchController, commitEarlyHints
+            <p class="note">This implies that early hints delivered for prefetched documents won't be processed. This could be revised in the future if it is common for there to be useful resource hints which are not repeated in the main response headers. Since prefetches aren't currently served until the response headers arrive, early hints would not be processed any earlier than ordinary response headers. It might be possible for a future specification to allow early hints found during prefetching to be used in some way.</p>
     1. Return |navigationParams|.
 </div>
 
