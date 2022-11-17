@@ -83,6 +83,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: URL; url: she-url
         text: document state; url: she-document-state
         text: serialized state; url: she-serialized-state
+      text: snapshot source snapshot params; url: snapshotting-source-snapshot-params
+      text: snapshot target snapshot params; url: snapshotting-target-snapshot-params
       text: source snapshot params; url: source-snapshot-params
       for: source snapshot params
         text: has transient activation; url: source-snapshot-params-activation
@@ -153,7 +155,7 @@ A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
     To <dfn for="redirect chain">update the response</dfn> for a [=redirect chain=] |redirectChain| given a [=request=] |request| and [=response=] |response|:
 
     1. [=Assert=]: |redirectChain| is not [=list/empty=].
-    1. [=Assert=]: |redirectChain|'s last element's [=exchange record/request=] is |request| and its [=exchange record/response=] is null.
+    1. [=Assert=]: |redirectChain|'s last element's [=exchange record/request=] is the same as |request| and its [=exchange record/response=] is null.
     1. Set |redirectChain|'s last element's [=exchange record/response=] to |response|.
 </div>
 
@@ -331,7 +333,25 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
 <h2 id="html-patches">HTML Patches</h2>
 
-<div algorithm="create a cross-origin opener policy enforcement result for navigation">
+<div algorithm>
+    <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
+
+    To <dfn export>create a reserved client</dfn> given a [=navigable=] |navigable|, a [=URL=] |url| and an [=opaque origin=] or null |isolationOrigin|:
+    1. Let |topLevelCreationURL| be |url|.
+    1. Let |topLevelOrigin| be null. 
+    1. If |isolationOrigin| is not null, then: <!-- these are new steps to isolate uncredentialed prefetch -->
+        1. Set |topLevelCreationURL| to `about:blank`.
+        1. Set |topLevelOrigin| to |isolationOrigin|.
+    1. Otherwise, if |navigable| is not a [=top-level traversable=], then:
+        1. Let |parentEnvironment| be |navigable|'s [=parent=]'s [=navigable/active document=]'s [=relevant settings object=].
+        1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=].
+        1. Set |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
+    1. Return a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |navigable|'s [=active browsing context=], [=environment/creation URL=] is |url|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+</div>
+
+<hr>
+
+<div algorithm>
     <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
 
     To <dfn export>create a cross-origin opener policy enforcement result for navigation</dfn> given a {{Document}} |activeDocument| and an [=origin=] |initiatorOrigin|, return a new [=cross-origin opener policy enforcement result=] with
@@ -348,6 +368,8 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
     :  [=cross-origin opener policy enforcement result/current context is navigation source=]
     :: true if |activeDocument|'s [=Document/origin=] is [=same origin=] with |initiatorOrigin|; otherwise false
 </div>
+
+<hr>
 
 <div algorithm>
     <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
@@ -391,6 +413,8 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
     TODO(jbroman): unset URL credentials flag in unpartitioned case; maybe disallow altogether?
 </div>
 
+<hr>
+
 <div algorithm="attempt to populate the history entry's document">
     In <a spec=HTML>attempt to populate the history entry's document</a>, replace the step which invokes <a spec=HTML>create navigation params by fetching</a> with the following:
 
@@ -414,10 +438,12 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
 </div>
 
+<hr>
+
 <div algorithm>
     <div class="note">This is an update of the existing <a spec=HTML>create navigation params by fetching</a> algorithm.</div>
 
-    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, an optional [=opaque origin=] or null (default null) |isolationOrigin|, an optional boolean |processEarlyHints| (default true), an optional boolean |reportCOOPViolations| (default true), an optional algorithm |shouldBlockNavigationRequest|, perform the following steps. If given, |shouldBlockNavigationRequest| must be an algorithm accepting a [=request=] and returning a "`Blocked`" or "`Allowed`". They return a [=navigation params=], a [=non-fetch scheme navigation params=], or null.
+    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, an optional [=opaque origin=] or null (default null) |isolationOrigin|, an optional boolean |processEarlyHints| (default true), an optional boolean |reportCOOPViolations| (default true), an optional algorithm |shouldBlockNavigationRequest|, and an optional algorithm |processNavigationResponse|, perform the following steps. If given, |shouldBlockNavigationRequest| must be an algorithm accepting a [=request=] and returning a "`Blocked`" or "`Allowed`". They return a [=navigation params=], a [=non-fetch scheme navigation params=], or null. If given, |processNavigationResponse| must be an algorithm accepting a [=request=] and [=response=].
 
     1. [=Assert=]: this is running [=in parallel=].
     1. [=Assert=]: |request|'s [=request/URL=] is |entry|'s [=session history entry/URL=].
@@ -440,17 +466,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
             1. Set |request|'s [=request/reserved client=] to null.
             1. Set |commitEarlyHints| to null.
-        1. If |request|'s [=request/reserved client=] is null, then:
-            1. Let |topLevelCreationURL| be |currentURL|.
-            1. Let |topLevelOrigin| be null. 
-            1. If |isolationOrigin| is not null, then: <!-- these are new steps to isolate uncredentialed prefetch -->
-                1. Set |topLevelCreationURL| to `about:blank`.
-                1. Set |topLevelOrigin| to |isolationOrigin|.
-            1. Otherwise, if |navigable| is not a [=top-level traversable=], then:
-                1. Let |parentEnvironment| be |navigable|'s [=parent=]'s [=navigable/active document=]'s [=relevant settings object=].
-                1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=].
-                1. Set |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
-            1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |navigable|'s [=active browsing context=], [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
+        1. If |request|'s [=request/reserved client=] is null, then set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable|, |currentURL| and |isolationOrigin|.
         1. If the result of [=should navigation request of type be blocked by Content Security Policy?=] given |request| and |cspNavigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. [[CSP]]
         1. If |shouldBlockNavigationRequest| is present and its result given |request| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. <!-- these are new steps to allow requests to be blocked for additional reasons -->
         1. Set |response| to null.
@@ -476,6 +492,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |request|'s [=request/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |request|'s [=request/referrer=].
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
         1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
+        1. Run |processNavigationResponse| given |request| and |response|.
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -539,176 +556,62 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
         :: |commitEarlyHints|
 </div>
 
-Given this, the non-prefetch case becomes, with the small addition of prefetch logic:
-
-<div algorithm="process a navigate fetch">
-    To <strong>process a navigate fetch</strong>, given a [=navigation id=] |navigationId|, [=request=] |request|, two [=browsing contexts=] |sourceBrowsingContext| and |browsingContext|, a string |navigationType|, a [=sandboxing flag set=] |sandboxFlags|, two [=policy containers=] |historyPolicyContainer| and |initiatorPolicyContainer|, a boolean |allowedToDownload|, a boolean |hasTransientActivation|, an [=origin=] |incumbentNavigationOrigin|, and a [=history handling behavior=] |historyHandling|:
-
-    1. Set [=request=]'s [=request/client=] to |sourceBrowsingContext|'s [=active document=]'s [=relevant settings object=], [=request/destination=] to "`document`", [=request/credentials mode=] to "`include`", [=request/use-URL-credentials flag=], and [=request/replaces client id=] to |browsingContext|'s [=active document=]'s [=relevant settings object=]'s [=environment/id=].
-    1. If |hasTransientActivation| is true, then set |request|'s [=request/user-activation=] to true.
-    1. If |browsingContext|'s [=browsing context/container=] is non-null:
-        1. If |browsingContext|'s [=browsing context/container=] has a [=browsing context scope origin=], then set |request|'s [=request/origin=] to that [=browsing context scope origin=].
-        1. Set |request|'s [=request/destination=] to |browsingContext|'s [=browsing context/container=]'s [=Element/local name=].
-    1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given |browsingContext|'s [=active document=], |request|'s [=request/URL=], and |sandboxFlags|.
-
-        <div class="note">This step, and the following condition, is added by this specification.</div>
-    1. If |prefetchRecord| is not null, then:
-        1. Let |navigationParams| be the result of [=performing prefetch response checks=] given |navigationId|, |request|, |prefetchRecord|, |sourceBrowsingContext|, |browsingContext|, |sandboxFlags|, |historyPolicyContainer|, |initiatorPolicyContainer|, |incumbentNavigationOrigin|, and |historyHandling|.
-        1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and |navigationParams|'s [=navigation params/reserved environment=].
-
-            <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies.</div>
-        1. [=Process a navigate response=] with |navigationType|, |allowedToDownload|, |hasTransientActivation|, and |navigationParams|.
-        1. Return.
-    1. Let |responseOrigin| be null.
-    1. Let |responseCOOP| be null.
-    1. Let |currentContextIsSource| be the result of whether |browsingContext|'s [=active document=] is [=same origin=] with |sourceBrowsingContext|'s [=active document=].
-    1. Let |coopEnforcementResult| be a new [=cross-origin opener policy enforcement result=] whose [=cross-origin opener policy enforcement result/needs a browsing context group switch=] is false, [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=] is false, [=cross-origin opener policy enforcement result/url=] is |browsingContext|'s [=active document=]'s [=Document/url=], [=cross-origin opener policy enforcement result/current origin=] is |browsingContext|'s [=active document=]'s [=Document/origin=], [=cross-origin opener policy enforcement result/cross-origin opener policy=] is |browsingContext|'s [=active document=]'s [=Document/cross-origin opener policy=], and [=cross-origin opener policy enforcement result/current context is navigation source=] is |currentContextIsSource|.
-    1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
-    1. Let |hasCrossOriginRedirects| be false.
-    1. Let |preRedirectHook| be the following steps, given |currentURL| and |locationURL|:
-        1. If |locationURL|'s [=url/origin=] is not the [=same origin|same=] as |currentURL|'s [=url/origin=], then set |hasCrossOriginRedirects| to true.
-    1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
-        1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
-        1. Return the result of [=Should navigation request of type be blocked by Content Security Policy?=], given |request| and |navigationType|.
-    1. Let |shouldBlockNavigationResponse| be the following steps, given |request| and |response|:
-        1. Set |finalSandboxFlags| to the [=set/union=] of |browsingContext|'s [=browsing context/sandboxing flags=] and |response|'s [=forced sandboxing flag set=].
-        1. Set |responseOrigin| to the result of [=determining the origin=] given |browsingContext|, |request|'s [=request/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
-        1. If |browsingContext| is a [=top-level browsing context=], then:
-            1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-            1. If |sandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
-
-                <div class="note">This results in a network error as one cannot simultaneously provide a clean slate to a response using cross-origin opener policy and sandbox the result of navigating to that response.</div>
-
-            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |browsingContext|, |request|'s [=request/URL=], |finalSandboxFlags|, and |incumbentNavigationOrigin|.
-
-        1. Return "`Allowed`".
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, |navigationType|, |browsingContext|, null (for forceEnvironment), |preRedirectHook|, |shouldBlockNavigationRequest| and |shouldBlockNavigationResponse|.
-    1. If |locationURL| is a [=URL=]:
-        1. [=Assert=]: |locationURL|'s [=url/scheme=] is not a [=fetch scheme=] and not "`javascript`".
-        1. [=Process a navigate URL scheme=] given |locationURL|, |browsingContext|, and |hasTransientActivation|, and return.
-    1. Let |responsePolicyContainer| be the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
-    1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |response|'s [=response/URL=], |historyPolicyContainer|, |initiatorPolicyContainer|, null, and |responsePolicyContainer|.
-    1. Let |navigationParams| be a new [=navigation params=] whose [=navigation params/id=] is |navigationId|, [=navigation params/request=] is |request|, [=navigation params/response=] is |response|, [=navigation params/origin=] is |responseOrigin|, [=navigation params/policy container=] is |resultPolicyContainer|, [=navigation params/final sandboxing flag set=] is |finalSandboxFlags|, [=navigation params/cross-origin opener policy=] is |responseCOOP|, [=navigation params/COOP enforcement result=] is |coopEnforcementResult|, [=navigation params/reserved environment=] is |request|'s [=request/reserved client=], [=navigation params/browsing context=] is |browsingContext|, [=navigation params/history handling=] is |historyHandling|, and [=navigation params/has cross-origin redirects=] is |hasCrossOriginRedirects|.
-    1. Run [=process a navigate response=] with |navigationType|, |allowedToDownload|, |hasTransientActivation|, and |navigationParams|.
-</div>
-
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
-
-These algorithms are based on [=process a navigate fetch=].
 
 <p class="issue">Check Service Worker integration</p>
 
-<div algorithm="partitioned prefetch">
-    To <dfn export>partitioned prefetch</dfn> given a {{Document}} |document| and [=prefetch record=] |prefetchRecord|, perform the following steps.
-
-    1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
-    1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
-    1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
-    1. Let |browsingContext| be |document|'s [=Document/browsing context=].
-    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
-    1. Let |request| be a [=request=] as follows:
-
-        :  [=request/URL=]
-        :: |prefetchRecord|'s [=prefetch record/URL=]
-        :  [=request/initiator=]
-        :: "`prefetch`"
-
-            <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
-        :  [=request/destination=]
-        :: "`document`"
-        :  [=request/credentials mode=]
-        :: "`include`"
-        :  [=request/use-URL-credentials flag=]
-        :: (set)
-        :  [=request/client=]
-        :: |document|'s [=relevant settings object=]
-
-    1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
-        1. [=Assert=]: |navigationType| is "`other`".
-        1. [=Assert=]: |request|'s [=request/reserved client=] is |environment|.
-        1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> "`prefetch`".
-        1. If |anonymizationPolicy| [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
-            1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the "`prefetch`" token in |purpose|.
-            1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or return "`Blocked`".
-
-                <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
-        1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
-
-            <div class="note">
-                Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
-            </div>
-        1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|.
-        1. If |partitionKey| is not equal to |proposedPartitionKey|, then return "`Blocked`".
-
-            <div class="issue">It might be possible to "downgrade" to [=uncredentialed prefetch=] in this case.</div>
-        1. If |request|'s [=request/URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then return "`Blocked`".
-
-            <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
-        1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
-
-            <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-        1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
-        1. Return "`Allowed`".
-
-    1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
-        1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-        1. If |prefetchRecord|'s [=prefetch record/sandboxing flag set=] is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
-        1. [=redirect chain/Update the response=] for |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
-
-            <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred, since this has visible side effects such as queuing violation reports.</div>
-        1. Return "`Allowed`".
-
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, null, an empty algorithm, |shouldBlockNavigationRequest|, and |shouldBlockNavigationResponse|, and |prefetchRecord|'s [=prefetch record/fetch controller=].
-    1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
-    1. TODO: frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
-    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-    1. [=Assert=]: |response| is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
-    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-    1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
-</div>
-
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
-<div algorithm="uncredentialed prefetch">
-    To <dfn export>uncredentialed prefetch</dfn> given a {{Document}} |document| and [=prefetch record=] |prefetchRecord|, perform the following steps.
+<div algorithm>
+    To <dfn export>prefetch</dfn> given a {{Document}} document and a [=prefetch record=] |prefetchRecord|, perform the following steps.
 
+    1. Let |sourcePartitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
+    1. Let |sourceSnapshotParams| be the result of [=snapshotting source snapshot params=] given |document|.
+    1. Let |targetSnapshotParams| be the result of [=snapshotting target snapshot params=] given |document|'s [=node navigable=].
+    1. Let |topLevelOrigin| be |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=] if |document|'s [=node navigable=] is a [=top-level traversable=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
+    1. Let |topLevelSite| be the result of [=obtaining a site=] given |topLevelOrigin|.
+    1. Let |secondKey| be null or an [=implementation-defined=] value.
+    1. Let |partitioningScheme| be "`same-partition`" if |sourcePartitionKey| is equal to (|topLevelSite|, |secondKey|), and "`uncredentialed`" otherwise.
+
+        <div class="note">
+            This determines whether the navigation would use the same network partition key. If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
+
+            Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause prefetch to fail.
+        </div>
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
-    1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
-    1. If |document|'s [=Document/policy container=]'s [=policy container/referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-    1. Let |browsingContext| be |document|'s [=Document/browsing context=].
-    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |browsingContext| and |browsingContext|'s [=browsing context/container=].
-    1. Let |isolationOrigin| be a new [=opaque origin=].
-
-        <div class="note">This is used to ensure a distinct network partition key is used.</div>
-    1. Let |isolatedEnvironment| be a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |browsingContext|, [=environment/creation URL=] is `about:blank`, [=environment/top-level creation URL=] is `about:blank`, and [=environment/top-level origin=] is |isolationOrigin|.
-    1. Let |isolatedPartitionKey| be the result of [=determining the network partition key=] given |isolatedEnvironment|.
-    1. Let |originalPartitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
-    1. Set |prefetchRecord|'s [=prefetch record/isolated partition key=] to |isolatedPartitionKey|.
-    1. Let |request| be a [=request=] as follows:
-
-        :  [=request/URL=]
+    1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
+    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |document|'s [=Document/browsing context=] and |document|'s [=node navigable=]'s [=navigable/container=].
+    1. Let |isolationOrigin| be null.
+    1. Let |documentState| be a new [=document state=] with
+        :  [=document state/request referrer policy=]
+        :: |document|'s [=Document/policy container=]'s [=policy container/referrer policy=]
+        :  [=document state/initiator origin=]
+        :: |document|'s [=Document/origin=]
+    1. Let |entry| be a new [=session history entry=] with
+        :  [=session history entry/URL=]
         :: |prefetchRecord|'s [=prefetch record/URL=]
-        :  [=request/initiator=]
-        :: "`prefetch`"
+        :  [=session history entry/document state=]
+        :: |documentState|
+    1. Let |request| be the result of [=creating a navigation request=] given |entry|, |document|'s [=relevant settings object=], |document|'s [=node navigable=]'s [=navigable/container=], and false.
+    1. Set |request|'s [=request/initiator=] to "`prefetch`".
 
-            <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
-        :  [=request/destination=]
-        :: "`document`"
-        :  [=request/credentials mode=]
-        :: "`include`"
+        <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
+    1. If |partitioningScheme| is "`uncredentialed`":
+        1. Clear |request|'s [=request/use-URL-credentials flag=].
+        1. Set |request|'s [=request/cache mode=] to "`no-store`".
 
-            <div class="note">Though credentials are included, they will be isolated such that no credentials are present to begin with.</div>
-        :  [=request/cache mode=]
-        :: "`no-store`"
-        :  [=request/client=]
-        :: |document|'s [=relevant settings object=]
+            <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
+        1. If |documentState|'s [=document state/request referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
+        1. Set |isolationOrigin| to a new [=opaque origin=].
+
+            <div class="note">This is used to ensure a distinct network partition key is used.</div>
+
+        <div class="note">Though credentials are still included, they will be isolated such that no credentials are present to begin with.</div>
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
-    1. Let |shouldBlockNavigationRequest| be the following steps, given [=request=] |request|, [=string=] |navigationType| and [=environment=] |environment|:
-        1. [=Assert=]: |request|'s [=request/reserved client=] is |isolatedEnvironment| and not |environment|.
-        1. [=Assert=]: |navigationType| is "`other`".
+    1. Let |shouldBlockNavigationRequest| be an algorithm which, given a [=request=] |request|, performs the following steps.
         1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> "`prefetch`".
-        1. If |anonymizationPolicy| [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
+        1. If |prefetchRecord|'s [=prefetch record/anonymization policy=] [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
             1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the "`prefetch`" token in |purpose|.
             1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or return "`Blocked`".
 
@@ -718,61 +621,36 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
             <div class="note">
                 Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
             </div>
-        1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |environment|.
-        1. If |originalPartitionKey| is equal to |hypotheticalPartitionKey|, then return "`Blocked`".
-
-            <div class="note">The prefetch would end up in the same partition as the prefetch came from in this case. |environment| represents the environment that would ordinarily be used during navigation fetch.</div>
-        1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |originsWithConflictingCredentials|.
-        1. If |request|'s [=request/URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then return "`Blocked`".
+        1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|'s [=request/reserved client=].
+        1. If |partitioningScheme| is "`same-partition`" and |proposedPartitionKey| is not equal to |sourcePartitionKey|, then return "`Blocked`".
+        1. Otherwise, if |partitioningScheme| is "`uncredentialed`" and |proposedPartitionKey| is equal to |sourcePartitionKey|, then return "`Blocked`".
+        1. If |request|'s [=request/current URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then return "`Blocked`".
 
             <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
-        1. If |request| cannot be fetched given |anonymizationPolicy| for an [=implementation-defined=] reason, then return "`Blocked`".
+        1. If |request| cannot be fetched given |prefetchRecord|'s [=prefetch record/anonymization policy=] for an [=implementation-defined=] reason, then return "`Blocked`".
 
             <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
+        1. If |partitioningScheme| is "`uncredentialed`":
+            1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |document|'s [=node navigable=], |request|'s [=request/current URL=], and null.
+            1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
+            1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |originsWithConflictingCredentials|.
         1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
         1. Return "`Allowed`".
-
-    1. Let |shouldBlockNavigationResponse| be the following steps, given [=request=] |request| and [=response=] |response|:
-        1. Let |responseCOOP| be the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-        1. If |prefetchRecord|'s [=prefetch record/sandboxing flag set=] is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then return "`Blocked`".
+    1. Let |processNavigationResponse| be an algorithm which, given a [=request=] |request| and [=response=] |response|, performs the following steps.
         1. [=redirect chain/Update the response=] for |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
+    1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |document| and |document|'s [=Document/origin=].
+    1. Let |global| be |document|'s [=relevant global object=].
+    1. [=In parallel=]:
+        1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", |isolationOrigin|, false (processEarlyHints), false (reportCOOPViolations), |shouldBlockNavigationRequest| and |processNavigationResponse|.
+        1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
+        1. If |originsWithConflictingCredentials| is not [=set/empty=], then set |navigationParams| to null.
 
-            <div class="note">This allows [=enforcing a response's cross-origin opener policy=] to be deferred, since this has visible side effects such as queuing violation reports.</div>
-        1. Return "`Allowed`".
-
-    1. Let (|response|, |locationURL|) be the result of [=performing a common navigational fetch=] given |request|, "`other`", |browsingContext|, |isolatedEnvironment|, an empty algorithm, |shouldBlockNavigationRequest|, |shouldBlockNavigationResponse|, and |prefetchRecord|'s [=prefetch record/fetch controller=].
-    1. If |locationURL| is failure or a [=URL=] whose [=url/scheme=] is not an [=HTTP(S) scheme=], then set |response| to a [=network error=].
-    1. TODO: frame-src, XFO enforcement should probably be left to navigation, but what about Content-Disposition?
-    1. If |response| is a [=network error=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-    1. If |originsWithConflictingCredentials| is not empty, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-
-        <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-    1. [=Assert=]: |response| is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
-    1. If |response| does not [=support prefetch=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-    1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
-
-    <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
-
-    <div class="issue">Update this to include the `` `Supports-Loading-Mode` `` mechanism to allow responses to continue despite cookies.</div>
-</div>
-
-<div algorithm>
-    To <dfn export>prefetch</dfn> given a {{Document}} |document| and [=prefetch record=] |prefetchRecord|, perform the following steps.
-
-    1. Let |partitionKey| be the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
-    1. Let |topLevelOrigin| be |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=] if |document|'s [=Document/browsing context=] is a [=top-level browsing context=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
-    1. Let |topLevelSite| be the result of [=obtaining a site=], given |topLevelOrigin|.
-    1. Let |secondKey| be null or an [=implementation-defined=] value.
-    1. If |partitionKey| is equal to (|topLevelSite|, |secondKey|), then [=partitioned prefetch=] given |document| and |prefetchRecord|.
-    1. Otherwise, [=uncredentialed prefetch=] given |document| and |prefetchRecord|.
-
-    <div class="note">
-      This determines whether the navigation would use the same network partition key.
-
-      If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
-
-      Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause the prefetch to fail.
-    </div>
+            <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
+            <div class="issue">Update this to include the `` `Supports-Loading-Mode` `` mechanism to allow responses to continue despite cookies.</div>
+        1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
+            1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
+            1. [=Assert=]: |navigationParams|'s [=navigation params/response=] is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
+            1. [=prefetch record/Complete=] |prefetchRecord| given |document|.
 </div>
 
 <div algorithm>
@@ -790,7 +668,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
 <h2 id="cookies">Cookies</h2>
 
-[[COOKIES]] defines "cookies" which can be set using the <a http-header spec="COOKIES" lt="Set-Cookie">`` `Set-Cookie` ``</a> response header field. Because [=uncredentialed prefetch=] forces a separate [=network partition key=] to be used, it's necessary to copy these cookies into the ordinary partition as though they had been [=receive a cookie|received=] at the time of navigation.
+[[COOKIES]] defines "cookies" which can be set using the <a http-header spec="COOKIES" lt="Set-Cookie">`` `Set-Cookie` ``</a> response header field. Because the "`uncredentialed`" partitioning scheme forces a separate [=network partition key=] to be used, it's necessary to copy these cookies into the ordinary partition as though they had been [=receive a cookie|received=] at the time of navigation.
 
 <div algorithm>
   To <dfn>copy prefetch cookies</dfn> given a [=network partition key=] |isolatedPartitionKey| and an [=environment=] |environment|, perform the following steps.
@@ -818,7 +696,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
           1. [=Assert=]: |topLevelOrigin| is an [=origin=].
           1. Set |topLevelSite| be the result of [=obtaining a site=] given |topLevelOrigin|.
 
-          <div class="note">When performing a prefetch in a [=nested browsing context=], the top-level site is determined by the [=top-level browsing context=] that contains it. Since that doesn't change as redirects are followed, |environment| can be used to establish the top-level site.</div>
+          <div class="note">When performing a prefetch in a [=child navigable=], the top-level site is determined by the [=top-level traversable=] that contains it. Since that doesn't change as redirects are followed, |environment| can be used to establish the top-level site.</div>
       1. Let |secondKey| be null or an [=implementation-defined=] value.
 
           <div class="note">|secondKey| is expected to match the value it would have had if this response had been processed as part of an ordinary navigation in |environment|'s [=environment/target browsing context=].</div>
@@ -886,6 +764,5 @@ The following parameters are defined for the "`prefetch`" token:
   <div class="note">
     A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values.
 
-    This specification conforms to this advice; the [=partitioned prefetch=] and [=uncredentialed prefetch=] algorithms do not emit non-boolean values.
+    This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
   </div>
-
