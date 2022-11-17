@@ -25,8 +25,11 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: browsers.html
       text: CSP-derived sandboxing flags; url: csp-derived-sandboxing-flags
       text: cross-origin opener policy enforcement result; url: coop-enforcement-result
+      text: cross-origin opener policy; url: cross-origin-opener-policy
       for: cross-origin opener policy
         text: value; url: coop-struct-value
+        text: reporting endpoint; url: coop-report-endpoint
+        text: report-only reporting endpoint; url: coop-report-only-endpoint
       for: cross-origin opener policy enforcement result
         text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
         text: would need a browsing context group switch due to report-only; url: coop-enforcement-bcg-switch-report-only
@@ -48,6 +51,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: initiator origin; url: document-state-initiator-origin
         text: origin; url: document-state-origin
         text: resource; url: document-state-resource
+        text: reload pending; url: document-state-reload-pending
         text: ever populated; url: document-state-ever-populated
         text: navigable target name; url: document-state-nav-target-name
       text: history handling behavior; url: history-handling-behavior
@@ -81,7 +85,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: serialized state; url: she-serialized-state
       text: source snapshot params; url: source-snapshot-params
       for: source snapshot params
+        text: has transient activation; url: source-snapshot-params-activation
         text: source policy container; url: source-snapshot-params-policy-container
+        text: fetch client; url: source-snapshot-params-client
       text: target snapshot params; url: target-snapshot-params
       for: target snapshot params
         text: sandboxing flags; url: target-snapshot-params-sandbox
@@ -91,8 +97,14 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: container document; url: nav-container-document
       text: container; for: browsing context; url: bc-container
       text: determine the origin; url: determining-the-origin
+      text: navigable container; url: navigable-container
+      text: parent; url: nav-parent
     urlPrefix: dom.html
       text: cross-origin opener policy; for: Document; url: concept-document-coop
+    urlPrefix: semantics.html
+      text: process early hint headers; url: process-early-hint-headers
+    urlPrefix: structured-data.html
+      text: StructuredSerializeForStorage; url: structuredserializeforstorage
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: process response; url: process-response
@@ -241,7 +253,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 
     1. Let |responseOrigin| be null.
     1. Let |responseCOOP| be null.
-    1. Let |coopEnforcementResult| b e a new [=cross-origin opener policy enforcement result=], with:
+    1. Let |coopEnforcementResult| be a new [=cross-origin opener policy enforcement result=], with:
         :  [=cross-origin opener policy enforcement result/needs a browsing context group switch=]
         :: false
         :  [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=]
@@ -319,28 +331,99 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
 <h2 id="html-patches">HTML Patches</h2>
 
-<div algorithm>
-    Insert the following steps in <a spec=HTML>attempt to populate the history entry's document</a>, before the step which invokes <a spec=HTML>create navigation params by fetching</a>.
+<div algorithm="create a cross-origin opener policy enforcement result for navigation">
+    <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
 
-    1. Otherwise, let |prefetchRecord| be the result of [=finding a matching prefetch record=] given <var ignore>navigable</var>'s [=active document=], <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flag set=]; if it is not null, then:
-        <!-- TODO(jbroman): synthesize request either here or at the callee -->
-        1. Set |navigationParams| to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, |request|, |prefetchRecord|, |targetSnapshotParams|, and |sourceSnapshotParams|.
-        1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and |navigationParams|'s [=navigation params/reserved environment=].
-
-            <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies.</div>
+    To <dfn export>create a cross-origin opener policy enforcement result for navigation</dfn> given a {{Document}} |activeDocument| and an [=origin=] |initiatorOrigin|, return a new [=cross-origin opener policy enforcement result=] with
+    :  [=cross-origin opener policy enforcement result/needs a browsing context group switch=]
+    :: false
+    :  [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=]
+    :: false
+    :  [=cross-origin opener policy enforcement result/url=]
+    :: |activeDocument|'s [=Document/URL=]
+    :  [=cross-origin opener policy enforcement result/origin=]
+    :: |activeDocument|'s [=Document/origin=]
+    :  [=cross-origin opener policy enforcement result/cross-origin opener policy=]
+    :: |activeDocument|'s [=Document/cross-origin opener policy=]
+    :  [=cross-origin opener policy enforcement result/current context is navigation source=]
+    :: true if |activeDocument|'s [=Document/origin=] is [=same origin=] with |initiatorOrigin|; otherwise false
 </div>
 
 <div algorithm>
-    <div class"note">This is an update of the existing <a spec=HTML>create navigation params by fetching</a> algorithm.</div>
+    <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
 
-    To <dfn export>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, an optional [=opaque origin=] or null (default null) |isolationOrigin|, an optional boolean |processEarlyHints| (default true), an optional boolean |reportCOOPViolations| (default true) |isolatedOrigin|, and an optional algorithm |shouldBlockNavigationRequest|, perform the following steps. If given, |shouldBlockNavigationRequest| must be an algorithm accepting a [=request=] and returning a "`Blocked`" or "`Allowed`". They return a [=navigation params=], a [=non-fetch scheme navigation params=], or null.
+    To <dfn export>create a navigation request</dfn> given a [=session history entry=] |entry|, an [=environment settings object=] |fetchClient|, a [=navigable container=] or null |container|, and a boolean |hasTransientActivation|, perform the following steps.
+
+    1. Let |documentResource| be |entry|'s [=session history entry/document state=]'s [=document state/resource=].
+    1. Let |request| be a new [=request=], with
+        :  [=request/url=]
+        :: |entry|'s [=session history entry/URL=]
+        :  [=request/policy container=]
+        :: |entry|'s [=session history entry/document state=]'s [=document state/history policy container=]
+        :  [=request/client=]
+        :: |fetchClient|
+        :  [=request/destination=]
+        :: "`document`"
+        :  [=request/credentials mode=]
+        :: "`include`"
+        :  [=request/use-URL-credentials flag=]
+        :: set
+        :  [=request/redirect mode=]
+        :: "`manual`"
+        :  [=request/mode=]
+        :: "`navigate`"
+        :  [=request/referrer=]
+        :: |entry|'s [=session history entry/document state=]'s [=document state/request referrer=]
+        :  [=request/referrer policy=]
+        :: |entry|'s [=session history entry/document state=]'s [=document state/request referrer policy=]
+    1. If |documentResource| is a [=POST resource=], then:
+        1. Set |request|'s [=request/method=] to `` `POST` ``.
+        1. Set |request|'s [=request/body=] to |documentResource|'s [=POST resource/request body=].
+        1. [=header list/Set=] `` `Content-Type` `` to |documentResource|'s [=POST resource/request content-type=] in |request|'s [=request/header list=].
+    1. If |entry|'s [=session history entry/document state=]'s [=document state/reload pending=] is true, then set |request|'s [=request/reload-navigation flag=].
+    1. Otherwise, if |entry|'s [=session history entry/document state=]'s [=document state/ever populated=] is true, then set |request|'s [=request/history-navigation flag=].
+    1. If |hasTransientActivation| is true, then set |request|'s [=request/user-activation=] to true.
+    1. If |container| is non-null:
+        1. If |container| has a [=browsing context scope origin=], then set |request|'s [=request/origin=] to that [=browsing context scope origin=].
+        1. Set |request|'s [=request/destination=] and [=request/initiator type=] to |container|'s [=Element/local name=].
+    1. Return |request|.
+
+    TODO(jbroman): unset URL credentials flag in unpartitioned case; maybe disallow altogether?
+</div>
+
+<div algorithm="attempt to populate the history entry's document">
+    In <a spec=HTML>attempt to populate the history entry's document</a>, replace the step which invokes <a spec=HTML>create navigation params by fetching</a> with the following:
+
+    1. Otherwise, if both of the following are true:
+        * <var ignore>entry</var>'s [=session history entry/URL=]'s [=url/scheme=] is a [=fetch scheme=]; and
+        * <var ignore>documentResource</var> is null, or <var ignore>allowPOST</var> is true and <var ignore>documentResource</var>'s [=POST resource/request body=] is not failure
+        
+        then:
+
+            1. Let |request| be the result of [=creating a navigation request=] given <var ignore>entry</var>, <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=], <var ignore>navigable</var>'s [=navigable/container=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/has transient activation=].
+            1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
+            1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given <var ignore>navigable</var>'s [=navigable/active document=], <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
+            1. If <var ignore>documentResource</var> is null and |prefetchRecord| is not null:
+                1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var> |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
+                1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
+
+                    <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies.</div>
+            1. Otherwise:
+                1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given <var ignore>navigable</var>'s [=navigable/active document=] and <var ignore>entry</var>'s [=session history entry/document state=]'s [=document state/initiator origin=].
+                1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, |coopEnforcementResult|, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
+
+</div>
+
+<div algorithm>
+    <div class="note">This is an update of the existing <a spec=HTML>create navigation params by fetching</a> algorithm.</div>
+
+    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, an optional [=opaque origin=] or null (default null) |isolationOrigin|, an optional boolean |processEarlyHints| (default true), an optional boolean |reportCOOPViolations| (default true), an optional algorithm |shouldBlockNavigationRequest|, perform the following steps. If given, |shouldBlockNavigationRequest| must be an algorithm accepting a [=request=] and returning a "`Blocked`" or "`Allowed`". They return a [=navigation params=], a [=non-fetch scheme navigation params=], or null.
 
     1. [=Assert=]: this is running [=in parallel=].
     1. [=Assert=]: |request|'s [=request/URL=] is |entry|'s [=session history entry/URL=].
     1. [=Assert=]: |request|'s [=request/mode=] is "`navigate`".
     1. [=Assert=]: |request|'s [=request/redirect mode=] is "`manual`".
     1. [=Assert=]: |request|'s [=request/reserved client=] is null.
-    1. Let |environment| be null. <!-- This is a new variable which stands in for request's reserved client. -->
     <!-- this begins around step 9 -->
     1. Let |response| be null.
     1. Let |responseOrigin| be null.
@@ -364,7 +447,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
                 1. Set |topLevelCreationURL| to `about:blank`.
                 1. Set |topLevelOrigin| to |isolationOrigin|.
             1. Otherwise, if |navigable| is not a [=top-level traversable=], then:
-                1. Let |parentEnvironment| be |navigable|'s [=navigable/parent=]'s [=active document=]'s [=relevant settings object=].
+                1. Let |parentEnvironment| be |navigable|'s [=parent=]'s [=navigable/active document=]'s [=relevant settings object=].
                 1. Set |topLevelCreationURL| to |parentEnvironment|'s [=environment/top-level creation URL=].
                 1. Set |topLevelOrigin| to |parentEnvironment|'s [=environment/top-level origin=].
             1. Set |request|'s [=request/reserved client=] to a new [=environment=] whose [=environment/id=] is a unique opaque string, [=environment/target browsing context=] is |navigable|'s [=active browsing context=], [=environment/creation URL=] is |currentURL|, [=environment/top-level creation URL=] is |topLevelCreationURL|, and [=environment/top-level origin=] is |topLevelOrigin|.
@@ -378,21 +461,21 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             
             Let |processResponse| be the following algorithm given a [=response=] |fetchedResponse|:
                 1. Set |response| to |fetchedResponse|.
-        1. Otherwise, [=process the next manual redirect=] for |fetchController|.
+        1. Otherwise, [=fetch controller/process the next manual redirect=] for |fetchController|.
         1. Wait until either |response| is non-null, or |navigable|'s [=ongoing navigation=] changes to no longer equal |navigationId|.
 
             If the latter condition occurs, then [=fetch controller/abort=] |fetchController|, and return.
             Otherwise, proceed onward.
         1. If |request|'s [=request/body=] is null, then set |entry|'s [=session history entry/document state=]'s [=document state/resource=] to null.
-        1. Set |responsePolicyContainer| to the result of [=creating a apolicy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
+        1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |response|'s [=response/URL=], |finalSandboxFlags|, |entry|'s [=session history entry/document state=]'s [=document state/initiator origin=], and null.
         1. If |navigable| is a [=top-level traversable=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
             1. If |reportCOOPViolations| is false, then set |responseCOOP|'s [=cross-origin opener policy/reporting endpoint=] and [=cross-origin opener policy/report-only reporting endpoint=] to null. <!-- this allows COOP reports to be suppressed until navigation actually occurs -->
-            1. Set |coopEnforcementResult| to the result of [=enforcing the response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |request|'s [=request/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |request|'s [=request/referrer=].
+            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |request|'s [=request/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |request|'s [=request/referrer=].
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
-        1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/detination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
+        1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -400,7 +483,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
         1. Let |oldDocState| be |entry|'s [=session history entry/document state=].
         1. Set |entry|'s [=session history entry/document state=] to a new [=document state=], with:
             :  [=document state/history policy container=]
-            :: a [=clone a policy conatiner|clone=] of |oldDocState|'s [=document state/history policy container=]
+            :: a [=clone a policy container|clone=] of |oldDocState|'s [=document state/history policy container=]
             :  [=document state/request referrer=]
             :: |oldDocState|'s [=document state/request referrer=]
             :  [=document state/request referrer policy=]
@@ -445,7 +528,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
         :  [=navigation params/COOP enforcement result=]
         :: |coopEnforcementResult|
         :  [=navigation params/reserved environment=]
-        :: |rquest|'s [=request/reserved client=]
+        :: |request|'s [=request/reserved client=]
         :  [=navigation params/navigable=]
         :: |navigable|
         :  [=navigation params/navigation timing type=]
