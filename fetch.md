@@ -113,7 +113,7 @@ One alternative to our sufficiently-strict referrer policy proposal above is to 
 
 This would allow pages which otherwise set globally-lax referrer policies, such as `"unsafe-url"`, to perform cross-site preloads. Whereas with our current proposal, such preload requests are ignored.
 
-The main downside of this is that deviates from developer intent. We think it's better to instead [introduce the ability to trigger preloads with a different referrer policy than your document uses](https://github.com/WICG/nav-speculation/issues/167).
+The main downside of this is that deviates from developer intent. We think it's better to instead [introduce the ability to trigger preloads with a different referrer policy than your document uses](./triggers.md#explicit-referrer-policy). See [discussion](https://github.com/WICG/nav-speculation/issues/167).
 
 ## Using a privacy-preserving proxy
 

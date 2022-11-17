@@ -14,6 +14,7 @@
   - [List rules](#list-rules)
   - [Requirements](#requirements)
   - [Window name targeting hints](#window-name-targeting-hints)
+  - [Explicit referrer policy](#explicit-referrer-policy)
 - [Future extensions](#future-extensions)
   - [Scores](#scores)
   - [Document rules](#document-rules)
@@ -176,6 +177,29 @@ Note that if a page is truly unsure whether a given URL will be prerendered into
 ```
 
 However, in implementations such as Chromium that need the target hint, this will prerender the page twice, and thus use twice as many resources. So this is best avoided if possible.
+
+### Explicit referrer policy
+
+By default, the referring document's referrer policy is used for the speculative request. The policy to use for the speculative request can be specified in a rule using the `"referrer_policy"` key and the desired referrer policy string.
+
+For example:
+```json
+{
+  "prefetch": [
+    {"source": "list",
+     "urls": ["https://en.wikipedia.org/wiki/Lethe"],
+     "referrer_policy": "no-referrer"
+    }
+  ]
+}
+```
+
+For speculation actions that would be prevented by the [**sufficiently-strict referrer policy** requirement](./fetch.md#stripping-referrer-information) on a referring page with a lax policy, this allows the referring page to set a stricter policy specifically for the speculative request.
+
+Note that referrer policy matching is not done between the speculative request and the user facing navigation. So given the above rule, a request would be made with `no-referrer` and would still be used even if the user clicked on:
+```html
+<a href="https://en.wikipedia.org/wiki/Lethe" referrerpolicy="unsafe-url">
+```
 
 ## Future extensions
 

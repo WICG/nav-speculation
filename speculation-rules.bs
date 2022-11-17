@@ -48,6 +48,12 @@ spec: urlpattern; urlPrefix: https://wicg.github.io/urlpattern/
   type: constructor; for: URLPattern; text: "URLPattern(input, baseURL)"; url: dom-urlpattern-urlpattern
   type: dictionary; text: URLPatternInit
   type: dfn; text: match; url: match
+spec: RFC8941; urlPrefix: https://httpwg.org/specs/rfc8941.html
+  type: dfn
+    text: structured header; url: top
+    for: structured header
+      text: list; url: list
+      text: string; url: string
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: prefetch; url: prefetch
@@ -114,6 +120,10 @@ The only valid string for [=speculation rule/requirements=] to contain is "`anon
 A <dfn>speculation rule set</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="speculation rule set">prefetch rules</dfn>, a [=list=] of [=speculation rules=]
 * <dfn for="speculation rule set">prerender rules</dfn>, a [=list=] of [=speculation rules=]
+
+A <dfn>pending external speculation rule resource</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="pending external speculation rule resource">URL</dfn>, a [=URL=]
+* <dfn for="pending external speculation rule resource">controller</dfn>, a [=fetch controller=] or null
 
 A <dfn>document rule predicate</dfn> is one of the following:
 * [=document rule conjunction=]
@@ -217,6 +227,87 @@ Inside the [=prepare the script element=] algorithm we make the following change
     </dd>
   </dl>
 
+<h3 id="speculation-rules-header">The [:Speculation-Rules:] header</h3>
+Note: This section contains modifications to [[HTML]].
+
+The <dfn http-header><code>Speculation-Rules</code></dfn> HTTP response header is a [=structured header=] whose value must be a [=structured header/list=] whose members must be [=structured header/strings=] which are [=valid URL strings=].
+
+<div algorithm>
+
+  To <dfn>process the Speculation-Rules header</dfn> given a [=document=] |document| and a [=response=] |response|:
+
+  1. Optionally, return.
+    <p class="note">The user agent could ignore this header, for example, if it does not intend to [=consider speculation=] for |document|.</p>
+  1. Let |parsedList| be the result of [=header list/getting a structured field value=] given [:Speculation-Rules:] and "`list`" from |response|'s [=response/header list=].
+  1. If |parsedList| is null, then return.
+  1. Let |baseUrl| be |document|'s [=document base URL=].
+  1. [=list/For each=] |item| of |parsedList|:
+    1. If |item| is not a [=string=], then [=iteration/continue=].
+    1. Let |parsedURL| be the result of [=basic URL parser|parsing=] |item| with |baseUrl|.
+    1. If |parsedURL| is failure, then [=iteration/continue=].
+    1. Let |pendingResource| be a [=pending external speculation rule resource=] with [=pending external speculation rule resource/URL=] |parsedURL| and [=pending external speculation rule resource/controller=] null.
+    1. [=list/Append=] |pendingResource| to |document|'s [=document/list of pending external speculation rule resources=].
+  1. [=Process pending external speculation rule resources=] given |document|.
+</div>
+
+In <a spec="HTML">create and initialize a `Document` object</a>, before the step
+
+  > 19. Return <var ignore>document</var>.
+
+add the following step
+
+  > 19. [=Process the Speculation-Rules header=] given <var ignore>document</var> and <var ignore>navigationParams</var>'s [=response=].
+
+<h3 id="external-speculation-rule-sets">External speculation rule sets</h3>
+
+<div algorithm>
+
+  To <dfn>process pending external speculation rule resources</dfn> given a [=document=] |document|:
+
+  1. Let |pendingResources| be |document|'s [=document/list of pending external speculation rule resources=].
+  1. [=list/For each=] |pendingResource| of |pendingResources|:
+    1. Optionally, [=pending external speculation rule resource/cancel and discard=] |pendingResource| given |document|, then [=iteration/continue=].
+    1. If |pendingResource|'s [=pending external speculation rule resource/controller=] is not null, then [=iteration/continue=].
+    1. Optionally, [=pending external speculation rule resource/fetch=] |pendingResource| given |document|.
+      <p class="note">The user agent may schedule the fetch of external speculation rules at its discretion. That is, if it skips the fetch during this call of [=process pending external speculation rule resources=], it might do the fetch during a later call.</p>
+
+</div>
+
+<div algorithm>
+
+  To <dfn for="pending external speculation rule resource">fetch</dfn> a [=pending external speculation rule resource=] |pendingResource| given a [=document=] |document|:
+  1. Let |pendingResources| be |document|'s [=document/list of pending external speculation rule resources=].
+  1. [=Assert=]: |pendingResources| [=list/contains=] |pendingResource|.
+  1. [=Assert=]: |pendingResource|'s [=pending external speculation rule resource/controller=] is null.
+  1. Let |settingsObject| be |document|'s [=relevant settings object=].
+  1. Let |requestURL| be |pendingResource|'s [=pending external speculation rule resource/URL=].
+  1. Let |request| be a new [=request=] whose [=request/URL=] is |requestURL|, [=request/client=] is |settingsObject|, and [=request/mode=] is "`cors`".
+  1. Let |controller| be the result of [=fetching=] given |request| with <i>[=fetch/processResponseConsumeBody=]</i> set to the following steps given [=response=] |response| and null, failure, or a [=byte sequence=] |body|:
+    1. [=list/Remove=] |pendingResource| from |pendingResources|.
+    1. If any of the following conditions are true, abort these steps:
+      * |body| is null.
+      * |body| is failure.
+      * |response|'s [=response/status=] is not an [=ok status=].
+      * The result of [=header list/extracting a MIME type=] from |response|'s [=response/header list=] does not have an [=MIME type/essence=] of "`application/speculationrules+json`".
+    1. Otherwise, let |text| be the result of [=UTF-8 decoding=] |body|.
+    1. Let |ruleSet| be the result of [=parsing speculation rules=] given |text| and |response|'s [=response/URL=].
+    1. If |ruleSet| is null, abort these steps.
+      <p class="note">User agents are encouraged to report failures of the previous steps.</p>
+    1. [=list/Append=] |ruleSet| to |document|'s [=document/list of speculation rule sets=].
+  1. Set |pendingResource|'s [=pending external speculation rule resource/controller=] to |controller|.
+
+</div>
+
+<div algorithm>
+
+  To <dfn for="pending external speculation rule resource">cancel and discard</dfn> a [=pending external speculation rule resource=] |pendingResource| given a [=document=] |document|:
+
+  1. Let |pendingResources| be |document|'s [=document/list of pending external speculation rule resources=].
+  1. [=Assert=]: |pendingResources| [=list/contains=] |pendingResource|.
+  1. Let |controller| be |pendingResource|'s [=pending external speculation rule resource/controller=].
+  1. If |controller| is not null, [=fetch controller/abort=] |controller|.
+  1. [=list/Remove=] |pendingResource| from |pendingResources|.
+</div>
 
 <h3 id="speculation-rules-parsing">Parsing</h3>
 
@@ -343,12 +434,19 @@ Inside the [=prepare the script element=] algorithm we make the following change
 
 A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn>, which is an initially empty [=list=].
 
+A [=document=] has a <dfn for=document export>list of pending external speculation rule resources</dfn>, which is an initially empty [=list=] of [=pending external speculation rule resources=].
+
 <!-- TODO(domfarolino): Get rid of the `data-link-type="interface"` once we fix the dfn in HTML. -->
 Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
 <p class="note">
   The user agent will likely do when resources are idle and available, or otherwise the circumstances of its previous decision whether to start a speculation could have changed.
 </p>
+<p class="note">
+  The user agent may still [=consider speculation=] when there are [=document/list of pending external speculation rule resources|rule sets that have not been loaded yet=].
+</p>
+
+The user agent may also [=queue a global task=] on the [=networking task source=] with |document|'s [=relevant global object=] to [=process pending external speculation rule resources=] given |document|.
 
 A <dfn>prefetch candidate</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="prefetch candidate">URL</dfn>, a [=URL=]
