@@ -14,11 +14,6 @@ Complain About: accidental-2119 yes, missing-example-ids yes
 Indent: 2
 Boilerplate: omit conformance
 </pre>
-<!-- TODO(jbroman): fix the following
-process a navigate URL scheme
-browsing context/container
-browsing context/sandboxing flags
--->
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
@@ -93,11 +88,9 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: target snapshot params; url: target-snapshot-params
       for: target snapshot params
         text: sandboxing flags; url: target-snapshot-params-sandbox
-      text: process a navigate URL scheme; url: process-a-navigate-url-scheme
     urlPrefix: document-sequences.html
       text: active browsing context; url: nav-bc
       text: container document; url: nav-container-document
-      text: container; for: browsing context; url: bc-container
       text: determine the origin; url: determining-the-origin
       text: navigable container; url: navigable-container
       text: parent; url: nav-parent
@@ -249,7 +242,6 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     <p class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it's unclear whether this is worthwhile.</p>
 </div>
 
-<!-- TODO(jbroman): Invoke this in "attempt to populate the history entry's document" -->
 <div>
     To <dfn export>create navigation params from a prefetch record</dfn> given a [=navigable=] |navigable|, a [=document state=] |documentState|, a [=navigation id=] |navigationId|, a {{NavigationTimingType}} |navTimingType|, a [=request=] |request|, a [=prefetch record=] |record|, a [=target snapshot params=] |targetSnapshotParams|, and a [=source snapshot params=] |sourceSnapshotParams|, perform the following steps.
 
@@ -409,8 +401,6 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
         1. If |container| has a [=browsing context scope origin=], then set |request|'s [=request/origin=] to that [=browsing context scope origin=].
         1. Set |request|'s [=request/destination=] and [=request/initiator type=] to |container|'s [=Element/local name=].
     1. Return |request|.
-
-    TODO(jbroman): unset URL credentials flag in unpartitioned case; maybe disallow altogether?
 </div>
 
 <hr>
