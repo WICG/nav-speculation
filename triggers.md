@@ -21,6 +21,7 @@
   - [Handler URLs](#handler-urls)
   - [External speculation rules via script elements](#external-speculation-rules-via-script-elements)
   - [More speculation actions](#more-speculation-actions)
+  - [Content-Security-Policy](#content-security-policy)
 - [Proposed processing model](#proposed-processing-model)
 - [Developer tooling](#developer-tooling)
 - [Feature detection](#feature-detection)
@@ -282,6 +283,13 @@ As mentioned previously, we have currently only specified `"prefetch"` and `"pre
 Adding `"dns-prefetch"` and `"preconnect"`, to mirror [Resource Hints](https://w3c.github.io/resource-hints/), would be an obvious extension, simply giving a more-ergonomic and capable way of triggering those actions.
 
 Another envisioned speculative action is `"prefetch_with_subresources"`, which prefetches a document and then uses the HTML preload scanner to find other subresources that are worth preloading. Chromium currently does something similar (known as "[NoState Prefetch](https://developer.chrome.com/blog/nostate-prefetch/)") for `<link rel="prerender">`. But, we're not yet sure this feature is pulling its weight, in between the lightweight prefetch and the fully-instant prerender features, so it's not yet clear whether this will be worth integrating.
+
+### Content-Security-Policy
+
+`Speculation-Rules` is embedded as an inline declarationt within a script tag with type=”speculationrules”, and restricted by the `script-src` restriction of the `Content-Security-Policy`.
+To control the availability to inject an inline `Speculation-Rules`, `'inline-speculation-rules'` is available in addition to `‘unsafe-inline’`.
+This helps developers to permit only inline `Speculation-Rules` but still to disallow unsafe inline JavaScript.
+`prefetch-src` is also used to restrict target URLs.
 
 ## Proposed processing model
 
