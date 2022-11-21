@@ -51,6 +51,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: active window; url: document-sequences.html#nav-window
       text: ongoing navigation; url: browsing-the-web.html#ongoing-navigation
       text: parent; url: document-sequences.html#nav-parent
+    for: navigate
+      text: referrerPolicy; url: browsing-the-web.html#navigation-referrer-policy
     for: navigation params
       text: request; url: browsing-the-web.html#navigation-params-request
       text: response; url: browsing-the-web.html#navigation-params-response
@@ -365,7 +367,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div>
-  To <dfn export>start referrer-initiated prerendering</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
+  To <dfn export>start referrer-initiated prerendering</dfn> given a [=URL=] |startingURL|, a {{Document}} |referrerDoc|, and a [=referrer policy=] |referrerPolicy|:
 
   1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
@@ -393,7 +395,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">As with all [=top-level traversables=], the [=prerendering traversable=] can be [=destroy a top-level traversable|destroyed=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too many resources.
 
-  1. [=Navigate=] |prerenderingTraversable| to |startingURL| using |referrerDoc|.
+  1. [=Navigate=] |prerenderingTraversable| to |startingURL| using |referrerDoc|, with <i>[=navigate/referrerPolicy=]</i> set to |referrerPolicy|.
 </div>
 
 <div algorithm>
