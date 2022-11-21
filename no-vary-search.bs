@@ -168,3 +168,57 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
         <td>(omit the header)
   </table>
 </div>
+
+<h2 id="comparing">Comparing</h2>
+
+Two [=URLs=] |urlA| and |urlB| are <dfn export>equivalent modulo search variance</dfn> given a [=URL search variance=] |searchVariance| if the following algorithm returns true:
+
+1. If the [=url/scheme=], [=url/username=], [=url/password=], [=url/host=], [=url/port=], or [=url/path=] of |urlA| and |urlB| differ, then return false.
+
+1. If |searchVariance| is equivalent to the [=default URL search variance=], then:
+
+  1. If |urlA|'s [=url/query=] equals |urlB|'s [=url/query=], then return true.
+
+  1. Return false.
+
+  <p class="note">In this case, even [=URL=] pairs that might appear the same after parsing, such as `https://example.com/a` and `https://example.com/a?`, or `https://example.com/foo?a=b&&&c` and `https://example.com/foo?a=b&c=`, will be treated as inequivalent.
+
+1. Let |searchParamsA| and |searchParamsB| be empty [=lists=].
+
+1. If |urlA|'s [=url/query=] is not null, then set |searchParamsA| to the result of running the [=urlencoded parser|application/x-www-form-urlencoded parser=] given the [=isomorphic encoding=] of |urlA|'s [=url/query=].
+
+1. If |urlB|'s [=url/query=] is not null, then set |searchParamsB| to the result of running the [=urlencoded parser|application/x-www-form-urlencoded parser=] given the [=isomorphic encoding=] of |urlB|'s [=url/query=].
+
+1. If |searchVariance|'s [=URL search variance/no-vary params=] is a [=list=], then:
+
+  1. Set |searchParamsA| to a [=list=] containing those [=list/items=] |pair| in |searchParamsA| where |searchVariance|'s [=URL search variance/no-vary params=] does not [=list/contain=] |pair|[0].
+
+  1. Set |searchParamsB| to a [=list=] containing those [=list/items=] |pair| in |searchParamsB| where |searchVariance|'s [=URL search variance/no-vary params=] does not [=list/contain=] |pair|[0].
+
+1. Otherwise, if |searchVariance|'s [=URL search variance/vary params=] is a [=list=], then:
+
+  1. Set |searchParamsA| to a [=list=] containing those [=list/items=] |pair| in |searchParamsA| where |searchVariance|'s [=URL search variance/vary params=] [=list/contains=] |pair|[0].
+
+  1. Set |searchParamsB| to a [=list=] containing those [=list/items=] |pair| in |searchParamsB| where |searchVariance|'s [=URL search variance/vary params=] [=list/contains=] |pair|[0].
+
+1. If |searchVariance|'s [=URL search variance/vary on key order=] is false, then:
+
+  1. Let |keyLessThan| be an algorithm taking as inputs two pairs (|keyA|, <var ignore>valueA</var>) and (|keyB|, <var ignore>valueB</var>), which returns whether |keyA| is [=code unit less than=] |keyB|.
+
+  1. Set |searchParamsA| to the result of [=list/sorting in ascending order=] |searchParamsA|, with |keyLessThan|.
+
+  1. Set |searchParamsB| to the result of [=list/sorting in ascending order=] |searchParamsB|, with |keyLessThan|.
+
+1. If |searchParamsA|'s [=list/size=] is not equal to |searchParamsB|'s [=list/size=], then return false.
+
+1. Let |i| be 0.
+
+1. [=iteration/While=] |i| &lt; |searchParamsA|'s [=list/size=]:
+
+  1. If |searchParamsA|[|i|][0] does not equal |searchParamsB|[|i|][0], then return false.
+
+  1. If |searchParamsA|[|i|][1] does not equal |searchParamsB|[|i|][1], then return false.
+
+  1. Set |i| to |i| + 1.
+
+1. Return true.
