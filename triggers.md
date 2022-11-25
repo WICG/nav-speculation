@@ -256,7 +256,7 @@ Any of these simple conditions can be negated and combined with conjunction and 
 
 An example of using these would be the following, which marks up as safe-to-prerender all same-origin pages except those known to be problematic:
 
-```js
+```json
 {
   "prerender": [
     {"source": "document",
@@ -271,6 +271,12 @@ An example of using these would be the following, which marks up as safe-to-prer
 ```
 
 Note how this example uses a low `"score"` value to indicate that, although these links are _safe_ to prerender, they aren't necessarily that important or likely to be clicked on. In such a case, the browser would likely use its own heuristics, e.g. only performing the prerender on pointer-down. Additionally, the web developer might combine this with a higher-scoring rule that indicates which URLs they suspect are likely, which the browser could prerender ahead of time.
+
+For rule sets that are externally fetched, url patterns in `"href_matches"` will be parsed relative to the external resource's url. To parse these patterns relative to the document that fetched the rules instead, `"href_matches"` can be paired with `"relative_to": "document"` like so:
+
+```json
+{"href_matches": "/*\\?*", "relative_to": "document"}
+```
 
 #### Alternatives
 
