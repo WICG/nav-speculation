@@ -19,6 +19,7 @@
   - [Scores](#scores)
   - [Document rules](#document-rules)
     - [Alternatives](#alternatives)
+  - [Using the Document's base URL for external speculation rule sets](#using-the-documents-base-url-for-external-speculation-rule-sets)
   - [Handler URLs](#handler-urls)
   - [External speculation rules via script elements](#external-speculation-rules-via-script-elements)
   - [More speculation actions](#more-speculation-actions)
