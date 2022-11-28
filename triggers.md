@@ -272,12 +272,6 @@ An example of using these would be the following, which marks up as safe-to-prer
 
 Note how this example uses a low `"score"` value to indicate that, although these links are _safe_ to prerender, they aren't necessarily that important or likely to be clicked on. In such a case, the browser would likely use its own heuristics, e.g. only performing the prerender on pointer-down. Additionally, the web developer might combine this with a higher-scoring rule that indicates which URLs they suspect are likely, which the browser could prerender ahead of time.
 
-For rule sets that are externally fetched, url patterns in `"href_matches"` will be parsed relative to the external resource's url. To parse these patterns relative to the document's base url instead, `"href_matches"` can be paired with `"relative_to": "document"` like so:
-
-```json
-{"href_matches": "/*\\?*", "relative_to": "document"}
-```
-
 #### Alternatives
 
 There are a number of alternatives to this that were not selected, such as:
@@ -285,6 +279,38 @@ There are a number of alternatives to this that were not selected, such as:
 * **Implicit `"and"` on conditions.** A straw poll suggested this wasn't obvious, and making this explicit made it easier to understand.
 * **A bespoke parsed expression syntax.** This has nice ergonomic properties for complex expressions, but expressions are expected to be fairly simple in practice. If strings like selectors and URL patterns might be controlled by an attacker, this would also potentially introduce injection vulnerabilities (along the lines of XSS and SQL injection), unless an even more cumbersome syntax (along the lines of prepared statements) were used. This would also generally be more difficult to programmatically manipulate, whereas keeping this in pure JSON allows existing JSON tooling in various languages (but most notably JavaScript and web browsers) to be manipulate it.
 * **Combining negation with conditions.** Given the desire to provide more general logic primitives, this would be somewhat surprising. Negation with a separate object is longer but not dramatically longer. In the case of CSS selectors, a shorter syntax for negation is already available even without support at this level (namely, the `:not(...)` pseudo-class).
+
+### Using the Document's base URL for external speculation rule sets
+
+For rule sets that are externally fetched, urls in list rules and url patterns in document rules are parsed relative to the external resource's url. To parse these urls/patterns relative to the document's base url, `"relative_to": "document"` could be specified as part of the speculation rule:
+
+```json
+{
+  "source": "list",
+  "urls": ["/home", "/about"],
+  "relative_to": "document"
+}
+
+{
+  "source": "document",
+  "where": {"href_matches": "/home\\?*"},
+  "relative_to": "document"
+}
+```
+
+For document rules, `"relative_to"` can also be paired directly with `"href_matches"` and the document's base url would only be used for patterns in that particular predicate:
+
+```json
+{
+  "source": "document",
+  "where": {"or": [
+    {"href_matches": "/home\\?*", "relative_to": "document"},
+    {"href_matches": "/about\\?*"}
+  ]}
+}
+```
+
+(In the above example, only the first `href_matches` would use the document's base URL.)
 
 ### Handler URLs
 
