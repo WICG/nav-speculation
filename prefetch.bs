@@ -247,19 +247,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 
     1. Let |responseOrigin| be null.
     1. Let |responseCOOP| be null.
-    1. Let |coopEnforcementResult| be a new [=cross-origin opener policy enforcement result=], with:
-        :  [=cross-origin opener policy enforcement result/needs a browsing context group switch=]
-        :: false
-        :  [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=]
-        :: false
-        :  [=cross-origin opener policy enforcement result/url=]
-        :: |navigable|'s [=navigable/active document=]'s [=Document/URL=]
-        :  [=cross-origin opener policy enforcement result/origin=]
-        :: |navigable|'s [=navigable/active document=]'s [=Document/origin=]
-        :  [=cross-origin opener policy enforcement result/cross-origin opener policy=]
-        :: |navigable|'s [=navigable/active document=]'s [=Document/cross-origin opener policy=]
-        :  [=cross-origin opener policy enforcement result/current context is navigation source=]
-        :: true if |navigable|'s [=navigable/active document=]'s [=Document/origin=] is [=same origin=] with |documentState|'s [=document state/initiator origin=], and false otherwise.
+    1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |navigable|'s [=navigable/active document=] and |documentState|'s [=document state/initiator origin=].
     1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
     1. Let |responsePolicyContainer| be null.
     1. Let |urlList| be an empty [=list=].
@@ -276,8 +264,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
                 <p class="note">This is guaranteed since the sandboxing flags of the document cannot change to become non-empty since this was prefetched, and the check was not done for a different window. If this changes, this will need to be able to handle failure of this check.</p>
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |response|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |exchangeRecord|'s [=exchange record/request=]'s [=request/referrer=].
     1. Set |request|'s [=request/URL list=] to |urlList|.
-    1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |response|'s [=response/URL=], |documentState|'s [=document state/history policy container=], |sourceSnapshotParams|'s [=source snapshot params/source policy container=], null, and |responsePolicyContainer|.
-    1. Let |navigationParams| be a new [=navigation params=], with:
+    1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |record|'s [=prefetch record/response=]'s [=response/URL=], |documentState|'s [=document state/history policy container=], |sourceSnapshotParams|'s [=source snapshot params/source policy container=], null, and |responsePolicyContainer|.
+    1. Return a new [=navigation params=], with:
         :  [=navigation params/id=]
         :: |navigationId|
         :  [=navigation params/request=]
@@ -306,7 +294,6 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         :: null
 
             <p class="note">This implies that early hints delivered for prefetched documents won't be processed. This could be revised in the future if it is common for there to be useful resource hints which are not repeated in the main response headers. Since prefetches aren't currently served until the response headers arrive, early hints would not be processed any earlier than ordinary response headers. It might be possible for a future specification to allow early hints found during prefetching to be used in some way.</p>
-    1. Return |navigationParams|.
 </div>
 
 A <dfn export>prefetch IP anonymization policy</dfn> is either null or a [=cross-origin prefetch IP anonymization policy=].
@@ -347,10 +334,6 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
     <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
 
     To <dfn export>create a cross-origin opener policy enforcement result for navigation</dfn> given a {{Document}} |activeDocument| and an [=origin=] |initiatorOrigin|, return a new [=cross-origin opener policy enforcement result=] with
-    :  [=cross-origin opener policy enforcement result/needs a browsing context group switch=]
-    :: false
-    :  [=cross-origin opener policy enforcement result/would need a browsing context group switch due to report-only=]
-    :: false
     :  [=cross-origin opener policy enforcement result/url=]
     :: |activeDocument|'s [=Document/URL=]
     :  [=cross-origin opener policy enforcement result/origin=]
