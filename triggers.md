@@ -19,9 +19,11 @@
   - [Scores](#scores)
   - [Document rules](#document-rules)
     - [Alternatives](#alternatives)
+  - [Using the Document's base URL for external speculation rule sets](#using-the-documents-base-url-for-external-speculation-rule-sets)
   - [Handler URLs](#handler-urls)
   - [External speculation rules via script elements](#external-speculation-rules-via-script-elements)
   - [More speculation actions](#more-speculation-actions)
+  - [Content-Security-Policy](#content-security-policy)
 - [Proposed processing model](#proposed-processing-model)
 - [Developer tooling](#developer-tooling)
 - [Feature detection](#feature-detection)
@@ -255,7 +257,7 @@ Any of these simple conditions can be negated and combined with conjunction and 
 
 An example of using these would be the following, which marks up as safe-to-prerender all same-origin pages except those known to be problematic:
 
-```js
+```json
 {
   "prerender": [
     {"source": "document",
@@ -278,6 +280,38 @@ There are a number of alternatives to this that were not selected, such as:
 * **Implicit `"and"` on conditions.** A straw poll suggested this wasn't obvious, and making this explicit made it easier to understand.
 * **A bespoke parsed expression syntax.** This has nice ergonomic properties for complex expressions, but expressions are expected to be fairly simple in practice. If strings like selectors and URL patterns might be controlled by an attacker, this would also potentially introduce injection vulnerabilities (along the lines of XSS and SQL injection), unless an even more cumbersome syntax (along the lines of prepared statements) were used. This would also generally be more difficult to programmatically manipulate, whereas keeping this in pure JSON allows existing JSON tooling in various languages (but most notably JavaScript and web browsers) to be manipulate it.
 * **Combining negation with conditions.** Given the desire to provide more general logic primitives, this would be somewhat surprising. Negation with a separate object is longer but not dramatically longer. In the case of CSS selectors, a shorter syntax for negation is already available even without support at this level (namely, the `:not(...)` pseudo-class).
+
+### Using the Document's base URL for external speculation rule sets
+
+For rule sets that are externally fetched, urls in list rules and url patterns in document rules are parsed relative to the external resource's url. To parse these urls/patterns relative to the document's base url, `"relative_to": "document"` could be specified as part of the speculation rule:
+
+```json
+{
+  "source": "list",
+  "urls": ["/home", "/about"],
+  "relative_to": "document"
+}
+
+{
+  "source": "document",
+  "where": {"href_matches": "/home\\?*"},
+  "relative_to": "document"
+}
+```
+
+For document rules, `"relative_to"` can also be paired directly with `"href_matches"` and the document's base url would only be used for patterns in that particular predicate:
+
+```json
+{
+  "source": "document",
+  "where": {"or": [
+    {"href_matches": "/home\\?*", "relative_to": "document"},
+    {"href_matches": "/about\\?*"}
+  ]}
+}
+```
+
+(In the above example, only the first `href_matches` would use the document's base URL.)
 
 ### Handler URLs
 
@@ -306,6 +340,13 @@ As mentioned previously, we have currently only specified `"prefetch"` and `"pre
 Adding `"dns-prefetch"` and `"preconnect"`, to mirror [Resource Hints](https://w3c.github.io/resource-hints/), would be an obvious extension, simply giving a more-ergonomic and capable way of triggering those actions.
 
 Another envisioned speculative action is `"prefetch_with_subresources"`, which prefetches a document and then uses the HTML preload scanner to find other subresources that are worth preloading. Chromium currently does something similar (known as "[NoState Prefetch](https://developer.chrome.com/blog/nostate-prefetch/)") for `<link rel="prerender">`. But, we're not yet sure this feature is pulling its weight, in between the lightweight prefetch and the fully-instant prerender features, so it's not yet clear whether this will be worth integrating.
+
+### Content-Security-Policy
+
+Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` CSP directive.
+To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword.
+Using `script-src 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
+The `prefetch-src` directive can be used to restrict which URLs can be prefetched or prerendered.
 
 ## Proposed processing model
 

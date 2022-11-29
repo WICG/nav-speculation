@@ -25,43 +25,47 @@ spec: ecma262; urlPrefix: https://tc39.es/ecma262/
     text: current realm; url: current-realm
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
-    urlPrefix: browsers.html
-      text: creating a new top-level browsing context; url: creating-a-new-top-level-browsing-context
-      for: browsing context
-        text: remove; url: bcg-remove;
-      text: fully active; url: fully-active
-      text: top level browsing context; url:
-    urlPrefix: history.html
-      text: session history; url: session-history
-    urlPrefix: browsing-the-web.html
-      for: session history entry
-        text: document; url: she-document
-      for: navigate
-        text: mature; url: concept-navigate-mature
-      for: navigation params
-        text: request; url: navigation-params-request
-        text: reserved environment; url: navigation-params-reserved-environment
-      text: abort; for: Document; url: abort-a-document
-      text: create and initialize a Document object; url: initialise-the-document-object
-      text: history handling behavior; url: history-handling-behavior
-      text: prompt to unload; url: prompt-to-unload-a-document
-      text: refused to allow the document to be unloaded; url: refused-to-allow-the-document-to-be-unloaded
-      text: traverse the history; url: traverse-the-history
-    urlPrefix: interaction.html
-      text: system focus; url: tlbc-system-focus
-    urlPrefix: urls-and-fetching.html
-      text: parse a URL; url: parse-a-url
-      text: resulting URL record
-    urlPrefix: web-messaging.html
-      text: BroadcastChannel; url: broadcastchannel
-    urlPrefix: webappapis.html
-      text: script; url: concept-script
-    urlPrefix: workers.html
-      text: The worker's lifetime; url: the-worker's-lifetime
-      text: active needed worker; url: active-needed-worker
-    urlPrefix: media.html
-      text: playing the media resource; url: playing-the-media-resource
-      text: current playback position; url: current-playback-position
+    text: active needed worker; url: workers.html#active-needed-worker
+    text: attempt to populate the history entry's document; url: browsing-the-web.html#attempt-to-populate-the-history-entry's-document
+    text: check if unloading is user-canceled; url: browsing-the-web.html#checking-if-unloading-is-user-canceled
+    text: create a new nested navigable; url: document-sequences.html#create-a-new-nested-navigable
+    text: create a new top-level traversable; url: document-sequences.html#creating-a-new-top-level-traversable
+    text: create navigation params by fetching; url: browsing-the-web.html#create-navigation-params-by-fetching
+    text: current playback position; url: media.html#current-playback-position
+    text: destroy a top-level traversable; url: document-sequences.html#destroy-a-top-level-traversable
+    text: finalize a cross-document navigation; url: browsing-the-web.html#finalize-a-cross-document-navigation
+    text: hand-off to external software; url: browsing-the-web.html#hand-off-to-external-software
+    text: history handling behavior; url: browsing-the-web.html#history-handling-behavior
+    text: navigation and traversal task source; url: webappapis.html#navigation-and-traversal-task-source
+    text: navigation ID; url: browsing-the-web.html#navigation-id
+    text: playing the media resource; url: media.html#playing-the-media-resource
+    text: session history entry; url: browsing-the-web.html#session-history-entry
+    text: the worker's lifetime; url: workers.html#the-worker's-lifetime
+    for: Document
+      text: abort; url: document-lifecycle.html#abort-a-document
+      text: destroy; url: document-lifecycle.html#destroy-a-document
+      text: is initial about:blank; url: dom.html#is-initial-about%3Ablank
+    for: document state
+      text: initiator origin; url: browsing-the-web.html#document-state-initiator-origin
+    for: navigable
+      text: active window; url: document-sequences.html#nav-window
+      text: ongoing navigation; url: browsing-the-web.html#ongoing-navigation
+      text: parent; url: document-sequences.html#nav-parent
+    for: navigation params
+      text: request; url: browsing-the-web.html#navigation-params-request
+      text: response; url: browsing-the-web.html#navigation-params-response
+    for: session history entry
+      text: document state; url: browsing-the-web.html#she-document-state
+      text: document; url: browsing-the-web.html#she-document
+    for: traversable navigable
+      text: append session history traversal steps; url: browsing-the-web.html#tn-append-session-history-traversal-steps
+      text: current session history step; url: document-sequences.html#tn-current-session-history-step
+      text: session history entries; url: document-sequences.html#tn-session-history-entries
+    for: Window
+      text: navigable; url: nav-history-apis.html#window-navigable
+spec: webdriver-idi; urlPrefix: https://w3c.github.io/webdriver-bidi/
+  type: dfn
+    text: WebDriver BiDi navigation started; url: webdriver-bidi-navigation-started
 spec: geolocation; urlPrefix: https://w3c.github.io/geolocation-api/
   type: method; for: Geolocation
     text: getCurrentPosition(successCallback, errorCallback, options); url: getcurrentposition-method
@@ -274,7 +278,7 @@ spec: client-hints-infrastructure; urlPrefix: https://wicg.github.io/client-hint
 }
 </style>
 
-<h2 id="prerendering-bcs">Prerendering browsing context infrastructure</h2>
+<h2 id="prerendering-infra">Prerendering infrastructure</h2>
 
 <h3 id="document-prerendering">Extensions to the {{Document}} interface</h3>
 
@@ -293,34 +297,32 @@ The <dfn attribute for="Document">onprerenderingchange</dfn> attribute is an [=e
 
 As is customary for [[HTML]], the definition of {{Document/prerendering}} would be located in another section of the spec; we'd place it in the new section introduced below:
 
-<h3 id="prerendering-bcs-subsection">Prerendering browsing contexts</h3>
+<h3 id="prerendering-navigables">Prerendering navigables</h3>
 
-<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#windows">Browsing contexts</a> section.</em>
+<em>The following section would be added as a new sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigables">Navigables</a> section.</em>
 
-Every [=browsing context=] has a <dfn for="browsing context">loading mode</dfn>, which is one of the following:
+Every [=navigable=] has a <dfn for="navigable">loading mode</dfn>, which is one of the following:
 
 : "`default`"
-:: No special considerations are applied to content loaded in this browsing context
+:: No special considerations are applied to content loaded in this navigable
 : "`prerender`"
-:: This browsing context is displaying prerendered content
+:: This navigable is displaying prerendered content
 
-By default, a [=browsing context=]'s [=browsing context/loading mode=] is "`default`". A browsing context whose [=browsing context/loading mode=] is "`prerender`" is known as a <dfn>prerendering browsing context</dfn>.
+By default, a [=navigable=]'s [=navigable/loading mode=] is "`default`". A navigable whose [=navigable/loading mode=] is "`prerender`" is known as a <dfn>prerendering navigable</dfn>. A [=prerendering navigable=] that is also a [=top-level traversable=] is known as a <dfn>prerendering traversable</dfn>.
 
-<p class="note">Although there are only two values for the [=browsing context/loading mode=], we use a flexible structure in anticipation of other future loading modes, such as those provided by fenced frames, portals, and uncredentialed (cross-site) prerendering. It's not yet clear whether that anticipation is correct; if, as those features gain full specifications, it turns out not to be, we will instead convert this into a boolean.
+<p class="note">Although there are only two values for the [=navigable/loading mode=], we use a flexible structure in anticipation of other future loading modes, such as those provided by fenced frames, portals, and uncredentialed (cross-site) prerendering. It's not yet clear whether that anticipation is correct; if, as those features gain full specifications, it turns out not to be, we will instead convert this into a boolean.
 
 <dl class="domintro">
-  <dt><code>document . {{Document/prerendering}}</code></dt>
+  <dt><code><var ignore>document</var>.{{Document/prerendering}}</code></dt>
 
   <dd>Returns true if the page is being presented in a non-interactive "prerendering-like" context. In the future, this would include a visible document in a `<portal>` element, both when loaded into it or via predecessor adoption.
 </dl>
 
-The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=Document/browsing context=] that is a [=prerendering browsing context=]; otherwise, false.
+The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=node navigable=] that is a [=prerendering navigable=]; otherwise, false.
 
 <hr>
 
-A [=prerendering browsing context=] is <dfn for="prerendering browsing context">empty</dfn> if the only entry in its [=session history=] is the initial `about:blank` {{Document}}.
-
-Every {{Document}} has a <dfn for="Document">prerendering browsing contexts map</dfn>, which is an [=ordered map=] of [=URLs=] to [=prerendering browsing contexts=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering browsing context/activating=] the corresponding prerendering browsing context.
+Every {{Document}} has a <dfn for="Document">prerendering traversables map</dfn>, which is an [=ordered map=] of [=URLs=] to [=prerendering traversables=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering traversable/activating=] the corresponding prerendering traversable.
 
 Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
 
@@ -333,140 +335,125 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 </dl>
 
 Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
-<p class="note">This is used to keep the time immediately after [=checking if unloading is user-canceled=].
-
 
 <div algorithm="User-agent initiated prerendering">
-  [=User agents=] may choose to initiate prerendering without a predecessor document, for example as a result of the address bar or other browser user interactions.
+  [=User agents=] may choose to initiate prerendering without a referrer document, for example as a result of the address bar or other browser user interactions.
 
-  To <dfn export>start user-agent initiated prerendering</dfn> given a [=URL=] |url|:
+  To <dfn export>start user-agent initiated prerendering</dfn> given a [=URL=] |startingURL|:
 
   1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
-  1. Let |bc| be the result of [=creating a new top-level browsing context=].
+  1. Let |prerenderingTraversable| be the result of [=creating a new top-level traversable=] given null and the empty string.
 
-  1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
+  1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
 
-  1. Let |request| be a new [=request=] whose [=request/URL=] is |startingURL| and [=request/referrer policy=] is "`no-referrer`".
+  1. [=Navigate=] |prerenderingTraversable| to |startingURL| using |prerenderingTraversable|'s [=navigable/active document=].
 
-  1. [=Navigate=] |bc| to |request|.
+     <p class="note">We treat this initial navigations as |prerenderingTraversable| navigating itself, which will ensure all relevant security checks pass.
 
-  1. When the user indicates they wish to commit the navigation:
+  1. When the user indicates they wish to commit the navigation and create a new user-visible [=top-level traversable=] while doing so (e.g., by pressing <kbd><kbd>Shift</kbd>+<kbd>Enter</kbd></kbd> after typing in the address bar):
 
-    1. Let |unsafe time| be the [=unsafe shared current time=].
+    1. Update the user agent's user interface to present |prerenderingTraversable|, e.g., by creating a new tab/window.
 
-    1. Update the user agent's user interface to present |bc|, e.g., by updating the tab/window contents and the browser chrome.
+    1. [=prerendering traversable/Finalize activation=] for |prerenderingTraversable| given |startingURL|'s [=url/origin=].
 
-    1. [=prerendering browsing context/Finalize activation=] for |bc| given |url|'s [=url/origin=] and |unsafe time|.
+  1. Alternately, when they use indicates they wish to commit the navigation into an existing [=top-level traversable=] |predecessorTraversable| (e.g., by pressing <kbd>Enter</kbd> after typing in the address bar):
 
-    <p class="note">An example of indicating commitment is pressing the Enter key in the URL bar</p>
+    1. [=prerendering traversable/Activate=] |prerenderingTraversable| in place of |predecessorTraversable| given "`push`".
 
-    <p class="note">The user might never indicate such a commitment, or might take long enough to do
-    so that the user agent needs to reclaim the resources used by the prerender for some more
-    immediate task. In that case the user agent can [=discard=] |bc|.</p>
+  <p class="note">The user might never indicate such a commitment, or might take long enough to do so that the user agent needs to reclaim the resources used by the prerender for some more immediate task. In that case the user agent can [=destroy a top-level traversable|destroy=] |prerenderingTraversable|.
 </div>
 
-<div algorithm="create a prerendering browsing context">
-  To <dfn export>create a prerendering browsing context</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
+<div>
+  To <dfn export>start referrer-initiated prerendering</dfn> given a [=URL=] |startingURL| and a {{Document}} |referrerDoc|:
 
   1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
-  1. If |referrerDoc|'s [=Document/browsing context=] is not a [=top-level browsing context=], then return.
+  1. If |referrerDoc|'s [=node navigable=] is not a [=top-level traversable=], then return.
 
-     <p class="note">Currently, prerendering from inside a [=nested browsing context=] is not specified or implemented. Doing so would involve tricky considerations around how the prerendered browsing context appears in the browsing context tree.
+     <p class="note">Currently, prerendering from inside a [=child navigable=] is not specified or implemented. Doing so would involve tricky considerations around how the prerendered navigable appears in the navigable tree.
 
   1. If |referrerDoc|'s [=Document/browsing context=] is an [=auxiliary browsing context=], then return.
 
-     <p class="note">This avoids having to deal with any potential opener relationship between the prerendering browsing context and |referrerDoc|'s [=Document/browsing context=]'s [=opener browsing context=].
+     <p class="note">This avoids having to deal with any potential opener relationship between the prerendering traversable and |referrerDoc|'s [=Document/browsing context=]'s [=opener browsing context=].
 
   1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |startingURL|'s [=url/origin=], then return.
 
      <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
 
-  1. If |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] [=map/exists=], then return.
+  1. If |referrerDoc|'s [=Document/prerendering traversables map=][|startingURL|] [=map/exists=], then return.
 
-  1. Let |bc| be the result of [=creating a new top-level browsing context=].
+  1. Let |prerenderingTraversable| be the result of [=creating a new top-level traversable=].
 
-  1. Set |bc|'s [=browsing context/loading mode=] to "`prerender`".
+  1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
 
-  1. Set |referrerDoc|'s [=Document/prerendering browsing contexts map=][|startingURL|] to |bc|.
+  1. Set |referrerDoc|'s [=Document/prerendering traversables map=][|startingURL|] to |prerenderingTraversable|.
 
-  1. Set |bc|'s [=prerendering browsing context/remove from initiator=] to be an algorithm which [=map/removes=] |referrerDoc|[|startingURL|].
+  1. Set |prerenderingTraversable|'s [=prerendering traversable/remove from referrer=] to be an algorithm which [=map/removes=] |referrerDoc|[|startingURL|].
 
-     <p class="note">As with regular [=browsing contexts=], the [=prerendering browsing context=] can be [=discarded=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too much resources.
+     <p class="note">As with all [=top-level traversables=], the [=prerendering traversable=] can be [=destroy a top-level traversable|destroyed=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too many resources.
 
-  1. [=Navigate=] |bc| to |startingURL| with the [=source browsing context=] set to |referrerDoc|'s [=Document/browsing context=].
+  1. [=Navigate=] |prerenderingTraversable| to |startingURL| using |referrerDoc|.
 </div>
 
 <div algorithm>
-  To <dfn for="prerendering browsing context">activate</dfn> a [=prerendering browsing context=] |successorBC| in place of a [=top-level browsing context=] |predecessorBC| given a [=history handling behavior=] |historyHandling|:
+  To <dfn for="prerendering traversable">activate</dfn> a [=prerendering traversable=] |successorTraversable| in place of a [=top-level traversable=] |predecessorTraversable| given a [=history handling behavior=] |historyHandling| and an optional [=navigation ID=] |navigationId|:
 
-  1. Assert: |historyHandling| is either "`default`" or "`replace`".
+  1. [=Assert=]: |successorTraversable|'s [=navigable/active document=]'s [=Document/is initial about:blank=] is false.
 
-  1. Assert: |successorBC| is not [=prerendering browsing context/empty=].
+  1. If |navigationId| is not given, then let |navigationId| be the result of [=generating a random UUID=].
 
-  1. Assert: |predecessorBC| is a [=top-level browsing context=].
+  1. Let |referrerOrigin| be |predecessorTraversable|'s [=navigable/active document=]'s [=Document/origin=].
 
-  <!-- The following except for the step that sets the |activation start time| are copied from the navigate algorithm, and probably could benefit from some refactoring to deduplicate. -->
+  1. Set |predecessorTraversable|'s [=navigable/ongoing navigation=] to |navigationId|.
 
-  1. Cancel any preexisting but not yet [=navigate/mature=] attempts to navigate |predecessorBC|, including canceling any instances of the [=fetch=] algorithm started by those attempts. If one of those attempts has already <a lt="create and initialize a Document object">created and initialized a new `Document` object</a>, [=Document/abort=] that {{Document}} also.
+     <p class="note">This will have the effect of aborting any other ongoing navigations of |predecessorTraversable|.
 
-  1. [=Prompt to unload=] the [=active document=] of |predecessorBC|. If the user [=refused to allow the document to be unloaded=], then return.
+  1. [=In parallel=], run these steps:
 
-  1. Let |unsafe time| be the [=unsafe shared current time=].
+    1. Let |unloadPromptCanceled| be the result of [=checking if unloading is user-canceled=] for |predecessorTraversable|'s [=navigable/active document=]'s [=Document/inclusive descendant navigables=].
 
-  1. [=Document/Abort=] the [=active document=] of |predecessorBC|.
+    1. If |unloadPromptCanceled| is true, or |predecessorTraversable|'s [=navigable/ongoing navigation=] is no longer |navigationId|, then abort these steps.
 
-  <!-- End copied section. -->
+    1. [=Queue a global task=] on the [=navigation and traversal task source=] given |predecessorTraversable|'s [=navigable/active window=] to [=Document/abort=] |predecessorTraversable|'s [=navigable/active document=].
 
-  1. <p class="XXX">Appropriately merge the session histories of |predecessorBC| and |successorBC|, respecting |historyHandling|.</p>
+    1. [=traversable navigable/Append session history traversal steps=] to |predecessorTraversable| to perform the following steps:
 
-     This step cannot be specified precisely given the current sorry state of [[HTML]]'s session history specification. Once the <a href="https://github.com/whatwg/html/pull/6315">navigation and session history rewrite</a> pull request is merged, we can make this precise (although we will also have to do several updates to other parts of this prerendering specification).
+      1. [=Assert=]: |successorTraversable|'s [=traversable navigable/current session history step=] is 0.
 
-     In the meantime, let's be clear about the intent of the eventual precise-spec, in order to ensure interoperability:
+      1. [=Assert=]: |successorTraversable|'s [=traversable navigable/session history entries=]'s [=list/size=] is 1.
 
-     - |successorBC| and |predecessorBC| will still be separate browsing contexts. Before activation, they are each in separate <a href="https://whatpr.org/html/6315/history.html#traversable-navigable">traversable navigables</a> (a new concept introduced in the rewrite). Call those |successorTraversable| and |predecessorTraversable|. Both of these traversable navigables have their own session history list; |successorTraversable|'s will necessarily consist of a single session history entry.
+      1. Let |successorEntry| be |successorTraversable|'s [=traversable navigable/session history entries=][0].
 
-     - During activation, we will:
+      1. [=list/Remove=] |successorEntry| from |successorTraversable|'s [=traversable navigable/session history entries=].
 
-       - Move |successorBC| from |successorTraversable| into |predecessorTraversable|.
+        <p class="note">At this point, |successorTraversable| is empty and can be unobservably destroyed. (As long as the implementation takes care to keep |successorEntry|, including its [=session history entry/document=] and that {{Document}}'s [=Document/browsing context=], alive for the next step.)
 
-       - Move the session history entry |successorEntry| from |successorTraversable| into |predecessorTraversable|, as follows:
+      1. [=Finalize a cross-document navigation=] given |predecessorTraversable|, |historyHandling|, and |successorEntry|.
 
-          - If |historyHandling| is "`replace`", replace the currently-active session history entry of |predecessorTraversable| with |successorEntry|.
+        <p class="note">Because we have moved the entire [=session history entry=], including the contained [=session history entry/document=]'s [=Document/browsing context=], this means traversing across the associated history entries will cause a browsing context group switch, similar to what happens with the [:Cross-Origin-Opener-Policy:] header. Importantly, this will sever any opener relationships, in the same way as COOP. Such traversal includes both the actual activation process here, where we make |successorEntry| active, but also e.g. the user pressing the back button (or the page using `history.back()`) after activation, which will switch in the other direction.
 
-          - If |historyHandling| is "`default`", clear the forward session history of |predecessorTraversable|, then append |successorEntry| to |predecessorTraversable|'s session history list and make it the active session history entry.
+      1. Update the user agent's user interface to reflect this change, e.g., by updating the tab/window contents and the browser chrome.
 
-          (Note that as a side effect, this makes |successorBC| the active browsing context of |predecessorTraversable|).
+      1. [=prerendering traversable/Finalize activation=] for |successorTraversable| given |referrerOrigin|.
 
-       - |successorTraversable| will now be empty and can be unobservably destroyed.
-
-     - This setup means that traversing across the associated history entries will cause a browsing context group switch, similar to what currently happens for \`<a http-header>`Cross-Origin-Opener-Policy`</a>\`. Importantly, this will sever any opener relationships, in the same way as COOP. Such traversal includes both the actual activation process above, where we make |successorEntry| active and thus switch from |predecessorBC| to |successorBC|, but also e.g. the user pressing the back button (or the page using `history.back()`) after activation, which will switch from |successorBC| to |predecessorBC|.
-
-  1. [=In parallel=]:
-
-    1. Update the user agent's user interface to replace |predecessorBC| with |successorBC|, e.g., by updating the tab/window contents and the browser chrome.
-
-    1. [=prerendering browsing context/Finalize activation=] for |successorBC| given |predecessorBC|'s [=active document=]'s [=Document/origin=] and |unsafe time|.
+      1. <p class="XXX">Perhaps we should do something with WebDriver BiDi here? See <a href="https://github.com/w3c/webdriver-bidi/issues/321">w3c/webdriver-bidi#321</a>. Right now the pre-[=in parallel=] part of the [=navigate=] algorithm will send [=WebDriver BiDi navigation started=] as if it were a normal navigation, but then nothing will happen to indicate the navigation finishes.
 </div>
 
 <div algorithm>
-  To <dfn for="prerendering browsing context">finalize activation</dfn> of a [=prerendering browsing context=] |bc| given an [=origin=] |origin| and a {{DOMHighResTimeStamp}} |unsafe time|:
+  To <dfn for="prerendering traversable">finalize activation</dfn> of a top-level traversable |traversable| given an [=origin=] |origin|:
 
-  1. Let |inclusiveDescendants| be « |bc| » [=list/extended=] with |bc|'s [=active document=]'s <a spec="HTML">list of the descendant browsing contexts</a>.
+  1. [=list/For each=] |navigable| of |traversable|'s [=navigable/active document=]'s [=Document/inclusive descendant navigables=], [=queue a global task=] on the [=navigation and traversal task source=], given |navigable|'s [=navigable/active window=], to perform the following steps:
 
-  <!-- TODO is this the right task source? Should we make a new one? -->
-  1. [=list/For each=] |bc| of |inclusiveDescendants|, [=queue a global task=] on the [=networking task source=], given |bc|'s [=browsing context/active window=], to perform the following steps:
-
-    1. Set |bc|'s [=browsing context/loading mode=] to "`default`".
-
-    1. Let |doc| be |bc|'s [=active document=].
-
-    1. If |doc|'s [=Document/origin=] is the same as |origin|, then set |doc|'s [=Document/activation start time=] to the [=relative high resolution time=] for |unsafe time| and |doc|.
-
-    1. [=map/For each=] |origin| → |hintSet| in |bc|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=]:
+    1. [=map/For each=] |origin| → |hintSet| in |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=]:
 
       1. [=Add a new Accept-CH cache entry=] to the [=Accept-CH cache=] with the |origin| and |hintSet|.
+
+    1. Let |doc| be |navigable|'s [=navigable/active document=].
+
+    1. <p class="XXX">We should really propagate the loading mode change here, in the posted task. This is where implementations would update what is returned by {{Document/prerendering|document.prerendering}}. However, right now it lives on the traversable, so it gets magically updated when we move over the session history entry. Probably we need to move it to the {{Document}}.
+
+    1. If |doc|'s [=Document/origin=] is the same as |origin|, then set |doc|'s [=Document/activation start time=] to the [=current high resolution time=] for |doc|'s [=relevant global object=].
 
     1. [=Fire an event=] named {{Document/prerenderingchange}} at |doc|.
 
@@ -478,172 +465,146 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
       1. Assert: running |steps| did not throw an exception.
 
-      <p class="note">The order here is observable for [=browsing contexts=] that share an [=event loop=], but not for those in separate event loops.
+      <p class="note">The order here is observable for {{Document}}s that share an [=event loop=], but not for those in separate event loops.
 </div>
 
 <div algorithm>
-  A [=prerendering browsing context=] has an associated <dfn for="prerendering browsing context">remove from initiator</dfn>, which is null or an algorithm with no arguments, initially set to null.
+  A [=prerendering traversable=] has an associated <dfn for="prerendering traversable">remove from referrer</dfn>, which is null or an algorithm with no arguments, initially set to null.
 
-  To ensure that the references for a [=prerendering browsing context=] are cleared once it is [=discard|discarded=], modify <a spec=HTML for="browsing context">remove</a> by appending the following step:
+  To ensure that the references for a [=prerendering traversable=] are cleared once it is [=destroy a top-level traversable|destroyed=], modify [=destroy a top-level traversable=] by appending the following step:
 
-  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=] and <var ignore>browsingContext</var>'s [=prerendering browsing context/remove from initiator=] is not null, then call <var ignore>browsingContext</var>'s [=prerendering browsing context/remove from initiator=].
+  1. If |traversable| is a [=prerendering traversable=] and |traversable|'s [=prerendering traversable/remove from referrer=] is not null, then call |traversable|'s [=prerendering traversable/remove from referrer=].
 </div>
 
-<h3 id="creating-bcs-patch">Modifications to creating browsing contexts</h3>
+<h3 id="creating-navigables-patch">Modifications to creating navigables</h3>
 
-<div algorithm="create a new nested browsing context patch">
-  To ensure that any [=nested browsing contexts=] inherit their parent's [=browsing context/loading mode=], modify <a spec=HTML>create a new nested browsing context</a> by appending the following step:
+<div algorithm="create a new nested navigable patch">
+  To ensure that any [=child navigables=] inherit their [=navigable/parent=]'s [=navigable/loading mode=], modify [=create a new nested navigable=] by appending the following step:
 
-  1. Set <var ignore>browsingContext</var>'s [=browsing context/loading mode=] to <var ignore>element</var>'s [=Node/node document=]'s [=Document/browsing context=]'s [=browsing context/loading mode=].
+  1. Set <var ignore>navigable</var>'s [=navigable/loading mode=] to <var ignore>element</var>'s [=node navigable=]'s [=navigable/loading mode=].
 </div>
 
 <h2 id="navigation">Navigation and session history</h2>
 
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
-<div algorithm="can activate a prerender">
-  We <dfn>can activate a prerender</dfn> given a [=browsing context=] |browsingContext|, a [=history handling behavior=] |historyHandling|, a string |navigationType|, and a [=request=] |request|, if the following steps return true:
+<div>
+  To <dfn>get the matching prerendering navigable</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
 
-  1. Return true if all of the following are true:
+  1. If any of the following conditions hold:
 
-      * |browsingContext| is a [=top-level browsing context=]
-      * |browsingContext| is not a [=prerendering browsing context=]
-      * |browsingContext| is not for a [Fenced Frame](https://github.com/shivanigithub/fenced-frame)
-         <p class="issue">The concept of a fenced frame browsing context is not yet defined but we need to link to it once it exists.</p>
-      * |historyHandling| is "`default`" or "`replace`"
-      * |navigationType| is "`other`"
-      * |request|'s [=request/method=] is \``GET`\`
-      * |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|request|'s [=request/URL=]] [=map/exists=] and is not [=prerendering browsing context/empty=]
-      * The result of calling [=should navigation request of type be blocked by content security policy?=] given |request| and <var ignore>navigationType</var> is "`Allowed`".
+      * |navigable| is not a [=top-level traversable=];
+      * |navigable| is a [=prerendering traversable=];
+      * |navigable| is a [fenced frame](https://github.com/shivanigithub/fenced-frame);
+         <p class="issue">The concept of a fenced frame navigable is not yet defined but we need to link to it once it exists.</p>
+      * |cspNavigationType| is not "`other`"; or
+      * |documentResource| is not null
 
-  1. Otherwise, return false.
+    then return null.
 
+  1. Return |navigable|'s [=navigable/active document=]'s [=Document/prerendering traversables map=][|url|], if it [=map/exists=]; otherwise return null.
 </div>
 
-Patch the [=navigate=] algorithm to allow the [=prerendering browsing context/activate|activation=] of a [=prerendering browsing context=] in place of a normal navigation as follows:
+Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activate|activation=] of a [=prerendering traversable=] in place of a normal navigation as follows:
 
 <div algorithm="navigate activate patch">
-  In [=navigate=], append the following steps after the fragment navigation handling (currently step 8):
+  In [=navigate=], insert the following steps as the first ones after we go [=in parallel=]:
 
-  1. If |resource| is a [=request=] and we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and |resource|, then:
+  1. Let |matchingPrerenderedNavigable| be the result of [=getting the matching prerendering navigable=] given |navigable|, <var ignore>url</var>, <var ignore>cspNavigationType</var>, and <var ignore>documentResource</var>.
 
-    1. Let |successorBC| be |browsingContext|'s [=active document=]'s [=Document/prerendering browsing contexts map=][|resource|'s [=request/URL=]].
+  1. If |matchingPrerenderedNavigable| is not null, then:
 
-    1. Wait until all navigation attempts of |successorBC| have been [=navigate/mature|matured=].
+    1. Wait until either |matchingPrerenderedNavigable|'s [=navigable/active document=]'s [=Document/is initial about:blank=] is false, or |matchingPrerenderedNavigable| is [=destroy a top-level traversable|destroyed=].
 
-    1. If |successorBC| has not been [=discard|discarded=], then:
+    1. If |matchingPrerenderedNavigable| was not destroyed, then:
 
-      1. [=prerendering browsing context/Activate=] |successorBC| in place of |browsingContext| given |historyHandling|.
+      1. [=prerendering traversable/Activate=] |matchingPrerenderedNavigable| in place of |navigable| given <var ignore>historyHandling</var> and <var ignore>navigationId</var>.
 
-      1. Return.
+      1. Abort these steps.
 </div>
-
-Navigation redirects can also [=prerendering browsing context/activate=] [=prerendering browsing contexts=]. This is defined in the [[#navigate-fetch-patch]] section.
 
 <h3 id="navigate-fetch-patch">Navigation fetch changes</h3>
 
-<div algorithm="process a navigate fetch patch">
-  In [=process a navigate fetch=], append the following steps after the first sub-step under "While true:":
+<div algorithm="create navigation params by fetching patch">
+  In [=create navigation params by fetching=], add the following step near the top of the algorithm:
 
-  1. If we [=can activate a prerender=] given |browsingContext|, |historyHandling|, <var ignore>navigationType</var>, and <var ignore>request</var>, then:
+  1. Let |initiatorOrigin| be <var ignore>entry</var>'s [=session history entry/document state=]'s [=document state/initiator origin=].
 
-    1. [=prerendering browsing context/Activate=] |browsingContext| in place of <var ignore>sourceBrowsingContext</var> given |historyHandling|.
+  Append the following steps after the first sub-step under "While true:":
 
-    1. Return.
+  1. If |navigable| is a [=prerendering navigable=] and <var ignore>currentURL</var>'s [=url/origin=] is not [=/same site=] with |initiatorOrigin|, then:
 
-  1. If |browsingContext| is a [=prerendering browsing context=]  and <var ignore>currentURL</var>'s [=url/origin=] is not [=/same site=] with |incumbentNavigationOrigin|, then:
+    1. If |navigable| is a [=top-level traversable=], then return null.
 
-    1. Run the [=environment discarding steps=] for <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
+    1. Otherwise, the user agent must wait to continue this algorithm until |navigable|'s [=navigable/loading mode=] becomes "`normal`". At any point during this wait (including immediately), it may instead choose to [=destroy a top-level traversable|destroy=] |navigable|'s [=top-level traversable=] and return null from this algorithm.
 
-    1. Return.
+  Append the following steps toward the end of the algorithm, after the steps which check <var ignore>locationURL</var>:
 
-  Additionally, append the following steps toward the end of the algorithm, after the steps which check <var ignore>locationURL</var>:
+  1. If |navigable| is a [=prerendering navigable=], and <var ignore>responseOrigin</var> is not [=same origin=] with |initiatorOrigin|, then:
 
-  1. If |browsingContext| is a prerendering browsing context, and <var ignore>responseOrigin</var> is not [=same origin=] with |incumbentNavigationOrigin|, then:
+    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for <var ignore>response</var>.
 
-    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
-
-    1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`, then set |response| to a [=network error=].
-
-       <p class="note">This will cause the prerender to fail in the following steps of the algorithm.
+    1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`, then return null.
 
        <p class="note">In the future we could possibly also allow the `uncredentialed-prerender` token to work here. However, since that is primarily intended for the cross site case, which isn't specified or implemented yet, we don't want to encourage its use in the wild, so for now we specify that prerendering fails if only the `uncredentialed-prerender` token is found.
 </div>
 
-<div algorithm="process a navigate response patch">
-  In <a spec=HTML>process a navigate response</a>, append the following after the step which establishes the value of |failure|, but before the step which uses it to display an error page:
+<div algorithm="attempt to populate the history entry's document patch">
+  In [=attempt to populate the history entry's document=], append the following after the steps which establish the value of |failure|, but before the other steps which act on it:
 
-  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], and any of the following hold:
+  1. If |navigable| is a [=prerendering navigable=], and any of the following hold:
 
       * |failure| is true;
       * |navigationParams|'s [=navigation params/request=] is null;
       * |navigationParams|'s [=navigation params/request=]'s [=request/current URL=]'s [=url/scheme=] is not a [=HTTP(S) scheme=];
-      * |response| does not [=support prefetch=];
+      * |navigationParams|'s [=navigation params/response=] does not [=support prefetch=];
 
         <div class="note">Responses which are ineligible for prefetch, e.g. because they have an error status, are not eligible for prerender either. A future version of this specification might allow responses to more clearly delineate the two.</div>
-      * |response| has a \``Content-Disposition`\` header specifying the `attachment`
-          disposition type; or
-      * |response|'s [=response/status=] is 204 or 205,
+      * |navigationParams|'s [=navigation params/response=] has a \``Content-Disposition`\` header specifying the `attachment` disposition type; or
+      * |navigationParams|'s [=navigation params/response=]'s [=response/status=] is 204 or 205,
 
     then:
 
-    1. Run the [=environment discarding steps=] for |navigationParams|'s [=navigation params/reserved environment=].
+    1. [=destroy a top-level traversable|Destroy=] |navigable|'s [=navigable/top-level traversable=].
 
     1. Return.
 </div>
 
-<div algorithm="process a navigate URL scheme patch">
-  In <a spec=HTML>process a navigate URL scheme</a>, insert the following step before the step which displays inline content:
+<div algorithm="hand-off to external software patch">
+  In [=hand-off to external software=], prepend the following step:
 
-  1. Otherwise, if <var ignore>browsingContext</var> is a [=prerendering browsing context=], then return.
+  1. If <var ignore>navigable</var> is a [=prerendering navigable=], then return without invoking the external software package.
 </div>
 
-<h3 id="delay-crossorigin">Delaying cross-origin nested browsing context navigations</h3>
-
-Patch the [=process a navigate fetch=] algorithm to allow delaying or discarding of cross-origin navigations inside browsing contexts that are [=nested browsing context|nested=] inside a [=prerendering browsing context=] as follows:
-
-<div algorithm="navigate delay cross-origin patch">
-  In [=process a navigate fetch=], append the following steps after the cross-origin redirect check (currently step 13.1):
-
-  1. Let |crossOrigin| be <var ignore>hasCrossOriginRedirects</var>.
-
-  1. If |bc|'s <a spec="HTML">container</a> is not null, and |bc|'s <a spec="HTML">container</a>'s [=Node/node document=]'s	[=Document/origin=] is not [=same origin=] with <var ignore>currentURL</var>'s [=url/origin=], then set |crossOrigin| to true.
-
-  1. If |crossOrigin| is true and |bc|'s [=top-level browsing context=] is a [=prerendering browsing context=], then the user agent must either wait to continue this algorithm until |bc| is [=prerendering browsing context/activate|activated=], or [=discard=] |bc|'s [=top-level browsing context=].
-</div>
+<p class="XXX">We could also allow prerendering activations in place of redirects, not just in place of navigations. We've omitted that for now as it adds complexity and is not yet implemented anywhere to our knowledge.
 
 <h3 id="always-replacement">Maintaining a trivial session history</h3>
 
 <div algorithm="navigate historyHandling patch">
-  Patch the [=navigate=] algorithm to ensure the [=session history=] of a [=prerendering browsing context=] stays trivial by prepending the following step before all others:
+  Patch the [=navigate=] algorithm to ensure the session history of a [=prerendering navigable=] stays trivial by prepending the following step before all others:
 
-  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then:
-
-    1. Assert: |historyHandling| is not "`entry update`", since prerendering browsing contexts have trivial session histories and thus will never end up [=traverse the history|traversing=] back to an entry with null [=session history entry/document=].
-
-    1. If |historyHandling| is "`default`", then set |historyHandling| to "`replace`".
+  1. If <var ignore>navigable</var> is a [=prerendering navigable=], then set <var ignore>historyHandling</var> to "`replace`".
 </div>
 
 <div algorithm="URL and history update steps patch">
   Patch the <a spec=HTML>URL and history update steps</a> by adding the following step after step 1:
 
-  1. If <var ignore>browsingContext</var> is a [=prerendering browsing context=], then set <var ignore>isPush</var> to false.
+  1. If <var ignore>navigable</var> is a [=prerendering navigable=], then set <var ignore>historyHandling</var> to "`replace`".
 </div>
 
-<h3 id="interaction-with-workers">Interaction with Worker Lifetime</h3>
+<h3 id="interaction-with-workers">Interaction with worker lifetime</h3>
 
 <div algorithm="The worker's lifetime patch">
-  In <a spec=HTML>The worker's lifetime</a>, modify the definition of [=active needed worker=], to count workers with a [=prerendering browsing context=] owner as not [=active needed worker|active=]:
+  In <a spec=HTML>The worker's lifetime</a>, modify the definition of [=active needed worker=], to count workers with a [=prerendering navigable=] owner as not [=active needed worker|active=]:
 
-  A worker is said to be an [=active needed worker=] if any of its [=WorkerGlobalScope/owner set|owners=] are either {{Document}} objects that are [=fully active=] and their [=Document/browsing context=] is not a [=prerendering browsing context=], or [=active needed worker|active needed workers=].
+  A worker is said to be an [=active needed worker=] if any of its [=WorkerGlobalScope/owner set|owners=] are either {{Document}} objects that are [=Document/fully active=] and their [=node navigable=] is not a [=prerendering navigable=], or [=active needed worker|active needed workers=].
 
   <p class="note">This means that the worker's script would load, but the execution would be suspended until the document is activated.
-
 </div>
 
 <h3 id="cleanup-upon-discarding">Cleanup upon discarding a {{Document}}</h3>
 
-Modify the [=discard a document|discard=] algorithm for {{Document}}s by appending the following step:
+Modify the [=Document/destroy=] algorithm for {{Document}}s by appending the following step:
 
 <div algorithm="discard a Document patch">
   1. [=list/Empty=] <var ignore>document</var>'s [=Document/post-prerendering activation steps list=].
@@ -653,13 +614,13 @@ Modify the [=discard a document|discard=] algorithm for {{Document}}s by appendi
 
 <h3 id="interaction-with-visibility-state">Interaction with Page Visibility</h3>
 
-Documents in [=prerendering browsing contexts=] always have a [=Document/visibility state=] of "<code>hidden</code>".
+Documents in [=prerendering navigables=] always have a [=Document/visibility state=] of "<code>hidden</code>".
 
-<p class="issue">What about portals? Portals might not be hidden, and portals are envisioned to be a type of prerendering browsing context.</p>
+<p class="XXX">We should probably explicitly update this, similar to how we need to update {{Document/prerendering|document.prerendering}}.
 
 <h3 id="interaction-with-system-focus">Interaction with system focus</h3>
 
-[=Prerendering browsing contexts=] never have [=system focus=].
+[=Prerendering traversables=] never have [=top-level traversable/system focus=].
 
 <h3 id="performance-navigation-timing-extension">Extensions to the {{PerformanceNavigationTiming}} interface</h3>
 
@@ -673,35 +634,33 @@ Extend the {{PerformanceNavigationTiming}} interface as follows:
 
 The <dfn attribute for="PerformanceNavigationTiming">activationStart</dfn> getter steps are:
 
-1. Return a {{DOMHighResTimeStamp}} with a time value equal to the [=current document=]'s [=Document/activation start time=].
+1. Return [=this=]'s [=relevant global object=]'s [=associated Document=]'s [=Document/activation start time=].
 
 <h3 id="client-hint-cache">Interaction with Client Hint Cache</h3>
 
 We need to ensure that the [=Accept-CH cache=], which is owned by user agent as a global storage, is not modified while prerendering, but is properly updated after activation. The following modifications ensure this.
 
-Each [=prerendering browsing context=] has a <dfn for="prerendering browsing context">prerender-scoped Accept-CH cache</dfn>, which is an [=ordered map=] of [=origin=] to [=client hints sets=].
+Each [=prerendering navigable=] has a <dfn for="prerendering navigable">prerender-scoped Accept-CH cache</dfn>, which is an [=ordered map=] of [=origin=] to [=client hints sets=].
 
-This stores which client hints each origin has opted into receiving, until it can be copied to the global [=Accept-CH cache=] when [=prerendering browsing context/finalize activation|activation is finalized=].
+This stores which client hints each origin has opted into receiving, until it can be copied to the global [=Accept-CH cache=] when [=prerendering traversable/finalize activation|activation is finalized=].
 
 <div algorithm>
+  To <dfn>add a new prerender Accept-CH cache entry</dfn> given a [=prerendering navigable=] |bc|, an [=origin=] |origin|, and a [=client hints set=] |hintSet|:
 
-To <dfn>add a new prerender Accept-CH cache entry</dfn> given a [=prerendering browsing context=] |bc|, an [=origin=] |origin|, and a [=client hints set=] |hintSet|:
+    1. Let |cache| be |bc|'s [=prerendering navigable/prerender-scoped Accept-CH cache=].
 
-  1. Let |cache| be |bc|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=].
+    1. [=map/set=] |cache|[|origin|] to |hintSet|.
 
-  1. [=map/set=] |cache|[|origin|] to |hintSet|.
-
-
-<p class="note">This is similar to [=add a new Accept-CH cache entry=].</p>
+  <p class="note">This is similar to [=add a new Accept-CH cache entry=].
 </div>
 
 <div algorithm="append client hints to request patch">
   Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>append client hints to request</a> algorithm, by prepending the following steps before iterating over the |hintSet|:
 
-  1. Let |browsingContext| be <var ignore>settingsObject</var>’s [=environment settings object/global object=]'s [=Window/browsing context=].
-    If |browsingContext| is a [=prerendering browsing context=], then:
+  1. Let |navigable| be <var ignore>settingsObject</var>’s [=environment settings object/global object=]'s [=Window/navigable=].
+  1. If |navigable| is a [=prerendering navigable=], then:
       1. Let |origin| be <var ignore>request</var>'s [=request/url=]'s [=url/origin=].
-      1. Set |hintSet| to the [=set/union=] of |hintSet| and |browsingContext|'s [=prerendering browsing context/prerender-scoped Accept-CH cache=][|origin|].
+      1. Set |hintSet| to the [=set/union=] of |hintSet| and |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=][|origin|].
 
 </div>
 
@@ -710,7 +669,8 @@ To <dfn>add a new prerender Accept-CH cache entry</dfn> given a [=prerendering b
 
   1. Let |origin| be <var ignore>response</var>'s [=response/url=]'s [=url/origin=].
   1. Let |hintSet| be <var ignore>settingsObject</var>'s [=environment settings object/client hints set=].
-  1. If |browsingContext| is a [=prerendering browsing context=], [=add a new prerender Accept-CH cache entry=] with |browsingContext|, |origin| and |hintSet|.
+  1. Let |navigable| be <var ignore>settingsObject</var>’s [=environment settings object/global object=]'s [=Window/navigable=].
+  1. If |navigable| is a [=prerendering navigable=], [=add a new prerender Accept-CH cache entry=] with |navigable|, |origin| and |hintSet|.
   1. Otherwise, [=add a new Accept-CH cache entry=] with |origin| and |hintSet|.
 
 </div>
@@ -723,7 +683,7 @@ In some cases, cross-origin web pages might not be prepared to be loaded in a no
 
 <p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored. However, authors are best off avoiding any form except the single-token one, for future compatibility.
 
-The \`<code><dfn for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering browsing context=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
+The \`<code><dfn for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering navigable=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
 
 To <dfn>get the supported loading modes</dfn> for a [=response=] |response|:
 
@@ -735,27 +695,27 @@ To <dfn>get the supported loading modes</dfn> for a [=response=] |response|:
 
 <h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
 
-Some behaviors might make sense in most [=top-level browsing contexts=], but do not make sense in [=prerendering browsing contexts=]. This section enumerates specification patches to enforce such restrictions.
+Some behaviors might make sense in most [=navigables=], but do not make sense in [=prerendering navigables=]. This section enumerates specification patches to enforce such restrictions.
 
 <h3 id="patch-window-apis">APIs for creating and navigating browsing contexts by name</h3>
 
-Modify the definition of <a spec=HTML>script-closable</a> to prevent window closing while in a [=prerendering browsing context=]:
+Modify the definition of <a spec=HTML>script-closable</a> to prevent window closing while in a [=prerendering navigable=]:
 
-A [=browsing context=] is <dfn noexport>script-closable</dfn> if either of the following is true:
+A [=navigable=] is <dfn noexport>script-closable</dfn> if either of the following is true:
 
 * it is an [=auxiliary browsing context=] that was created by script (as opposed to by an action of the user); or
-* it is a [=top-level browsing context=] <ins>that is not a [=prerendering browsing context=]</ins> and whose [=session history=] contains only one {{Document}}.
+* it is a [=top-level traversable=] <ins>that is not a [=prerendering traversable=]</ins> and whose [=traversable navigable/session history entries=]'s [=list/size=] is 1.
 
 <h2 id="intrusive-behaviors">Preventing intrusive behaviors</h2>
 
-Various behaviors are disallowed in [=prerendering browsing contexts=] because they would be intrusive to the user, since the prerendered content is not being actively interacted with.
+Various behaviors are disallowed in [=prerendering navigables=] because they would be intrusive to the user, since the prerendered content is not being actively interacted with.
 
 <h3 id="patch-downloading">Downloading resources</h3>
 
-Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that downloads inside [=prerendering browsing contexts=] are delayed until [=prerendering browsing context/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
+Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that downloads inside [=prerendering navigable=] are delayed until [=prerendering traversable/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
 
 <div algorithm="download the hyperlink patch">
-  1. If <var ignore>subject</var>'s [=Node/node document=]'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following step to <var ignore>subject</var>'s [=platform object/post-prerendering activation steps list=] and return.
+  1. If <var ignore>subject</var>'s [=node navigable=] is a [=prerendering navigable=], then append the following step to <var ignore>subject</var>'s [=platform object/post-prerendering activation steps list=] and return.
 </div>
 
 <h3 id="patch-modals">User prompts</h3>
@@ -763,22 +723,22 @@ Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that down
 <div algorithm="cannot show simple dialogs patch">
   Modify the <a spec=HTML>cannot show simple dialogs</a> algorithm, given a {{Window}} |window|, by prepending the following step:
 
-  1. If |window|'s [=Window/browsing context=] is a [=prerendering browsing context=], then return true.
+  1. If |window|'s [=Window/navigable=] is a [=prerendering navigable=], then return true.
 </div>
 
 <div algorithm="window print() patch">
   Modify the {{Window/print()}} method steps by prepending the following step:
 
-  1. If [=this=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
+  1. If [=this=]'s [=Window/navigable=] is a [=prerendering navigable=], then return.
 </div>
 
 <h3 id="delay-async-apis">Delaying async API results</h3>
 
-Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering browsing context=], most of its work is deferred until the browsing context is [=prerendering browsing context/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
+Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering navigable=], most of its work is deferred until the navigable's [=navigable/top-level traversable=] is [=prerendering traversable/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
 
 <h4 id="delay-while-prerendering">The {{[DelayWhilePrerendering]}} extended attribute</h4>
 
-To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until [=prerendering browsing context/activated|activation=], we introduce the <dfn extended-attribute>[DelayWhilePrerendering]</dfn> Web IDL extended attribute. It indicates that when a given method is called in a [=prerendering browsing context=], it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.
+To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until [=prerendering traversable/activate|activation=], we introduce the <dfn extended-attribute>[DelayWhilePrerendering]</dfn> Web IDL extended attribute. It indicates that when a given method is called in a [=prerendering navigable=], it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.
 
 The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and must only appear on a <a lt="regular operation" spec="WEBIDL">regular</a> or <a spec="WEBIDL">static operation</a> whose <a spec="WEBIDL">return type</a> is a <a spec="WEBIDL">promise type</a> or {{undefined}}, and whose <a spec="WEBIDL">exposure set</a> contains only {{Window}}.
 
@@ -787,7 +747,7 @@ The {{[DelayWhilePrerendering]}} extended attribute must take no arguments, and 
 
   1. Let |realm| be the [=current realm=].
   1. If the operation in question is a <a spec="WEBIDL">regular operation</a>, then set |realm| to the [=relevant realm=] of [=this=].
-  1. If |realm|'s [=realm/global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+  1. If |realm|'s [=realm/global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then:
     1. Let |promise| be [=a new promise=], created in |realm|.
     1. Append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=]:
       1. Let |result| be the result of running the originally-specified steps for this operation, with the same [=this=] and arguments.
@@ -811,13 +771,13 @@ Add {{[DelayWhilePrerendering]}} to {{BroadcastChannel/postMessage()}}.
 <div algorithm="Geolocation getCurrentPosition patch">
   Modify the {{Geolocation/getCurrentPosition()}} method steps by prepending the following step:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
 </div>
 
 <div algorithm="Geolocation watchPosition patch">
   Modify the {{Geolocation/watchPosition()}} method steps by prepending the following step:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then:
 
     1. Let |watchProcessId| be a new unique <a spec=GEOLOCATION>watch process</a> ID, and note it as a <dfn>post-prerendering activation geolocation watch process ID</dfn>.
 
@@ -827,7 +787,7 @@ Add {{[DelayWhilePrerendering]}} to {{BroadcastChannel/postMessage()}}.
 <div algorithm="Geolocation clearWatch patch">
   Modify the {{Geolocation/clearWatch(watchId)}} method steps by prepending the following step:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then:
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then:
 
     1. If <var ignore>watchId</var> is a [=post-prerendering activation geolocation watch process ID=], then remove its corresponding steps from [=this=]'s [=platform object/post-prerendering activation steps list=].
 
@@ -848,7 +808,7 @@ TODO: the below could probably be done by generalizing {{[DelayWhilePrerendering
 
   1. If |document| is null, then return [=a promise rejected with=] a "{{SecurityError}}" {{DOMException}}.
 
-  1. If |document|'s [=Document/browsing context=] is a [=prerendering browsing context=], then append the following steps to |document|'s [=Document/post-prerendering activation steps list=] and return |promise|.
+  1. If |document|'s [=node navigable=] is a [=prerendering navigable=], then append the following steps to |document|'s [=Document/post-prerendering activation steps list=] and return |promise|.
 </div>
 
 <h4 id="patch-notifications">Notifications API</h4>
@@ -858,15 +818,15 @@ Add {{[DelayWhilePrerendering]}} to {{Notification/requestPermission()}}.
 <div algorithm="Notification constructor patch">
   Modify the {{Notification/Notification()}} constructor steps by replacing the step which goes [=in parallel=] with the following:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append these steps to [=this=]'s [=platform object/post-prerendering activation steps list=]. Otherwise, run these steps [=in parallel=].
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append these steps to [=this=]'s [=platform object/post-prerendering activation steps list=]. Otherwise, run these steps [=in parallel=].
 </div>
 
 <div algorithm="Notification permission patch">
   Modify the {{Notification/permission}} static getter steps by replacing them with the following:
 
-  1. If the [=current global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return "`default`".
+  1. If the [=current global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then return "`default`".
 
-     <p class="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of [=prerendering browsing contexts=]. Web developers can then call {{Notification/requestPermission()|Notification.requestPermission()}}, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "`granted`" or "`denied`", so the browser might not actually ask the user like would normally be the case with "`default`". But that's OK: it's not observable to web developer code.</p>
+     <p class="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of [=prerendering navigables=]. Web developers can then call {{Notification/requestPermission()|Notification.requestPermission()}}, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "`granted`" or "`denied`", so the browser might not actually ask the user like would normally be the case with "`default`". But that's OK: it's not observable to web developer code.</p>
 
   1. Otherwise, <a spec="NOTIFICATIONS">get the notifications permission state</a> and return it.
 </div>
@@ -886,7 +846,7 @@ Add {{[DelayWhilePrerendering]}} to {{IdleDetector/start()}}.
 <div algorithm="Sensor start patch">
   Modify the {{Sensor/start()}} method steps by inserting the following steps after the state is set to "`activating`":
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
   1. If [=this=].{{Sensor/[[state]]}} is "`idle`", then return.
 
       <p class="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime {{Sensor/stop()}} was called, we do nothing upon activating the prerender.
@@ -903,7 +863,7 @@ Add {{[DelayWhilePrerendering]}} to {{NDEFReader/write()}} and {{NDEFReader/scan
 <div algorithm="Navigator getBattery patch">
   Modify the {{Navigator/getBattery()}} method steps by prepending the following step:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return [=this=]'s [=battery promise=].
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return [=this=]'s [=battery promise=].
 </div>
 
 <h4 id="patch-orientation-lock">Screen Orientation API</h4>
@@ -913,7 +873,7 @@ Add {{[DelayWhilePrerendering]}} to {{NDEFReader/write()}} and {{NDEFReader/scan
 
   1. Let |promise| be a new promise.
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return |promise|.
 
   1. If the [=user agent=] does not support locking the screen orientation, then [=reject=] |promise| with a "{{NotSupportedError}}" {{DOMException}} and return |promise|.
 
@@ -931,12 +891,12 @@ Add {{[DelayWhilePrerendering]}} to {{ScreenOrientation/unlock()}}.
 <div algorithm="getGamepads patch">
   Modify the {{Navigator/getGamepads()}} method steps by prepending the following step:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return an empty sequence.
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then return an empty sequence.
 </div>
 
-<div algorithm="gamepad events patch">
-  Modify the discussion of the {{Window/gamepadconnected}} and {{Window/gamepaddisconnected}} events to specify that the user agent must not dispatch these events if the {{Window}} object's [=Window/browsing context=] is a [=prerendering browsing context=].
-</div>
+<p algorithm="gamepad events patch">
+  Modify the discussion of the {{Window/gamepadconnected}} and {{Window/gamepaddisconnected}} events to specify that the user agent must not dispatch these events if the {{Window}} object's [=Window/navigable=] is a [=prerendering navigable=].
+</p>
 
 <div algorithm="gamepadconnected post-prerendering">
   Modify the {{Window/gamepadconnected}} section to indicate that every {{Document}} |document|'s [=Document/post-prerendering activation steps list=] should gain the following steps:
@@ -959,7 +919,7 @@ Add {{[DelayWhilePrerendering]}} to {{Navigator/getUserMedia()}}, {{MediaDevices
 <div algorithm="mediacapture device-change path">
   Modify the {{MediaDevices}} section by prepending the following step to the [=device change notification steps=]:
 
-  1. If [=this=]'s [=relevant global object=]'s [=Window/browsing context=] is a [=prerendering browsing context=], then return.
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then return.
 </div>
 
 <h4 id="audio-output-patch">Audio Output Devices API</h4>
@@ -1014,9 +974,9 @@ Add {{[DelayWhilePrerendering]}} to {{LockManager/request()}} and {{LockManager/
 
 <h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 
-Some APIs do not need modifications because they will automatically fail or no-op without a property that a [=prerendering browsing context=], its [=browsing context/active window=], or its [=active document=] will never have. These properties include:
+Some APIs do not need modifications because they will automatically fail or no-op without a property that a [=prerendering navigable=], its [=navigable/active window=], or its [=navigable/active document=] will never have. These properties include:
 - [=transient activation=] or [=sticky activation=]
-- [=system focus=]
+- [=top-level traversable/system focus=]
 - the "<code>visible</code>" [=Document/visibility state=]
 
 We list known APIs here for completeness, to show which API surfaces we've audited.
@@ -1036,7 +996,7 @@ APIs that require [=transient activation=] or [=sticky activation=]:
 - {{Navigator/share()|navigator.share()}} [[WEB-SHARE]]
 - {{Element/requestPointerLock()|element.requestPointerLock()}} [[POINTERLOCK]]
 
-APIs that require [=system focus=]:
+APIs that require [=top-level traversable/system focus=]:
 - The Asynchronous Clipboard API: {{Clipboard/read()|navigator.clipboard.read()}}, {{Clipboard/readText()|navigator.clipboard.readText()}}, {{Clipboard/write()|navigator.clipboard.write()}}, {{Clipboard/writeText|navigator.clipboard.writeText()}}. [[CLIPBOARD-APIS]]
 
 APIs that require the "<code>visible</code>" [=Document/visibility state=]:
