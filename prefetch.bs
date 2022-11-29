@@ -401,7 +401,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
             1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given <var ignore>navigable</var>'s [=navigable/active document=], <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
             1. If <var ignore>documentResource</var> is null and |prefetchRecord| is not null:
-                1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var> |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
+                1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
                     <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies.</div>
@@ -443,7 +443,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
         1. If the result of [=should navigation request of type be blocked by Content Security Policy?=] given |request| and |cspNavigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. [[CSP]]
         1. If |shouldBlockNavigationRequest| is present and its result given |request| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. <!-- these are new steps to allow requests to be blocked for additional reasons -->
         1. Set |response| to null.
-        1. If |fetchController| is null, then set |fetchController| to the result of [=fetching=] |request|, with processEarlyHintsResponse set to |processEarlyHintsResponse| as defined below, processResponse set to |processResponse| as defined below, and useParallelQueue set to true.
+        1. If |fetchController| is null, then set |fetchController| to the result of [=fetching=] |request|, with <i>[=fetch/processEarlyHintsResponse=]</i> set to |processEarlyHintsResponse| as defined below, <i>[=fetch/processResponse=]</i> set to |processResponse| as defined below, and <i>[=fetch/useParallelQueue=]</i> set to true.
 
             Let |processEarlyHintsResponse| be the following algorithm given a [=response=] |earlyResponse|:
                 1. If |processEarlyHints| is true and |commitEarlyHints| is null, then set |commitEarlyHints| to the result of [=processing early hint headers=] given |earlyResponse| and |request|'s [=request/reserved client=]. <!-- this has an additional condition to suppress extra fetches due to early hints -->
@@ -553,7 +553,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         </div>
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
-    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] given |document|'s [=Document/browsing context=] and |document|'s [=node navigable=]'s [=navigable/container=].
+    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] for |document|'s [=Document/browsing context=] given |document|'s [=node navigable=]'s [=navigable/container=].
     1. Let |isolationOrigin| be null.
     1. Let |documentState| be a new [=document state=] with
         :  [=document state/request referrer policy=]
