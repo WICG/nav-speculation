@@ -547,9 +547,9 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |partitioningScheme| be "`same-partition`" if |sourcePartitionKey| is equal to (|topLevelSite|, |secondKey|), and "`uncredentialed`" otherwise.
 
         <div class="note">
-            This determines whether the navigation would use the same network partition key. If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
+            <p>This determines whether the navigation would use the same network partition key. If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
 
-            Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause prefetch to fail.
+            <p>Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause prefetch to fail.
         </div>
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
@@ -583,9 +583,9 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         <div class="note">Though credentials are still included, they will be isolated such that no credentials are present to begin with.</div>
     1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
     1. Let |shouldBlockNavigationRequest| be an algorithm which, given a [=request=] |request|, performs the following steps.
-        1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> "`prefetch`".
+        1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> `prefetch`.
         1. If |prefetchRecord|'s [=prefetch record/anonymization policy=] [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
-            1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the "`prefetch`" token in |purpose|.
+            1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the `prefetch` token in |purpose|.
             1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or return "`Blocked`".
 
                 <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
