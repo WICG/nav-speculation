@@ -547,9 +547,9 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |partitioningScheme| be "`same-partition`" if |sourcePartitionKey| is equal to (|topLevelSite|, |secondKey|), and "`uncredentialed`" otherwise.
 
         <div class="note">
-            This determines whether the navigation would use the same network partition key. If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
+            <p>This determines whether the navigation would use the same network partition key. If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
 
-            Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause prefetch to fail.
+            <p>Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause prefetch to fail.
         </div>
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
