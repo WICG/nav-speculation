@@ -350,15 +350,15 @@ add the following step
 
   1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", `"target_hint"`,`"referrer_policy"`, and `"relative_to"`, then return null.
   1. If |input|["`source`"] does not [=map/exist=] or is neither the [=string=] "`list`" nor the [=string=] "`document`", then return null.
-  1. If |input|["`relative_to`"] [=map/exists=]:
-    1. If |input|["`relative_to`"] is not "`document`", then return null.
-    1. Set |baseURL| to the [=document base URL=].
   1. Let |source| by |input|["`source`"].
   1. Let |urls| be an empty [=list=].
   1. Let |predicate| be null.
   1. If |source| is "`list`":
     1. If |input|["`where`"] [=map/exists=], then return null.
     1. If |input|["`urls`"] does not [=map/exist=], is not a [=list=], or has any element which is not a [=string=], then return null.
+    1. If |input|["`relative_to`"] [=map/exists=]:
+      1. If |input|["`relative_to`"] is not "`document`", then return null.
+      1. Set |baseURL| to the [=document base URL=].
     1. [=list/For each=] |urlString| of |input|["`urls`"]:
       1. Let |parsedURL| be the result of [=basic URL parser|parsing=] |urlString| with |baseURL|.
       1. If |parsedURL| is failure, then [=iteration/continue=].
@@ -366,6 +366,7 @@ add the following step
       1. [=list/Append=] |parsedURL| to |urls|.
   1. If |source| is "`document`":
     1. If |input|["`urls`"]  [=map/exists=], then return null.
+    1. If |input|["`relative_to`"] [=map/exists=], then return null.
     1. If |input|["`where`"] does not [=map/exist=], then set |predicate| to a [=document rule conjunction=] whose [=document rule conjunction/clauses=] is an empty [=list=].
 
       <p class="note">Such a predicate will match all links.</p>
