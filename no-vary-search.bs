@@ -23,6 +23,24 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
       text: boolean; url: name-boolean
       text: inner list; url: name-inner-lists
 </pre>
+<style>
+#example-equivalence-canonicalization table {
+  border-collapse: collapse;
+}
+
+#example-equivalence-canonicalization table :is(td, th):first-of-type {
+  border-right: 1px solid black;
+  padding-right: 20px;
+}
+
+#example-equivalence-canonicalization table :is(td, th):nth-of-type(2) {
+  padding-left: 5px;
+}
+
+#example-equivalence-canonicalization table tr.group {
+  border-top: 1px solid black;
+}
+</style>
 
 <h2 id="status-and-venue">Status and venue note</h2>
 
@@ -102,8 +120,9 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
 
   <table class="data">
     <thead>
-      <th>Input</th>
-      <th>Result</th>
+      <tr>
+        <th>Input</th>
+        <th>Result</th>
     <tbody>
       <tr>
         <td><pre highlight="http">No-Vary-Search: params</pre>
@@ -145,8 +164,9 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
 
   <table>
     <thead>
-      <th>Input
-      <th>Conventional form
+      <tr>
+        <th>Input
+        <th>Conventional form
     <tbody>
       <tr>
         <td><pre highlight="http">No-Vary-Search: params=?1</pre>
@@ -181,7 +201,7 @@ Two [=URLs=] |urlA| and |urlB| are <dfn export>equivalent modulo search variance
 
   1. Return false.
 
-  <p class="note">In this case, even [=URL=] pairs that might appear the same after parsing, such as `https://example.com/a` and `https://example.com/a?`, or `https://example.com/foo?a=b&&&c` and `https://example.com/foo?a=b&c=`, will be treated as inequivalent.
+  <p class="note">In this case, even [=URL=] pairs that might appear the same after running the [=urlencoded parser|application/x-www-form-urlencoded parser=] on their [=url/queries=], such as `https://example.com/a` and `https://example.com/a?`, or `https://example.com/foo?a=b&&&c` and `https://example.com/foo?a=b&c=`, will be treated as inequivalent.
 
 1. Let |searchParamsA| and |searchParamsB| be empty [=lists=].
 
@@ -222,3 +242,54 @@ Two [=URLs=] |urlA| and |urlB| are <dfn export>equivalent modulo search variance
   1. Set |i| to |i| + 1.
 
 1. Return true.
+
+<div class="example" id="example-equivalence-canonicalization">
+  Due to how the [=urlencoded parser|application/x-www-form-urlencoded parser=] canonicalizes query strings, there are some cases where query strings which do not appear obviously equivalent, will end up being treated as equivalent after parsing.
+
+  So, for example, given any non-default value for `No-Vary-Search`, such as `No-Vary-Search: key-order`, we will have the following equivalences:
+
+  <table>
+    <thead>
+      <tr>
+        <th>Equivalent URLs
+        <th>Explanation
+    <tbody>
+      <tr class="group">
+        <td>`https://example.com/`
+        <td rowspan=2>A null [=url/query=] is parsed the same as an empty string query
+      <tr>
+        <td>`https://example.com/?`
+      <tr class="group">
+        <td>`https://example.com/?a=x`
+        <td rowspan=2>Parsing performs percent-decoding
+      <tr>
+        <td>`https://example.com/?%61=%78`
+      <tr class="group">
+        <td>`https://example.com/?a=é`
+        <td rowspan=2>Parsing performs percent-decoding
+      <tr>
+        <td>`https://example.com/?a=%C3%A9`
+      <tr class="group">
+        <td>`https://example.com/?a=%f6`
+        <td rowspan=2>Both values are parsed as U+FFFD (�)
+      <tr>
+        <td>`https://example.com/?a=%ef%bf%bd`
+      <tr class="group">
+        <td>`https://example.com/?a=x&&&&`
+        <td rowspan=2>Parsing splits on `&` and discards empty strings
+      <tr>
+        <td>`https://example.com/?a=x`
+      <tr class="group">
+        <td>`https://example.com/?a=`
+        <td rowspan=2>Both parse as having an empty string value for `a`
+      <tr>
+        <td>`https://example.com/?a`
+      <tr class="group">
+        <td>`https://example.com/?a=%20`
+        <td rowspan=3>`+` and `%20` are both parsed as U+0020 SPACE
+      <tr>
+        <td>`https://example.com/?a=+`
+      <tr>
+        <td>`https://example.com/?a= &`
+  </table>
+</div>
