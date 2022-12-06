@@ -17,6 +17,8 @@ Boilerplate: omit conformance
 <pre class="link-defaults">
 spec:html; type:element; text:a
 spec:html; type:element-attr; for:a; text:href
+spec:html; type:element-attr; for:a; text:referrerpolicy
+spec:html; type:element-attr; for:a; text:rel
 spec:html; type:element; text:link
 spec:html; type:element; text:script
 spec:selectors-4; type:selector; text::link
@@ -43,6 +45,12 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: rules for choosing a navigable; url: the-rules-for-choosing-a-navigable
     urlPrefix: semantics.html
       text: get an element's target; url: get-an-element's-target
+    urlPrefix: links.html
+      text: following a hyperlink; url: following-hyperlinks-2
+  type: attr-value
+    urlPrefix: links.html
+      for: a/rel
+        text: noreferrer; url: link-type-noreferrer
 spec: urlpattern; urlPrefix: https://wicg.github.io/urlpattern/
   type: interface; text: URLPattern; url: urlpattern
   type: constructor; for: URLPattern; text: "URLPattern(input, baseURL)"; url: dom-urlpattern-urlpattern
@@ -115,6 +123,7 @@ A <dfn>speculation rule</dfn> is a [=struct=] with the following [=struct/items=
 * <dfn for="speculation rule">predicate</dfn>, a [=document rule predicate=] or null
 * <dfn for="speculation rule">requirements</dfn>, an [=ordered set=] of [=strings=]
 * <dfn for="speculation rule">target navigable name hint</dfn>, a [=string=] or null
+* <dfn for="speculation rule">referrer policy</dfn>, a [=referrer policy=]
 
 The only valid string for [=speculation rule/requirements=] to contain is "`anonymous-client-ip-when-cross-origin`".
 
@@ -339,7 +348,7 @@ add the following step
 <div algorithm="parse a speculation rule">
   To <dfn>parse a speculation rule</dfn> given a [=map=] |input| and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
 
-  1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", and `"target_hint"`, then return null.
+  1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", `"target_hint"`, and `"referrer_policy"`, then return null.
   1. If |input|["`source`"] does not [=map/exist=] or is neither the [=string=] "`list`" nor the [=string=] "`document`", then return null.
   1. Let |source| by |input|["`source`"].
   1. Let |urls| be an empty [=list=].
@@ -368,7 +377,11 @@ add the following step
   1. If |input|["`target_hint`"] [=map/exists=]:
     1. If |input|["`target_hint`"] is not a [=valid navigable target name or keyword=], then return null.
     1. Set |targetHint| to |input|["`target_hint`"].
-  1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls|, [=speculation rule/predicate=] |predicate|, [=speculation rule/requirements=] |requirements|, and [=speculation rule/target navigable name hint=] |targetHint|.
+  1. Let |referrerPolicy| be the empty string.
+  1. If |input|["`referrer_policy`"] [=map/exists=]:
+    1. If |input|["`referrer_policy`"] is not a [=referrer policy=], then return null.
+    1. Set |referrerPolicy| to |input|["`referrer_policy`"].
+  1. Return a [=speculation rule=] with [=speculation rule/URLs=] |urls|, [=speculation rule/predicate=] |predicate|, [=speculation rule/requirements=] |requirements|, [=speculation rule/target navigable name hint=] |targetHint|, and [=speculation rule/referrer policy=] |referrerPolicy|.
 </div>
 
 <div algorithm="parse a document rule predicate">
@@ -452,10 +465,12 @@ The user agent may also [=queue a global task=] on the [=networking task source=
 A <dfn>prefetch candidate</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="prefetch candidate">URL</dfn>, a [=URL=]
 * <dfn for="prefetch candidate">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
+* <dfn for="prefetch candidate">referrer policy</dfn>, a [=referrer policy=]
 
 A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="prerender candidate">URL</dfn>, a [=URL=]
 * <dfn for="prerender candidate">target navigable name hint</dfn>, a [=valid navigable target name or keyword=] or null
+* <dfn for="prerender candidate">referrer policy</dfn>, a [=referrer policy=]
 
 <div algorithm>
   A [=prefetch candidate=] |prefetchCandidate| <dfn for="prefetch candidate">continues</dfn> a [=prefetch record=] |prefetchRecord| if the following are all true:
@@ -478,6 +493,16 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. Return |links|.
 </div>
 
+<div algorithm>
+  To <dfn>compute a speculative action referrer policy</dfn> given a [=speculation rule=] |rule| and an <{a}> element, an <{area}> element, or null |link|:
+
+  1. If |rule|'s [=speculation rule/referrer policy=] is not the empty string, then return |rule|'s [=speculation rule/referrer policy=].
+  1. If |link| is null, then return the empty string.
+  1. If |link|'s <{a/rel}> attribute includes the <{a/rel/noreferrer}> keyword, then return "`no-referrer`".
+  1. Otherwise, return the current state of |link|'s <{a/referrerpolicy}> content attribute.
+    <p class="note">The [=referrer policy=] computed based on |link| is intended to be equivalent to the referrer policy computation in [=following a hyperlink=].</p>
+</div>
+
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
@@ -491,15 +516,18 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; Let |anonymizationPolicy| be null.
       1. &#x231B; If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url| and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
+        1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
+        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/anonymization policy=] |anonymizationPolicy|, and [=prefetch candidate/referrer policy=] |referrerPolicy| to |prefetchCandidates|.
       1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
         1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
         1. &#x231B; [=list/For each=] |link| of |links|:
           1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
-          1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |href|, and [=prefetch candidate/anonymization policy=] |anonymizationPolicy| to |prefetchCandidates|.
+          1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
+          1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |href|, [=prefetch candidate/anonymization policy=] |anonymizationPolicy|, and [=prefetch candidate/referrer policy=] |referrerPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url| and [=prerender candidate/target navigable name hint=] is |rule|'s [=speculation rule/target navigable name hint=].
+        1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
+        1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |url|, [=prerender candidate/target navigable name hint=] is |rule|'s [=speculation rule/target navigable name hint=], and [=prerender candidate/referrer policy=] is |referrerPolicy|.
         1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
       1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
         1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
@@ -507,7 +535,8 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
           1. &#x231B; Let |href| be the result of running |link|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
           1. &#x231B; Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
           1. &#x231B; If |target| is null, set it to the result of [=getting an element's target=] given |link|.
-          1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |href|, and [=prerender candidate/target navigable name hint=] is |target|.
+          1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
+          1. &#x231B; Let |prerenderCandidate| be a new [=prerender candidate=] whose [=prerender candidate/URL=] is |href|, [=prerender candidate/target navigable name hint=] is |target|, and [=prerender candidate/referrer policy=] is |referrerPolicy|.
           1. &#x231B; [=list/Append=] |prerenderCandidate| to |prerenderCandidates|.
   1. &#x231B; [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
     1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
@@ -517,9 +546,10 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
     1. The user agent may run the following steps:
       1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], and [=prefetch record/label=] is "`speculation-rules`".
+        <p class="issue">Pass along |prefetchCandidate|'s [=prefetch candidate/referrer policy=].<p>
       1. [=Prefetch=] given |document| and |prefetchRecord|.
   1. [=list/For each=] |prerenderCandidate| of |prerenderCandidates|:
-      1. The user agent may [=start referrer-initiated prerendering=] given |prerenderCandidate|'s [=prerender candidate/URL=] and |document|.
+      1. The user agent may [=start referrer-initiated prerendering=] given |prerenderCandidate|'s [=prerender candidate/URL=], |document|, and |prerenderCandidate|'s [=prerender candidate/referrer policy=].
 
          The user agent can use |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] as a hint to their implementation of the [=start referrer-initiated prerendering=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering traversable/activate|activation=] of the created [=prerendering traversable=] to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the [=rules for choosing a navigable=] given |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] and |document|'s [=node navigable=].
 
