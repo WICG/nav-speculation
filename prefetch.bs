@@ -185,12 +185,24 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 
   <div class="note">"`canceled`" indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
 * <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
+* <dfn for="prefetch record">partition state</dfn>, which is a [=same-partition prefetch state=], a [=cross-partition prefetch state=], or null (the default)
 * <dfn export for="prefetch record">sandboxing flag set</dfn>, a [=sandboxing flag set=]
 * <dfn export for="prefetch record">redirect chain</dfn>, a [=redirect chain=] (empty by default)
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
-* <dfn for="prefetch record">isolated partition key</dfn>, a [=network partition key=] or null (the default)
 
 <div class="note">This tracks prefetches from when they are started to when they are ultimately used or discarded. Consequently some of these fields are immutable, some pertain to the ongoing activity (like [=prefetch record/fetch controller=]), and some (like [=prefetch record/expiry time=]) are populated when the prefetch completes.</div>
+
+A <dfn>same-partition prefetch state</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="same-partition prefetch state">source partition key</dfn>, a [=network partition key=]
+
+<p class="note">Prefetches which are start in the same partition as they were initiated in remain in that partition, to avoid communication between different partitions.</p>
+
+A <dfn>cross-partition prefetch state</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn for="cross-partition prefetch state">source partition key</dfn>, a [=network partition key=]
+* <dfn for="cross-partition prefetch state">isolated partition key</dfn>, a [=network partition key=] which is (a new [=opaque origin=], null or an [=implementation-defined=] value) and represents a separate partition in which state can be temporarily stored
+* <dfn for="cross-partition prefetch state">origins with conflicting credentials</dfn>, an [=ordered set=] of [=origins=] (initially empty)
+
+<p class="note">Prefetches which start in a different partition as they were initiated in (e.g., because the URL is cross-site) abort when they would return to that partition (and thus would be credentialed normally), and when an origin for which credentials would have been sent is encountered.</p>
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
@@ -402,7 +414,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given <var ignore>navigable</var>'s [=navigable/active document=], <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
             1. If <var ignore>documentResource</var> is null and |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
-                1. If |prefetchRecord|'s [=prefetch record/isolated partition key=] is not null, then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
+                1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=], then [=copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
                     <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies.</div>
             1. Otherwise:
@@ -413,10 +425,13 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
 <hr>
 
+Add the following [=struct/item=] to [=session history entry=]:
+* <dfn for="session history entry">prefetch record</dfn>, a [=prefetch record=] or null. If non-null, it indicates that a prefetch, not a normal navigation, is in progress.
+
 <div algorithm>
     <div class="note">This is an update of the existing <a spec=HTML>create navigation params by fetching</a> algorithm.</div>
 
-    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, an optional [=opaque origin=] or null (default null) |isolationOrigin|, an optional boolean |processEarlyHints| (default true), an optional boolean |reportCOOPViolations| (default true), an optional algorithm |shouldBlockNavigationRequest|, and an optional algorithm |processNavigationResponse|, perform the following steps. If given, |shouldBlockNavigationRequest| must be an algorithm accepting a [=request=] and returning a "`Blocked`" or "`Allowed`". They return a [=navigation params=], a [=non-fetch scheme navigation params=], or null. If given, |processNavigationResponse| must be an algorithm accepting a [=request=] and [=response=].
+    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, and a {{NavigationTimingType}} |navTimingType|, perform the following steps.
 
     1. [=Assert=]: this is running [=in parallel=].
     1. [=Assert=]: |request|'s [=request/URL=] is |entry|'s [=session history entry/URL=].
@@ -434,6 +449,11 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
     1. Let |locationURL| be null.
     1. Let |currentURL| be |request|'s [=request/current URL=].
     1. Let |commitEarlyHints| be null.
+    1. Let |isolationOrigin| be null.
+    1. If |entry|'s [=session history entry/prefetch record=] is not null and its [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
+        1. Let |isolationSite| be |entry|'s [=session history entry/prefetch record=]'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/isolated partition key=][0]. 
+        1. [=Assert=]: |isolationSite| is an [=opaque origin=].
+        1. Set |isolationOrigin| to |isolationSite|.
     1. While true:
         1. If |request|'s [=request/reserved client=] is not null and |currentURL|'s [=url/origin=] is not the [=same origin|same=] as |request|'s [=request/reserved client=]'s [=environment/creation URL=]'s [=url/origin=], then:
             1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
@@ -441,31 +461,57 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             1. Set |commitEarlyHints| to null.
         1. If |request|'s [=request/reserved client=] is null, then set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable|, |currentURL| and |isolationOrigin|.
         1. If the result of [=should navigation request of type be blocked by Content Security Policy?=] given |request| and |cspNavigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. [[CSP]]
-        1. If |shouldBlockNavigationRequest| is present and its result given |request| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. <!-- these are new steps to allow requests to be blocked for additional reasons -->
+        1. If |entry|'s [=session history entry/prefetch record=] is not null, then:
+            1. Let |prefetchRecord| be |entry|'s [=session history entry/prefetch record=].
+            1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> `prefetch`.
+            1. If |prefetchRecord|'s [=prefetch record/anonymization policy=] [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
+                1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the `prefetch` token in |purpose|.
+                1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or set |response| to a [=network error=] and [=iteration/break=].
+
+                    <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
+            1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
+
+                <div class="note">
+                    Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt this common header.
+                </div>
+            1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|'s [=request/reserved client=].
+            1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=same-partition prefetch state=] whose [=same-partition prefetch state/source partition key=] is not equal to |proposedPartitionKey|, then set |response| to a [=network error=] and [=iteration/break=].
+            1. Otherwise, if |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=] whose [=cross-partition prefetch state/source partition key=] is equal to |proposedPartitionKey|, then set |response| to a [=network error=] and [=iteration/break=].
+            1. If |request|'s [=request/current URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then set |response| to a [=network error=] and [=iteration/break=].
+
+                <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
+            1. If |request| cannot be fetched given |prefetchRecord|'s [=prefetch record/anonymization policy=] for an [=implementation-defined=] reason, then set |response| to a [=network error=] and [=iteration/break=].
+
+                <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
+            <!-- TODO(jbroman): where do we stash |originsWithConflictingCredentials|? on the prefetch record? -->
+            1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
+                1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |navigable|, |request|'s [=request/current URL=], and null.
+                1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
+                1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/origins with conflicting credentials=].
+            1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
         1. Set |response| to null.
         1. If |fetchController| is null, then set |fetchController| to the result of [=fetching=] |request|, with <i>[=fetch/processEarlyHintsResponse=]</i> set to |processEarlyHintsResponse| as defined below, <i>[=fetch/processResponse=]</i> set to |processResponse| as defined below, and <i>[=fetch/useParallelQueue=]</i> set to true.
 
             Let |processEarlyHintsResponse| be the following algorithm given a [=response=] |earlyResponse|:
-                1. If |processEarlyHints| is true and |commitEarlyHints| is null, then set |commitEarlyHints| to the result of [=processing early hint headers=] given |earlyResponse| and |request|'s [=request/reserved client=]. <!-- this has an additional condition to suppress extra fetches due to early hints -->
+                1. If |entry|'s [=session history entry/prefetch record=] is null and |commitEarlyHints| is null, then set |commitEarlyHints| to the result of [=processing early hint headers=] given |earlyResponse| and |request|'s [=request/reserved client=]. <!-- this has an additional condition to suppress extra fetches due to early hints while prefetching -->
             
             Let |processResponse| be the following algorithm given a [=response=] |fetchedResponse|:
                 1. Set |response| to |fetchedResponse|.
         1. Otherwise, [=fetch controller/process the next manual redirect=] for |fetchController|.
         1. Wait until either |response| is non-null, or |navigable|'s [=ongoing navigation=] changes to no longer equal |navigationId|.
 
-            If the latter condition occurs, then [=fetch controller/abort=] |fetchController|, and return.
-            Otherwise, proceed onward.
+            If the latter condition occurs, then [=fetch controller/abort=] |fetchController|, and return. Otherwise, proceed onward. <span class="issue">This aborts prefetches the moment a navigation starts, which might not be desirable.</span>
         1. If |request|'s [=request/body=] is null, then set |entry|'s [=session history entry/document state=]'s [=document state/resource=] to null.
         1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |response|'s [=response/URL=], |finalSandboxFlags|, |entry|'s [=session history entry/document state=]'s [=document state/initiator origin=], and null.
         1. If |navigable| is a [=top-level traversable=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-            1. If |reportCOOPViolations| is false, then set |responseCOOP|'s [=cross-origin opener policy/reporting endpoint=] and [=cross-origin opener policy/report-only reporting endpoint=] to null. <!-- this allows COOP reports to be suppressed until navigation actually occurs -->
+            1. If |entry|'s [=session history entry/prefetch record=] is not null, then set |responseCOOP|'s [=cross-origin opener policy/reporting endpoint=] and [=cross-origin opener policy/report-only reporting endpoint=] to null. <span class="note">This allows COOP violation reports to be suppressed until the prefetch is used.</span>
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |request|'s [=request/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |request|'s [=request/referrer=].
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
         1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
-        1. Run |processNavigationResponse| given |request| and |response|.
+        1. If |entry|'s [=session history entry/prefetch record=] is not null, then [=redirect chain/update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -544,17 +590,11 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |topLevelOrigin| be |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=] if |document|'s [=node navigable=] is a [=top-level traversable=], and |document|'s [=relevant settings object=]'s [=environment/top-level origin=] otherwise.
     1. Let |topLevelSite| be the result of [=obtaining a site=] given |topLevelOrigin|.
     1. Let |secondKey| be null or an [=implementation-defined=] value.
-    1. Let |partitioningScheme| be "`same-partition`" if |sourcePartitionKey| is equal to (|topLevelSite|, |secondKey|), and "`uncredentialed`" otherwise.
-
-        <div class="note">
-            <p>This determines whether the navigation would use the same network partition key. If it would, the prefetch is restricted to the same partition, and redirects which would leave the partition cause the prefetch to fail.
-
-            <p>Otherwise it is uncredentialed, and redirects which would return to the original partition (thus ought to have credentials) will cause prefetch to fail.
-        </div>
+    1. If |sourcePartitionKey| is equal to (|topLevelSite|, |secondKey|), then set |prefetchRecord|'s [=prefetch record/partition state=] to a new [=same-partition prefetch state=] whose [=same-partition prefetch state/source partition key=] is |sourcePartitionKey|.
+    1. Otherwise, set |prefetchRecord|'s [=prefetch record/partition state=] to a new [=cross-partition prefetch state=] whose [=cross-partition prefetch state/source partition key=] is |sourcePartitionKey|.
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
     1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] for |document|'s [=Document/browsing context=] given |document|'s [=node navigable=]'s [=navigable/container=].
-    1. Let |isolationOrigin| be null.
     1. Let |documentState| be a new [=document state=] with
         :  [=document state/request referrer policy=]
         :: |document|'s [=Document/policy container=]'s [=policy container/referrer policy=]
@@ -565,58 +605,27 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: |prefetchRecord|'s [=prefetch record/URL=]
         :  [=session history entry/document state=]
         :: |documentState|
+        :  [=session history entry/prefetch record=]
+        :: |prefetchRecord|
     1. Let |request| be the result of [=creating a navigation request=] given |entry|, |document|'s [=relevant settings object=], |document|'s [=node navigable=]'s [=navigable/container=], and false.
     1. Set |request|'s [=request/initiator=] to "`prefetch`".
 
         <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
-    1. If |partitioningScheme| is "`uncredentialed`":
+    1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
         1. Clear |request|'s [=request/use-URL-credentials flag=].
         1. Set |request|'s [=request/cache mode=] to "`no-store`".
 
             <div class="issue">This ends up setting the `` `Cache-Control` `` and `` `Pragma` `` request headers, which is contrary to what Chromium does today when skipping cache here. One approach would be to add a flag similar to [=request/prevent no-cache cache-control header modification flag=]. It would also be possible to have a cache that can be copied into the ordinary cache, like Chromium does for cookies.</div>
 
         1. If |documentState|'s [=document state/request referrer policy=] is not in the [=list of sufficiently strict speculative navigation referrer policies=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|, and return.
-        1. Set |isolationOrigin| to a new [=opaque origin=].
-
-            <div class="note">This is used to ensure a distinct network partition key is used.</div>
 
         <div class="note">Though credentials are still included, they will be isolated such that no credentials are present to begin with.</div>
-    1. Let |originsWithConflictingCredentials| be an empty [=ordered set=].
-    1. Let |shouldBlockNavigationRequest| be an algorithm which, given a [=request=] |request|, performs the following steps.
-        1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> `prefetch`.
-        1. If |prefetchRecord|'s [=prefetch record/anonymization policy=] [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
-            1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the `prefetch` token in |purpose|.
-            1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or return "`Blocked`".
-
-                <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
-        1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
-
-            <div class="note">
-                Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt a standard header.
-            </div>
-        1. Let |proposedPartitionKey| be the result of [=determining the network partition key=] given |request|'s [=request/reserved client=].
-        1. If |partitioningScheme| is "`same-partition`" and |proposedPartitionKey| is not equal to |sourcePartitionKey|, then return "`Blocked`".
-        1. Otherwise, if |partitioningScheme| is "`uncredentialed`" and |proposedPartitionKey| is equal to |sourcePartitionKey|, then return "`Blocked`".
-        1. If |request|'s [=request/current URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then return "`Blocked`".
-
-            <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
-        1. If |request| cannot be fetched given |prefetchRecord|'s [=prefetch record/anonymization policy=] for an [=implementation-defined=] reason, then return "`Blocked`".
-
-            <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-        1. If |partitioningScheme| is "`uncredentialed`":
-            1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |document|'s [=node navigable=], |request|'s [=request/current URL=], and null.
-            1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
-            1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |originsWithConflictingCredentials|.
-        1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
-        1. Return "`Allowed`".
-    1. Let |processNavigationResponse| be an algorithm which, given a [=request=] |request| and [=response=] |response|, performs the following steps.
-        1. [=redirect chain/Update the response=] for |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
     1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |document| and |document|'s [=Document/origin=].
     1. Let |global| be |document|'s [=relevant global object=].
     1. [=In parallel=]:
-        1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", |isolationOrigin|, false (processEarlyHints), false (reportCOOPViolations), |shouldBlockNavigationRequest| and |processNavigationResponse|.
+        1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId) and "`navigate`".
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
-        1. If |originsWithConflictingCredentials| is not [=set/empty=], then set |navigationParams| to null.
+        1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=] whose [=cross-partition prefetch state/origins with conflicting credentials=] is not [=set/empty=], then set |navigationParams| to null.
 
             <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
             <div class="issue">Update this to include the `` `Supports-Loading-Mode` `` mechanism to allow responses to continue despite cookies.</div>
