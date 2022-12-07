@@ -351,15 +351,16 @@ add the following step
 
   1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", `"target_hint"`,`"referrer_policy"`, and `"relative_to"`, then return null.
   1. If |input|["`source`"] does not [=map/exist=] or is neither the [=string=] "`list`" nor the [=string=] "`document`", then return null.
-  1. Let |source| by |input|["`source`"].
+  1. Let |source| be |input|["`source`"].
   1. Let |urls| be an empty [=list=].
   1. Let |predicate| be null.
   1. If |source| is "`list`":
     1. If |input|["`where`"] [=map/exists=], then return null.
     1. If |input|["`urls`"] does not [=map/exist=], is not a [=list=], or has any element which is not a [=string=], then return null.
     1. If |input|["`relative_to`"] [=map/exists=]:
-      1. If |input|["`relative_to`"] is not "`document`", then return null.
-      1. Set |baseURL| to the |document|'s [=document base URL=].
+      1. Let |relativeTo| be |input|["`relative_to`"].
+      1. If |relativeTo| is neither the string "`ruleset`" nor the string "`document`", then return null.
+      1. If |relativeTo| is "`document`", then set |baseURL| to the |document|'s [=document base URL=].
     1. [=list/For each=] |urlString| of |input|["`urls`"]:
       1. Let |parsedURL| be the result of [=basic URL parser|parsing=] |urlString| with |baseURL|.
       1. If |parsedURL| is failure, then [=iteration/continue=].
@@ -418,8 +419,9 @@ add the following step
   1. If |predicateType| is "`href_matches`":
     1. If |input| has any [=map/key=] other than "`href_matches`" and "`relative_to`", then return null.
     1. If |input|["`relative_to`"] [=map/exists=], then:
-      1. If |input|["`relative_to`"] is not "`document`", then return null.
-      1. Set |baseURL| to the |document|'s [=document base URL=].
+      1. Let |relativeTo| be |input|["`relative_to`"].
+      1. If |relativeTo| is neither the string "`ruleset`" nor the string "`document`", then return null.
+      1. If |relativeTo| is "`document`", set |baseURL| to the |document|'s [=document base URL=].
     1. Let |rawPatterns| be |input|["`href_matches`"].
     1. If |rawPatterns| is not a [=list=], then set |rawPatterns| to « |rawPatterns| ».
     1. Let |patterns| be an empty [=list=].
