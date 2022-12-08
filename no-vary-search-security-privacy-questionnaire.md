@@ -6,6 +6,8 @@ In theory, this feature can be used to give servers slightly more information ab
 
 In practice, this is not really exposing new information. Such a server can already know all sites that a given user has visited; this just lets requests to one URL (such as `https://example.com/?q=a`) also be used for checking on the status of related URLs (such as `https://example.com/?q=b`), instead of requiring two such requests.
 
+All existing mitigations for cache-based information exposure (e.g., the user clearing their cache; browsers [partitioning their caches](https://github.com/privacycg/storage-partitioning/)) still apply. `No-Vary-Search` does not allow them to be overridden or interfered with in any way.
+
 > 02.  Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
 Yes.
