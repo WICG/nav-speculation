@@ -2,11 +2,13 @@
 
 > 01.  What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
-None. This feature allows websites to expose information about themselves to the browser, but not the other way around.
+In theory, this feature can be used to give servers slightly more information about previous visits to the same origin. In general, all caches can be used by a server that detects requests vs. no-requests, to know whether the user has already visited the URL. With this feature, such servers can detect whether the user has visited variants of the same URL with different query strings.
+
+In practice, this is not really exposing new information. Such a server can already know all sites that a given user has visited; this just lets requests to one URL (such as `https://example.com/?q=a`) also be used for checking on the status of related URLs (such as `https://example.com/?q=b`), instead of requiring two such requests.
 
 > 02.  Do features in your specification expose the minimum amount of information necessary to enable their intended uses?
 
-Yes, since none is exposed.
+Yes.
 
 > 03.  How do the features in your specification deal with personal information, personally-identifiable information (PII), or information derived from them?
 
