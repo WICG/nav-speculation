@@ -346,6 +346,7 @@ Another envisioned speculative action is `"prefetch_with_subresources"`, which p
 Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` CSP directive.
 To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword.
 Using `script-src 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
+Also `script-src-elem` can accept `'inline-speculation-rules'` to permit inline speculation rules as well.
 The `prefetch-src` directive can be used to restrict which URLs can be prefetched or prerendered.
 
 ## Proposed processing model
