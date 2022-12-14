@@ -195,14 +195,14 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 A <dfn>same-partition prefetch state</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="same-partition prefetch state">source partition key</dfn>, a [=network partition key=]
 
-<p class="note">Prefetches which are start in the same partition as they were initiated in remain in that partition, to avoid communication between different partitions.</p>
+<p class="note">Prefetches which start in the same partition as their referrer remain in that partition, to avoid communication between different partitions.</p>
 
 A <dfn>cross-partition prefetch state</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="cross-partition prefetch state">source partition key</dfn>, a [=network partition key=]
-* <dfn for="cross-partition prefetch state">isolated partition key</dfn>, a [=network partition key=] which is (a new [=opaque origin=], null or an [=implementation-defined=] value) and represents a separate partition in which state can be temporarily stored
+* <dfn for="cross-partition prefetch state">isolated partition key</dfn>, a [=network partition key=] whose first item is an [=opaque origin=] and which represents a separate partition in which state can be temporarily stored
 * <dfn for="cross-partition prefetch state">origins with conflicting credentials</dfn>, an [=ordered set=] of [=origins=] (initially empty)
 
-<p class="note">Prefetches which start in a different partition as they were initiated in (e.g., because the URL is cross-site) abort when they would return to that partition (and thus would be credentialed normally), and when an origin for which credentials would have been sent is encountered.</p>
+<p class="note">Prefetches which start in a different partition as their referrer (e.g., because the URL is cross-site) abort when they would return to that partition (and thus would be credentialed normally), and when an origin for which credentials would have been sent is encountered.</p>
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
@@ -591,7 +591,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |topLevelSite| be the result of [=obtaining a site=] given |topLevelOrigin|.
     1. Let |secondKey| be null or an [=implementation-defined=] value.
     1. If |sourcePartitionKey| is equal to (|topLevelSite|, |secondKey|), then set |prefetchRecord|'s [=prefetch record/partition state=] to a new [=same-partition prefetch state=] whose [=same-partition prefetch state/source partition key=] is |sourcePartitionKey|.
-    1. Otherwise, set |prefetchRecord|'s [=prefetch record/partition state=] to a new [=cross-partition prefetch state=] whose [=cross-partition prefetch state/source partition key=] is |sourcePartitionKey|.
+    1. Otherwise, set |prefetchRecord|'s [=prefetch record/partition state=] to a new [=cross-partition prefetch state=] whose [=cross-partition prefetch state/source partition key=] is |sourcePartitionKey| and [=cross-partition prefetch state/isolated partition key=] is (a new [=opaque origin=], null or an [=implementation-defined=] value).
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
     1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] for |document|'s [=Document/browsing context=] given |document|'s [=node navigable=]'s [=navigable/container=].
