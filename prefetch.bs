@@ -425,13 +425,10 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
 <hr>
 
-Add the following [=struct/item=] to [=session history entry=]:
-* <dfn for="session history entry">prefetch record</dfn>, a [=prefetch record=] or null. If non-null, it indicates that a prefetch, not a normal navigation, is in progress.
-
-<div algorithm>
+<div algorithm="create navigation params by fetching">
     <div class="note">This is an update of the existing <a spec=HTML>create navigation params by fetching</a> algorithm.</div>
 
-    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, and a {{NavigationTimingType}} |navTimingType|, perform the following steps.
+    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, and an optional [=prefetch record=] <dfn id="create-navigation-params-by-fetching-prefetchRecord">|prefetchRecord|</dfn>, perform the following steps.
 
     1. [=Assert=]: this is running [=in parallel=].
     1. [=Assert=]: |request|'s [=request/URL=] is |entry|'s [=session history entry/URL=].
@@ -450,8 +447,8 @@ Add the following [=struct/item=] to [=session history entry=]:
     1. Let |currentURL| be |request|'s [=request/current URL=].
     1. Let |commitEarlyHints| be null.
     1. Let |isolationOrigin| be null.
-    1. If |entry|'s [=session history entry/prefetch record=] is not null and its [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
-        1. Let |isolationSite| be |entry|'s [=session history entry/prefetch record=]'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/isolated partition key=][0]. 
+    1. If |prefetchRecord| was given and its [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
+        1. Let |isolationSite| be |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/isolated partition key=][0]. 
         1. [=Assert=]: |isolationSite| is an [=opaque origin=].
         1. Set |isolationOrigin| to |isolationSite|.
     1. While true:
@@ -461,8 +458,7 @@ Add the following [=struct/item=] to [=session history entry=]:
             1. Set |commitEarlyHints| to null.
         1. If |request|'s [=request/reserved client=] is null, then set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable|, |currentURL| and |isolationOrigin|.
         1. If the result of [=should navigation request of type be blocked by Content Security Policy?=] given |request| and |cspNavigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. [[CSP]]
-        1. If |entry|'s [=session history entry/prefetch record=] is not null, then:
-            1. Let |prefetchRecord| be |entry|'s [=session history entry/prefetch record=].
+        1. If |prefetchRecord| was given, then:
             1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> `prefetch`.
             1. If |prefetchRecord|'s [=prefetch record/anonymization policy=] [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
                 1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the `prefetch` token in |purpose|.
@@ -493,7 +489,7 @@ Add the following [=struct/item=] to [=session history entry=]:
         1. If |fetchController| is null, then set |fetchController| to the result of [=fetching=] |request|, with <i>[=fetch/processEarlyHintsResponse=]</i> set to |processEarlyHintsResponse| as defined below, <i>[=fetch/processResponse=]</i> set to |processResponse| as defined below, and <i>[=fetch/useParallelQueue=]</i> set to true.
 
             Let |processEarlyHintsResponse| be the following algorithm given a [=response=] |earlyResponse|:
-                1. If |entry|'s [=session history entry/prefetch record=] is null and |commitEarlyHints| is null, then set |commitEarlyHints| to the result of [=processing early hint headers=] given |earlyResponse| and |request|'s [=request/reserved client=]. <!-- this has an additional condition to suppress extra fetches due to early hints while prefetching -->
+                1. If |prefetchRecord| was given and |commitEarlyHints| is null, then set |commitEarlyHints| to the result of [=processing early hint headers=] given |earlyResponse| and |request|'s [=request/reserved client=]. <!-- this has an additional condition to suppress extra fetches due to early hints while prefetching -->
             
             Let |processResponse| be the following algorithm given a [=response=] |fetchedResponse|:
                 1. Set |response| to |fetchedResponse|.
@@ -507,11 +503,11 @@ Add the following [=struct/item=] to [=session history entry=]:
         1. Set |responseOrigin| to the result of [=determining the origin=] given |response|'s [=response/URL=], |finalSandboxFlags|, |entry|'s [=session history entry/document state=]'s [=document state/initiator origin=], and null.
         1. If |navigable| is a [=top-level traversable=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-            1. If |entry|'s [=session history entry/prefetch record=] is not null, then set |responseCOOP|'s [=cross-origin opener policy/reporting endpoint=] and [=cross-origin opener policy/report-only reporting endpoint=] to null. <span class="note">This allows COOP violation reports to be suppressed until the prefetch is used.</span>
+            1. If |prefetchRecord| was given, then set |responseCOOP|'s [=cross-origin opener policy/reporting endpoint=] and [=cross-origin opener policy/report-only reporting endpoint=] to null. <span class="note">This allows COOP violation reports to be suppressed until the prefetch is used.</span>
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |request|'s [=request/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |request|'s [=request/referrer=].
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
         1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
-        1. If |entry|'s [=session history entry/prefetch record=] is not null, then [=redirect chain/update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
+        1. If |prefetchRecord| was given, then [=redirect chain/update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -605,8 +601,6 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :: |prefetchRecord|'s [=prefetch record/URL=]
         :  [=session history entry/document state=]
         :: |documentState|
-        :  [=session history entry/prefetch record=]
-        :: |prefetchRecord|
     1. Let |request| be the result of [=creating a navigation request=] given |entry|, |document|'s [=relevant settings object=], |document|'s [=node navigable=]'s [=navigable/container=], and false.
     1. Set |request|'s [=request/initiator=] to "`prefetch`".
 
@@ -623,7 +617,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |document| and |document|'s [=Document/origin=].
     1. Let |global| be |document|'s [=relevant global object=].
     1. [=In parallel=]:
-        1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId) and "`navigate`".
+        1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=] whose [=cross-partition prefetch state/origins with conflicting credentials=] is not [=set/empty=], then set |navigationParams| to null.
 
