@@ -109,7 +109,7 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
     1. If |value|["`params`"] is not true, then return the [=default URL search variance=].
     1. If |value|["`except`"] is not a [=list=], then return the [=default URL search variance=].
     1. If any [=list/item=] in |value|["`except`"] is not a [=string=], then return the [=default URL search variance=].
-    1. Set |result|'s [=URL search variance/vary params=] to the reslt of [=parsing a key=] given each [=list/item=] in |value|["`except`"].
+    1. Set |result|'s [=URL search variance/vary params=] to the result of [=parsing a key=] given each [=list/item=] in |value|["`except`"].
   1. Return |result|.
 
   <p class="note">In general, this algorithm is strict and tends to return the [=default URL search variance=] whenever it sees something it doesn't recognize. This is because the [=default URL search variance=] behavior will just cause fewer cache hits, which is an acceptable fallback behavior.
@@ -204,7 +204,7 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
 </div>
 
 <div class="example" id="example-parse-a-key">
-  The [=parse a key=] algorithm allows encoding non-ASCII key strings in the ASCII strucured header format, similar to how the <a><code>application/x-www-form-urlencoded</code></a> format allows encoding an entire entry list of keys and values in ASCII URL format. For example,
+  The [=parse a key=] algorithm allows encoding non-ASCII key strings in the ASCII structured header format, similar to how the <a><code>application/x-www-form-urlencoded</code></a> format allows encoding an entire entry list of keys and values in ASCII URL format. For example,
 
   <pre highlight="http">No-Vary-Search: params=("%C3%A9+%E6%B0%97")</pre>
 
