@@ -102,14 +102,14 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
         1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
     1. Otherwise, if |value|["`params`"] is a [=list=]:
       1. If any [=list/item=] in |value|["`params`"] is not a [=string=], then return the [=default URL search variance=].
-      1. Set |result|'s [=URL search variance/no-vary params=] to the result of [=parsing a key=] given each [=list/item=] in |value|["`params`"].
+      1. Set |result|'s [=URL search variance/no-vary params=] to the result of applying [=parse a key=] to each [=list/item=] in |value|["`params`"].
       1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
     1. Otherwise, return the [=default URL search variance=].
   1. If |value|["`except`"] [=map/exists=]:
     1. If |value|["`params`"] is not true, then return the [=default URL search variance=].
     1. If |value|["`except`"] is not a [=list=], then return the [=default URL search variance=].
     1. If any [=list/item=] in |value|["`except`"] is not a [=string=], then return the [=default URL search variance=].
-    1. Set |result|'s [=URL search variance/vary params=] to the result of [=parsing a key=] given each [=list/item=] in |value|["`except`"].
+    1. Set |result|'s [=URL search variance/vary params=] to the result of applying [=parse a key=] to each [=list/item=] in |value|["`except`"].
   1. Return |result|.
 
   <p class="note">In general, this algorithm is strict and tends to return the [=default URL search variance=] whenever it sees something it doesn't recognize. This is because the [=default URL search variance=] behavior will just cause fewer cache hits, which is an acceptable fallback behavior.
