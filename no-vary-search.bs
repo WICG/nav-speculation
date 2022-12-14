@@ -102,14 +102,14 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
         1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
     1. Otherwise, if |value|["`params`"] is a [=list=]:
       1. If any [=list/item=] in |value|["`params`"] is not a [=string=], then return the [=default URL search variance=].
-      1. Set |result|'s [=URL search variance/no-vary params=] to |value|["`params`"].
+      1. Set |result|'s [=URL search variance/no-vary params=] to the result of applying [=parse a key=] to each [=list/item=] in |value|["`params`"].
       1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
     1. Otherwise, return the [=default URL search variance=].
   1. If |value|["`except`"] [=map/exists=]:
     1. If |value|["`params`"] is not true, then return the [=default URL search variance=].
     1. If |value|["`except`"] is not a [=list=], then return the [=default URL search variance=].
     1. If any [=list/item=] in |value|["`except`"] is not a [=string=], then return the [=default URL search variance=].
-    1. Set |result|'s [=URL search variance/vary params=] to |value|["`except`"].
+    1. Set |result|'s [=URL search variance/vary params=] to the result of applying [=parse a key=] to each [=list/item=] in |value|["`except`"].
   1. Return |result|.
 
   <p class="note">In general, this algorithm is strict and tends to return the [=default URL search variance=] whenever it sees something it doesn't recognize. This is because the [=default URL search variance=] behavior will just cause fewer cache hits, which is an acceptable fallback behavior.
@@ -189,6 +189,35 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
   </table>
 </div>
 
+<div algorithm>
+  To <dfn>parse a key</dfn> given an [=ASCII string=] |keyString|:
+
+  1. Let |keyBytes| be the [=isomorphic encoding=] of |keyString|.
+
+  1. Replace any 0x2B (+) in |keyBytes| with 0x20 (SP).
+
+  1. Let |keyBytesDecoded| be the [=byte sequence/percent-decoding=] of |keyBytes|.
+
+  1. Let |keyStringDecoded| be the [=UTF-8 decode without BOM|UTF-8 decoding without BOM=] of |keyBytesDecoded|.
+
+  1. Return |keyStringDecoded|.
+</div>
+
+<div class="example" id="example-parse-a-key">
+  The [=parse a key=] algorithm allows encoding non-ASCII key strings in the ASCII structured header format, similar to how the <a><code>application/x-www-form-urlencoded</code></a> format allows encoding an entire entry list of keys and values in ASCII URL format. For example,
+
+  <pre highlight="http">No-Vary-Search: params=("%C3%A9+%E6%B0%97")</pre>
+
+  will result in a [=URL search variance=] whose [=URL search variance/vary params=] are « "`é 気`" ». As explained in <a href="#example-equivalence-canonicalization">a later example</a>, the canonicalization process during [=equivalent modulo search variance|equivalence testing=] means this will treat as equivalent URL strings such as:
+
+  * `https://example.com/?é 気=1`
+  * `https://example.com/?é+気=2`
+  * `https://example.com/?%C3%A9%20気=3`
+  * `https://example.com/?%C3%A9+%E6%B0%97=4`
+
+  and so on, since they all are [=urlencoded parser|parsed=] to having the same key "`é 気`".
+</div>
+
 <h2 id="comparing">Comparing</h2>
 
 Two [=URLs=] |urlA| and |urlB| are <dfn export>equivalent modulo search variance</dfn> given a [=URL search variance=] |searchVariance| if the following algorithm returns true:
@@ -251,7 +280,7 @@ Two [=URLs=] |urlA| and |urlB| are <dfn export>equivalent modulo search variance
   <table>
     <thead>
       <tr>
-        <th>Equivalent URLs
+        <th>Equivalent URL strings
         <th>Explanation
     <tbody>
       <tr class="group">
