@@ -4,8 +4,26 @@
   <title>No-Vary-Search</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 63e66730b, updated Tue Oct 25 12:35:05 2022 -0700" name="generator">
+  <meta content="Bikeshed version 26e85e599, updated Thu Dec 8 15:29:31 2022 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/no-vary-search.html" rel="canonical">
+<style>
+#example-equivalence-canonicalization table {
+  border-collapse: collapse;
+}
+
+#example-equivalence-canonicalization table :is(td, th):first-of-type {
+  border-right: 1px solid black;
+  padding-right: 20px;
+}
+
+#example-equivalence-canonicalization table :is(td, th):nth-of-type(2) {
+  padding-left: 5px;
+}
+
+#example-equivalence-canonicalization table tr.group {
+  border-top: 1px solid black;
+}
+</style>
 <style>/* style-autolinks */
 
 .css.css, .property.property, .descriptor.descriptor {
@@ -591,7 +609,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">No-Vary-Search</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-10-26">26 October 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-12-14">14 December 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -630,6 +648,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#header-definition"><span class="secno">2</span> <span class="content">HTTP header field definition</span></a>
     <li><a href="#model"><span class="secno">3</span> <span class="content">Data model</span></a>
     <li><a href="#parsing"><span class="secno">4</span> <span class="content">Parsing</span></a>
+    <li><a href="#comparing"><span class="secno">5</span> <span class="content">Comparing</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
@@ -647,7 +666,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <main>
    <h2 class="heading settled" data-level="1" id="status-and-venue"><span class="secno">1. </span><span class="content">Status and venue note</span><a class="self-link" href="#status-and-venue"></a></h2>
    <p>This document is being written as a web-style specification in the WICG for now, because that’s the tooling and venue the author is familiar with. Its purpose is to nail down some details of the processing model in order to make writing and testing prototypes easier.</p>
-   <p>In the longer term, we envision this header being specified in a HTTPWG RFC, alongside whatever portion of the processing model can be shared among its various consumers. (That is, between both web platform specifications such as <a data-link-type="biblio" href="#biblio-fetch">[FETCH]</a>, and HTTP specifications such as future modifications to <a data-link-type="biblio" href="#biblio-rfc9111">[RFC9111]</a>.) It’s just incubating in WICG for now.</p>
+   <p>In the longer term, we envision this header being specified in a HTTPWG RFC, alongside whatever portion of the processing model can be shared among its various consumers. (That is, between both web platform specifications such as <a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[FETCH]</a>, and HTTP specifications such as future modifications to <a data-link-type="biblio" href="#biblio-rfc9111" title="HTTP Caching">[RFC9111]</a>.) It’s just incubating in WICG for now.</p>
    <h2 class="heading settled" data-level="2" id="header-definition"><span class="secno">2. </span><span class="content">HTTP header field definition</span><a class="self-link" href="#header-definition"></a></h2>
    <p>The `<dfn class="dfn-paneled" data-dfn-type="http-header" data-export id="http-headerdef-no-vary-search"><code>No-Vary-Search</code></dfn>` HTTP header field is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#section-1" id="ref-for-section-1">structured header</a> whose value must be a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-dictionaries" id="ref-for-name-dictionaries">dictionary</a>.</p>
    <p>TODO: probably give some more introductory non-normative text. Look at what other HTTP field defintions do.</p>
@@ -734,7 +753,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p>If any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item">item</a> in <var>value</var>["<code>params</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a>, then return the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance③">default URL search variance</a>.</p>
          <li data-md>
-          <p>Set <var>result</var>’s <a data-link-type="dfn" href="#url-search-variance-no-vary-params" id="ref-for-url-search-variance-no-vary-params⑤">no-vary params</a> to <var>value</var>["<code>params</code>"].</p>
+          <p>Set <var>result</var>’s <a data-link-type="dfn" href="#url-search-variance-no-vary-params" id="ref-for-url-search-variance-no-vary-params⑤">no-vary params</a> to the result of applying <a data-link-type="dfn" href="#parse-a-key" id="ref-for-parse-a-key">parse a key</a> to each <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item①">item</a> in <var>value</var>["<code>params</code>"].</p>
          <li data-md>
           <p>Set <var>result</var>’s <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params⑤">vary params</a> to <a data-link-type="dfn" href="#url-search-variance-no-vary-params-wildcard" id="ref-for-url-search-variance-no-vary-params-wildcard③">wildcard</a>.</p>
         </ol>
@@ -749,9 +768,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>If <var>value</var>["<code>except</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a>, then return the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance⑥">default URL search variance</a>.</p>
        <li data-md>
-        <p>If any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item①">item</a> in <var>value</var>["<code>except</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a>, then return the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance⑦">default URL search variance</a>.</p>
+        <p>If any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item②">item</a> in <var>value</var>["<code>except</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a>, then return the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance⑦">default URL search variance</a>.</p>
        <li data-md>
-        <p>Set <var>result</var>’s <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params⑥">vary params</a> to <var>value</var>["<code>except</code>"].</p>
+        <p>Set <var>result</var>’s <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params⑥">vary params</a> to the result of applying <a data-link-type="dfn" href="#parse-a-key" id="ref-for-parse-a-key①">parse a key</a> to each <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item③">item</a> in <var>value</var>["<code>except</code>"].</p>
       </ol>
      <li data-md>
       <p>Return <var>result</var>.</p>
@@ -864,15 +883,159 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <td>(omit the header) 
     </table>
    </div>
+   <div class="algorithm" data-algorithm="parse a key">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-key">parse a key</dfn> given an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string">ASCII string</a> <var>keyString</var>: 
+    <ol>
+     <li data-md>
+      <p>Let <var>keyBytes</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#isomorphic-encode" id="ref-for-isomorphic-encode">isomorphic encoding</a> of <var>keyString</var>.</p>
+     <li data-md>
+      <p>Replace any 0x2B (+) in <var>keyBytes</var> with 0x20 (SP).</p>
+     <li data-md>
+      <p>Let <var>keyBytesDecoded</var> be the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#percent-decode" id="ref-for-percent-decode">percent-decoding</a> of <var>keyBytes</var>.</p>
+     <li data-md>
+      <p>Let <var>keyStringDecoded</var> be the <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom" id="ref-for-utf-8-decode-without-bom">UTF-8 decoding without BOM</a> of <var>keyBytesDecoded</var>.</p>
+     <li data-md>
+      <p>Return <var>keyStringDecoded</var>.</p>
+    </ol>
+   </div>
+   <div class="example" id="example-parse-a-key">
+    <a class="self-link" href="#example-parse-a-key"></a> The <a data-link-type="dfn" href="#parse-a-key" id="ref-for-parse-a-key②">parse a key</a> algorithm allows encoding non-ASCII key strings in the ASCII structured header format, similar to how the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded" id="ref-for-concept-urlencoded"><code>application/x-www-form-urlencoded</code></a> format allows encoding an entire entry list of keys and values in ASCII URL format. For example, 
+<pre class="highlight">No-Vary-Search: params=("%C3%A9+%E6%B0%97")</pre>
+    <p>will result in a <a data-link-type="dfn" href="#url-search-variance" id="ref-for-url-search-variance③">URL search variance</a> whose <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params①①">vary params</a> are « "<code>é 気</code>" ». As explained in <a href="#example-equivalence-canonicalization">a later example</a>, the canonicalization process during <a data-link-type="dfn" href="#equivalent-modulo-search-variance" id="ref-for-equivalent-modulo-search-variance">equivalence testing</a> means this will treat as equivalent URL strings such as:</p>
+    <ul>
+     <li data-md>
+      <p><code>https://example.com/?é 気=1</code></p>
+     <li data-md>
+      <p><code>https://example.com/?é+気=2</code></p>
+     <li data-md>
+      <p><code>https://example.com/?%C3%A9%20気=3</code></p>
+     <li data-md>
+      <p><code>https://example.com/?%C3%A9+%E6%B0%97=4</code></p>
+    </ul>
+    <p>and so on, since they all are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser">parsed</a> to having the same key "<code>é 気</code>".</p>
+   </div>
+   <h2 class="heading settled" data-level="5" id="comparing"><span class="secno">5. </span><span class="content">Comparing</span><a class="self-link" href="#comparing"></a></h2>
+   <p>Two <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URLs</a> <var>urlA</var> and <var>urlB</var> are <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="equivalent-modulo-search-variance">equivalent modulo search variance</dfn> given a <a data-link-type="dfn" href="#url-search-variance" id="ref-for-url-search-variance④">URL search variance</a> <var>searchVariance</var> if the following algorithm returns true:</p>
+   <ol>
+    <li data-md>
+     <p>If the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-username" id="ref-for-concept-url-username">username</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-password" id="ref-for-concept-url-password">password</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-host" id="ref-for-concept-url-host">host</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-port" id="ref-for-concept-url-port">port</a>, or <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-path" id="ref-for-concept-url-path">path</a> of <var>urlA</var> and <var>urlB</var> differ, then return false.</p>
+    <li data-md>
+     <p>If <var>searchVariance</var> is equivalent to the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance①①">default URL search variance</a>, then:</p>
+     <ol>
+      <li data-md>
+       <p>If <var>urlA</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query">query</a> equals <var>urlB</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query①">query</a>, then return true.</p>
+      <li data-md>
+       <p>Return false.</p>
+     </ol>
+     <p class="note" role="note">In this case, even <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> pairs that might appear the same after running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser①">application/x-www-form-urlencoded parser</a> on their <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query②">queries</a>, such as <code>https://example.com/a</code> and <code>https://example.com/a?</code>, or <code>https://example.com/foo?a=b&amp;&amp;&amp;c</code> and <code>https://example.com/foo?a=b&amp;c=</code>, will be treated as inequivalent. </p>
+    <li data-md>
+     <p>Let <var>searchParamsA</var> and <var>searchParamsB</var> be empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">lists</a>.</p>
+    <li data-md>
+     <p>If <var>urlA</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query③">query</a> is not null, then set <var>searchParamsA</var> to the result of running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser②">application/x-www-form-urlencoded parser</a> given the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#isomorphic-encode" id="ref-for-isomorphic-encode①">isomorphic encoding</a> of <var>urlA</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query④">query</a>.</p>
+    <li data-md>
+     <p>If <var>urlB</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query⑤">query</a> is not null, then set <var>searchParamsB</var> to the result of running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser③">application/x-www-form-urlencoded parser</a> given the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#isomorphic-encode" id="ref-for-isomorphic-encode②">isomorphic encoding</a> of <var>urlB</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query⑥">query</a>.</p>
+    <li data-md>
+     <p>If <var>searchVariance</var>’s <a data-link-type="dfn" href="#url-search-variance-no-vary-params" id="ref-for-url-search-variance-no-vary-params①⓪">no-vary params</a> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a>, then:</p>
+     <ol>
+      <li data-md>
+       <p>Set <var>searchParamsA</var> to a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a> containing those <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item④">items</a> <var>pair</var> in <var>searchParamsA</var> where <var>searchVariance</var>’s <a data-link-type="dfn" href="#url-search-variance-no-vary-params" id="ref-for-url-search-variance-no-vary-params①①">no-vary params</a> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain①">contain</a> <var>pair</var>[0].</p>
+      <li data-md>
+       <p>Set <var>searchParamsB</var> to a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a> containing those <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item⑤">items</a> <var>pair</var> in <var>searchParamsB</var> where <var>searchVariance</var>’s <a data-link-type="dfn" href="#url-search-variance-no-vary-params" id="ref-for-url-search-variance-no-vary-params①②">no-vary params</a> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain②">contain</a> <var>pair</var>[0].</p>
+     </ol>
+    <li data-md>
+     <p>Otherwise, if <var>searchVariance</var>’s <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params①②">vary params</a> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>, then:</p>
+     <ol>
+      <li data-md>
+       <p>Set <var>searchParamsA</var> to a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a> containing those <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item⑥">items</a> <var>pair</var> in <var>searchParamsA</var> where <var>searchVariance</var>’s <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params①③">vary params</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain③">contains</a> <var>pair</var>[0].</p>
+      <li data-md>
+       <p>Set <var>searchParamsB</var> to a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a> containing those <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item⑦">items</a> <var>pair</var> in <var>searchParamsB</var> where <var>searchVariance</var>’s <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params①④">vary params</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain④">contains</a> <var>pair</var>[0].</p>
+     </ol>
+    <li data-md>
+     <p>If <var>searchVariance</var>’s <a data-link-type="dfn" href="#url-search-variance-vary-on-key-order" id="ref-for-url-search-variance-vary-on-key-order③">vary on key order</a> is false, then:</p>
+     <ol>
+      <li data-md>
+       <p>Let <var>keyLessThan</var> be an algorithm taking as inputs two pairs (<var>keyA</var>, <var>valueA</var>) and (<var>keyB</var>, <var>valueB</var>), which returns whether <var>keyA</var> is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#code-unit-less-than" id="ref-for-code-unit-less-than">code unit less than</a> <var>keyB</var>.</p>
+      <li data-md>
+       <p>Set <var>searchParamsA</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-sort-in-ascending-order" id="ref-for-list-sort-in-ascending-order">sorting in ascending order</a> <var>searchParamsA</var>, with <var>keyLessThan</var>.</p>
+      <li data-md>
+       <p>Set <var>searchParamsB</var> to the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-sort-in-ascending-order" id="ref-for-list-sort-in-ascending-order①">sorting in ascending order</a> <var>searchParamsB</var>, with <var>keyLessThan</var>.</p>
+     </ol>
+    <li data-md>
+     <p>If <var>searchParamsA</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is not equal to <var>searchParamsB</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size①">size</a>, then return false.</p>
+    <li data-md>
+     <p>Let <var>i</var> be 0.</p>
+    <li data-md>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-while" id="ref-for-iteration-while">While</a> <var>i</var> &lt; <var>searchParamsA</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size②">size</a>:</p>
+     <ol>
+      <li data-md>
+       <p>If <var>searchParamsA</var>[<var>i</var>][0] does not equal <var>searchParamsB</var>[<var>i</var>][0], then return false.</p>
+      <li data-md>
+       <p>If <var>searchParamsA</var>[<var>i</var>][1] does not equal <var>searchParamsB</var>[<var>i</var>][1], then return false.</p>
+      <li data-md>
+       <p>Set <var>i</var> to <var>i</var> + 1.</p>
+     </ol>
+    <li data-md>
+     <p>Return true.</p>
+   </ol>
+   <div class="example" id="example-equivalence-canonicalization">
+    <a class="self-link" href="#example-equivalence-canonicalization"></a> Due to how the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser④">application/x-www-form-urlencoded parser</a> canonicalizes query strings, there are some cases where query strings which do not appear obviously equivalent, will end up being treated as equivalent after parsing. 
+    <p>So, for example, given any non-default value for <code>No-Vary-Search</code>, such as <code>No-Vary-Search: key-order</code>, we will have the following equivalences:</p>
+    <table>
+     <thead>
+      <tr>
+       <th>Equivalent URL strings 
+       <th>Explanation 
+     <tbody>
+      <tr class="group">
+       <td><code>https://example.com/</code> 
+       <td rowspan="2">A null <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query⑦">query</a> is parsed the same as an empty string query 
+      <tr>
+       <td><code>https://example.com/?</code> 
+      <tr class="group">
+       <td><code>https://example.com/?a=x</code> 
+       <td rowspan="2">Parsing performs percent-decoding 
+      <tr>
+       <td><code>https://example.com/?%61=%78</code> 
+      <tr class="group">
+       <td><code>https://example.com/?a=é</code> 
+       <td rowspan="2">Parsing performs percent-decoding 
+      <tr>
+       <td><code>https://example.com/?a=%C3%A9</code> 
+      <tr class="group">
+       <td><code>https://example.com/?a=%f6</code> 
+       <td rowspan="2">Both values are parsed as U+FFFD (�) 
+      <tr>
+       <td><code>https://example.com/?a=%ef%bf%bd</code> 
+      <tr class="group">
+       <td><code>https://example.com/?a=x&amp;&amp;&amp;&amp;</code> 
+       <td rowspan="2">Parsing splits on <code>&amp;</code> and discards empty strings 
+      <tr>
+       <td><code>https://example.com/?a=x</code> 
+      <tr class="group">
+       <td><code>https://example.com/?a=</code> 
+       <td rowspan="2">Both parse as having an empty string value for <code>a</code> 
+      <tr>
+       <td><code>https://example.com/?a</code> 
+      <tr class="group">
+       <td><code>https://example.com/?a=%20</code> 
+       <td rowspan="3"><code>+</code> and <code>%20</code> are both parsed as U+0020 SPACE 
+      <tr>
+       <td><code>https://example.com/?a=+</code> 
+      <tr>
+       <td><code>https://example.com/?a= &amp;</code> 
+    </table>
+   </div>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#default-url-search-variance">default URL search variance</a><span>, in § 3</span>
+   <li><a href="#equivalent-modulo-search-variance">equivalent modulo search variance</a><span>, in § 5</span>
    <li><a href="#url-search-variance-no-vary-params">no-vary params</a><span>, in § 3</span>
    <li><a href="#http-headerdef-no-vary-search">No-Vary-Search</a><span>, in § 2</span>
    <li><a href="#obtain-a-url-search-variance">obtain a URL search variance</a><span>, in § 4</span>
+   <li><a href="#parse-a-key">parse a key</a><span>, in § 4</span>
    <li><a href="#url-search-variance">URL search variance</a><span>, in § 3</span>
    <li><a href="#url-search-variance-vary-on-key-order">vary on key order</a><span>, in § 3</span>
    <li><a href="#url-search-variance-vary-params">vary params</a><span>, in § 3</span>
@@ -883,6 +1046,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><a href="#url-search-variance-vary-params-wildcard">dfn for URL search variance/vary params</a><span>, in § 3</span>
     </ul>
   </ul>
+  <aside class="dfn-panel" data-for="term-for-utf-8-decode-without-bom">
+   <a href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom">https://encoding.spec.whatwg.org/#utf-8-decode-without-bom</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-utf-8-decode-without-bom">4. Parsing</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-header-list-get-structured-header">
    <a href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header">https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header</a><b>Referenced in:</b>
    <ul>
@@ -901,6 +1070,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-response">4. Parsing</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-ascii-string">
+   <a href="https://infra.spec.whatwg.org/#ascii-string">https://infra.spec.whatwg.org/#ascii-string</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-ascii-string">4. Parsing</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-boolean">
    <a href="https://infra.spec.whatwg.org/#boolean">https://infra.spec.whatwg.org/#boolean</a><b>Referenced in:</b>
    <ul>
@@ -908,10 +1083,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-boolean①">4. Parsing</a> <a href="#ref-for-boolean②">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-code-unit-less-than">
+   <a href="https://infra.spec.whatwg.org/#code-unit-less-than">https://infra.spec.whatwg.org/#code-unit-less-than</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-code-unit-less-than">5. Comparing</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-list-contain">
    <a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-list-contain">4. Parsing</a>
+    <li><a href="#ref-for-list-contain①">5. Comparing</a> <a href="#ref-for-list-contain②">(2)</a> <a href="#ref-for-list-contain③">(3)</a> <a href="#ref-for-list-contain④">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-map-exists">
@@ -920,10 +1102,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-map-exists">4. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-isomorphic-encode">
+   <a href="https://infra.spec.whatwg.org/#isomorphic-encode">https://infra.spec.whatwg.org/#isomorphic-encode</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-isomorphic-encode">4. Parsing</a>
+    <li><a href="#ref-for-isomorphic-encode①">5. Comparing</a> <a href="#ref-for-isomorphic-encode②">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-list-item">
    <a href="https://infra.spec.whatwg.org/#list-item">https://infra.spec.whatwg.org/#list-item</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-list-item">4. Parsing</a> <a href="#ref-for-list-item①">(2)</a>
+    <li><a href="#ref-for-list-item">4. Parsing</a> <a href="#ref-for-list-item①">(2)</a> <a href="#ref-for-list-item②">(3)</a> <a href="#ref-for-list-item③">(4)</a>
+    <li><a href="#ref-for-list-item④">5. Comparing</a> <a href="#ref-for-list-item⑤">(2)</a> <a href="#ref-for-list-item⑥">(3)</a> <a href="#ref-for-list-item⑦">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-struct-item">
@@ -943,6 +1133,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-list">3. Data model</a> <a href="#ref-for-list①">(2)</a> <a href="#ref-for-list②">(3)</a> <a href="#ref-for-list③">(4)</a>
     <li><a href="#ref-for-list④">4. Parsing</a> <a href="#ref-for-list⑤">(2)</a>
+    <li><a href="#ref-for-list⑥">5. Comparing</a> <a href="#ref-for-list⑦">(2)</a> <a href="#ref-for-list⑧">(3)</a> <a href="#ref-for-list⑨">(4)</a> <a href="#ref-for-list①⓪">(5)</a> <a href="#ref-for-list①①">(6)</a> <a href="#ref-for-list①②">(7)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-size">
+   <a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-size">5. Comparing</a> <a href="#ref-for-list-size①">(2)</a> <a href="#ref-for-list-size②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-list-sort-in-ascending-order">
+   <a href="https://infra.spec.whatwg.org/#list-sort-in-ascending-order">https://infra.spec.whatwg.org/#list-sort-in-ascending-order</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-list-sort-in-ascending-order">5. Comparing</a> <a href="#ref-for-list-sort-in-ascending-order①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-string">
@@ -956,6 +1159,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#struct">https://infra.spec.whatwg.org/#struct</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-struct">3. Data model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-iteration-while">
+   <a href="https://infra.spec.whatwg.org/#iteration-while">https://infra.spec.whatwg.org/#iteration-while</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-iteration-while">5. Comparing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-name-boolean">
@@ -982,8 +1191,80 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-section-1">2. HTTP header field definition</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-urlencoded">
+   <a href="https://url.spec.whatwg.org/#concept-urlencoded">https://url.spec.whatwg.org/#concept-urlencoded</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-urlencoded">4. Parsing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-host">
+   <a href="https://url.spec.whatwg.org/#concept-url-host">https://url.spec.whatwg.org/#concept-url-host</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-host">5. Comparing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-password">
+   <a href="https://url.spec.whatwg.org/#concept-url-password">https://url.spec.whatwg.org/#concept-url-password</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-password">5. Comparing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-path">
+   <a href="https://url.spec.whatwg.org/#concept-url-path">https://url.spec.whatwg.org/#concept-url-path</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-path">5. Comparing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-percent-decode">
+   <a href="https://url.spec.whatwg.org/#percent-decode">https://url.spec.whatwg.org/#percent-decode</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-percent-decode">4. Parsing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-port">
+   <a href="https://url.spec.whatwg.org/#concept-url-port">https://url.spec.whatwg.org/#concept-url-port</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-port">5. Comparing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-query">
+   <a href="https://url.spec.whatwg.org/#concept-url-query">https://url.spec.whatwg.org/#concept-url-query</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-query">5. Comparing</a> <a href="#ref-for-concept-url-query①">(2)</a> <a href="#ref-for-concept-url-query②">(3)</a> <a href="#ref-for-concept-url-query③">(4)</a> <a href="#ref-for-concept-url-query④">(5)</a> <a href="#ref-for-concept-url-query⑤">(6)</a> <a href="#ref-for-concept-url-query⑥">(7)</a> <a href="#ref-for-concept-url-query⑦">(8)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
+   <a href="https://url.spec.whatwg.org/#concept-url-scheme">https://url.spec.whatwg.org/#concept-url-scheme</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-scheme">5. Comparing</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url">
+   <a href="https://url.spec.whatwg.org/#concept-url">https://url.spec.whatwg.org/#concept-url</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url">5. Comparing</a> <a href="#ref-for-concept-url①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-urlencoded-parser">
+   <a href="https://url.spec.whatwg.org/#concept-urlencoded-parser">https://url.spec.whatwg.org/#concept-urlencoded-parser</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-urlencoded-parser">4. Parsing</a>
+    <li><a href="#ref-for-concept-urlencoded-parser①">5. Comparing</a> <a href="#ref-for-concept-urlencoded-parser②">(2)</a> <a href="#ref-for-concept-urlencoded-parser③">(3)</a> <a href="#ref-for-concept-urlencoded-parser④">(4)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-url-username">
+   <a href="https://url.spec.whatwg.org/#concept-url-username">https://url.spec.whatwg.org/#concept-url-username</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-url-username">5. Comparing</a>
+   </ul>
+  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
+   <li>
+    <a data-link-type="biblio">[ENCODING]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-utf-8-decode-without-bom">utf-8 decode without bom</span>
+    </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
@@ -994,15 +1275,21 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-ascii-string">ascii string</span>
      <li><span class="dfn-paneled" id="term-for-boolean">boolean</span>
+     <li><span class="dfn-paneled" id="term-for-code-unit-less-than">code unit less than</span>
      <li><span class="dfn-paneled" id="term-for-list-contain">contain</span>
      <li><span class="dfn-paneled" id="term-for-map-exists">exist</span>
+     <li><span class="dfn-paneled" id="term-for-isomorphic-encode">isomorphic encode</span>
      <li><span class="dfn-paneled" id="term-for-list-item">item <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="term-for-struct-item">item <small>(for struct)</small></span>
      <li><span class="dfn-paneled" id="term-for-map-getting-the-keys">keys</span>
      <li><span class="dfn-paneled" id="term-for-list">list</span>
+     <li><span class="dfn-paneled" id="term-for-list-size">size</span>
+     <li><span class="dfn-paneled" id="term-for-list-sort-in-ascending-order">sorting in ascending order</span>
      <li><span class="dfn-paneled" id="term-for-string">string</span>
      <li><span class="dfn-paneled" id="term-for-struct">struct</span>
+     <li><span class="dfn-paneled" id="term-for-iteration-while">while</span>
     </ul>
    <li>
     <a data-link-type="biblio">[RFC8941]</a> defines the following terms:
@@ -1012,16 +1299,35 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-name-inner-lists">inner list</span>
      <li><span class="dfn-paneled" id="term-for-section-1">structured header</span>
     </ul>
+   <li>
+    <a data-link-type="biblio">[URL]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-concept-urlencoded">application/x-www-form-urlencoded</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-host">host</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-password">password</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-path">path</span>
+     <li><span class="dfn-paneled" id="term-for-percent-decode">percent-decode</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-port">port</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-query">query</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-scheme">scheme</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url">url</span>
+     <li><span class="dfn-paneled" id="term-for-concept-urlencoded-parser">urlencoded parser</span>
+     <li><span class="dfn-paneled" id="term-for-concept-url-username">username</span>
+    </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
   <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
+   <dt id="biblio-encoding">[ENCODING]
+   <dd>Anne van Kesteren. <a href="https://encoding.spec.whatwg.org/"><cite>Encoding Standard</cite></a>. Living Standard. URL: <a href="https://encoding.spec.whatwg.org/">https://encoding.spec.whatwg.org/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc8941">[RFC8941]
    <dd>M. Nottingham; P-H. Kamp. <a href="https://www.rfc-editor.org/rfc/rfc8941"><cite>Structured Field Values for HTTP</cite></a>. February 2021. Proposed Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc8941">https://www.rfc-editor.org/rfc/rfc8941</a>
+   <dt id="biblio-url">[URL]
+   <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
@@ -1038,7 +1344,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#url-search-variance">#url-search-variance</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-url-search-variance">3. Data model</a> <a href="#ref-for-url-search-variance①">(2)</a>
-    <li><a href="#ref-for-url-search-variance②">4. Parsing</a>
+    <li><a href="#ref-for-url-search-variance②">4. Parsing</a> <a href="#ref-for-url-search-variance③">(2)</a>
+    <li><a href="#ref-for-url-search-variance④">5. Comparing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="url-search-variance-no-vary-params">
@@ -1046,6 +1353,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-url-search-variance-no-vary-params">3. Data model</a> <a href="#ref-for-url-search-variance-no-vary-params①">(2)</a> <a href="#ref-for-url-search-variance-no-vary-params②">(3)</a>
     <li><a href="#ref-for-url-search-variance-no-vary-params③">4. Parsing</a> <a href="#ref-for-url-search-variance-no-vary-params④">(2)</a> <a href="#ref-for-url-search-variance-no-vary-params⑤">(3)</a> <a href="#ref-for-url-search-variance-no-vary-params⑥">(4)</a> <a href="#ref-for-url-search-variance-no-vary-params⑦">(5)</a> <a href="#ref-for-url-search-variance-no-vary-params⑧">(6)</a> <a href="#ref-for-url-search-variance-no-vary-params⑨">(7)</a>
+    <li><a href="#ref-for-url-search-variance-no-vary-params①⓪">5. Comparing</a> <a href="#ref-for-url-search-variance-no-vary-params①①">(2)</a> <a href="#ref-for-url-search-variance-no-vary-params①②">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="url-search-variance-no-vary-params-wildcard">
@@ -1059,7 +1367,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#url-search-variance-vary-params">#url-search-variance-vary-params</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-url-search-variance-vary-params">3. Data model</a> <a href="#ref-for-url-search-variance-vary-params①">(2)</a> <a href="#ref-for-url-search-variance-vary-params②">(3)</a>
-    <li><a href="#ref-for-url-search-variance-vary-params③">4. Parsing</a> <a href="#ref-for-url-search-variance-vary-params④">(2)</a> <a href="#ref-for-url-search-variance-vary-params⑤">(3)</a> <a href="#ref-for-url-search-variance-vary-params⑥">(4)</a> <a href="#ref-for-url-search-variance-vary-params⑦">(5)</a> <a href="#ref-for-url-search-variance-vary-params⑧">(6)</a> <a href="#ref-for-url-search-variance-vary-params⑨">(7)</a> <a href="#ref-for-url-search-variance-vary-params①⓪">(8)</a>
+    <li><a href="#ref-for-url-search-variance-vary-params③">4. Parsing</a> <a href="#ref-for-url-search-variance-vary-params④">(2)</a> <a href="#ref-for-url-search-variance-vary-params⑤">(3)</a> <a href="#ref-for-url-search-variance-vary-params⑥">(4)</a> <a href="#ref-for-url-search-variance-vary-params⑦">(5)</a> <a href="#ref-for-url-search-variance-vary-params⑧">(6)</a> <a href="#ref-for-url-search-variance-vary-params⑨">(7)</a> <a href="#ref-for-url-search-variance-vary-params①⓪">(8)</a> <a href="#ref-for-url-search-variance-vary-params①①">(9)</a>
+    <li><a href="#ref-for-url-search-variance-vary-params①②">5. Comparing</a> <a href="#ref-for-url-search-variance-vary-params①③">(2)</a> <a href="#ref-for-url-search-variance-vary-params①④">(3)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="url-search-variance-vary-params-wildcard">
@@ -1074,12 +1383,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-url-search-variance-vary-on-key-order">3. Data model</a>
     <li><a href="#ref-for-url-search-variance-vary-on-key-order①">4. Parsing</a> <a href="#ref-for-url-search-variance-vary-on-key-order②">(2)</a>
+    <li><a href="#ref-for-url-search-variance-vary-on-key-order③">5. Comparing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="default-url-search-variance">
    <b><a href="#default-url-search-variance">#default-url-search-variance</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-default-url-search-variance">4. Parsing</a> <a href="#ref-for-default-url-search-variance①">(2)</a> <a href="#ref-for-default-url-search-variance②">(3)</a> <a href="#ref-for-default-url-search-variance③">(4)</a> <a href="#ref-for-default-url-search-variance④">(5)</a> <a href="#ref-for-default-url-search-variance⑤">(6)</a> <a href="#ref-for-default-url-search-variance⑥">(7)</a> <a href="#ref-for-default-url-search-variance⑦">(8)</a> <a href="#ref-for-default-url-search-variance⑧">(9)</a> <a href="#ref-for-default-url-search-variance⑨">(10)</a> <a href="#ref-for-default-url-search-variance①⓪">(11)</a>
+    <li><a href="#ref-for-default-url-search-variance①①">5. Comparing</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="obtain-a-url-search-variance">
@@ -1087,6 +1398,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-obtain-a-url-search-variance">2. HTTP header field definition</a>
     <li><a href="#ref-for-obtain-a-url-search-variance①">3. Data model</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="parse-a-key">
+   <b><a href="#parse-a-key">#parse-a-key</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-parse-a-key">4. Parsing</a> <a href="#ref-for-parse-a-key①">(2)</a> <a href="#ref-for-parse-a-key②">(3)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="equivalent-modulo-search-variance">
+   <b><a href="#equivalent-modulo-search-variance">#equivalent-modulo-search-variance</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-equivalent-modulo-search-variance">4. Parsing</a>
    </ul>
   </aside>
 <script>/* script-dfn-panel */
@@ -1147,12 +1470,13 @@ document.body.addEventListener("click", function(e) {
 </script>
 <script>/* script-var-click-highlighting */
 
-    document.addEventListener("click", e=>{
-        if(e.target.nodeName == "VAR") {
-            highlightSameAlgoVars(e.target);
-        }
-    });
+    "use strict";
     {
+        document.addEventListener("click", e=>{
+            if(e.target.nodeName == "VAR") {
+                highlightSameAlgoVars(e.target);
+            }
+        });
         const indexCounts = new Map();
         const indexNames = new Map();
         function highlightSameAlgoVars(v) {
