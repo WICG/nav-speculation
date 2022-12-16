@@ -66,8 +66,7 @@ For example, you could permit specific same-origin URLs:
         "relative_to": "document"},
        {"href_matches": "/products/*\\?*",
         "relative_to": "document"}
-    ]},
-    "referrer_policy": "strict-origin-when-cross-origin"}
+    ]}}
 ]}
 ```
 
@@ -80,8 +79,7 @@ Or you could expressly block specific problematic URLs:
        {"href_matches": "/*\\?*",
         "relative_to": "document"},
        {"not": {"href_matches": "*://*/logout?*"}}
-    ]},
-    "referrer_policy": "strict-origin-when-cross-origin"}
+    ]}}
 ]}
 ```
 
