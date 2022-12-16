@@ -1,6 +1,8 @@
-# Chrome 2023 Experiment Overview
+# Chrome 2023 Q1 Experiment Overview
 
 In early 2023, Google Chrome will be running an origin trial to allow developers to try out several new enhancements related to speculation rules and prefetching. These enhancements are focused around allowing the browser to automatically assist with prefetching with minimal developer work, and allowing developers to measure when their pages are successfully prefetched.
+
+These enhancements can also be used for prerendering (except `deliveryType`).
 
 ## Opting into the origin trial
 
@@ -29,6 +31,8 @@ Origin-Trial: [third-party token for https://rules-provider.example]
 Speculation-Rules: "https://rules-provider.example/speculationrules.json"
 ```
 
+When you enable the origin trial on your document, you gain access to [HTTP-fetched speculation rules](#http-fetched-speculation-rules), [automatic link finding using document rules](#automatic-link-finding) and [PerformanceResourceTiming deliveryType](#observing-and-measuring-prefetch).
+
 ## HTTP-fetched speculation rules
 
 Some developers prefer to deliver speculation rules out of line. You can do this using the `Speculation-Rules` response header.
@@ -46,27 +50,44 @@ Access-Control-Allow-Origin: *
 
 ## Automatic link finding
 
-With this enhancement, the browser can automatically react find links in your page which the user is likely to click. The developer simply needs to communicate which links are appropriate to prefetch, since some servers might exhibit side effects for `GET` requests.
+With this enhancement, the browser can automatically prefetch (or prerender) links in your page which the user is likely to click. The developer simply needs to communicate which links are appropriate to preload, since some pages might exhibit side effects.
+
+For prefetch, you need to be aware of side effect son the server in response to `GET` requests. For prerender, you should also consider side effects when the page loads and executes script. You can [learn more](https://docs.google.com/document/d/1_9XkDUKMGf2f3tDt1gvQQjfliNLpGyFf36BB1-NUZ98/preview) about making your content safe to preload.
 
 You can do this by using [URL patterns](https://developer.mozilla.org/en-US/docs/Web/API/URL_Pattern_API) and simple boolean expressions using "and", "or", and "not". Support for selecting links using CSS selectors is planned. (Let us know if this would make a difference to you!)
+
+For example, you could permit specific same-origin URLs:
 
 ```json
 {"prefetch": [
    {"source": "document",
     "where": {"or": [
        {"href_matches": "/articles/*\\?*",
-        "relative_to": "document",
-        "referrer_policy": "strict-origin-when-cross-origin"},
+        "relative_to": "document"},
        {"href_matches": "/products/*\\?*",
-        "relative_to": "document",
-        "referrer_policy": "strict-origin-when-cross-origin"}
-    ]}}
+        "relative_to": "document"}
+    ]},
+    "referrer_policy": "strict-origin-when-cross-origin"}
 ]}
 ```
 
-## When automatic prefetching occurs
+Or you could expressly block specific problematic URLs:
 
-In Chrome 110, this experiment will cause Chrome to prefetch up to some small number (currently 5) of URLs when the pointer is down (i.e., mouse down or touch start), which typically occurs between 100 and 200 milliseconds before click, if your speculation rules permit it.
+```json
+{"prefetch": [
+   {"source": "document",
+    "where": {"and": [
+       {"href_matches": "/*\\?*",
+        "relative_to": "document"},
+       {"not": {"href_matches": "*://*/logout?*"}}
+    ]},
+    "referrer_policy": "strict-origin-when-cross-origin"}
+]}
+```
+
+If this pattern syntax is unfamiliar, see the [caveats](#caveats) below, or [read more about URL patterns](https://developer.mozilla.org/en-US/docs/Web/API/URL_Pattern_API).
+
+In Chrome 110, when the user starts to click or touch a link, Chrome will check if your `"document"` rules match its URL. If so, Chrome will start prefetching that URL, typically 100 to 200 milliseconds before the actual `"click"` event happens.
 
 As the experiment continues, we may modify this heuristic or add new ones, for example based on hover dwell time.
 
@@ -92,7 +113,7 @@ Fields of the performance timing entry which occurred before navigation start ar
 
 There are a few potential pitfalls to be aware of:
 
-* URL patterns which don't specify the query string only match links with no query string. Adding `?*` (with the required escaping for URL pattern and JSON syntax) or using `search: '*'` for the long form syntax will allow you to match links with any query parameters.
+* URL patterns which don't specify the query string only match links with no query string. Adding `?*` (with the required escaping for URL pattern and JSON syntax) or using `search: '*'` for the long form syntax will allow you to match links with any query parameters. URL patterns are constructed with a base URL (and this affects default behavior in some cases).
 * If you use a restrictive [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP), you may need to adjust your CSP. For inline speculation rules, you'll need to permit inline scripts generally, use nonces or hashes, or use the experimental `'inline-speculation-rules'` source. For HTTP-fetched rules, the origin your rules is fetched from will need to be included in the allow list.
 * If you specify a non-default [referrer policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy), it will be respected. If it is not [sufficiently strict](https://wicg.github.io/nav-speculation/prefetch.html#list-of-sufficiently-strict-speculative-navigation-referrer-policies), then the prefetch will not occur. You can override the referrer policy which applies to your prefetches using `"referrer_policy"` in your speculation rules, or using the `referrerpolicy` attribute on individual links.
 * If you use HTTP-fetched speculation rules, and especially if fetched cross-origin, note that URLs and URL patterns in your speculation rules are resolved relative to the URL of your speculation rules (after redirects). If you want to specify URLs relative to the document instead, you can specify `"relative_to": "document"` to adjust this behavior. This may be particularly useful if you wish to select some or all same-origin links.
