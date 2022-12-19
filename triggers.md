@@ -283,7 +283,7 @@ There are a number of alternatives to this that were not selected, such as:
 
 ### Using the Document's base URL for external speculation rule sets
 
-For rule sets that are externally fetched, urls in list rules and url patterns in document rules are parsed relative to the external resource's url. To parse these urls/patterns relative to the document's base url, `"relative_to": "document"` could be specified as part of the speculation rule:
+For rule sets that are externally fetched, urls in list rules and url patterns in document rules are parsed relative to the external resource's url. To parse urls in a list rule relative to the document's base url, `"relative_to": "document"` could be specified as part of the speculation rule:
 
 ```json
 {
@@ -291,15 +291,9 @@ For rule sets that are externally fetched, urls in list rules and url patterns i
   "urls": ["/home", "/about"],
   "relative_to": "document"
 }
-
-{
-  "source": "document",
-  "where": {"href_matches": "/home\\?*"},
-  "relative_to": "document"
-}
 ```
 
-For document rules, `"relative_to"` can also be paired directly with `"href_matches"` and the document's base url would only be used for patterns in that particular predicate:
+For document rules, `"relative_to"` can be paired directly with `"href_matches"` and the document's base url would only be used for patterns in that particular predicate:
 
 ```json
 {
