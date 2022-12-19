@@ -500,7 +500,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-12-14">14 December 2022</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2022-12-19">19 December 2022</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -724,7 +724,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>Let <var>ruleSet</var> be <var>scriptElement</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/scripting.html#concept-script-result" id="ref-for-concept-script-result④">result</a>.</p>
        <li data-md>
-        <p>Let <var>newResult</var> be the result of <a data-link-type="dfn" href="#parse-speculation-rules" id="ref-for-parse-speculation-rules">parsing speculation rules</a> given <var>scriptElement</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content">child text content</a> and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url" id="ref-for-document-base-url">document base URL</a>.</p>
+        <p>Let <var>newResult</var> be the result of <a data-link-type="dfn" href="#parse-speculation-rules" id="ref-for-parse-speculation-rules">parsing speculation rules</a> given <var>scriptElement</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-child-text-content" id="ref-for-concept-child-text-content">child text content</a>, <var>document</var>, and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url" id="ref-for-document-base-url">document base URL</a>.</p>
        <li data-md>
         <p>Set <var>scriptElement</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/scripting.html#concept-script-result" id="ref-for-concept-script-result⑤">result</a> to <var>newResult</var>.</p>
        <li data-md>
@@ -751,9 +751,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <dd>
        <ol>
         <li data-md>
-         <p>Let <var>result</var> be the result of <a data-link-type="dfn" href="#parse-speculation-rules" id="ref-for-parse-speculation-rules①">parsing speculation rules</a> given source text and base URL.</p>
+         <p>Let <var>document</var> be <var>el</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document②">node document</a></p>
         <li data-md>
-         <p>If <var>result</var> is not null, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">append</a> it to <var>el</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node-document" id="ref-for-concept-node-document②">node document</a>'s <a data-link-type="dfn" href="#document-list-of-speculation-rule-sets" id="ref-for-document-list-of-speculation-rule-sets②">list of speculation rule sets</a>.</p>
+         <p>Let <var>result</var> be the result of <a data-link-type="dfn" href="#parse-speculation-rules" id="ref-for-parse-speculation-rules①">parsing speculation rules</a> given source text, <var>document</var> and base URL.</p>
+        <li data-md>
+         <p>If <var>result</var> is not null, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append">append</a> it to <var>document</var>’s <a data-link-type="dfn" href="#document-list-of-speculation-rule-sets" id="ref-for-document-list-of-speculation-rule-sets②">list of speculation rule sets</a>.</p>
         <li data-md>
          <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/scripting.html#mark-as-ready" id="ref-for-mark-as-ready">Mark as ready</a> <var>el</var> given <var>result</var>.</p>
         <li data-md>
@@ -862,7 +864,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>Otherwise, let <var>text</var> be the result of <a data-link-type="dfn" href="https://encoding.spec.whatwg.org/#utf-8-decode" id="ref-for-utf-8-decode">UTF-8 decoding</a> <var>body</var>.</p>
        <li data-md>
-        <p>Let <var>ruleSet</var> be the result of <a data-link-type="dfn" href="#parse-speculation-rules" id="ref-for-parse-speculation-rules②">parsing speculation rules</a> given <var>text</var> and <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url">URL</a>.</p>
+        <p>Let <var>ruleSet</var> be the result of <a data-link-type="dfn" href="#parse-speculation-rules" id="ref-for-parse-speculation-rules②">parsing speculation rules</a> given <var>text</var>, <var>document</var> and <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url">URL</a>.</p>
        <li data-md>
         <p>If <var>ruleSet</var> is null, abort these steps.</p>
         <p class="note" role="note">User agents are encouraged to report failures of the previous steps.</p>
@@ -892,7 +894,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p class="note" role="note"> The general principle here is to allow the existence of directives which are not understood, but not to accept into the rule set a rule which the user agent does not fully understand.
   This reduces the risk of unintended activity by user agents which are unaware of most recently added directives which might limit the scope of a rule. </p>
    <div class="algorithm" data-algorithm="parse speculation rules">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-speculation-rules">parse speculation rules</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">string</a> <var>input</var> and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule-set" id="ref-for-speculation-rule-set③">speculation rule set</a> or null. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-speculation-rules">parse speculation rules</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">string</a> <var>input</var>, <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document④">document</a> <var>document</var>, and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule-set" id="ref-for-speculation-rule-set③">speculation rule set</a> or null. 
     <ol>
      <li data-md>
       <p>Let <var>parsed</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#parse-a-json-string-to-an-infra-value" id="ref-for-parse-a-json-string-to-an-infra-value">parsing a JSON string to an Infra value</a> given <var>input</var>.</p>
@@ -906,7 +908,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>If <var>prefetchRule</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map①">map</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue④">continue</a>.</p>
        <li data-md>
-        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule">parsing a speculation rule</a> given <var>prefetchRule</var> and <var>baseURL</var>.</p>
+        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule">parsing a speculation rule</a> given <var>prefetchRule</var>, <var>document</var> and <var>baseURL</var>.</p>
        <li data-md>
         <p>If <var>rule</var> is null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑤">continue</a>.</p>
        <li data-md>
@@ -920,7 +922,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>If <var>prerenderRule</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map②">map</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑦">continue</a>.</p>
        <li data-md>
-        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule①">parsing a speculation rule</a> given <var>prerenderRule</var> and <var>baseURL</var>.</p>
+        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule①">parsing a speculation rule</a> given <var>prerenderRule</var>, <var>document</var>, and <var>baseURL</var>.</p>
        <li data-md>
         <p>If <var>rule</var> is null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑧">continue</a>.</p>
        <li data-md>
@@ -931,14 +933,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <div class="algorithm" data-algorithm="parse a speculation rule">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-speculation-rule">parse a speculation rule</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">map</a> <var>input</var> and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule②">speculation rule</a> or null. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-speculation-rule">parse a speculation rule</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">map</a> <var>input</var>, a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑤">document</a> <var>document</var>, and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule②">speculation rule</a> or null. 
     <ol>
      <li data-md>
-      <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key">key</a> other than "<code>source</code>", "<code>urls</code>", "<code>where</code>", "<code>requires</code>", <code>"target_hint"</code>, and <code>"referrer_policy"</code>, then return null.</p>
+      <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key">key</a> other than "<code>source</code>", "<code>urls</code>", "<code>where</code>", "<code>requires</code>", <code>"target_hint"</code>,<code>"referrer_policy"</code>, and <code>"relative_to"</code>, then return null.</p>
      <li data-md>
       <p>If <var>input</var>["<code>source</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exist</a> or is neither the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑤">string</a> "<code>list</code>" nor the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑥">string</a> "<code>document</code>", then return null.</p>
      <li data-md>
-      <p>Let <var>source</var> by <var>input</var>["<code>source</code>"].</p>
+      <p>Let <var>source</var> be <var>input</var>["<code>source</code>"].</p>
      <li data-md>
       <p>Let <var>urls</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a>.</p>
      <li data-md>
@@ -950,6 +952,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>If <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exists</a>, then return null.</p>
        <li data-md>
         <p>If <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exist</a>, is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>, or has any element which is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑦">string</a>, then return null.</p>
+       <li data-md>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a>:</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>relativeTo</var> be <var>input</var>["<code>relative_to</code>"].</p>
+         <li data-md>
+          <p>If <var>relativeTo</var> is neither the string "<code>ruleset</code>" nor the string "<code>document</code>", then return null.</p>
+         <li data-md>
+          <p>If <var>relativeTo</var> is "<code>document</code>", then set <var>baseURL</var> to the <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url" id="ref-for-document-base-url②">document base URL</a>.</p>
+        </ol>
        <li data-md>
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <var>urlString</var> of <var>input</var>["<code>urls</code>"]:</p>
         <ol>
@@ -967,19 +979,21 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>source</var> is "<code>document</code>":</p>
       <ol>
        <li data-md>
-        <p>If <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a>, then return null.</p>
+        <p>If <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exist</a>, then set <var>predicate</var> to a <a data-link-type="dfn" href="#document-rule-conjunction" id="ref-for-document-rule-conjunction①">document rule conjunction</a> whose <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses">clauses</a> is an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a>.</p>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exists</a>, then return null.</p>
+       <li data-md>
+        <p>If <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exist</a>, then set <var>predicate</var> to a <a data-link-type="dfn" href="#document-rule-conjunction" id="ref-for-document-rule-conjunction①">document rule conjunction</a> whose <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses">clauses</a> is an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a>.</p>
         <p class="note" role="note">Such a predicate will match all links.</p>
        <li data-md>
-        <p>Otherwise, set <var>predicate</var> to the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate">parsing a document rule predicate</a> given <var>input</var>["<code>where</code>"] and <var>baseURL</var>.</p>
+        <p>Otherwise, set <var>predicate</var> to the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate">parsing a document rule predicate</a> given <var>input</var>["<code>where</code>"], <var>document</var> and <var>baseURL</var>.</p>
        <li data-md>
         <p>If <var>predicate</var> is null, then return null.</p>
       </ol>
      <li data-md>
       <p>Let <var>requirements</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set②">ordered set</a>.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>, then return null.</p>
+      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>, then return null.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑤">For each</a> <var>requirement</var> of <var>input</var>["<code>requires</code>"]:</p>
       <ol>
@@ -991,7 +1005,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>targetHint</var> be null.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>target_hint</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a>:</p>
+      <p>If <var>input</var>["<code>target_hint</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>target_hint</code>"] is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword" id="ref-for-valid-navigable-target-name-or-keyword">valid navigable target name or keyword</a>, then return null.</p>
@@ -1001,7 +1015,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>referrerPolicy</var> be the empty string.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>referrer_policy</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>:</p>
+      <p>If <var>input</var>["<code>referrer_policy</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①①">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>referrer_policy</code>"] is not a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a>, then return null.</p>
@@ -1013,12 +1027,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <div class="algorithm" data-algorithm="parse a document rule predicate">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-document-rule-predicate">parse a document rule predicate</dfn> given a value <var>input</var> and <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url④">URL</a> <var>baseURL</var>: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-document-rule-predicate">parse a document rule predicate</dfn> given a value <var>input</var>, a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑥">document</a> <var>document</var> and <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url④">URL</a> <var>baseURL</var>: 
     <ol>
      <li data-md>
       <p>If <var>input</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">map</a>, then return null.</p>
      <li data-md>
-      <p>If <var>input</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">contain</a> exactly one of "<code>and</code>", "<code>or</code>", "<code>not</code>", "<code>href_matches</code>" and "<code>selector_matches</code>", then return null. Otherwise, let <var>predicateType</var> be that key.</p>
+      <p>If <var>input</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①②">contain</a> exactly one of "<code>and</code>", "<code>or</code>", "<code>not</code>", "<code>href_matches</code>" and "<code>selector_matches</code>", then return null. Otherwise, let <var>predicateType</var> be that key.</p>
       <p class="note" role="note">This makes sure it is unambiguous what type of predicate is being used.</p>
      <li data-md>
       <p>If <var>predicateType</var> is "<code>and</code>" or "<code>or</code>", then:</p>
@@ -1036,7 +1050,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑥">For each</a> <var>rawClause</var> of <var>rawClauses</var>:</p>
         <ol>
          <li data-md>
-          <p>Let <var>clause</var> be the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate①">parsing a document rule predicate</a> given <var>rawClause</var> and <var>baseURL</var>.</p>
+          <p>Let <var>clause</var> be the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate①">parsing a document rule predicate</a> given <var>rawClause</var>, <var>document</var> and <var>baseURL</var>.</p>
          <li data-md>
           <p>If <var>clause</var> is null, then return null.</p>
          <li data-md>
@@ -1055,7 +1069,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>Let <var>rawClause</var> be the <var>input</var>[<var>predicateType</var>].</p>
        <li data-md>
-        <p>Let <var>clause</var> be the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate②">parsing a document rule predicate</a> given <var>rawClause</var> and <var>baseURL</var>.</p>
+        <p>Let <var>clause</var> be the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate②">parsing a document rule predicate</a> given <var>rawClause</var>, <var>document</var> and <var>baseURL</var>.</p>
        <li data-md>
         <p>If <var>clause</var> is null, then return null.</p>
        <li data-md>
@@ -1065,7 +1079,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>predicateType</var> is "<code>href_matches</code>":</p>
       <ol>
        <li data-md>
-        <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key③">key</a> other than "<code>href_matches</code>", then return null.</p>
+        <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key③">key</a> other than "<code>href_matches</code>" and "<code>relative_to</code>", then return null.</p>
+       <li data-md>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①③">exists</a>, then:</p>
+        <ol>
+         <li data-md>
+          <p>Let <var>relativeTo</var> be <var>input</var>["<code>relative_to</code>"].</p>
+         <li data-md>
+          <p>If <var>relativeTo</var> is neither the string "<code>ruleset</code>" nor the string "<code>document</code>", then return null.</p>
+         <li data-md>
+          <p>If <var>relativeTo</var> is "<code>document</code>", set <var>baseURL</var> to the <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url" id="ref-for-document-base-url③">document base URL</a>.</p>
+        </ol>
        <li data-md>
         <p>Let <var>rawPatterns</var> be <var>input</var>["<code>href_matches</code>"].</p>
        <li data-md>
@@ -1139,9 +1163,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <h3 class="heading settled" data-level="1.7" id="speculation-rules-processing"><span class="secno">1.7. </span><span class="content">Processing model</span><a class="self-link" href="#speculation-rules-processing"></a></h3>
-   <p>A <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document④">document</a> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-export id="document-list-of-speculation-rule-sets">list of speculation rule sets</dfn>, which is an initially empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⑨">list</a>.</p>
-   <p>A <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑤">document</a> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-export id="document-list-of-pending-external-speculation-rule-resources">list of pending external speculation rule resources</dfn>, which is an initially empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②⓪">list</a> of <a data-link-type="dfn" href="#pending-external-speculation-rule-resource" id="ref-for-pending-external-speculation-rule-resource③">pending external speculation rule resources</a>.</p>
-   <p>Periodically, for any <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑥">document</a> <var>document</var>, the user agent may <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task">queue a global task</a> on the <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#dom-manipulation-task-source" id="ref-for-dom-manipulation-task-source">DOM manipulation task source</a> with <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> to <a data-link-type="dfn" href="#consider-speculation" id="ref-for-consider-speculation④">consider speculation</a> for <var>document</var>.</p>
+   <p>A <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑦">document</a> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-export id="document-list-of-speculation-rule-sets">list of speculation rule sets</dfn>, which is an initially empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⑨">list</a>.</p>
+   <p>A <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑧">document</a> has a <dfn class="dfn-paneled" data-dfn-for="document" data-dfn-type="dfn" data-export id="document-list-of-pending-external-speculation-rule-resources">list of pending external speculation rule resources</dfn>, which is an initially empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②⓪">list</a> of <a data-link-type="dfn" href="#pending-external-speculation-rule-resource" id="ref-for-pending-external-speculation-rule-resource③">pending external speculation rule resources</a>.</p>
+   <p>Periodically, for any <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑨">document</a> <var>document</var>, the user agent may <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task">queue a global task</a> on the <a class="idl-code" data-link-type="interface" href="https://html.spec.whatwg.org/multipage/webappapis.html#dom-manipulation-task-source" id="ref-for-dom-manipulation-task-source">DOM manipulation task source</a> with <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> to <a data-link-type="dfn" href="#consider-speculation" id="ref-for-consider-speculation④">consider speculation</a> for <var>document</var>.</p>
    <p class="note" role="note"> The user agent will likely do when resources are idle and available, or otherwise the circumstances of its previous decision whether to start a speculation could have changed. </p>
    <p class="note" role="note"> The user agent might still <a data-link-type="dfn" href="#consider-speculation" id="ref-for-consider-speculation⑤">consider speculation</a> when there are <a data-link-type="dfn" href="#document-list-of-pending-external-speculation-rule-resources" id="ref-for-document-list-of-pending-external-speculation-rule-resources④">rule sets that have not been loaded yet</a>. </p>
    <p>The user agent may also <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task" id="ref-for-queue-a-global-task①">queue a global task</a> on the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source" id="ref-for-networking-task-source">networking task source</a> with <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a> to <a data-link-type="dfn" href="#process-pending-external-speculation-rule-resources" id="ref-for-process-pending-external-speculation-rule-resources②">process pending external speculation rule resources</a> given <var>document</var>.</p>
@@ -1209,7 +1233,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <div class="algorithm" data-algorithm="consider speculation">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="consider-speculation">consider speculation</dfn> for a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑦">document</a> <var>document</var>: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="consider-speculation">consider speculation</dfn> for a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document①⓪">document</a> <var>document</var>: 
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#await-a-stable-state" id="ref-for-await-a-stable-state">Await a stable state</a>. Steps in the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section" id="ref-for-synchronous-section">synchronous section</a> are marked with ⌛.</p>
@@ -1557,7 +1581,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-concept-document">1.4. The `Speculation-Rules` header</a>
     <li><a href="#ref-for-concept-document①">1.5. External speculation rule sets</a> <a href="#ref-for-concept-document②">(2)</a> <a href="#ref-for-concept-document③">(3)</a>
-    <li><a href="#ref-for-concept-document④">1.7. Processing model</a> <a href="#ref-for-concept-document⑤">(2)</a> <a href="#ref-for-concept-document⑥">(3)</a> <a href="#ref-for-concept-document⑦">(4)</a>
+    <li><a href="#ref-for-concept-document④">1.6. Parsing</a> <a href="#ref-for-concept-document⑤">(2)</a> <a href="#ref-for-concept-document⑥">(3)</a>
+    <li><a href="#ref-for-concept-document⑦">1.7. Processing model</a> <a href="#ref-for-concept-document⑧">(2)</a> <a href="#ref-for-concept-document⑨">(3)</a> <a href="#ref-for-concept-document①⓪">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-node-document">
@@ -1750,6 +1775,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-document-base-url">1.2. The script element</a>
     <li><a href="#ref-for-document-base-url①">1.4. The `Speculation-Rules` header</a>
+    <li><a href="#ref-for-document-base-url②">1.6. Parsing</a> <a href="#ref-for-document-base-url③">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-event-error">
@@ -1986,7 +2012,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-map-exists">
    <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-map-exists">1.6. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a> <a href="#ref-for-map-exists④">(5)</a> <a href="#ref-for-map-exists⑤">(6)</a> <a href="#ref-for-map-exists⑥">(7)</a> <a href="#ref-for-map-exists⑦">(8)</a> <a href="#ref-for-map-exists⑧">(9)</a> <a href="#ref-for-map-exists⑨">(10)</a> <a href="#ref-for-map-exists①⓪">(11)</a>
+    <li><a href="#ref-for-map-exists">1.6. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a> <a href="#ref-for-map-exists④">(5)</a> <a href="#ref-for-map-exists⑤">(6)</a> <a href="#ref-for-map-exists⑥">(7)</a> <a href="#ref-for-map-exists⑦">(8)</a> <a href="#ref-for-map-exists⑧">(9)</a> <a href="#ref-for-map-exists⑨">(10)</a> <a href="#ref-for-map-exists①⓪">(11)</a> <a href="#ref-for-map-exists①①">(12)</a> <a href="#ref-for-map-exists①②">(13)</a> <a href="#ref-for-map-exists①③">(14)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-iteration-continue">
@@ -2001,7 +2027,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-map-exists">
    <a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-map-exists">1.6. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a> <a href="#ref-for-map-exists④">(5)</a> <a href="#ref-for-map-exists⑤">(6)</a> <a href="#ref-for-map-exists⑥">(7)</a> <a href="#ref-for-map-exists⑦">(8)</a> <a href="#ref-for-map-exists⑧">(9)</a> <a href="#ref-for-map-exists⑨">(10)</a> <a href="#ref-for-map-exists①⓪">(11)</a>
+    <li><a href="#ref-for-map-exists">1.6. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a> <a href="#ref-for-map-exists③">(4)</a> <a href="#ref-for-map-exists④">(5)</a> <a href="#ref-for-map-exists⑤">(6)</a> <a href="#ref-for-map-exists⑥">(7)</a> <a href="#ref-for-map-exists⑦">(8)</a> <a href="#ref-for-map-exists⑧">(9)</a> <a href="#ref-for-map-exists⑨">(10)</a> <a href="#ref-for-map-exists①⓪">(11)</a> <a href="#ref-for-map-exists①①">(12)</a> <a href="#ref-for-map-exists①②">(13)</a> <a href="#ref-for-map-exists①③">(14)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-iterate">
