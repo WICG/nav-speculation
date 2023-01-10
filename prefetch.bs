@@ -178,6 +178,7 @@ Each {{Document}} has <dfn export for="Document">prefetch records</dfn>, which i
 A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
+* <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
 * <dfn export for="prefetch record">label</dfn>, a [=string=]
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
@@ -591,9 +592,10 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
     1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] for |document|'s [=Document/browsing context=] given |document|'s [=node navigable=]'s [=navigable/container=].
+    1. Let |referrerPolicy| be |prefetchRecord|'s [=prefetch record/referrer policy=] if |prefetchRecord|'s [=prefetch record/referrer policy=] is not the empty string, and |document|'s [=Document/policy container=]'s [=policy container/referrer policy=] otherwise.
     1. Let |documentState| be a new [=document state=] with
         :  [=document state/request referrer policy=]
-        :: |document|'s [=Document/policy container=]'s [=policy container/referrer policy=]
+        :: |referrerPolicy|
         :  [=document state/initiator origin=]
         :: |document|'s [=Document/origin=]
     1. Let |entry| be a new [=session history entry=] with
