@@ -288,6 +288,38 @@ To allow inline speculation rules, use either the `'inline-speculation-rules'` o
 Using `script-src 'inline-speculation-rules'` or `script-src-elem 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
 The `prefetch-src` directive can be used to restrict which URLs can be prefetched or prerendered.
 
+### Eagerness
+
+If developers like to signify how eager they are and how willing they are to tolerate the overhead of a preloading action, they could add an “eagerness” field to the speculation rules.
+This field accepts one of “conservative”, “moderate”  or "eager" strings as the value, where setting the value to "eager" signifies the maximum level. 
+Meaning it is acceptable to perform the preloading action without any user interactions or based on weaker prediction results.
+This field is applicable to both “prefetch” and “prerender” actions and both “list” or “document” sources. 
+If the “eagerness” field is not explicitly specified, it should be considered as "eager" for “list” source rules and “conservative” for “document” source rules.
+
+```json
+{
+  "prefetch": [
+    {"source": "list",
+     "urls": [
+       "https://en.wikipedia.org/wiki/Lethe",
+       "https://github.com/containers/krunvm"
+     ],
+     "eagerness": "eager"
+    }
+  ],
+  "prerender": [
+    {"source": "document",
+     "where": {"and": [
+       {"href_matches": "/*\\?*"},
+       {"not": {"href_matches": "/logout\\?*"}},
+       {"not": {"selector_matches": ".no-prerender"}}
+     ]},
+     "eagerness": "conservative"
+    }
+  ]
+}
+```
+
 ## Future extensions
 
 ### Scores
