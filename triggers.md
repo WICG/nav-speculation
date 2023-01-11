@@ -290,11 +290,9 @@ The `prefetch-src` directive can be used to restrict which URLs can be prefetche
 
 ### Eagerness
 
-If developers like to signify how eager they are and how willing they are to tolerate the overhead of a preloading action, they could add an “eagerness” field to the speculation rules.
-This field accepts one of “conservative”, “moderate”  or "eager" strings as the value, where setting the value to "eager" signifies the maximum level. 
-Meaning it is acceptable to perform the preloading action without any user interactions or based on weaker prediction results.
-This field is applicable to both “prefetch” and “prerender” actions and both “list” or “document” sources. 
-If the “eagerness” field is not explicitly specified, it should be considered as "eager" for “list” source rules and “conservative” for “document” source rules.
+Developers can control how eagerly the browser preloads links in order to balance the performance advantage against resource overhead.
+This field accepts one of `"conservative"`, `"moderate"`  or `"eager"` strings as the value, and it is applicable to both `"prefetch"` and `"prerender"` actions and both `"list"` or `"document"` sources.
+If not specified, list rules default to `"eager"` and document rules default to `"conservative"`.
 
 ```json
 {
