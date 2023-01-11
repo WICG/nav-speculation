@@ -469,7 +469,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-09">9 January 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-10">10 January 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -601,6 +601,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-url">URL</dfn>, a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URL</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-anonymization-policy">anonymization policy</dfn>, a <a data-link-type="dfn" href="#prefetch-ip-anonymization-policy" id="ref-for-prefetch-ip-anonymization-policy">prefetch IP anonymization policy</a></p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-referrer-policy">referrer policy</dfn>, a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy">referrer policy</a></p>
     <li data-md>
      <p><dfn data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-label">label<a class="self-link" href="#prefetch-record-label"></a></dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">string</a></p>
      <div class="note" role="note">This is intended for use by a specification or <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> feature to identify which prefetches it created. It might also associate other data with this struct.</div>
@@ -1257,11 +1259,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Set <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-sandboxing-flag-set" id="ref-for-prefetch-record-sandboxing-flag-set①">sandboxing flag set</a> to the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#determining-the-creation-sandboxing-flags" id="ref-for-determining-the-creation-sandboxing-flags">determining the creation sandboxing flags</a> for <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#concept-document-bc" id="ref-for-concept-document-bc">browsing context</a> given <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable②">node navigable</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-container" id="ref-for-nav-container①">container</a>.</p>
      <li data-md>
+      <p>Let <var>referrerPolicy</var> be <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy">referrer policy</a> if <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy①">referrer policy</a> is not the empty string, and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container" id="ref-for-concept-document-policy-container">policy container</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#policy-container-referrer-policy" id="ref-for-policy-container-referrer-policy">referrer policy</a> otherwise.</p>
+     <li data-md>
       <p>Let <var>documentState</var> be a new <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-2" id="ref-for-document-state-2②">document state</a> with</p>
       <dl>
        <dt data-md><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-request-referrer-policy" id="ref-for-document-state-request-referrer-policy③">request referrer policy</a>
        <dd data-md>
-        <p><var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/dom.html#concept-document-policy-container" id="ref-for-concept-document-policy-container">policy container</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#policy-container-referrer-policy" id="ref-for-policy-container-referrer-policy">referrer policy</a></p>
+        <p><var>referrerPolicy</var></p>
        <dt data-md><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-initiator-origin" id="ref-for-document-state-initiator-origin④">initiator origin</a>
        <dd data-md>
         <p><var>document</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin③">origin</a></p>
@@ -1499,6 +1503,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><a href="#redirect-chain">definition of</a><span>, in § 1</span>
      <li><a href="#prefetch-record-redirect-chain">dfn for prefetch record</a><span>, in § 1</span>
     </ul>
+   <li><a href="#prefetch-record-referrer-policy">referrer policy</a><span>, in § 1</span>
    <li><a href="#exchange-record-request">request</a><span>, in § 1</span>
    <li><a href="#prefetch-ip-anonymization-policy-requires-anonymity">requires anonymity</a><span>, in § 1</span>
    <li>
@@ -2716,6 +2721,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-navigationtimingtype①">2. HTML Patches</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-referrer-policy">
+   <a href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy">https://w3c.github.io/webappsec-referrer-policy/#referrer-policy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-referrer-policy">1. Concepts</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-name-items">
    <a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-items">https://www.rfc-editor.org/rfc/rfc8941.html#name-items</a><b>Referenced in:</b>
    <ul>
@@ -3012,6 +3023,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-navigationtimingtype">NavigationTimingType</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[REFERRER-POLICY]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-referrer-policy">referrer policy</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[RFC8941]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-name-items">item</span>
@@ -3054,6 +3070,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-navigation-timing-2">[NAVIGATION-TIMING-2]
    <dd>Yoav Weiss; Noam Rosenthal. <a href="https://w3c.github.io/navigation-timing/"><cite>Navigation Timing Level 2</cite></a>. URL: <a href="https://w3c.github.io/navigation-timing/">https://w3c.github.io/navigation-timing/</a>
+   <dt id="biblio-referrer-policy">[REFERRER-POLICY]
+   <dd>Jochen Eisinger; Emily Stark. <a href="https://w3c.github.io/webappsec-referrer-policy/"><cite>Referrer Policy</cite></a>. URL: <a href="https://w3c.github.io/webappsec-referrer-policy/">https://w3c.github.io/webappsec-referrer-policy/</a>
    <dt id="biblio-rfc8941">[RFC8941]
    <dd>M. Nottingham; P-H. Kamp. <a href="https://www.rfc-editor.org/rfc/rfc8941"><cite>Structured Field Values for HTTP</cite></a>. February 2021. Proposed Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc8941">https://www.rfc-editor.org/rfc/rfc8941</a>
    <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
@@ -3153,6 +3171,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#prefetch-record-anonymization-policy">#prefetch-record-anonymization-policy</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-prefetch-record-anonymization-policy">2. HTML Patches</a> <a href="#ref-for-prefetch-record-anonymization-policy①">(2)</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="prefetch-record-referrer-policy">
+   <b><a href="#prefetch-record-referrer-policy">#prefetch-record-referrer-policy</a></b><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-referrer-policy">3. Prefetch algorithms</a> <a href="#ref-for-prefetch-record-referrer-policy①">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prefetch-record-state">

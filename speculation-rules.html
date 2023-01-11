@@ -500,7 +500,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-09">9 January 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-10">10 January 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1335,9 +1335,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>The user agent may run the following steps:</p>
         <ol>
          <li data-md>
-          <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a> whose <a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url③">URL</a>, <a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy①">anonymization policy</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy③">anonymization policy</a>, and <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label②">label</a> is "<code>speculation-rules</code>".</p>
-          <p class="issue" id="issue-ba6ff404"><a class="self-link" href="#issue-ba6ff404"></a>Pass along <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-referrer-policy" id="ref-for-prefetch-candidate-referrer-policy②">referrer policy</a>.</p>
-          <p></p>
+          <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a> whose <a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url③">URL</a>, <a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy①">anonymization policy</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy③">anonymization policy</a>, <a data-link-type="dfn" href="prefetch.html#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy">referrer policy</a> is <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-referrer-policy" id="ref-for-prefetch-candidate-referrer-policy②">referrer policy</a>, and <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label②">label</a> is "<code>speculation-rules</code>".</p>
          <li data-md>
           <p><a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch">Prefetch</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
         </ol>
@@ -2186,6 +2184,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-prerendering-traversable">1.7. Processing model</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-prefetch-record-referrer-policy">
+   <a href="prefetch.html#prefetch-record-referrer-policy">prefetch.html#prefetch-record-referrer-policy</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-prefetch-record-referrer-policy">1.7. Processing model</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-start-referrer-initiated-prerendering">
    <a href="prerendering.html#start-referrer-initiated-prerendering">prerendering.html#start-referrer-initiated-prerendering</a><b>Referenced in:</b>
    <ul>
@@ -2483,6 +2487,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-prefetch-record">prefetch record</span>
      <li><span class="dfn-paneled" id="term-for-document-prefetch-records">prefetch records</span>
      <li><span class="dfn-paneled" id="term-for-prerendering-traversable">prerendering traversable</span>
+     <li><span class="dfn-paneled" id="term-for-prefetch-record-referrer-policy">referrer policy</span>
      <li><span class="dfn-paneled" id="term-for-start-referrer-initiated-prerendering">start referrer-initiated prerendering</span>
      <li><span class="dfn-paneled" id="term-for-prefetch-record-state">state</span>
      <li><span class="dfn-paneled" id="term-for-prefetch-record-url">url</span>
@@ -2575,7 +2580,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <div class="issue">We should also incorporate the case where a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src">src</a></code> attribute is set. <a class="issue-return" href="#issue-bb120c28" title="Jump to section">↵</a></div>
    <div class="issue">We could fire <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-error">error</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-load">load</a></code> events if we wanted to. <a class="issue-return" href="#issue-9cd39e70" title="Jump to section">↵</a></div>
    <div class="issue">It’s likely that we should also handle prerendered and back-forward cached documents. <a class="issue-return" href="#issue-30bcda38" title="Jump to section">↵</a></div>
-   <div class="issue">Pass along <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-referrer-policy">referrer policy</a>. <a class="issue-return" href="#issue-ba6ff404" title="Jump to section">↵</a></div>
    <div class="issue"> We should also cancel speculated prerenders. <a class="issue-return" href="#issue-1cafd308" title="Jump to section">↵</a></div>
    <div class="issue">Expand this section once externally loaded (via "<code>src</code>") speculation rules are specified. <a class="issue-return" href="#issue-8b05d1b2" title="Jump to section">↵</a></div>
    <div class="issue">Expand this section once more detail on prefetch and prerender partitioning mechanism is specified. <a class="issue-return" href="#issue-641b3e22" title="Jump to section">↵</a></div>
