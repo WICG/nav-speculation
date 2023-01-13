@@ -15,15 +15,15 @@
   - [Requirements](#requirements)
   - [Window name targeting hints](#window-name-targeting-hints)
   - [Explicit referrer policy](#explicit-referrer-policy)
-- [Future extensions](#future-extensions)
-  - [Scores](#scores)
   - [Document rules](#document-rules)
     - [Alternatives](#alternatives)
   - [Using the Document's base URL for external speculation rule sets](#using-the-documents-base-url-for-external-speculation-rule-sets)
+  - [Content-Security-Policy](#content-security-policy)
+- [Future extensions](#future-extensions)
+  - [Scores](#scores)
   - [Handler URLs](#handler-urls)
   - [External speculation rules via script elements](#external-speculation-rules-via-script-elements)
   - [More speculation actions](#more-speculation-actions)
-  - [Content-Security-Policy](#content-security-policy)
 - [Proposed processing model](#proposed-processing-model)
 - [Developer tooling](#developer-tooling)
 - [Feature detection](#feature-detection)
@@ -203,29 +203,6 @@ Note that referrer policy matching is not done between the speculative request a
 <a href="https://en.wikipedia.org/wiki/Lethe" referrerpolicy="unsafe-url">
 ```
 
-## Future extensions
-
-### Scores
-
-A rule may include a _score_ between 0.0 and 1.0 (inclusive), defaulting to 0.5, which is a hint about how likely the user is to navigate to the URL. It is expected that UAs will treat this monotonically (i.e., all else equal, increasing the score associated with a rule will make the UA speculate no less than before for that URL, and decreasing the score will not make the UA speculate where it previously did not). However, the user agent may select a link with a lower author-assigned score than another if its heuristics suggest it is a better choice.
-
-A modification of the above example, which works off of the highly-sophisticated model that people tend to click on the top-voted link more often than the later ones, would be:
-
-```json
-{"prefetch": [
-  {"source": "list",
-   "urls": ["/item?id=32480009"],
-   "score": 0.8},
-  {"source": "list",
-   "urls": [
-    "https://support.signal.org/hc/en-us/articles/4850133017242",
-    "https://discord.com/blog/how-discord-supercharges-network-disks-for-extreme-low-latency",
-    "https://github.com/containers/krunvm"
-   ],
-   "score": 0.5}
-]}
-```
-
 ### Document rules
 
 In addition to list rules, we envision _document_ rules, denoted by `"source": "document"`. These allow the user agent to find URLs for speculation from link elements in the page. They may include criteria which restrict which of these links can be used.
@@ -265,13 +242,10 @@ An example of using these would be the following, which marks up as safe-to-prer
        {"href_matches": "/*\\?*"},
        {"not": {"href_matches": "/logout\\?*"}},
        {"not": {"selector_matches": ".no-prerender"}}
-     ]},
-     "score": 0.1}
+     ]}}
   ]
 }
 ```
-
-Note how this example uses a low `"score"` value to indicate that, although these links are _safe_ to prerender, they aren't necessarily that important or likely to be clicked on. In such a case, the browser would likely use its own heuristics, e.g. only performing the prerender on pointer-down. Additionally, the web developer might combine this with a higher-scoring rule that indicates which URLs they suspect are likely, which the browser could prerender ahead of time.
 
 #### Alternatives
 
@@ -283,7 +257,7 @@ There are a number of alternatives to this that were not selected, such as:
 
 ### Using the Document's base URL for external speculation rule sets
 
-For rule sets that are externally fetched, urls in list rules and url patterns in document rules are parsed relative to the external resource's url. To parse these urls/patterns relative to the document's base url, `"relative_to": "document"` could be specified as part of the speculation rule:
+For rule sets that are externally fetched, urls in list rules and url patterns in document rules are parsed relative to the external resource's url. To parse urls in a list rule relative to the document's base url, `"relative_to": "document"` could be specified as part of the speculation rule:
 
 ```json
 {
@@ -291,15 +265,9 @@ For rule sets that are externally fetched, urls in list rules and url patterns i
   "urls": ["/home", "/about"],
   "relative_to": "document"
 }
-
-{
-  "source": "document",
-  "where": {"href_matches": "/home\\?*"},
-  "relative_to": "document"
-}
 ```
 
-For document rules, `"relative_to"` can also be paired directly with `"href_matches"` and the document's base url would only be used for patterns in that particular predicate:
+For document rules, `"relative_to"` can be paired directly with `"href_matches"` and the document's base url would only be used for patterns in that particular predicate:
 
 ```json
 {
@@ -312,6 +280,68 @@ For document rules, `"relative_to"` can also be paired directly with `"href_matc
 ```
 
 (In the above example, only the first `href_matches` would use the document's base URL.)
+
+### Content-Security-Policy
+
+Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` and `script-src-elem` CSP directive.
+To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword.
+Using `script-src 'inline-speculation-rules'` or `script-src-elem 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
+The `prefetch-src` directive can be used to restrict which URLs can be prefetched or prerendered.
+
+### Eagerness
+
+Developers can control how eagerly the browser preloads links in order to balance the performance advantage against resource overhead.
+This field accepts one of `"conservative"`, `"moderate"`  or `"eager"` strings as the value, and it is applicable to both `"prefetch"` and `"prerender"` actions and both `"list"` or `"document"` sources.
+If not specified, list rules default to `"eager"` and document rules default to `"conservative"`.
+
+```json
+{
+  "prefetch": [
+    {"source": "list",
+     "urls": [
+       "https://en.wikipedia.org/wiki/Lethe",
+       "https://github.com/containers/krunvm"
+     ],
+     "eagerness": "eager"
+    }
+  ],
+  "prerender": [
+    {"source": "document",
+     "where": {"and": [
+       {"href_matches": "/*\\?*"},
+       {"not": {"href_matches": "/logout\\?*"}},
+       {"not": {"selector_matches": ".no-prerender"}}
+     ]},
+     "eagerness": "conservative"
+    }
+  ]
+}
+```
+
+## Future extensions
+
+### Scores
+
+A rule may include a _score_ between 0.0 and 1.0 (inclusive), defaulting to 0.5, which is a hint about how likely the user is to navigate to the URL. It is expected that UAs will treat this monotonically (i.e., all else equal, increasing the score associated with a rule will make the UA speculate no less than before for that URL, and decreasing the score will not make the UA speculate where it previously did not). However, the user agent may select a link with a lower author-assigned score than another if its heuristics suggest it is a better choice.
+
+A modification of the above example, which works off of the highly-sophisticated model that people tend to click on the top-voted link more often than the later ones, would be:
+
+```json
+{"prefetch": [
+  {"source": "list",
+   "urls": ["/item?id=32480009"],
+   "score": 0.8},
+  {"source": "list",
+   "urls": [
+    "https://support.signal.org/hc/en-us/articles/4850133017242",
+    "https://discord.com/blog/how-discord-supercharges-network-disks-for-extreme-low-latency",
+    "https://github.com/containers/krunvm"
+   ],
+   "score": 0.5}
+]}
+```
+
+This might instead be more coarsely expressed, e.g., as an enumeration.
 
 ### Handler URLs
 
@@ -340,13 +370,6 @@ As mentioned previously, we have currently only specified `"prefetch"` and `"pre
 Adding `"dns-prefetch"` and `"preconnect"`, to mirror [Resource Hints](https://w3c.github.io/resource-hints/), would be an obvious extension, simply giving a more-ergonomic and capable way of triggering those actions.
 
 Another envisioned speculative action is `"prefetch_with_subresources"`, which prefetches a document and then uses the HTML preload scanner to find other subresources that are worth preloading. Chromium currently does something similar (known as "[NoState Prefetch](https://developer.chrome.com/blog/nostate-prefetch/)") for `<link rel="prerender">`. But, we're not yet sure this feature is pulling its weight, in between the lightweight prefetch and the fully-instant prerender features, so it's not yet clear whether this will be worth integrating.
-
-### Content-Security-Policy
-
-Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` and `script-src-elem` CSP directive.
-To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword.
-Using `script-src 'inline-speculation-rules'` or `script-src-elem 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
-The `prefetch-src` directive can be used to restrict which URLs can be prefetched or prerendered.
 
 ## Proposed processing model
 
