@@ -602,9 +602,6 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :  [=session history entry/document state=]
         :: |documentState|
     1. Let |request| be the result of [=creating a navigation request=] given |entry|, |document|'s [=relevant settings object=], |document|'s [=node navigable=]'s [=navigable/container=], and false.
-    1. Set |request|'s [=request/initiator=] to "`prefetch`".
-
-        <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
     1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
         1. Clear |request|'s [=request/use-URL-credentials flag=].
         1. Set |request|'s [=request/cache mode=] to "`no-store`".

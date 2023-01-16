@@ -616,7 +616,7 @@ This specification causes activity in response to content found in the document,
 
 Such an attacker is otherwise able to inject JavaScript, frames or other elements. The activity possible with this specification (requesting fetches etc) is generally less dangerous than arbitrary script execution, and comparable to other elements. It would, however, make it possible to cause prefetches of links in the document, and the existence of those prefetches could provide a vector for exfiltrating information about those links.
 
-The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `prefetch-src` directive applies to prefetch requests arising from the rules.
+The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `default-src` directive applies to prefetch requests arising from the rules.
 
 The possibility of leaking link URLs via this mechanism is additionally mitigated by the fact that prefetch and prerender to plaintext HTTP (other than to localhost) is not permitted, and so such an on-path attacker could not directly observe preloading request URLs, but would only have access to metadata and traffic analysis. This does not, however, replace standard XSS protections.
 
