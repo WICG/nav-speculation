@@ -51,11 +51,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: links.html
       for: a/rel
         text: noreferrer; url: link-type-noreferrer
-spec: urlpattern; urlPrefix: https://wicg.github.io/urlpattern/
-  type: interface; text: URLPattern; url: urlpattern
-  type: constructor; for: URLPattern; text: "URLPattern(input, baseURL)"; url: dom-urlpattern-urlpattern
-  type: dictionary; text: URLPatternInit
-  type: dfn; text: match; url: match
 spec: RFC8941; urlPrefix: https://httpwg.org/specs/rfc8941.html
   type: dfn
     text: structured header; url: top
@@ -461,8 +456,7 @@ A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn
 
 A [=document=] has a <dfn for=document export>list of pending external speculation rule resources</dfn>, which is an initially empty [=list=] of [=pending external speculation rule resources=].
 
-<!-- TODO(domfarolino): Get rid of the `data-link-type="interface"` once we fix the dfn in HTML. -->
-Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
+Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the [=DOM manipulation task source=] with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
 <p class="note">
   The user agent will likely do when resources are idle and available, or otherwise the circumstances of its previous decision whether to start a speculation could have changed.
