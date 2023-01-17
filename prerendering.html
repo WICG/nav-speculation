@@ -4,7 +4,7 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 26e85e599, updated Thu Dec 8 15:29:31 2022 -0800" name="generator">
+  <meta content="Bikeshed version 2aae228dc, updated Thu Jan 12 16:52:25 2023 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
 <style>
 /* domintro and XXX from https://resources.whatwg.org/standard.css */
@@ -632,7 +632,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-11">11 January 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-17">17 January 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -747,6 +747,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
      <ol class="toc">
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
+      <li><a href="#informative"><span class="secno"></span> <span class="content">Informative References</span></a>
      </ol>
     <li><a href="#idl-index"><span class="secno"></span> <span class="content">IDL Index</span></a>
     <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
@@ -787,7 +788,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-prerendering-traversables-map">prerendering traversables map</dfn>, which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a> of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URLs</a> to <a data-link-type="dfn" href="#prerendering-traversable" id="ref-for-prerendering-traversable">prerendering traversables</a>. This is used to fulfill <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">navigations</a> to a given URL by instead <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate">activating</a> the corresponding prerendering traversable.</p>
    <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-post-prerendering-activation-steps-list">post-prerendering activation steps list</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> where each <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item">item</a> is a series of algorithm steps. For convenience, we define the <dfn class="dfn-paneled" data-dfn-for="platform object" data-dfn-type="dfn" data-noexport id="platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</dfn> for any platform object <var>platformObject</var> as:</p>
    <dl class="switch">
-    <dt data-md>If <var>platformObject</var> is a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node" id="ref-for-concept-node">node</a>
+    <dt data-md>If <var>platformObject</var> is a <a data-link-type="dfn" href="https://www.w3.org/TR/rdf11-mt/#dfn-node" id="ref-for-dfn-node">node</a>
     <dd data-md>
      <ol>
       <li data-md>
@@ -805,7 +806,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <p>Return <var>platformObject</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window" id="ref-for-concept-document-window">associated Document</a>'s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list①">post-prerendering activation steps list</a>.</p>
      </ol>
    </dl>
-   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> has an <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-activation-start-time">activation start time</dfn>, which is initially a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp">DOMHighResTimeStamp</a></code> with a time value of zero.</p>
+   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> has an <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-activation-start-time">activation start time</dfn>, which is initially a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp">DOMHighResTimeStamp</a></code> with a time value of zero.</p>
    <div class="algorithm" data-algorithm="User-agent initiated prerendering">
      <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#user-agent" id="ref-for-user-agent">User agents</a> may choose to initiate prerendering without a referrer document, for example as a result of the address bar or other browser user interactions. 
     <p>To <dfn data-dfn-type="dfn" data-export id="start-user-agent-initiated-prerendering">start user-agent initiated prerendering<a class="self-link" href="#start-user-agent-initiated-prerendering"></a></dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>startingURL</var>:</p>
@@ -928,7 +929,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p class="XXX">We should really propagate the loading mode change here, in the posted task. This is where implementations would update what is returned by <code class="idl"><a data-link-type="idl" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering③">document.prerendering</a></code>. However, right now it lives on the traversable, so it gets magically updated when we move over the session history entry. Probably we need to move it to the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑧">Document</a></code>. </p>
        <li data-md>
-        <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin②">origin</a> is the same as <var>origin</var>, then set <var>doc</var>’s <a data-link-type="dfn" href="#document-activation-start-time" id="ref-for-document-activation-start-time">activation start time</a> to the <a data-link-type="dfn" href="https://www.w3.org/TR/hr-time-2/#dfn-current-high-resolution-time" id="ref-for-dfn-current-high-resolution-time">current high resolution time</a> for <var>doc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>.</p>
+        <p>If <var>doc</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin②">origin</a> is the same as <var>origin</var>, then set <var>doc</var>’s <a data-link-type="dfn" href="#document-activation-start-time" id="ref-for-document-activation-start-time">activation start time</a> to the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-current-high-resolution-time" id="ref-for-dfn-current-high-resolution-time">current high resolution time</a> for <var>doc</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global②">relevant global object</a>.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-event-fire" id="ref-for-concept-event-fire">Fire an event</a> named <code class="idl"><a data-link-type="idl" href="#eventdef-document-prerenderingchange" id="ref-for-eventdef-document-prerenderingchange">prerenderingchange</a></code> at <var>doc</var>.</p>
        <li data-md>
@@ -1110,10 +1111,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p class="XXX">We should probably explicitly update this, similar to how we need to update <code class="idl"><a data-link-type="idl" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering④">document.prerendering</a></code>. </p>
    <h3 class="heading settled" data-level="3.2" id="interaction-with-system-focus"><span class="secno">3.2. </span><span class="content">Interaction with system focus</span><a class="self-link" href="#interaction-with-system-focus"></a></h3>
    <p><a data-link-type="dfn" href="#prerendering-traversable" id="ref-for-prerendering-traversable⑧">Prerendering traversables</a> never have <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#system-focus" id="ref-for-system-focus">system focus</a>.</p>
-   <h3 class="heading settled" data-level="3.3" id="performance-navigation-timing-extension"><span class="secno">3.3. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming">PerformanceNavigationTiming</a></code> interface</span><a class="self-link" href="#performance-navigation-timing-extension"></a></h3>
-   <p>Extend the <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming①">PerformanceNavigationTiming</a></code> interface as follows:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming②"><c- g>PerformanceNavigationTiming</c-></a> {
-    <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp①"><c- n>DOMHighResTimeStamp</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMHighResTimeStamp" href="#dom-performancenavigationtiming-activationstart" id="ref-for-dom-performancenavigationtiming-activationstart"><c- g>activationStart</c-></a>;
+   <h3 class="heading settled" data-level="3.3" id="performance-navigation-timing-extension"><span class="secno">3.3. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming">PerformanceNavigationTiming</a></code> interface</span><a class="self-link" href="#performance-navigation-timing-extension"></a></h3>
+   <p>Extend the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming①">PerformanceNavigationTiming</a></code> interface as follows:</p>
+<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming②"><c- g>PerformanceNavigationTiming</c-></a> {
+    <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp①"><c- n>DOMHighResTimeStamp</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMHighResTimeStamp" href="#dom-performancenavigationtiming-activationstart" id="ref-for-dom-performancenavigationtiming-activationstart"><c- g>activationStart</c-></a>;
 };
 </pre>
    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceNavigationTiming" data-dfn-type="attribute" data-export id="dom-performancenavigationtiming-activationstart"><code>activationStart</code></dfn> getter steps are:</p>
@@ -1258,27 +1259,27 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering④">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/web-messaging.html#dom-broadcastchannel-postmessage" id="ref-for-dom-broadcastchannel-postmessage">postMessage()</a></code>.</p>
    <h4 class="heading settled" data-level="6.3.4" id="patch-geolocation"><span class="secno">6.3.4. </span><span class="content">Geolocation API</span><a class="self-link" href="#patch-geolocation"></a></h4>
    <div class="algorithm" data-algorithm="Geolocation getCurrentPosition patch">
-     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#getcurrentposition-method" id="ref-for-getcurrentposition-method">getCurrentPosition()</a></code> method steps by prepending the following step: 
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#dom-geolocation-getcurrentposition" id="ref-for-dom-geolocation-getcurrentposition">getCurrentPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑤">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑦">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list②">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Geolocation watchPosition patch">
-     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#watchposition-method" id="ref-for-watchposition-method">watchPosition()</a></code> method steps by prepending the following step: 
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#dom-geolocation-watchposition" id="ref-for-dom-geolocation-watchposition">watchPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑥">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑧">prerendering navigable</a>, then:</p>
       <ol>
        <li data-md>
-        <p>Let <var>watchProcessId</var> be a new unique <a data-link-type="dfn" href="https://w3c.github.io/geolocation-api/#dfn-watch-process" id="ref-for-dfn-watch-process">watch process</a> ID, and note it as a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</dfn>.</p>
+        <p>Let <var>watchId</var> be an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long">unsigned long</a></code>, and note it as a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</dfn>.</p>
        <li data-md>
-        <p>Append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list③">post-prerendering activation steps list</a>, with the modification that the <a data-link-type="dfn" href="https://w3c.github.io/geolocation-api/#dfn-watch-process" id="ref-for-dfn-watch-process①">watch process</a> generated must use <var>watchProcessId</var> as its ID, and return <var>watchProcessId</var>.</p>
+        <p>Append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⓪">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list③">post-prerendering activation steps list</a>, with the modification that the <var>watchId</var> generated must use <var>watchId</var> as its ID, and return <var>watchId</var>.</p>
       </ol>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Geolocation clearWatch patch">
-     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#clearwatch-method" id="ref-for-clearwatch-method">clearWatch(watchId)</a></code> method steps by prepending the following step: 
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#dom-geolocation-clearwatch" id="ref-for-dom-geolocation-clearwatch">clearWatch(watchId)</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑦">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑨">prerendering navigable</a>, then:</p>
@@ -1291,7 +1292,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.3.5" id="patch-serial"><span class="secno">6.3.5. </span><span class="content">Web Serial API</span><a class="self-link" href="#patch-serial"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/serial/#dom-serial-requestPort" id="ref-for-dom-serial-requestPort">requestPort()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/serial/#dom-serial-requestport" id="ref-for-dom-serial-requestport">requestPort()</a></code>.</p>
    <p>TODO: the below could probably be done by generalizing <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑥">[DelayWhilePrerendering]</a></code> to use owner document while in dedicated workers.</p>
    <div class="algorithm" data-algorithm="Serial getPorts patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/serial/#dom-serial-getports" id="ref-for-dom-serial-getports">getPorts()</a></code> method steps by inserting the following steps after the initial creation of <var>promise</var>: 
@@ -1326,8 +1327,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h4 class="heading settled" data-level="6.3.7" id="patch-midi"><span class="secno">6.3.7. </span><span class="content">Web MIDI API</span><a class="self-link" href="#patch-midi"></a></h4>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑧">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://webaudio.github.io/web-midi-api/#dom-navigator-requestmidiaccess" id="ref-for-dom-navigator-requestmidiaccess">requestMIDIAccess()</a></code>.</p>
    <h4 class="heading settled" data-level="6.3.8" id="patch-idle-detection"><span class="secno">6.3.8. </span><span class="content">Idle Detection API</span><a class="self-link" href="#patch-idle-detection"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑨">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#api-idledetector-start" id="ref-for-api-idledetector-start">start()</a></code>.</p>
-   <p class="note" role="note">The other interesting method, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission" id="ref-for-api-idledetector-requestpermission">IdleDetector.requestPermission()</a></code>, is gated on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation">transient activation</a>. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering. </p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑨">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#dom-idledetector-start" id="ref-for-dom-idledetector-start">start()</a></code>.</p>
+   <p class="note" role="note">The other interesting method, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#dom-idledetector-requestpermission" id="ref-for-dom-idledetector-requestpermission">IdleDetector.requestPermission()</a></code>, is gated on <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation">transient activation</a>. However, even if permission was previously granted for the origin in question, we delay starting any idle detectors while prerendering. </p>
    <h4 class="heading settled" data-level="6.3.9" id="patch-generic-sensor"><span class="secno">6.3.9. </span><span class="content">Generic Sensor API</span><a class="self-link" href="#patch-generic-sensor"></a></h4>
    <div class="algorithm" data-algorithm="Sensor start patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-start" id="ref-for-dom-sensor-start">start()</a></code> method steps by inserting the following steps after the state is set to "<code>activating</code>": 
@@ -1348,12 +1349,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/battery/#dom-navigator-getbattery" id="ref-for-dom-navigator-getbattery">getBattery()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①①">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑤">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑤">this</a>'s <a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-battery-promise" id="ref-for-dfn-battery-promise">battery promise</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①①">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑤">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑤">this</a>.<a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-batterypromise" id="ref-for-dfn-batterypromise">[[BatteryPromise]]</a>.</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.3.12" id="patch-orientation-lock"><span class="secno">6.3.12. </span><span class="content">Screen Orientation API</span><a class="self-link" href="#patch-orientation-lock"></a></h4>
-   <div class="algorithm" data-algorithm="apply an orientation lock patch">
-     Modify the <a data-link-type="dfn" href="https://w3c.github.io/screen-orientation/#dfn-apply-an-orientation-lock" id="ref-for-dfn-apply-an-orientation-lock">apply an orientation lock</a> algorithm steps by overwriting the first few steps, before it goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel⑥">in parallel</a>, as follows: 
+   <div class="algorithm" data-algorithm="apply orientation lock patch">
+     Modify the <a data-link-type="dfn" href="https://w3c.github.io/screen-orientation/#dfn-apply-orientation-lock" id="ref-for-dfn-apply-orientation-lock">apply orientation lock</a> algorithm steps by overwriting the first few steps, before it goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel⑥">in parallel</a>, as follows: 
     <ol>
      <li data-md>
       <p>Let <var>promise</var> be a new promise.</p>
@@ -1386,13 +1387,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.3.14" id="eme-patch"><span class="secno">6.3.14. </span><span class="content">Encrypted Media Extensions</span><a class="self-link" href="#eme-patch"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①②">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess" id="ref-for-requestMediaKeySystemAccess">requestMediaKeySystemAccess()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①②">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess" id="ref-for-dom-navigator-requestmediakeysystemaccess">requestMediaKeySystemAccess()</a></code>.</p>
    <h4 class="heading settled" data-level="6.3.15" id="autoplay-patch"><span class="secno">6.3.15. </span><span class="content">Media Autoplay</span><a class="self-link" href="#autoplay-patch"></a></h4>
    <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#playing-the-media-resource" id="ref-for-playing-the-media-resource">playing the media resource</a> section to indicate that the the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#current-playback-position" id="ref-for-current-playback-position">current playback position</a> of a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement" id="ref-for-htmlmediaelement">HTMLMediaElement</a></code> must increase monotonically only when the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①④">Document</a></code> is not <code class="idl"><a data-link-type="idl" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering⑤">prerendering</a></code>.</p>
    <h4 class="heading settled" data-level="6.3.16" id="media-capture-patch"><span class="secno">6.3.16. </span><span class="content">Media Capture and Streams</span><a class="self-link" href="#media-capture-patch"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①③">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia" id="ref-for-dom-navigator-getusermedia">getUserMedia()</a></code>, <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-getusermedia" id="ref-for-dom-mediadevices-getusermedia">getUserMedia()</a></code> and <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices" id="ref-for-dom-mediadevices-enumeratedevices">enumerateDevices()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①③">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-navigator-getusermedia" id="ref-for-dom-navigator-getusermedia">getUserMedia()</a></code>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-getusermedia" id="ref-for-dom-mediadevices-getusermedia">getUserMedia()</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-enumeratedevices" id="ref-for-dom-mediadevices-enumeratedevices">enumerateDevices()</a></code>.</p>
    <div class="algorithm" data-algorithm="mediacapture device-change path">
-     Modify the <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices" id="ref-for-dom-mediadevices">MediaDevices</a></code> section by prepending the following step to the <a data-link-type="dfn" href="https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps" id="ref-for-dfn-device-change-notification-steps">device change notification steps</a>: 
+     Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices" id="ref-for-dom-mediadevices">MediaDevices</a></code> section by prepending the following step to the <a data-link-type="dfn" href="https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps" id="ref-for-dfn-device-change-notification-steps">device change notification steps</a>: 
     <ol>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑦">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①⑤">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑨">prerendering navigable</a>, then return.</p>
@@ -1420,7 +1421,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②③">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-speak" id="ref-for-dom-speechsynthesis-speak">speak(utterance)</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-cancel" id="ref-for-dom-speechsynthesis-cancel">cancel()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-pause" id="ref-for-dom-speechsynthesis-pause">pause()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechsynthesis-resume" id="ref-for-dom-speechsynthesis-resume">resume()</a></code>.</p>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②④">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-start" id="ref-for-dom-speechrecognition-start">start()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-stop" id="ref-for-dom-speechrecognition-stop">stop()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/speech-api/#dom-speechrecognition-abort" id="ref-for-dom-speechrecognition-abort">abort()</a></code>.</p>
    <h4 class="heading settled" data-level="6.3.27" id="web-locks-patch"><span class="secno">6.3.27. </span><span class="content">Web Locks API</span><a class="self-link" href="#web-locks-patch"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-request" id="ref-for-dom-lockmanager-request">request()</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-query" id="ref-for-dom-lockmanager-query">query()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-request" id="ref-for-dom-lockmanager-request">request(name, callback)</a></code>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-request-name-options-callback" id="ref-for-dom-lockmanager-request-name-options-callback">request(name, options, callback)</a></code>, and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-query" id="ref-for-dom-lockmanager-query">query()</a></code>.</p>
    <h3 class="heading settled" data-level="6.4" id="implicitly-restricted"><span class="secno">6.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
    <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable④⓪">prerendering navigable</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-window" id="ref-for-nav-window②">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document" id="ref-for-nav-document⑨">active document</a> will never have. These properties include:</p>
    <ul>
@@ -1446,21 +1447,21 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <div class="note" role="note"><a data-link-type="biblio" href="#biblio-keyboard-lock" title="Keyboard Lock">[KEYBOARD-LOCK]</a> allows browsing contexts to enable keyboard lock easily but it has no effect except in fullscreen, which requires a user gesture. If that changes then this needs to be revisited.</div>
      </ul>
     <li data-md>
-     <p><code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/payment-request/#dom-paymentrequest-show" id="ref-for-dom-paymentrequest-show">paymentRequest.show()</a></code> <a data-link-type="biblio" href="#biblio-payment-request" title="Payment Request API">[PAYMENT-REQUEST]</a></p>
+     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/payment-request/#dom-paymentrequest-show" id="ref-for-dom-paymentrequest-show">paymentRequest.show()</a></code> <a data-link-type="biblio" href="#biblio-payment-request" title="Payment Request API">[PAYMENT-REQUEST]</a></p>
     <li data-md>
      <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/presentation-api/#dom-presentationrequest-start" id="ref-for-dom-presentationrequest-start">presentationRequest.start()</a></code> <a data-link-type="biblio" href="#biblio-presentation-api" title="Presentation API">[PRESENTATION-API]</a></p>
     <li data-md>
      <p><code class="idl"><a data-link-type="idl" href="https://wicg.github.io/file-system-access/#dom-window-showopenfilepicker" id="ref-for-dom-window-showopenfilepicker">showOpenFilePicker()</a></code>, <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/file-system-access/#dom-window-showsavefilepicker" id="ref-for-dom-window-showsavefilepicker">showSaveFilePicker()</a></code>, and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker" id="ref-for-dom-window-showdirectorypicker">showDirectoryPicker()</a></code> <a data-link-type="biblio" href="#biblio-file-system-access" title="File System Access">[FILE-SYSTEM-ACCESS]</a></p>
     <li data-md>
-     <p><code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission" id="ref-for-api-idledetector-requestpermission①">IdleDetector.requestPermission()</a></code> <a data-link-type="biblio" href="#biblio-idle-detection" title="Idle Detection API">[IDLE-DETECTION]</a></p>
+     <p><code class="idl"><a data-link-type="idl" href="https://wicg.github.io/idle-detection/#dom-idledetector-requestpermission" id="ref-for-dom-idledetector-requestpermission①">IdleDetector.requestPermission()</a></code> <a data-link-type="biblio" href="#biblio-idle-detection" title="Idle Detection API">[IDLE-DETECTION]</a></p>
     <li data-md>
      <p>Firing of clipboard events. <a data-link-type="biblio" href="#biblio-clipboard-apis" title="Clipboard API and events">[CLIPBOARD-APIS]</a></p>
     <li data-md>
-     <p><code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/web-share/#dom-navigator-share" id="ref-for-dom-navigator-share">navigator.share()</a></code> <a data-link-type="biblio" href="#biblio-web-share" title="Web Share API">[WEB-SHARE]</a></p>
+     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-share/#dom-navigator-share" id="ref-for-dom-navigator-share">navigator.share()</a></code> <a data-link-type="biblio" href="#biblio-web-share" title="Web Share API">[WEB-SHARE]</a></p>
     <li data-md>
-     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/pointerlock/#dfn-requestpointerlock-pointerlockoptions-options" id="ref-for-dfn-requestpointerlock-pointerlockoptions-options">element.requestPointerLock()</a></code> <a data-link-type="biblio" href="#biblio-pointerlock" title="Pointer Lock">[POINTERLOCK]</a></p>
+     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/pointerlock/#dom-element-requestpointerlock" id="ref-for-dom-element-requestpointerlock">element.requestPointerLock()</a></code> <a data-link-type="biblio" href="#biblio-pointerlock" title="Pointer Lock">[POINTERLOCK]</a></p>
     <li data-md>
-     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-screen-share#dom-mediadevices-getdisplaymedia" id="ref-for-dom-mediadevices-getdisplaymedia">getDisplayMedia()</a></code> <a data-link-type="biblio" href="#biblio-screen-capture" title="Screen Capture">[SCREEN-CAPTURE]</a></p>
+     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-screen-share/#dom-mediadevices-getdisplaymedia" id="ref-for-dom-mediadevices-getdisplaymedia">getDisplayMedia()</a></code> <a data-link-type="biblio" href="#biblio-screen-capture" title="Screen Capture">[SCREEN-CAPTURE]</a></p>
    </ul>
    <p>APIs that require <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#system-focus" id="ref-for-system-focus②">system focus</a>:</p>
    <ul>
@@ -1470,12 +1471,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>APIs that require the "<code>visible</code>" <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#visibility-state" id="ref-for-visibility-state②">visibility state</a>:</p>
    <ul>
     <li data-md>
-     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-wake-lock/#the-request-method" id="ref-for-the-request-method">navigator.wakeLock.request()</a></code> <a data-link-type="biblio" href="#biblio-screen-wake-lock" title="Screen Wake Lock API">[SCREEN-WAKE-LOCK]</a></p>
+     <p><code class="idl"><a data-link-type="idl" href="https://w3c.github.io/screen-wake-lock/#dom-wakelock-request" id="ref-for-dom-wakelock-request">navigator.wakeLock.request()</a></code> <a data-link-type="biblio" href="#biblio-screen-wake-lock" title="Screen Wake Lock API">[SCREEN-WAKE-LOCK]</a></p>
    </ul>
    <p>More complicated cases:</p>
    <ul>
     <li data-md>
-     <p><a data-link-type="dfn" href="https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm" id="ref-for-request-picture-in-picture-algorithm">Request Picture-in-Picture</a> as invoked due to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-autopictureinpicture" id="ref-for-dom-htmlvideoelement-autopictureinpicture">video.requestPictureInPicture()</a></code> or <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture" id="ref-for-dom-htmlvideoelement-requestpictureinpicture">autoPictureInPicture</a></code> requires either <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation③">transient activation</a>, or the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#visibility-state" id="ref-for-visibility-state③">visibility state</a> to have been "<code>visible</code>". <a data-link-type="biblio" href="#biblio-picture-in-picture" title="Picture-in-Picture">[PICTURE-IN-PICTURE]</a></p>
+     <p><a data-link-type="dfn" href="https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm" id="ref-for-request-picture-in-picture-algorithm">Request Picture-in-Picture</a> as invoked due to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture" id="ref-for-dom-htmlvideoelement-requestpictureinpicture">video.requestPictureInPicture()</a></code> requires either <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation③">transient activation</a>, or the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#visibility-state" id="ref-for-visibility-state③">visibility state</a> to have been "<code>visible</code>". <a data-link-type="biblio" href="#biblio-picture-in-picture" title="Picture-in-Picture">[PICTURE-IN-PICTURE]</a></p>
    </ul>
   </main>
 <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
@@ -1524,10 +1525,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-backgroundfetchmanager-fetch">6.3.19. Background Fetch</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-battery-promise">
-   <a href="https://w3c.github.io/battery/#dfn-battery-promise">https://w3c.github.io/battery/#dfn-battery-promise</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dfn-batterypromise">
+   <a href="https://w3c.github.io/battery/#dfn-batterypromise">https://w3c.github.io/battery/#dfn-batterypromise</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-battery-promise">6.3.11. Battery Status API</a>
+    <li><a href="#ref-for-dfn-batterypromise">6.3.11. Battery Status API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-getbattery">
@@ -1646,12 +1647,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-node-document">1.2. Prerendering navigables</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-node">
-   <a href="https://dom.spec.whatwg.org/#concept-node">https://dom.spec.whatwg.org/#concept-node</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-node">1.2. Prerendering navigables</a>
-   </ul>
-  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-document-origin">
    <a href="https://dom.spec.whatwg.org/#concept-document-origin">https://dom.spec.whatwg.org/#concept-document-origin</a><b>Referenced in:</b>
    <ul>
@@ -1664,10 +1659,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-current-realm">6.3.1. The [DelayWhilePrerendering] extended attribute</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-requestMediaKeySystemAccess">
-   <a href="https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess">https://w3c.github.io/encrypted-media/#requestMediaKeySystemAccess</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-navigator-requestmediakeysystemaccess">
+   <a href="https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess">https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-requestMediaKeySystemAccess">6.3.14. Encrypted Media Extensions</a>
+    <li><a href="#ref-for-dom-navigator-requestmediakeysystemaccess">6.3.14. Encrypted Media Extensions</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-current-url">
@@ -1803,51 +1798,33 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-sensor-stop">6.3.9. Generic Sensor API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-clearwatch-method">
-   <a href="https://w3c.github.io/geolocation-api/#clearwatch-method">https://w3c.github.io/geolocation-api/#clearwatch-method</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-geolocation-clearwatch">
+   <a href="https://w3c.github.io/geolocation-api/#dom-geolocation-clearwatch">https://w3c.github.io/geolocation-api/#dom-geolocation-clearwatch</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-clearwatch-method">6.3.4. Geolocation API</a>
+    <li><a href="#ref-for-dom-geolocation-clearwatch">6.3.4. Geolocation API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-getcurrentposition-method">
-   <a href="https://w3c.github.io/geolocation-api/#getcurrentposition-method">https://w3c.github.io/geolocation-api/#getcurrentposition-method</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-geolocation-getcurrentposition">
+   <a href="https://w3c.github.io/geolocation-api/#dom-geolocation-getcurrentposition">https://w3c.github.io/geolocation-api/#dom-geolocation-getcurrentposition</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-getcurrentposition-method">6.3.4. Geolocation API</a>
+    <li><a href="#ref-for-dom-geolocation-getcurrentposition">6.3.4. Geolocation API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-watch-process">
-   <a href="https://w3c.github.io/geolocation-api/#dfn-watch-process">https://w3c.github.io/geolocation-api/#dfn-watch-process</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-geolocation-watchposition">
+   <a href="https://w3c.github.io/geolocation-api/#dom-geolocation-watchposition">https://w3c.github.io/geolocation-api/#dom-geolocation-watchposition</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-watch-process">6.3.4. Geolocation API</a> <a href="#ref-for-dfn-watch-process①">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-watchposition-method">
-   <a href="https://w3c.github.io/geolocation-api/#watchposition-method">https://w3c.github.io/geolocation-api/#watchposition-method</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-watchposition-method">6.3.4. Geolocation API</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-hid-getdevices">
-   <a href="https://wicg.github.io/webhid/#dom-hid-getdevices">https://wicg.github.io/webhid/#dom-hid-getdevices</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-hid-getdevices">6.3.23. WebHID API</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-hid-requestdevice">
-   <a href="https://wicg.github.io/webhid/#dom-hid-requestdevice">https://wicg.github.io/webhid/#dom-hid-requestdevice</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-hid-requestdevice">6.3.23. WebHID API</a>
+    <li><a href="#ref-for-dom-geolocation-watchposition">6.3.4. Geolocation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-domhighrestimestamp">
-   <a href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp">https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">https://w3c.github.io/hr-time/#dom-domhighrestimestamp</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-domhighrestimestamp">1.2. Prerendering navigables</a>
     <li><a href="#ref-for-dom-domhighrestimestamp①">3.3. Extensions to the PerformanceNavigationTiming interface</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-current-high-resolution-time">
-   <a href="https://www.w3.org/TR/hr-time-2/#dfn-current-high-resolution-time">https://www.w3.org/TR/hr-time-2/#dfn-current-high-resolution-time</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/hr-time/#dfn-current-high-resolution-time">https://w3c.github.io/hr-time/#dfn-current-high-resolution-time</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-current-high-resolution-time">1.2. Prerendering navigables</a>
    </ul>
@@ -2405,17 +2382,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-visibility-state①">6.4. Implicitly restricted APIs</a> <a href="#ref-for-visibility-state②">(2)</a> <a href="#ref-for-visibility-state③">(3)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-api-idledetector-requestpermission">
-   <a href="https://wicg.github.io/idle-detection/#api-idledetector-requestpermission">https://wicg.github.io/idle-detection/#api-idledetector-requestpermission</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-idledetector-requestpermission">
+   <a href="https://wicg.github.io/idle-detection/#dom-idledetector-requestpermission">https://wicg.github.io/idle-detection/#dom-idledetector-requestpermission</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-api-idledetector-requestpermission">6.3.8. Idle Detection API</a>
-    <li><a href="#ref-for-api-idledetector-requestpermission①">6.4. Implicitly restricted APIs</a>
+    <li><a href="#ref-for-dom-idledetector-requestpermission">6.3.8. Idle Detection API</a>
+    <li><a href="#ref-for-dom-idledetector-requestpermission①">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-api-idledetector-start">
-   <a href="https://wicg.github.io/idle-detection/#api-idledetector-start">https://wicg.github.io/idle-detection/#api-idledetector-start</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-idledetector-start">
+   <a href="https://wicg.github.io/idle-detection/#dom-idledetector-start">https://wicg.github.io/idle-detection/#dom-idledetector-start</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-api-idledetector-start">6.3.8. Idle Detection API</a>
+    <li><a href="#ref-for-dom-idledetector-start">6.3.8. Idle Detection API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-assert">
@@ -2453,6 +2430,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://infra.spec.whatwg.org/#map-iterate">https://infra.spec.whatwg.org/#map-iterate</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-map-iterate">1.2. Prerendering navigables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-implementation-defined">
+   <a href="https://infra.spec.whatwg.org/#implementation-defined">https://infra.spec.whatwg.org/#implementation-defined</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-implementation-defined">6.3.4. Geolocation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-item">
@@ -2526,25 +2509,25 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-mediadevices">
-   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices">https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/mediacapture-main/#dom-mediadevices">https://w3c.github.io/mediacapture-main/#dom-mediadevices</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-mediadevices">6.3.16. Media Capture and Streams</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-mediadevices-enumeratedevices">
-   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices">https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-enumeratedevices</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-enumeratedevices">https://w3c.github.io/mediacapture-main/#dom-mediadevices-enumeratedevices</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-mediadevices-enumeratedevices">6.3.16. Media Capture and Streams</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-mediadevices-getusermedia">
-   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-getusermedia">https://www.w3.org/TR/mediacapture-streams/#dom-mediadevices-getusermedia</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-getusermedia">https://w3c.github.io/mediacapture-main/#dom-mediadevices-getusermedia</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-mediadevices-getusermedia">6.3.16. Media Capture and Streams</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-getusermedia">
-   <a href="https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia">https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/mediacapture-main/#dom-navigator-getusermedia">https://w3c.github.io/mediacapture-main/#dom-navigator-getusermedia</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-navigator-getusermedia">6.3.16. Media Capture and Streams</a>
    </ul>
@@ -2556,7 +2539,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-performancenavigationtiming">
-   <a href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming">https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming">https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-performancenavigationtiming">3.3. Extensions to the PerformanceNavigationTiming interface</a> <a href="#ref-for-dom-performancenavigationtiming①">(2)</a> <a href="#ref-for-dom-performancenavigationtiming②">(3)</a>
    </ul>
@@ -2586,15 +2569,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-paymentrequest-show">
-   <a href="https://www.w3.org/TR/payment-request/#dom-paymentrequest-show">https://www.w3.org/TR/payment-request/#dom-paymentrequest-show</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/payment-request/#dom-paymentrequest-show">https://w3c.github.io/payment-request/#dom-paymentrequest-show</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-paymentrequest-show">6.4. Implicitly restricted APIs</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-htmlvideoelement-requestpictureinpicture">
-   <a href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture">https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-dom-htmlvideoelement-requestpictureinpicture">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-request-picture-in-picture-algorithm">
@@ -2603,16 +2580,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-request-picture-in-picture-algorithm">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-htmlvideoelement-autopictureinpicture">
-   <a href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-autopictureinpicture">https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-autopictureinpicture</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-htmlvideoelement-requestpictureinpicture">
+   <a href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture">https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-htmlvideoelement-autopictureinpicture">6.4. Implicitly restricted APIs</a>
+    <li><a href="#ref-for-dom-htmlvideoelement-requestpictureinpicture">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-requestpointerlock-pointerlockoptions-options">
-   <a href="https://w3c.github.io/pointerlock/#dfn-requestpointerlock-pointerlockoptions-options">https://w3c.github.io/pointerlock/#dfn-requestpointerlock-pointerlockoptions-options</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-element-requestpointerlock">
+   <a href="https://w3c.github.io/pointerlock/#dom-element-requestpointerlock">https://w3c.github.io/pointerlock/#dom-element-requestpointerlock</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-requestpointerlock-pointerlockoptions-options">6.4. Implicitly restricted APIs</a>
+    <li><a href="#ref-for-dom-element-requestpointerlock">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-presentationrequest-start">
@@ -2625,6 +2602,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://w3c.github.io/push-api/#dom-pushmanager-subscribe">https://w3c.github.io/push-api/#dom-pushmanager-subscribe</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-pushmanager-subscribe">6.3.18. Push API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dfn-node">
+   <a href="https://www.w3.org/TR/rdf11-mt/#dfn-node">https://www.w3.org/TR/rdf11-mt/#dfn-node</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dfn-node">1.2. Prerendering navigables</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-referrer-policy">
@@ -2652,15 +2635,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-mediadevices-getdisplaymedia">
-   <a href="https://w3c.github.io/mediacapture-screen-share#dom-mediadevices-getdisplaymedia">https://w3c.github.io/mediacapture-screen-share#dom-mediadevices-getdisplaymedia</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/mediacapture-screen-share/#dom-mediadevices-getdisplaymedia">https://w3c.github.io/mediacapture-screen-share/#dom-mediadevices-getdisplaymedia</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-mediadevices-getdisplaymedia">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dfn-apply-an-orientation-lock">
-   <a href="https://w3c.github.io/screen-orientation/#dfn-apply-an-orientation-lock">https://w3c.github.io/screen-orientation/#dfn-apply-an-orientation-lock</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dfn-apply-orientation-lock">
+   <a href="https://w3c.github.io/screen-orientation/#dfn-apply-orientation-lock">https://w3c.github.io/screen-orientation/#dfn-apply-orientation-lock</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dfn-apply-an-orientation-lock">6.3.12. Screen Orientation API</a>
+    <li><a href="#ref-for-dfn-apply-orientation-lock">6.3.12. Screen Orientation API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-screenorientation-lock">
@@ -2681,10 +2664,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-screenorientation-unlock">6.3.12. Screen Orientation API</a> <a href="#ref-for-dom-screenorientation-unlock①">(2)</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-the-request-method">
-   <a href="https://w3c.github.io/screen-wake-lock/#the-request-method">https://w3c.github.io/screen-wake-lock/#the-request-method</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-wakelock-request">
+   <a href="https://w3c.github.io/screen-wake-lock/#dom-wakelock-request">https://w3c.github.io/screen-wake-lock/#dom-wakelock-request</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-the-request-method">6.4. Implicitly restricted APIs</a>
+    <li><a href="#ref-for-dom-wakelock-request">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-serial-getports">
@@ -2693,10 +2676,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-serial-getports">6.3.5. Web Serial API</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-dom-serial-requestPort">
-   <a href="https://wicg.github.io/serial/#dom-serial-requestPort">https://wicg.github.io/serial/#dom-serial-requestPort</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-dom-serial-requestport">
+   <a href="https://wicg.github.io/serial/#dom-serial-requestport">https://wicg.github.io/serial/#dom-serial-requestport</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-serial-requestPort">6.3.5. Web Serial API</a>
+    <li><a href="#ref-for-dom-serial-requestport">6.3.5. Web Serial API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-serviceworker-postmessage-message-options">
@@ -2823,6 +2806,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-dom-lockmanager-request">6.3.27. Web Locks API</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-lockmanager-request-name-options-callback">
+   <a href="https://w3c.github.io/web-locks/#dom-lockmanager-request-name-options-callback">https://w3c.github.io/web-locks/#dom-lockmanager-request-name-options-callback</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-lockmanager-request-name-options-callback">6.3.27. Web Locks API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-ndefreader-scan">
    <a href="https://w3c.github.io/web-nfc/#dom-ndefreader-scan">https://w3c.github.io/web-nfc/#dom-ndefreader-scan</a><b>Referenced in:</b>
    <ul>
@@ -2836,7 +2825,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-share">
-   <a href="https://www.w3.org/TR/web-share/#dom-navigator-share">https://www.w3.org/TR/web-share/#dom-navigator-share</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/web-share/#dom-navigator-share">https://w3c.github.io/web-share/#dom-navigator-share</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-navigator-share">6.4. Implicitly restricted APIs</a>
    </ul>
@@ -2851,6 +2840,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://w3c.github.io/webdriver-bidi/#webdriver-bidi-navigation-started">https://w3c.github.io/webdriver-bidi/#webdriver-bidi-navigation-started</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-webdriver-bidi-navigation-started">1.2. Prerendering navigables</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-hid-getdevices">
+   <a href="https://wicg.github.io/webhid/#dom-hid-getdevices">https://wicg.github.io/webhid/#dom-hid-getdevices</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-hid-getdevices">6.3.23. WebHID API</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-dom-hid-requestdevice">
+   <a href="https://wicg.github.io/webhid/#dom-hid-requestdevice">https://wicg.github.io/webhid/#dom-hid-requestdevice</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-dom-hid-requestdevice">6.3.23. WebHID API</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-idl-DOMException">
@@ -2962,6 +2963,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-idl-undefined">6.3.1. The [DelayWhilePrerendering] extended attribute</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-idl-unsigned-long">
+   <a href="https://webidl.spec.whatwg.org/#idl-unsigned-long">https://webidl.spec.whatwg.org/#idl-unsigned-long</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-idl-unsigned-long">6.3.4. Geolocation API</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigator-requestmidiaccess">
    <a href="https://webaudio.github.io/web-midi-api/#dom-navigator-requestmidiaccess">https://webaudio.github.io/web-midi-api/#dom-navigator-requestmidiaccess</a><b>Referenced in:</b>
    <ul>
@@ -2994,14 +3001,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-mediadevices-selectaudiooutput">selectAudioOutput()</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[BACKGROUD-FETCH]</a> defines the following terms:
+    <a data-link-type="biblio">[BACKGROUND-FETCH]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-backgroundfetchmanager-fetch">fetch()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-backgroundfetchmanager-fetch">fetch(id, requests)</span>
     </ul>
    <li>
     <a data-link-type="biblio">[BATTERY]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dfn-battery-promise">battery promise</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-batterypromise">[[batterypromise]]</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[BATTERY-STATUS]</a> defines the following terms:
+    <ul>
      <li><span class="dfn-paneled" id="term-for-dom-navigator-getbattery">getBattery()</span>
     </ul>
    <li>
@@ -3019,8 +3030,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-clipboard-read">read()</span>
      <li><span class="dfn-paneled" id="term-for-dom-clipboard-readtext">readText()</span>
-     <li><span class="dfn-paneled" id="term-for-dom-clipboard-write">write()</span>
-     <li><span class="dfn-paneled" id="term-for-dom-clipboard-writetext">writeText()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-clipboard-write">write(data)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-clipboard-writetext">writeText(data)</span>
     </ul>
    <li>
     <a data-link-type="biblio">[CREDENTIAL-MANAGEMENT-1]</a> defines the following terms:
@@ -3036,7 +3047,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-concept-document">document</span>
      <li><span class="dfn-paneled" id="term-for-concept-event-fire">fire an event</span>
      <li><span class="dfn-paneled" id="term-for-concept-node-document">node document</span>
-     <li><span class="dfn-paneled" id="term-for-concept-node">nodes</span>
      <li><span class="dfn-paneled" id="term-for-concept-document-origin">origin</span>
     </ul>
    <li>
@@ -3047,7 +3057,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[ENCRYPTED-MEDIA]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-requestMediaKeySystemAccess">requestMediaKeySystemAccess(keySystem, supportedConfigurations)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-navigator-requestmediakeysystemaccess">requestMediaKeySystemAccess()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
@@ -3094,19 +3104,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[GEOLOCATION]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-clearwatch-method">clearWatch(watchId)</span>
-     <li><span class="dfn-paneled" id="term-for-getcurrentposition-method">getCurrentPosition(successCallback, errorCallback, options)</span>
-     <li><span class="dfn-paneled" id="term-for-dfn-watch-process">watch process</span>
-     <li><span class="dfn-paneled" id="term-for-watchposition-method">watchPosition(successCallback, errorCallback, options)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-geolocation-clearwatch">clearWatch(watchId)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-geolocation-getcurrentposition">getCurrentPosition()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-geolocation-watchposition">watchPosition()</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[HID]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-hid-getdevices">getDevices()</span>
-     <li><span class="dfn-paneled" id="term-for-dom-hid-requestdevice">requestDevice()</span>
-    </ul>
-   <li>
-    <a data-link-type="biblio">[HR-TIME-2]</a> defines the following terms:
+    <a data-link-type="biblio">[HR-TIME-3]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-domhighrestimestamp">DOMHighResTimeStamp</span>
      <li><span class="dfn-paneled" id="term-for-dfn-current-high-resolution-time">current high resolution time</span>
@@ -3201,8 +3204,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[IDLE-DETECTION]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-api-idledetector-requestpermission">requestPermission()</span>
-     <li><span class="dfn-paneled" id="term-for-api-idledetector-start">start()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idledetector-requestpermission">requestPermission()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-idledetector-start">start()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
@@ -3213,6 +3216,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-map-exists">exist</span>
      <li><span class="dfn-paneled" id="term-for-list-iterate">for each <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="term-for-map-iterate">for each <small>(for map)</small></span>
+     <li><span class="dfn-paneled" id="term-for-implementation-defined">implementation-defined</span>
      <li><span class="dfn-paneled" id="term-for-list-item">item</span>
      <li><span class="dfn-paneled" id="term-for-list">list</span>
      <li><span class="dfn-paneled" id="term-for-ordered-map">ordered map</span>
@@ -3260,21 +3264,20 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-notification-requestpermission">requestPermission()</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[PAYMENT-REQUEST]</a> defines the following terms:
+    <a data-link-type="biblio">[PAYMENT-REQUEST-1.1]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-paymentrequest-show">show()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[PICTURE-IN-PICTURE]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dom-htmlvideoelement-requestpictureinpicture">autoPictureInPicture</span>
      <li><span class="dfn-paneled" id="term-for-request-picture-in-picture-algorithm">request picture-in-picture</span>
-     <li><span class="dfn-paneled" id="term-for-dom-htmlvideoelement-autopictureinpicture">requestPictureInPicture()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-htmlvideoelement-requestpictureinpicture">requestPictureInPicture()</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[POINTERLOCK]</a> defines the following terms:
+    <a data-link-type="biblio">[POINTERLOCK-2]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dfn-requestpointerlock-pointerlockoptions-options">requestPointerLock(options)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-element-requestpointerlock">requestPointerLock()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[PRESENTATION-API]</a> defines the following terms:
@@ -3285,6 +3288,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[PUSH-API]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-pushmanager-subscribe">subscribe()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[RDF11-MT]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dfn-node">node</span>
     </ul>
    <li>
     <a data-link-type="biblio">[REFERRER-POLICY]</a> defines the following terms:
@@ -3306,7 +3314,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[SCREEN-ORIENTATION]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-dfn-apply-an-orientation-lock">apply an orientation lock</span>
+     <li><span class="dfn-paneled" id="term-for-dfn-apply-orientation-lock">apply orientation lock</span>
      <li><span class="dfn-paneled" id="term-for-dom-screenorientation-lock">lock()</span>
      <li><span class="dfn-paneled" id="term-for-dfn-pre-lock-conditions">pre-lock conditions</span>
      <li><span class="dfn-paneled" id="term-for-dom-screenorientation-unlock">unlock()</span>
@@ -3314,13 +3322,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[SCREEN-WAKE-LOCK]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="term-for-the-request-method">request()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-wakelock-request">request()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[SERIAL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-serial-getports">getPorts()</span>
-     <li><span class="dfn-paneled" id="term-for-dom-serial-requestPort">requestPort(options)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-serial-requestport">requestPort()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[SERVICE-WORKERS]</a> defines the following terms:
@@ -3364,7 +3372,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[WEB-LOCKS]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-lockmanager-query">query()</span>
-     <li><span class="dfn-paneled" id="term-for-dom-lockmanager-request">request()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-lockmanager-request">request(name, callback)</span>
+     <li><span class="dfn-paneled" id="term-for-dom-lockmanager-request-name-options-callback">request(name, options, callback)</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEB-NFC]</a> defines the following terms:
@@ -3383,9 +3392,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dfn-generate-a-random-uuid">generate a random uuid</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[WEBDRIVER-IDI]</a> defines the following terms:
+    <a data-link-type="biblio">[WEBDRIVER-BIDI]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-webdriver-bidi-navigation-started">webdriver bidi navigation started</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[WEBHID]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="term-for-dom-hid-getdevices">getDevices()</span>
+     <li><span class="dfn-paneled" id="term-for-dom-hid-requestdevice">requestDevice()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
@@ -3406,6 +3421,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dfn-static-operation">static operations</span>
      <li><span class="dfn-paneled" id="term-for-this">this</span>
      <li><span class="dfn-paneled" id="term-for-idl-undefined">undefined</span>
+     <li><span class="dfn-paneled" id="term-for-idl-unsigned-long">unsigned long</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBMIDI]</a> defines the following terms:
@@ -3429,6 +3445,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <dl>
    <dt id="biblio-audio-output">[AUDIO-OUTPUT]
    <dd>Justin Uberti; Guido Urdaneta; youenn fablet. <a href="https://w3c.github.io/mediacapture-output/"><cite>Audio Output Devices API</cite></a>. URL: <a href="https://w3c.github.io/mediacapture-output/">https://w3c.github.io/mediacapture-output/</a>
+   <dt id="biblio-background-fetch">[BACKGROUND-FETCH]
+   <dd><a href="https://wicg.github.io/background-fetch/"><cite>Background Fetch</cite></a>. cg-draft. URL: <a href="https://wicg.github.io/background-fetch/">https://wicg.github.io/background-fetch/</a>
+   <dt id="biblio-battery-status">[BATTERY-STATUS]
+   <dd>Anssi Kostiainen; Mounir Lamouri; Raphael Kubo da Costa. <a href="https://w3c.github.io/battery/"><cite>Battery Status API</cite></a>. URL: <a href="https://w3c.github.io/battery/">https://w3c.github.io/battery/</a>
    <dt id="biblio-client-hints-infrastructure">[CLIENT-HINTS-INFRASTRUCTURE]
    <dd><a href="https://wicg.github.io/client-hints-infrastructure/"><cite>Client Hints Infrastructure</cite></a>. cg-draft. URL: <a href="https://wicg.github.io/client-hints-infrastructure/">https://wicg.github.io/client-hints-infrastructure/</a>
    <dt id="biblio-clipboard-apis">[CLIPBOARD-APIS]
@@ -3451,8 +3471,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Rick Waldron. <a href="https://w3c.github.io/sensors/"><cite>Generic Sensor API</cite></a>. URL: <a href="https://w3c.github.io/sensors/">https://w3c.github.io/sensors/</a>
    <dt id="biblio-geolocation">[GEOLOCATION]
    <dd>Marcos Caceres; Reilly Grant. <a href="https://w3c.github.io/geolocation-api/"><cite>Geolocation API</cite></a>. URL: <a href="https://w3c.github.io/geolocation-api/">https://w3c.github.io/geolocation-api/</a>
-   <dt id="biblio-hr-time-2">[HR-TIME-2]
-   <dd>Ilya Grigorik. <a href="https://w3c.github.io/hr-time/"><cite>High Resolution Time Level 2</cite></a>. URL: <a href="https://w3c.github.io/hr-time/">https://w3c.github.io/hr-time/</a>
+   <dt id="biblio-hr-time-3">[HR-TIME-3]
+   <dd>Yoav Weiss. <a href="https://w3c.github.io/hr-time/"><cite>High Resolution Time</cite></a>. URL: <a href="https://w3c.github.io/hr-time/">https://w3c.github.io/hr-time/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-idle-detection">[IDLE-DETECTION]
@@ -3467,16 +3487,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Yoav Weiss; Noam Rosenthal. <a href="https://w3c.github.io/navigation-timing/"><cite>Navigation Timing Level 2</cite></a>. URL: <a href="https://w3c.github.io/navigation-timing/">https://w3c.github.io/navigation-timing/</a>
    <dt id="biblio-notifications">[NOTIFICATIONS]
    <dd>Anne van Kesteren. <a href="https://notifications.spec.whatwg.org/"><cite>Notifications API Standard</cite></a>. Living Standard. URL: <a href="https://notifications.spec.whatwg.org/">https://notifications.spec.whatwg.org/</a>
-   <dt id="biblio-payment-request">[PAYMENT-REQUEST]
-   <dd>Marcos Caceres; Rouslan Solomakhin; Ian Jacobs. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
+   <dt id="biblio-payment-request-11">[PAYMENT-REQUEST-1.1]
+   <dd>Marcos Caceres; Rouslan Solomakhin; Ian Jacobs. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API 1.1</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
    <dt id="biblio-picture-in-picture">[PICTURE-IN-PICTURE]
    <dd>Francois Beaufort. <a href="https://w3c.github.io/picture-in-picture/"><cite>Picture-in-Picture</cite></a>. URL: <a href="https://w3c.github.io/picture-in-picture/">https://w3c.github.io/picture-in-picture/</a>
-   <dt id="biblio-pointerlock">[POINTERLOCK]
-   <dd>Vincent Scheib. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
+   <dt id="biblio-pointerlock-2">[POINTERLOCK-2]
+   <dd>Navid Zolghadr; Mustaq Ahmed. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock 2.0</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
    <dt id="biblio-presentation-api">[PRESENTATION-API]
    <dd>Mark Foltz; Dominik Röttsches. <a href="https://w3c.github.io/presentation-api/"><cite>Presentation API</cite></a>. URL: <a href="https://w3c.github.io/presentation-api/">https://w3c.github.io/presentation-api/</a>
    <dt id="biblio-push-api">[PUSH-API]
    <dd>Peter Beverloo; Martin Thomson; Marcos Caceres. <a href="https://w3c.github.io/push-api/"><cite>Push API</cite></a>. URL: <a href="https://w3c.github.io/push-api/">https://w3c.github.io/push-api/</a>
+   <dt id="biblio-rdf11-mt">[RDF11-MT]
+   <dd>Patrick Hayes; Peter Patel-Schneider. <a href="https://www.w3.org/TR/rdf11-mt/"><cite>RDF 1.1 Semantics</cite></a>. 25 February 2014. REC. URL: <a href="https://www.w3.org/TR/rdf11-mt/">https://www.w3.org/TR/rdf11-mt/</a>
    <dt id="biblio-referrer-policy">[REFERRER-POLICY]
    <dd>Jochen Eisinger; Emily Stark. <a href="https://w3c.github.io/webappsec-referrer-policy/"><cite>Referrer Policy</cite></a>. URL: <a href="https://w3c.github.io/webappsec-referrer-policy/">https://w3c.github.io/webappsec-referrer-policy/</a>
    <dt id="biblio-rfc8941">[RFC8941]
@@ -3487,6 +3509,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Marcos Caceres. <a href="https://w3c.github.io/screen-orientation/"><cite>Screen Orientation</cite></a>. URL: <a href="https://w3c.github.io/screen-orientation/">https://w3c.github.io/screen-orientation/</a>
    <dt id="biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]
    <dd>Kenneth Christiansen; Raphael Kubo da Costa. <a href="https://w3c.github.io/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. URL: <a href="https://w3c.github.io/screen-wake-lock/">https://w3c.github.io/screen-wake-lock/</a>
+   <dt id="biblio-serial">[SERIAL]
+   <dd>Web Serial API URL: <a href="https://wicg.github.io/serial/">https://wicg.github.io/serial/</a>
    <dt id="biblio-service-workers">[SERVICE-WORKERS]
    <dd>Jake Archibald; Marijn Kruisselbrink. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
    <dt id="biblio-speech-api">[SPEECH-API]
@@ -3505,6 +3529,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Matt Giuca; Eric Willigers; Marcos Caceres. <a href="https://w3c.github.io/web-share/"><cite>Web Share API</cite></a>. URL: <a href="https://w3c.github.io/web-share/">https://w3c.github.io/web-share/</a>
    <dt id="biblio-webcryptoapi">[WebCryptoAPI]
    <dd>Mark Watson. <a href="https://w3c.github.io/webcrypto/"><cite>Web Cryptography API</cite></a>. URL: <a href="https://w3c.github.io/webcrypto/">https://w3c.github.io/webcrypto/</a>
+   <dt id="biblio-webdriver-bidi">[WEBDRIVER-BIDI]
+   <dd>WebDriver BiDi URL: <a href="https://w3c.github.io/webdriver-bidi/">https://w3c.github.io/webdriver-bidi/</a>
+   <dt id="biblio-webhid">[WEBHID]
+   <dd>WebHID API URL: <a href="https://wicg.github.io/webhid/">https://wicg.github.io/webhid/</a>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
    <dt id="biblio-webmidi">[WEBMIDI]
@@ -3514,6 +3542,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dt id="biblio-webxr">[WEBXR]
    <dd>Brandon Jones; Manish Goregaokar; Rik Cabanier. <a href="https://immersive-web.github.io/webxr/"><cite>WebXR Device API</cite></a>. URL: <a href="https://immersive-web.github.io/webxr/">https://immersive-web.github.io/webxr/</a>
   </dl>
+  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <dl>
+   <dt id="biblio-payment-request">[PAYMENT-REQUEST]
+   <dd>Marcos Caceres; Rouslan Solomakhin; Ian Jacobs. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
+   <dt id="biblio-pointerlock">[POINTERLOCK]
+   <dd>Vincent Scheib. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
+  </dl>
   <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="boolean" href="#dom-document-prerendering"><c- g>prerendering</c-></a>;
@@ -3522,8 +3557,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <c- b>attribute</c-> <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/webappapis.html#eventhandler"><c- n>EventHandler</c-></a> <a class="idl-code" data-link-type="attribute" data-type="EventHandler" href="#dom-document-onprerenderingchange"><c- g>onprerenderingchange</c-></a>;
 };
 
-<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://www.w3.org/TR/navigation-timing-2/#dom-performancenavigationtiming"><c- g>PerformanceNavigationTiming</c-></a> {
-    <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp"><c- n>DOMHighResTimeStamp</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMHighResTimeStamp" href="#dom-performancenavigationtiming-activationstart"><c- g>activationStart</c-></a>;
+<c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming"><c- g>PerformanceNavigationTiming</c-></a> {
+    <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp"><c- n>DOMHighResTimeStamp</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMHighResTimeStamp" href="#dom-performancenavigationtiming-activationstart"><c- g>activationStart</c-></a>;
 };
 
 </pre>

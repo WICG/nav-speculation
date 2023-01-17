@@ -4,7 +4,7 @@
   <title>Prefetch</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 26e85e599, updated Thu Dec 8 15:29:31 2022 -0800" name="generator">
+  <meta content="Bikeshed version 2aae228dc, updated Thu Jan 12 16:52:25 2023 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prefetch.html" rel="canonical">
 <style>/* style-autolinks */
 
@@ -469,7 +469,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-11">11 January 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-17">17 January 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -618,7 +618,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-redirect-chain">redirect chain</dfn>, a <a data-link-type="dfn" href="#redirect-chain" id="ref-for-redirect-chain③">redirect chain</a> (empty by default)</p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-expiry-time">expiry time</dfn>, a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp">DOMHighResTimeStamp</a></code> (0.0 by default)</p>
+     <p><dfn class="dfn-paneled" data-dfn-for="prefetch record" data-dfn-type="dfn" data-export id="prefetch-record-expiry-time">expiry time</dfn>, a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp">DOMHighResTimeStamp</a></code> (0.0 by default)</p>
    </ul>
    <div class="note" role="note">This tracks prefetches from when they are started to when they are ultimately used or discarded. Consequently some of these fields are immutable, some pertain to the ongoing activity (like <a data-link-type="dfn" href="#prefetch-record-fetch-controller" id="ref-for-prefetch-record-fetch-controller">fetch controller</a>), and some (like <a data-link-type="dfn" href="#prefetch-record-expiry-time" id="ref-for-prefetch-record-expiry-time">expiry time</a>) are populated when the prefetch completes.</div>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="same-partition-prefetch-state">same-partition prefetch state</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct②">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item②">items</a>:</p>
@@ -661,7 +661,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert④">Assert</a>: <var>document</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active">fully active</a>.</p>
      <li data-md>
-      <p>Let <var>currentTime</var> be the <a data-link-type="dfn" href="https://www.w3.org/TR/hr-time-2/#dfn-current-high-resolution-time" id="ref-for-dfn-current-high-resolution-time">current high resolution time</a> for the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> of <var>document</var>.</p>
+      <p>Let <var>currentTime</var> be the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-current-high-resolution-time" id="ref-for-dfn-current-high-resolution-time">current high resolution time</a> for the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global">relevant global object</a> of <var>document</var>.</p>
      <li data-md>
       <p>Let <var>expiryTime</var> be <var>currentTime</var> + 300000 (i.e., five minutes).</p>
      <li data-md>
@@ -676,7 +676,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑤">Assert</a>: <var>document</var> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active①">fully active</a>.</p>
      <li data-md>
-      <p>Let <var>currentTime</var> be the <a data-link-type="dfn" href="https://www.w3.org/TR/hr-time-2/#dfn-current-high-resolution-time" id="ref-for-dfn-current-high-resolution-time①">current high resolution time</a> for the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a> of <var>document</var>.</p>
+      <p>Let <var>currentTime</var> be the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-current-high-resolution-time" id="ref-for-dfn-current-high-resolution-time①">current high resolution time</a> for the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a> of <var>document</var>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①">For each</a> <var>record</var> of <var>document</var>’s <a data-link-type="dfn" href="#document-prefetch-records" id="ref-for-document-prefetch-records④">prefetch records</a>:</p>
       <ol>
@@ -703,7 +703,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <p class="issue" id="issue-34917491"><a class="self-link" href="#issue-34917491"></a>It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it’s unclear whether this is worthwhile.</p>
    </div>
    <div class="algorithm" data-algorithm="create navigation params from a prefetch record">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="create-navigation-params-from-a-prefetch-record">create navigation params from a prefetch record</dfn> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable">navigable</a> <var>navigable</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-2" id="ref-for-document-state-2">document state</a> <var>documentState</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-id" id="ref-for-navigation-id">navigation id</a> <var>navigationId</var>, a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/navigation-timing-2/#dom-navigationtimingtype" id="ref-for-dom-navigationtimingtype">NavigationTimingType</a></code> <var>navTimingType</var>, a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request③">request</a> <var>request</var>, a <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record④">prefetch record</a> <var>record</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#target-snapshot-params" id="ref-for-target-snapshot-params">target snapshot params</a> <var>targetSnapshotParams</var>, and a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-snapshot-params" id="ref-for-source-snapshot-params">source snapshot params</a> <var>sourceSnapshotParams</var>, perform the following steps. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="create-navigation-params-from-a-prefetch-record">create navigation params from a prefetch record</dfn> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable">navigable</a> <var>navigable</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-2" id="ref-for-document-state-2">document state</a> <var>documentState</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-id" id="ref-for-navigation-id">navigation id</a> <var>navigationId</var>, a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/navigation-timing/#dom-navigationtimingtype" id="ref-for-dom-navigationtimingtype">NavigationTimingType</a></code> <var>navTimingType</var>, a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request③">request</a> <var>request</var>, a <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record④">prefetch record</a> <var>record</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#target-snapshot-params" id="ref-for-target-snapshot-params">target snapshot params</a> <var>targetSnapshotParams</var>, and a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-snapshot-params" id="ref-for-source-snapshot-params">source snapshot params</a> <var>sourceSnapshotParams</var>, perform the following steps. 
     <ol>
      <li data-md>
       <p>Let <var>responseOrigin</var> be null.</p>
@@ -973,7 +973,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <hr>
    <div class="algorithm" data-algorithm="create navigation params by fetching">
     <div class="note" role="note">This is an update of the existing <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#create-navigation-params-by-fetching" id="ref-for-create-navigation-params-by-fetching⑤">create navigation params by fetching</a> algorithm.</div>
-    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-navigation-params-by-fetching">create navigation params by fetching</dfn> given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request⑥">request</a> <var>request</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#session-history-entry" id="ref-for-session-history-entry①">session history entry</a> <var>entry</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#coop-enforcement-result" id="ref-for-coop-enforcement-result①">cross-origin opener policy enforcement result</a> <var>coopEnforcementResult</var>, a navigable <var>navigable</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-snapshot-params" id="ref-for-source-snapshot-params①">source snapshot params</a> <var>sourceSnapshotParams</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#target-snapshot-params" id="ref-for-target-snapshot-params①">target snapshot params</a> <var>targetSnapshotParams</var>, a string <var>cspNavigationType</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-id" id="ref-for-navigation-id①">navigation ID</a> or null <var>navigationId</var>, a <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/navigation-timing-2/#dom-navigationtimingtype" id="ref-for-dom-navigationtimingtype①">NavigationTimingType</a></code> <var>navTimingType</var>, and an optional <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record⑤">prefetch record</a> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-navigation-params-by-fetching-prefetchRecord"><var>prefetchRecord</var></dfn>, perform the following steps.</p>
+    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-navigation-params-by-fetching">create navigation params by fetching</dfn> given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request⑥">request</a> <var>request</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#session-history-entry" id="ref-for-session-history-entry①">session history entry</a> <var>entry</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#coop-enforcement-result" id="ref-for-coop-enforcement-result①">cross-origin opener policy enforcement result</a> <var>coopEnforcementResult</var>, a navigable <var>navigable</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-snapshot-params" id="ref-for-source-snapshot-params①">source snapshot params</a> <var>sourceSnapshotParams</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#target-snapshot-params" id="ref-for-target-snapshot-params①">target snapshot params</a> <var>targetSnapshotParams</var>, a string <var>cspNavigationType</var>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-id" id="ref-for-navigation-id①">navigation ID</a> or null <var>navigationId</var>, a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/navigation-timing/#dom-navigationtimingtype" id="ref-for-dom-navigationtimingtype①">NavigationTimingType</a></code> <var>navTimingType</var>, and an optional <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record⑤">prefetch record</a> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="create-navigation-params-by-fetching-prefetchRecord"><var>prefetchRecord</var></dfn>, perform the following steps.</p>
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑧">Assert</a>: this is running <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>.</p>
@@ -1107,7 +1107,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p>Set <var>responseCOOP</var> to the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#obtain-coop" id="ref-for-obtain-coop①">obtaining a cross-origin opener policy</a> given <var>response</var> and <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-reserved-client" id="ref-for-concept-request-reserved-client①③">reserved client</a>.</p>
          <li data-md>
-          <p>If <var>prefetchRecord</var> was given, then set <var>responseCOOP</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#coop-report-endpoint" id="ref-for-coop-report-endpoint">reporting endpoint</a> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#coop-report-only-endpoint" id="ref-for-coop-report-only-endpoint">report-only reporting endpoint</a> to null. <span class="note">This allows COOP violation reports to be suppressed until the prefetch is used.</span></p>
+          <p>If <var>prefetchRecord</var> was given, then set <var>responseCOOP</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#coop-struct-report-endpoint" id="ref-for-coop-struct-report-endpoint">reporting endpoint</a> and <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#coop-struct-report-only-endpoint" id="ref-for-coop-struct-report-only-endpoint">report-only reporting endpoint</a> to null. <span class="note">This allows COOP violation reports to be suppressed until the prefetch is used.</span></p>
          <li data-md>
           <p>Set <var>coopEnforcementResult</var> to the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#coop-enforce" id="ref-for-coop-enforce①">enforcing a response’s cross-origin opener policy</a> given <var>navigable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-bc" id="ref-for-nav-bc②">active browsing context</a>, <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url⑤">URL</a>, <var>responseOrigin</var>, <var>responseCOOP</var>, <var>coopEnforcementResult</var>, and <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-referrer" id="ref-for-concept-request-referrer②">referrer</a>.</p>
          <li data-md>
@@ -1918,13 +1918,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-domhighrestimestamp">
-   <a href="https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp">https://www.w3.org/TR/hr-time-2/#dom-domhighrestimestamp</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">https://w3c.github.io/hr-time/#dom-domhighrestimestamp</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-domhighrestimestamp">1. Concepts</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dfn-current-high-resolution-time">
-   <a href="https://www.w3.org/TR/hr-time-2/#dfn-current-high-resolution-time">https://www.w3.org/TR/hr-time-2/#dfn-current-high-resolution-time</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/hr-time/#dfn-current-high-resolution-time">https://w3c.github.io/hr-time/#dfn-current-high-resolution-time</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dfn-current-high-resolution-time">1. Concepts</a> <a href="#ref-for-dfn-current-high-resolution-time①">(2)</a>
    </ul>
@@ -2401,16 +2401,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-document-state-reload-pending">2. HTML Patches</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-coop-report-only-endpoint">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#coop-report-only-endpoint">https://html.spec.whatwg.org/multipage/browsers.html#coop-report-only-endpoint</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-coop-struct-report-only-endpoint">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#coop-struct-report-only-endpoint">https://html.spec.whatwg.org/multipage/browsers.html#coop-struct-report-only-endpoint</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-coop-report-only-endpoint">2. HTML Patches</a>
+    <li><a href="#ref-for-coop-struct-report-only-endpoint">2. HTML Patches</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-coop-report-endpoint">
-   <a href="https://html.spec.whatwg.org/multipage/browsers.html#coop-report-endpoint">https://html.spec.whatwg.org/multipage/browsers.html#coop-report-endpoint</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-coop-struct-report-endpoint">
+   <a href="https://html.spec.whatwg.org/multipage/browsers.html#coop-struct-report-endpoint">https://html.spec.whatwg.org/multipage/browsers.html#coop-struct-report-endpoint</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-coop-report-endpoint">2. HTML Patches</a>
+    <li><a href="#ref-for-coop-struct-report-endpoint">2. HTML Patches</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-navigation-params-request">
@@ -2715,7 +2715,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-navigationtimingtype">
-   <a href="https://www.w3.org/TR/navigation-timing-2/#dom-navigationtimingtype">https://www.w3.org/TR/navigation-timing-2/#dom-navigationtimingtype</a><b>Referenced in:</b>
+   <a href="https://w3c.github.io/navigation-timing/#dom-navigationtimingtype">https://w3c.github.io/navigation-timing/#dom-navigationtimingtype</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-navigationtimingtype">1. Concepts</a>
     <li><a href="#ref-for-dom-navigationtimingtype①">2. HTML Patches</a>
@@ -2885,7 +2885,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-request-user-activation">user-activation</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[HR-TIME-2]</a> defines the following terms:
+    <a data-link-type="biblio">[HR-TIME-3]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-dom-domhighrestimestamp">DOMHighResTimeStamp</span>
      <li><span class="dfn-paneled" id="term-for-dfn-current-high-resolution-time">current high resolution time</span>
@@ -2965,8 +2965,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-concept-relevant-global">relevant global object</span>
      <li><span class="dfn-paneled" id="term-for-relevant-settings-object">relevant settings object</span>
      <li><span class="dfn-paneled" id="term-for-document-state-reload-pending">reload pending</span>
-     <li><span class="dfn-paneled" id="term-for-coop-report-only-endpoint">report-only reporting endpoint</span>
-     <li><span class="dfn-paneled" id="term-for-coop-report-endpoint">reporting endpoint</span>
+     <li><span class="dfn-paneled" id="term-for-coop-struct-report-only-endpoint">report-only reporting endpoint</span>
+     <li><span class="dfn-paneled" id="term-for-coop-struct-report-endpoint">reporting endpoint</span>
      <li><span class="dfn-paneled" id="term-for-navigation-params-request">request</span>
      <li><span class="dfn-paneled" id="term-for-post-resource-request-body">request body</span>
      <li><span class="dfn-paneled" id="term-for-post-resource-request-content-type">request content-type</span>
@@ -3062,8 +3062,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
-   <dt id="biblio-hr-time-2">[HR-TIME-2]
-   <dd>Ilya Grigorik. <a href="https://w3c.github.io/hr-time/"><cite>High Resolution Time Level 2</cite></a>. URL: <a href="https://w3c.github.io/hr-time/">https://w3c.github.io/hr-time/</a>
+   <dt id="biblio-hr-time-3">[HR-TIME-3]
+   <dd>Yoav Weiss. <a href="https://w3c.github.io/hr-time/"><cite>High Resolution Time</cite></a>. URL: <a href="https://w3c.github.io/hr-time/">https://w3c.github.io/hr-time/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
