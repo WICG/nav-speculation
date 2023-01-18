@@ -82,13 +82,14 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
 spec: client-hints-infrastructure; urlPrefix: https://wicg.github.io/client-hints-infrastructure
   type: dfn
     text: Accept-CH cache; url: accept-ch-cache
-    text: add a new Accept-CH cache entry; url: add-a-new-accept-ch-cache-entry
-    text: append client hints to request; url: abstract-opdef-append-client-hints-to-request
+    text: create or override the cached client hints set; url: abstract-opdef-create-or-override-the-cached-client-hints-set
     text: client hints token; url: client-hints-token-definition
     text: client hints set; url: client-hints-set
-    text: update the Client Hints set; url: abstract-opdef-update-the-client-hints-set
+    text: update the client hints set from cache; url: update-the-client-hints-set-from-cache
     for: environment settings object
       text: client hints set; url: environment-settings-object-client-hints-set
+    for: accept-ch-cache
+      text: origin; url:accept-ch-cache-origin
 
 </pre>
 <pre class="biblio">
@@ -312,7 +313,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. [=map/For each=] |origin| → |hintSet| in |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=]:
 
-      1. [=Add a new Accept-CH cache entry=] to the [=Accept-CH cache=] with the |origin| and |hintSet|.
+      1. [=map/Set=] [=Accept-CH cache=][|origin|] to |hintSet|.
 
     1. Let |doc| be |navigable|'s [=navigable/active document=].
 
@@ -509,35 +510,29 @@ Each [=prerendering navigable=] has a <dfn for="prerendering navigable">prerende
 
 This stores which client hints each origin has opted into receiving, until it can be copied to the global [=Accept-CH cache=] when [=prerendering traversable/finalize activation|activation is finalized=].
 
-<div algorithm>
-  To <dfn>add a new prerender Accept-CH cache entry</dfn> given a [=prerendering navigable=] |bc|, an [=origin=] |origin|, and a [=client hints set=] |hintSet|:
-
-    1. Let |cache| be |bc|'s [=prerendering navigable/prerender-scoped Accept-CH cache=].
-
-    1. [=map/set=] |cache|[|origin|] to |hintSet|.
-
-  <p class="note">This is similar to [=add a new Accept-CH cache entry=].
-</div>
-
-<div algorithm="append client hints to request patch">
-  Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>append client hints to request</a> algorithm, by prepending the following steps before iterating over the |hintSet|:
+<div algorithm="update the client hints set from cache patch">
+  Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>update the client hints set from cache</a> algorithm, by replacing the second step with the following steps.
 
   1. Let |navigable| be <var ignore>settingsObject</var>’s [=environment settings object/global object=]'s [=Window/navigable=].
+
+  1. Let |originMatchingEntries| be the entries in the [=Accept-CH cache=] whose [=accept-ch-cache/origin=] is
+       [=same origin=] with |settingsObject|'s [=environment settings object/origin=].
+
   1. If |navigable| is a [=prerendering navigable=], then:
-      1. Let |origin| be <var ignore>request</var>'s [=request/url=]'s [=url/origin=].
-      1. Set |hintSet| to the [=set/union=] of |hintSet| and |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=][|origin|].
+      1. Let |prerenderAcceptClientHintsCache| be |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=].
+
+      1. Let |origin| be |settingsObject|'s [=environment settings object/origin=].
+
+      1. If |prerenderAcceptClientHintsCache|[|origin|] [=map/exists=], then let |originMatchingEntries| be the entries in the |prerenderAcceptClientHintsCache| whose [=origin=] is [=same origin=] with |origin|.
 
 </div>
 
-<div algorithm="update the Client Hints set patch">
-  Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>update the Client Hints set</a> algorithm, by updating the last step.
+<div algorithm="create or override the cached client hints set patch">
+  Modify the <a spec=CLIENT-HINTS-INFRASTRUCTURE>create or override the cached client hints set</a> algorithm, by updating the last step.
 
-  1. Let |origin| be <var ignore>response</var>'s [=response/url=]'s [=url/origin=].
-  1. Let |hintSet| be <var ignore>settingsObject</var>'s [=environment settings object/client hints set=].
   1. Let |navigable| be <var ignore>settingsObject</var>’s [=environment settings object/global object=]'s [=Window/navigable=].
-  1. If |navigable| is a [=prerendering navigable=], [=add a new prerender Accept-CH cache entry=] with |navigable|, |origin| and |hintSet|.
-  1. Otherwise, [=add a new Accept-CH cache entry=] with |origin| and |hintSet|.
-
+  1. If |navigable| is a [=prerendering navigable=], [=map/set=] |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=][|origin|] to |hintSet|.
+  1. Otherwise, [=map/set=] [=Accept-CH cache=][|origin|] to |hintSet|.
 </div>
 
 <h2 id="supports-loading-mode">The \`<dfn http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
