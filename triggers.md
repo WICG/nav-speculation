@@ -283,10 +283,9 @@ For document rules, `"relative_to"` can be paired directly with `"href_matches"`
 
 ### Content-Security-Policy
 
-Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` and `script-src-elem` CSP directive.
-To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword.
-Using `script-src 'inline-speculation-rules'` or `script-src-elem 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
-The `prefetch-src` directive can be used to restrict which URLs can be prefetched or prerendered.
+Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` and `script-src-elem` CSP directive. To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword. Using `script-src 'inline-speculation-rules'` or `script-src-elem 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
+
+The `default-src` directive can be used to restrict which URLs can be prefetched or prerendered.
 
 ### Eagerness
 

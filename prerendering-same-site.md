@@ -262,7 +262,7 @@ Generally speaking, our plan is to treat content as if it were in a "background 
 
 A prerendered `Document` can apply CSP to itself as normal. Being in a prerendering browsing context vs. a normal top-level browsing context does not change any of the impacts of CSP. Note that since prerendered documents are [always loaded from HTTP(S) URLs](#restrictions-on-loaded-content), there is no need to worry about complex CSP inheritance semantics.
 
-Prerendered content will be affected by [`prefetch-src`](https://w3c.github.io/webappsec-csp/#directive-prefetch-src) on the referring page, which provides a way of preventing prefetching in addition to the [triggers](./triggers.md).
+If a referrer page wants to protect maliciously-injected content from performing prerenders (as a form of [exfiltration protection](http://www.cse.chalmers.se/research/group/security/pdf/data-exfiltration-in-the-face-of-csp.pdf)), it can use `default-src`.
 
 ## More details on cross-origin same-site
 
