@@ -51,11 +51,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     urlPrefix: links.html
       for: a/rel
         text: noreferrer; url: link-type-noreferrer
-spec: urlpattern; urlPrefix: https://wicg.github.io/urlpattern/
-  type: interface; text: URLPattern; url: urlpattern
-  type: constructor; for: URLPattern; text: "URLPattern(input, baseURL)"; url: dom-urlpattern-urlpattern
-  type: dictionary; text: URLPatternInit
-  type: dfn; text: match; url: match
 spec: RFC8941; urlPrefix: https://httpwg.org/specs/rfc8941.html
   type: dfn
     text: structured header; url: top
@@ -461,8 +456,7 @@ A [=document=] has a <dfn for=document export>list of speculation rule sets</dfn
 
 A [=document=] has a <dfn for=document export>list of pending external speculation rule resources</dfn>, which is an initially empty [=list=] of [=pending external speculation rule resources=].
 
-<!-- TODO(domfarolino): Get rid of the `data-link-type="interface"` once we fix the dfn in HTML. -->
-Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the <a data-link-type="interface">DOM manipulation task source</a> with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
+Periodically, for any [=document=] |document|, the user agent may [=queue a global task=] on the [=DOM manipulation task source=] with |document|'s [=relevant global object=] to [=consider speculation=] for |document|.
 
 <p class="note">
   The user agent will likely do when resources are idle and available, or otherwise the circumstances of its previous decision whether to start a speculation could have changed.
@@ -622,7 +616,7 @@ This specification causes activity in response to content found in the document,
 
 Such an attacker is otherwise able to inject JavaScript, frames or other elements. The activity possible with this specification (requesting fetches etc) is generally less dangerous than arbitrary script execution, and comparable to other elements. It would, however, make it possible to cause prefetches of links in the document, and the existence of those prefetches could provide a vector for exfiltrating information about those links.
 
-The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `prefetch-src` directive applies to prefetch requests arising from the rules.
+The same mitigations available to other features also apply here. In particular, the [[CSP]] `script-src` directive applies to the parsing of the speculation rules and the `default-src` directive applies to prefetch requests arising from the rules.
 
 The possibility of leaking link URLs via this mechanism is additionally mitigated by the fact that prefetch and prerender to plaintext HTTP (other than to localhost) is not permitted, and so such an on-path attacker could not directly observe preloading request URLs, but would only have access to metadata and traffic analysis. This does not, however, replace standard XSS protections.
 

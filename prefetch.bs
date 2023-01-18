@@ -23,8 +23,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: cross-origin opener policy; url: cross-origin-opener-policy
       for: cross-origin opener policy
         text: value; url: coop-struct-value
-        text: reporting endpoint; url: coop-report-endpoint
-        text: report-only reporting endpoint; url: coop-report-only-endpoint
+        text: reporting endpoint; url: coop-struct-report-endpoint
+        text: report-only reporting endpoint; url: coop-struct-report-only-endpoint
       for: cross-origin opener policy enforcement result
         text: needs a browsing context group switch; url: coop-enforcement-bcg-switch
         text: would need a browsing context group switch due to report-only; url: coop-enforcement-bcg-switch-report-only
@@ -102,9 +102,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: StructuredSerializeForStorage; url: structuredserializeforstorage
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
-    text: process response; url: process-response
     text: network partition key; url: network-partition-key
-    text: controller; for: fetch params; url: fetch-params-controller
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: Item; url: name-items
@@ -330,7 +328,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
     To <dfn export>create a reserved client</dfn> given a [=navigable=] |navigable|, a [=URL=] |url| and an [=opaque origin=] or null |isolationOrigin|:
     1. Let |topLevelCreationURL| be |url|.
-    1. Let |topLevelOrigin| be null. 
+    1. Let |topLevelOrigin| be null.
     1. If |isolationOrigin| is not null, then: <!-- these are new steps to isolate uncredentialed prefetch -->
         1. Set |topLevelCreationURL| to `about:blank`.
         1. Set |topLevelOrigin| to |isolationOrigin|.
@@ -407,7 +405,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
     1. Otherwise, if both of the following are true:
         * <var ignore>entry</var>'s [=session history entry/URL=]'s [=url/scheme=] is a [=fetch scheme=]; and
         * <var ignore>documentResource</var> is null, or <var ignore>allowPOST</var> is true and <var ignore>documentResource</var>'s [=POST resource/request body=] is not failure
-        
+
         then:
 
             1. Let |request| be the result of [=creating a navigation request=] given <var ignore>entry</var>, <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=], <var ignore>navigable</var>'s [=navigable/container=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/has transient activation=].
@@ -449,7 +447,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
     1. Let |commitEarlyHints| be null.
     1. Let |isolationOrigin| be null.
     1. If |prefetchRecord| was given and its [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
-        1. Let |isolationSite| be |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/isolated partition key=][0]. 
+        1. Let |isolationSite| be |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/isolated partition key=][0].
         1. [=Assert=]: |isolationSite| is an [=opaque origin=].
         1. Set |isolationOrigin| to |isolationSite|.
     1. While true:
@@ -491,7 +489,7 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
             Let |processEarlyHintsResponse| be the following algorithm given a [=response=] |earlyResponse|:
                 1. If |prefetchRecord| was given and |commitEarlyHints| is null, then set |commitEarlyHints| to the result of [=processing early hint headers=] given |earlyResponse| and |request|'s [=request/reserved client=]. <!-- this has an additional condition to suppress extra fetches due to early hints while prefetching -->
-            
+
             Let |processResponse| be the following algorithm given a [=response=] |fetchedResponse|:
                 1. Set |response| to |fetchedResponse|.
         1. Otherwise, [=fetch controller/process the next manual redirect=] for |fetchController|.
@@ -604,9 +602,6 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :  [=session history entry/document state=]
         :: |documentState|
     1. Let |request| be the result of [=creating a navigation request=] given |entry|, |document|'s [=relevant settings object=], |document|'s [=node navigable=]'s [=navigable/container=], and false.
-    1. Set |request|'s [=request/initiator=] to "`prefetch`".
-
-        <div class="note">This causes the `prefetch-src` [[CSP]] directive to apply as part of [=fetch=].</div>
     1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
         1. Clear |request|'s [=request/use-URL-credentials flag=].
         1. Set |request|'s [=request/cache mode=] to "`no-store`".
