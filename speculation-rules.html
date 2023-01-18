@@ -4,7 +4,7 @@
   <title>Speculation Rules</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 2aae228dc, updated Thu Jan 12 16:52:25 2023 -0800" name="generator">
+  <meta content="Bikeshed version d6f2d6445, updated Tue Jan 17 11:25:25 2023 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/speculation-rules.html" rel="canonical">
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -1428,7 +1428,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h3 class="heading settled" data-level="2.2" id="security-xss"><span class="secno">2.2. </span><span class="content">Cross-site scripting</span><a class="self-link" href="#security-xss"></a></h3>
    <p>This specification causes activity in response to content found in the document, so it is worth considering the options open to an attacker able to inject unescaped HTML.</p>
    <p>Such an attacker is otherwise able to inject JavaScript, frames or other elements. The activity possible with this specification (requesting fetches etc) is generally less dangerous than arbitrary script execution, and comparable to other elements. It would, however, make it possible to cause prefetches of links in the document, and the existence of those prefetches could provide a vector for exfiltrating information about those links.</p>
-   <p>The same mitigations available to other features also apply here. In particular, the <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> <code>script-src</code> directive applies to the parsing of the speculation rules and the <code>prefetch-src</code> directive applies to prefetch requests arising from the rules.</p>
+   <p>The same mitigations available to other features also apply here. In particular, the <a data-link-type="biblio" href="#biblio-csp" title="Content Security Policy Level 3">[CSP]</a> <code>script-src</code> directive applies to the parsing of the speculation rules and the <code>default-src</code> directive applies to prefetch requests arising from the rules.</p>
    <p>The possibility of leaking link URLs via this mechanism is additionally mitigated by the fact that prefetch and prerender to plaintext HTTP (other than to localhost) is not permitted, and so such an on-path attacker could not directly observe preloading request URLs, but would only have access to metadata and traffic analysis. This does not, however, replace standard XSS protections.</p>
    <h3 class="heading settled" data-level="2.3" id="type-confusion"><span class="secno">2.3. </span><span class="content">Type confusion</span><a class="self-link" href="#type-confusion"></a></h3>
    <p>In the case of speculation rules in an inline <code>&lt;script></code>, an application which erroneously parsed speculation rules as a JavaScript script (though user agents are instructed not to execute scripts who "<code>type</code>" is unrecognized) would either interpret it as the empty block <code>{}</code> or produce a syntax error, since the U+003A COLON (<code>:</code>) after the first key is invalid JavaScript. In neither case would such an application execute harmful behavior.</p>
