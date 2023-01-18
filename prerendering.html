@@ -922,7 +922,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-iterate" id="ref-for-map-iterate">For each</a> <var>origin</var> → <var>hintSet</var> in <var>navigable</var>’s <a data-link-type="dfn" href="#prerendering-navigable-prerender-scoped-accept-ch-cache" id="ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache">prerender-scoped Accept-CH cache</a>:</p>
         <ol>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#add-a-new-accept-ch-cache-entry" id="ref-for-add-a-new-accept-ch-cache-entry">Add a new Accept-CH cache entry</a> to the <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache" id="ref-for-accept-ch-cache">Accept-CH cache</a> with the <var>origin</var> and <var>hintSet</var>.</p>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set">Set</a> <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache" id="ref-for-accept-ch-cache">Accept-CH cache</a>[<var>origin</var>] to <var>hintSet</var>.</p>
         </ol>
        <li data-md>
         <p>Let <var>doc</var> be <var>navigable</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document" id="ref-for-nav-document⑥">active document</a>.</p>
@@ -1126,51 +1126,41 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>We need to ensure that the <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache" id="ref-for-accept-ch-cache①">Accept-CH cache</a>, which is owned by user agent as a global storage, is not modified while prerendering, but is properly updated after activation. The following modifications ensure this.</p>
    <p>Each <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①②">prerendering navigable</a> has a <dfn class="dfn-paneled" data-dfn-for="prerendering navigable" data-dfn-type="dfn" data-noexport id="prerendering-navigable-prerender-scoped-accept-ch-cache">prerender-scoped Accept-CH cache</dfn>, which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map①">ordered map</a> of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin①">origin</a> to <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#client-hints-set" id="ref-for-client-hints-set">client hints sets</a>.</p>
    <p>This stores which client hints each origin has opted into receiving, until it can be copied to the global <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache" id="ref-for-accept-ch-cache②">Accept-CH cache</a> when <a data-link-type="dfn" href="#prerendering-traversable-finalize-activation" id="ref-for-prerendering-traversable-finalize-activation②">activation is finalized</a>.</p>
-   <div class="algorithm" data-algorithm="add a new prerender Accept-CH cache entry">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="add-a-new-prerender-accept-ch-cache-entry">add a new prerender Accept-CH cache entry</dfn> given a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①③">prerendering navigable</a> <var>bc</var>, an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin②">origin</a> <var>origin</var>, and a <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#client-hints-set" id="ref-for-client-hints-set①">client hints set</a> <var>hintSet</var>: 
-    <ol>
-     <li data-md>
-      <p>Let <var>cache</var> be <var>bc</var>’s <a data-link-type="dfn" href="#prerendering-navigable-prerender-scoped-accept-ch-cache" id="ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache①">prerender-scoped Accept-CH cache</a>.</p>
-     <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set">set</a> <var>cache</var>[<var>origin</var>] to <var>hintSet</var>.</p>
-    </ol>
-    <p class="note" role="note">This is similar to <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#add-a-new-accept-ch-cache-entry" id="ref-for-add-a-new-accept-ch-cache-entry①">add a new Accept-CH cache entry</a>. </p>
-   </div>
-   <div class="algorithm" data-algorithm="append client hints to request patch">
-     Modify the <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#abstract-opdef-append-client-hints-to-request" id="ref-for-abstract-opdef-append-client-hints-to-request">append client hints to request</a> algorithm, by prepending the following steps before iterating over the <var>hintSet</var>: 
+   <div class="algorithm" data-algorithm="update the client hints set from cache patch">
+     Modify the <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#update-the-client-hints-set-from-cache" id="ref-for-update-the-client-hints-set-from-cache">update the client hints set from cache</a> algorithm, by replacing the second step with the following steps. 
     <ol>
      <li data-md>
       <p>Let <var>navigable</var> be <var>settingsObject</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable">navigable</a>.</p>
      <li data-md>
-      <p>If <var>navigable</var> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①④">prerendering navigable</a>, then:</p>
+      <p>Let <var>originMatchingEntries</var> be the entries in the <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache" id="ref-for-accept-ch-cache③">Accept-CH cache</a> whose <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache-origin" id="ref-for-accept-ch-cache-origin">origin</a> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin①">same origin</a> with <var>settingsObject</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin">origin</a>.</p>
+     <li data-md>
+      <p>If <var>navigable</var> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①③">prerendering navigable</a>, then:</p>
       <ol>
        <li data-md>
-        <p>Let <var>origin</var> be <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin③">origin</a>.</p>
+        <p>Let <var>prerenderAcceptClientHintsCache</var> be <var>navigable</var>’s <a data-link-type="dfn" href="#prerendering-navigable-prerender-scoped-accept-ch-cache" id="ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache①">prerender-scoped Accept-CH cache</a>.</p>
        <li data-md>
-        <p>Set <var>hintSet</var> to the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-union" id="ref-for-set-union">union</a> of <var>hintSet</var> and <var>navigable</var>’s <a data-link-type="dfn" href="#prerendering-navigable-prerender-scoped-accept-ch-cache" id="ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache②">prerender-scoped Accept-CH cache</a>[<var>origin</var>].</p>
+        <p>Let <var>origin</var> be <var>settingsObject</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin" id="ref-for-concept-settings-object-origin①">origin</a>.</p>
+       <li data-md>
+        <p>If <var>prerenderAcceptClientHintsCache</var>[<var>origin</var>] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exists</a>, then let <var>originMatchingEntries</var> be the entries in the <var>prerenderAcceptClientHintsCache</var> whose <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#concept-origin" id="ref-for-concept-origin②">origin</a> is <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin" id="ref-for-same-origin②">same origin</a> with <var>origin</var>.</p>
       </ol>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="update the Client Hints set patch">
-     Modify the <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#abstract-opdef-update-the-client-hints-set" id="ref-for-abstract-opdef-update-the-client-hints-set">update the Client Hints set</a> algorithm, by updating the last step. 
+   <div class="algorithm" data-algorithm="create or override the cached client hints set patch">
+     Modify the <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#abstract-opdef-create-or-override-the-cached-client-hints-set" id="ref-for-abstract-opdef-create-or-override-the-cached-client-hints-set">create or override the cached client hints set</a> algorithm, by updating the last step. 
     <ol>
-     <li data-md>
-      <p>Let <var>origin</var> be <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url">url</a>'s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-origin" id="ref-for-concept-url-origin④">origin</a>.</p>
-     <li data-md>
-      <p>Let <var>hintSet</var> be <var>settingsObject</var>’s <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#environment-settings-object-client-hints-set" id="ref-for-environment-settings-object-client-hints-set">client hints set</a>.</p>
      <li data-md>
       <p>Let <var>navigable</var> be <var>settingsObject</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global" id="ref-for-concept-settings-object-global①">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①">navigable</a>.</p>
      <li data-md>
-      <p>If <var>navigable</var> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑤">prerendering navigable</a>, <a data-link-type="dfn" href="#add-a-new-prerender-accept-ch-cache-entry" id="ref-for-add-a-new-prerender-accept-ch-cache-entry">add a new prerender Accept-CH cache entry</a> with <var>navigable</var>, <var>origin</var> and <var>hintSet</var>.</p>
+      <p>If <var>navigable</var> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①④">prerendering navigable</a>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set①">set</a> <var>navigable</var>’s <a data-link-type="dfn" href="#prerendering-navigable-prerender-scoped-accept-ch-cache" id="ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache②">prerender-scoped Accept-CH cache</a>[<var>origin</var>] to <var>hintSet</var>.</p>
      <li data-md>
-      <p>Otherwise, <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#add-a-new-accept-ch-cache-entry" id="ref-for-add-a-new-accept-ch-cache-entry②">add a new Accept-CH cache entry</a> with <var>origin</var> and <var>hintSet</var>.</p>
+      <p>Otherwise, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-set" id="ref-for-map-set②">set</a> <a data-link-type="dfn" href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache" id="ref-for-accept-ch-cache④">Accept-CH cache</a>[<var>origin</var>] to <var>hintSet</var>.</p>
     </ol>
    </div>
    <h2 class="heading settled" data-level="4" id="supports-loading-mode"><span class="secno">4. </span><span class="content">The `<dfn class="dfn-paneled" data-dfn-type="http-header" data-export id="http-headerdef-supports-loading-mode"><code>Supports-Loading-Mode</code></dfn>` HTTP response header</span><a class="self-link" href="#supports-loading-mode"></a></h2>
    <p><em>The following section would be added as a sub-section of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsers">Loading web pages</a> section.</em></p>
    <p>In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the `<a data-link-type="http-header" href="#http-headerdef-supports-loading-mode" id="ref-for-http-headerdef-supports-loading-mode"><code>Supports-Loading-Mode</code></a>` HTTP response header can be used. This header is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#section-1" id="ref-for-section-1">structured header</a>; if present its value must be the single <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens">token</a> `<code><a data-link-type="dfn" href="#supports-loading-mode-credentialed-prerender" id="ref-for-supports-loading-mode-credentialed-prerender①">credentialed-prerender</a></code>`.</p>
    <p class="note" role="note">The parsing is actually done as a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists">list</a> of <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens①">tokens</a>, and unknown tokens will be ignored. However, authors are best off avoiding any form except the single-token one, for future compatibility. </p>
-   <p>The `<code><dfn class="dfn-paneled" data-dfn-for="Supports-Loading-Mode" data-dfn-type="dfn" data-noexport id="supports-loading-mode-credentialed-prerender">credentialed-prerender</dfn></code>` token indicates that the response can be used to create a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑥">prerendering navigable</a>, despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in <a href="#navigate-fetch-patch">§ 2.2 Navigation fetch changes</a>.</p>
+   <p>The `<code><dfn class="dfn-paneled" data-dfn-for="Supports-Loading-Mode" data-dfn-type="dfn" data-noexport id="supports-loading-mode-credentialed-prerender">credentialed-prerender</dfn></code>` token indicates that the response can be used to create a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑤">prerendering navigable</a>, despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in <a href="#navigate-fetch-patch">§ 2.2 Navigation fetch changes</a>.</p>
    <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="get-the-supported-loading-modes">get the supported loading modes</dfn> for a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> <var>response</var>:</p>
    <ol>
     <li data-md>
@@ -1181,9 +1171,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p>Return a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> containing all elements of <var>slmHeader</var> that are <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens②">tokens</a>.</p>
    </ol>
    <h2 class="heading settled" data-level="5" id="nonsense-behaviors"><span class="secno">5. </span><span class="content">Preventing nonsensical behaviors</span><a class="self-link" href="#nonsense-behaviors"></a></h2>
-   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable③">navigables</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑦">prerendering navigables</a>. This section enumerates specification patches to enforce such restrictions.</p>
+   <p>Some behaviors might make sense in most <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable③">navigables</a>, but do not make sense in <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑥">prerendering navigables</a>. This section enumerates specification patches to enforce such restrictions.</p>
    <h3 class="heading settled" data-level="5.1" id="patch-window-apis"><span class="secno">5.1. </span><span class="content">APIs for creating and navigating browsing contexts by name</span><a class="self-link" href="#patch-window-apis"></a></h3>
-   <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑧">prerendering navigable</a>:</p>
+   <p>Modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#script-closable" id="ref-for-script-closable">script-closable</a> to prevent window closing while in a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑦">prerendering navigable</a>:</p>
    <p>A <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable④">navigable</a> is <dfn data-dfn-type="dfn" data-noexport id="script-closable">script-closable<a class="self-link" href="#script-closable"></a></dfn> if either of the following is true:</p>
    <ul>
     <li data-md>
@@ -1196,13 +1186,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      </p>
    </ul>
    <h2 class="heading settled" data-level="6" id="intrusive-behaviors"><span class="secno">6. </span><span class="content">Preventing intrusive behaviors</span><a class="self-link" href="#intrusive-behaviors"></a></h2>
-   <p>Various behaviors are disallowed in <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑨">prerendering navigables</a> because they would be intrusive to the user, since the prerendered content is not being actively interacted with.</p>
+   <p>Various behaviors are disallowed in <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑧">prerendering navigables</a> because they would be intrusive to the user, since the prerendered content is not being actively interacted with.</p>
    <h3 class="heading settled" data-level="6.1" id="patch-downloading"><span class="secno">6.1. </span><span class="content">Downloading resources</span><a class="self-link" href="#patch-downloading"></a></h3>
-   <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks" id="ref-for-downloading-hyperlinks">download the hyperlink</a> algorithm to ensure that downloads inside <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⓪">prerendering navigable</a> are delayed until <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate④">activation</a>, by inserting the following before the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel③">in parallel</a>:</p>
+   <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#downloading-hyperlinks" id="ref-for-downloading-hyperlinks">download the hyperlink</a> algorithm to ensure that downloads inside <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑨">prerendering navigable</a> are delayed until <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate④">activation</a>, by inserting the following before the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel③">in parallel</a>:</p>
    <div class="algorithm" data-algorithm="download the hyperlink patch">
     <ol>
      <li data-md>
-      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable④">node navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②①">prerendering navigable</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</a> and return.</p>
+      <p>If <var>subject</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable④">node navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⓪">prerendering navigable</a>, then append the following step to <var>subject</var>’s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="6.2" id="patch-modals"><span class="secno">6.2. </span><span class="content">User prompts</span><a class="self-link" href="#patch-modals"></a></h3>
@@ -1210,20 +1200,20 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs" id="ref-for-cannot-show-simple-dialogs">cannot show simple dialogs</a> algorithm, given a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window①">Window</a></code> <var>window</var>, by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable②">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②②">prerendering navigable</a>, then return true.</p>
+      <p>If <var>window</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable②">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②①">prerendering navigable</a>, then return true.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="window print() patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print" id="ref-for-dom-print">print()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable③">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②③">prerendering navigable</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable③">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②②">prerendering navigable</a>, then return.</p>
     </ol>
    </div>
    <h3 class="heading settled" data-level="6.3" id="delay-async-apis"><span class="secno">6.3. </span><span class="content">Delaying async API results</span><a class="self-link" href="#delay-async-apis"></a></h3>
-   <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②④">prerendering navigable</a>, most of its work is deferred until the navigable’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-top" id="ref-for-nav-top①">top-level traversable</a> is <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate⑤">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
+   <p>Many specifications need to be patched so that, if a given algorithm invoked in a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②③">prerendering navigable</a>, most of its work is deferred until the navigable’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-top" id="ref-for-nav-top①">top-level traversable</a> is <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate⑤">activated</a>. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.</p>
    <h4 class="heading settled" data-level="6.3.1" id="delay-while-prerendering"><span class="secno">6.3.1. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering">[DelayWhilePrerendering]</a></code> extended attribute</span><a class="self-link" href="#delay-while-prerendering"></a></h4>
-   <p>To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate⑥">activation</a>, we introduce the <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export id="extendedattrdef-delaywhileprerendering"><code>[DelayWhilePrerendering]</code></dfn> Web IDL extended attribute. It indicates that when a given method is called in a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑤">prerendering navigable</a>, it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.</p>
+   <p>To abstract away some of the boilerplate involved in delaying the action of asynchronous methods until <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate⑥">activation</a>, we introduce the <dfn class="dfn-paneled idl-code" data-dfn-type="extended-attribute" data-export id="extendedattrdef-delaywhileprerendering"><code>[DelayWhilePrerendering]</code></dfn> Web IDL extended attribute. It indicates that when a given method is called in a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②④">prerendering navigable</a>, it will immediately return a pending promise and do nothing else. Only upon activation will the usual method steps take place, with their result being used to resolve or reject the previously-returned promise.</p>
    <p>The <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①">[DelayWhilePrerendering]</a></code> extended attribute must take no arguments, and must only appear on a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation">regular</a> or <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-static-operation" id="ref-for-dfn-static-operation">static operation</a> whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-return-type" id="ref-for-dfn-return-type">return type</a> is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-promise-type" id="ref-for-dfn-promise-type">promise type</a> or <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined">undefined</a></code>, and whose <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-exposure-set" id="ref-for-dfn-exposure-set">exposure set</a> contains only <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window②">Window</a></code>.</p>
    <div class="algorithm" data-algorithm="DelayWhilePrerendering method steps">
      The method steps for any operation annotated with the <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②">[DelayWhilePrerendering]</a></code> extended attribute are replaced with the following: 
@@ -1233,7 +1223,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>If the operation in question is a <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#dfn-regular-operation" id="ref-for-dfn-regular-operation①">regular operation</a>, then set <var>realm</var> to the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-realm" id="ref-for-concept-relevant-realm">relevant realm</a> of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this③">this</a>.</p>
      <li data-md>
-      <p>If <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable④">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑥">prerendering navigable</a>, then:</p>
+      <p>If <var>realm</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global" id="ref-for-concept-realm-global">global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable④">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑤">prerendering navigable</a>, then:</p>
       <ol>
        <li data-md>
         <p>Let <var>promise</var> be <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-new-promise" id="ref-for-a-new-promise">a new promise</a>, created in <var>realm</var>.</p>
@@ -1262,14 +1252,14 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#dom-geolocation-getcurrentposition" id="ref-for-dom-geolocation-getcurrentposition">getCurrentPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑤">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑦">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list②">post-prerendering activation steps list</a> and return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑤">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑥">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑧">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list②">post-prerendering activation steps list</a> and return.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Geolocation watchPosition patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#dom-geolocation-watchposition" id="ref-for-dom-geolocation-watchposition">watchPosition()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑥">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑧">prerendering navigable</a>, then:</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑥">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑦">prerendering navigable</a>, then:</p>
       <ol>
        <li data-md>
         <p>Let <var>watchId</var> be an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-unsigned-long" id="ref-for-idl-unsigned-long">unsigned long</a></code>, and note it as a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</dfn>.</p>
@@ -1282,7 +1272,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/geolocation-api/#dom-geolocation-clearwatch" id="ref-for-dom-geolocation-clearwatch">clearWatch(watchId)</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑦">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑨">prerendering navigable</a>, then:</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①①">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑥">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑦">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑧">prerendering navigable</a>, then:</p>
       <ol>
        <li data-md>
         <p>If <var>watchId</var> is a <a data-link-type="dfn" href="#post-prerendering-activation-geolocation-watch-process-id" id="ref-for-post-prerendering-activation-geolocation-watch-process-id">post-prerendering activation geolocation watch process ID</a>, then remove its corresponding steps from <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①②">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a>.</p>
@@ -1302,7 +1292,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>If <var>document</var> is null, then return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#a-promise-rejected-with" id="ref-for-a-promise-rejected-with">a promise rejected with</a> a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#securityerror" id="ref-for-securityerror">SecurityError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException">DOMException</a></code>.</p>
      <li data-md>
-      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable⑤">node navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⓪">prerendering navigable</a>, then append the following steps to <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable⑤">node navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable②⑨">prerendering navigable</a>, then append the following steps to <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list④">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.3.6" id="patch-notifications"><span class="secno">6.3.6. </span><span class="content">Notifications API</span><a class="self-link" href="#patch-notifications"></a></h4>
@@ -1311,15 +1301,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-notification" id="ref-for-dom-notification-notification">Notification()</a></code> constructor steps by replacing the step which goes <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel④">in parallel</a> with the following: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑧">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③①">prerendering navigable</a>, then append these steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑧">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a>. Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel⑤">in parallel</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑦">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①①">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑧">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⓪">prerendering navigable</a>, then append these steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑧">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a>. Otherwise, run these steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel⑤">in parallel</a>.</p>
     </ol>
    </div>
    <div class="algorithm" data-algorithm="Notification permission patch">
      Modify the <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-permission" id="ref-for-dom-notification-permission">permission</a></code> static getter steps by replacing them with the following: 
     <ol>
      <li data-md>
-      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object">current global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑨">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③②">prerendering navigable</a>, then return "<code>default</code>".</p>
-      <p class="note" role="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③③">prerendering navigables</a>. Web developers can then call <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission①">Notification.requestPermission()</a></code>, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "<code>granted</code>" or "<code>denied</code>", so the browser might not actually ask the user like would normally be the case with "<code>default</code>". But that’s OK: it’s not observable to web developer code.</p>
+      <p>If the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#current-global-object" id="ref-for-current-global-object">current global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable⑨">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③①">prerendering navigable</a>, then return "<code>default</code>".</p>
+      <p class="note" role="note">This allows implementations to avoid looking up the actual permission state, which might not be synchronously accessible especially in the case of <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③②">prerendering navigables</a>. Web developers can then call <code class="idl"><a data-link-type="idl" href="https://notifications.spec.whatwg.org/#dom-notification-requestpermission" id="ref-for-dom-notification-requestpermission①">Notification.requestPermission()</a></code>, which per the above modifications will only actually do anything after activation. At that time we might discover that the permission is "<code>granted</code>" or "<code>denied</code>", so the browser might not actually ask the user like would normally be the case with "<code>default</code>". But that’s OK: it’s not observable to web developer code.</p>
      <li data-md>
       <p>Otherwise, <a data-link-type="dfn" href="https://notifications.spec.whatwg.org/#get-the-notifications-permission-state" id="ref-for-get-the-notifications-permission-state">get the notifications permission state</a> and return it.</p>
     </ol>
@@ -1334,7 +1324,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-start" id="ref-for-dom-sensor-start">start()</a></code> method steps by inserting the following steps after the state is set to "<code>activating</code>": 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①⓪">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③④">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⓪">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑥">post-prerendering activation steps list</a> and return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①②">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①⓪">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③③">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⓪">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑥">post-prerendering activation steps list</a> and return.</p>
      <li data-md>
       <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②①">this</a>.<code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-state-slot" id="ref-for-dom-sensor-state-slot">[[state]]</a></code> is "<code>idle</code>", then return.</p>
       <p class="note" role="note">This ensures that if this portion of the algorithm was delayed due to prerendering, and in the meantime <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/sensors/#dom-sensor-stop" id="ref-for-dom-sensor-stop">stop()</a></code> was called, we do nothing upon activating the prerender. </p>
@@ -1349,7 +1339,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/battery/#dom-navigator-getbattery" id="ref-for-dom-navigator-getbattery">getBattery()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①①">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑤">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑤">this</a>.<a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-batterypromise" id="ref-for-dfn-batterypromise">[[BatteryPromise]]</a>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①③">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①①">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③④">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑦">post-prerendering activation steps list</a> and return <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑤">this</a>.<a data-link-type="dfn" href="https://w3c.github.io/battery/#dfn-batterypromise" id="ref-for-dfn-batterypromise">[[BatteryPromise]]</a>.</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.3.12" id="patch-orientation-lock"><span class="secno">6.3.12. </span><span class="content">Screen Orientation API</span><a class="self-link" href="#patch-orientation-lock"></a></h4>
@@ -1359,7 +1349,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>promise</var> be a new promise.</p>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①②">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑥">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑧">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑥">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①④">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①②">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑤">prerendering navigable</a>, then append the following steps to <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑦">this</a>'s <a data-link-type="dfn" href="#platform-object-post-prerendering-activation-steps-list" id="ref-for-platform-object-post-prerendering-activation-steps-list⑧">post-prerendering activation steps list</a> and return <var>promise</var>.</p>
      <li data-md>
       <p>If the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#user-agent" id="ref-for-user-agent①">user agent</a> does not support locking the screen orientation, then <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#reject" id="ref-for-reject">reject</a> <var>promise</var> with a "<code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#notsupportederror" id="ref-for-notsupportederror">NotSupportedError</a></code>" <code class="idl"><a data-link-type="idl" href="https://webidl.spec.whatwg.org/#idl-DOMException" id="ref-for-idl-DOMException①">DOMException</a></code> and return <var>promise</var>.</p>
      <li data-md>
@@ -1375,10 +1365,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dom-navigator-getgamepads" id="ref-for-dom-navigator-getgamepads">getGamepads()</a></code> method steps by prepending the following step: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①③">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑦">prerendering navigable</a>, then return an empty sequence.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑧">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑤">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①③">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑥">prerendering navigable</a>, then return an empty sequence.</p>
     </ol>
    </div>
-   <p class="algorithm" data-algorithm="gamepad events patch"> Modify the discussion of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected">gamepadconnected</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepaddisconnected" id="ref-for-dfn-gamepaddisconnected">gamepaddisconnected</a></code> events to specify that the user agent must not dispatch these events if the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window④">Window</a></code> object’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①④">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑧">prerendering navigable</a>. </p>
+   <p class="algorithm" data-algorithm="gamepad events patch"> Modify the discussion of the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected">gamepadconnected</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepaddisconnected" id="ref-for-dfn-gamepaddisconnected">gamepaddisconnected</a></code> events to specify that the user agent must not dispatch these events if the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window" id="ref-for-window④">Window</a></code> object’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①④">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑦">prerendering navigable</a>. </p>
    <div class="algorithm" data-algorithm="gamepadconnected post-prerendering">
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/gamepad/#dfn-gamepadconnected" id="ref-for-dfn-gamepadconnected①">gamepadconnected</a></code> section to indicate that every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①③">Document</a></code> <var>document</var>’s <a data-link-type="dfn" href="#document-post-prerendering-activation-steps-list" id="ref-for-document-post-prerendering-activation-steps-list⑤">post-prerendering activation steps list</a> should gain the following steps: 
     <ol>
@@ -1396,7 +1386,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices" id="ref-for-dom-mediadevices">MediaDevices</a></code> section by prepending the following step to the <a data-link-type="dfn" href="https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps" id="ref-for-dfn-device-change-notification-steps">device change notification steps</a>: 
     <ol>
      <li data-md>
-      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑦">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①⑤">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑨">prerendering navigable</a>, then return.</p>
+      <p>If <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⑨">this</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①⑦">relevant global object</a>'s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable" id="ref-for-window-navigable①⑤">navigable</a> is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑧">prerendering navigable</a>, then return.</p>
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.3.17" id="audio-output-patch"><span class="secno">6.3.17. </span><span class="content">Audio Output Devices API</span><a class="self-link" href="#audio-output-patch"></a></h4>
@@ -1423,7 +1413,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h4 class="heading settled" data-level="6.3.27" id="web-locks-patch"><span class="secno">6.3.27. </span><span class="content">Web Locks API</span><a class="self-link" href="#web-locks-patch"></a></h4>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-request" id="ref-for-dom-lockmanager-request">request(name, callback)</a></code>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-request-name-options-callback" id="ref-for-dom-lockmanager-request-name-options-callback">request(name, options, callback)</a></code>, and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/web-locks/#dom-lockmanager-query" id="ref-for-dom-lockmanager-query">query()</a></code>.</p>
    <h3 class="heading settled" data-level="6.4" id="implicitly-restricted"><span class="secno">6.4. </span><span class="content">Implicitly restricted APIs</span><a class="self-link" href="#implicitly-restricted"></a></h3>
-   <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable④⓪">prerendering navigable</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-window" id="ref-for-nav-window②">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document" id="ref-for-nav-document⑨">active document</a> will never have. These properties include:</p>
+   <p>Some APIs do not need modifications because they will automatically fail or no-op without a property that a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable③⑨">prerendering navigable</a>, its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-window" id="ref-for-nav-window②">active window</a>, or its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document" id="ref-for-nav-document⑨">active document</a> will never have. These properties include:</p>
    <ul>
     <li data-md>
      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation①">transient activation</a> or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#sticky-activation" id="ref-for-sticky-activation">sticky activation</a></p>
@@ -1486,7 +1476,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#prerendering-traversable-activate">activate</a><span>, in § 1.2</span>
    <li><a href="#dom-performancenavigationtiming-activationstart">activationStart</a><span>, in § 3.3</span>
    <li><a href="#document-activation-start-time">activation start time</a><span>, in § 1.2</span>
-   <li><a href="#add-a-new-prerender-accept-ch-cache-entry">add a new prerender Accept-CH cache entry</a><span>, in § 3.4</span>
    <li><a href="#supports-loading-mode-credentialed-prerender">credentialed-prerender</a><span>, in § 4</span>
    <li><a href="#extendedattrdef-delaywhileprerendering">[DelayWhilePrerendering]</a><span>, in § 6.3.1</span>
    <li><a href="#prerendering-traversable-finalize-activation">finalize activation</a><span>, in § 1.2</span>
@@ -1541,38 +1530,31 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache">https://wicg.github.io/client-hints-infrastructure#accept-ch-cache</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-accept-ch-cache">1.2. Prerendering navigables</a>
-    <li><a href="#ref-for-accept-ch-cache①">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-accept-ch-cache②">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-add-a-new-accept-ch-cache-entry">
-   <a href="https://wicg.github.io/client-hints-infrastructure#add-a-new-accept-ch-cache-entry">https://wicg.github.io/client-hints-infrastructure#add-a-new-accept-ch-cache-entry</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-add-a-new-accept-ch-cache-entry">1.2. Prerendering navigables</a>
-    <li><a href="#ref-for-add-a-new-accept-ch-cache-entry①">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-add-a-new-accept-ch-cache-entry②">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-abstract-opdef-append-client-hints-to-request">
-   <a href="https://wicg.github.io/client-hints-infrastructure#abstract-opdef-append-client-hints-to-request">https://wicg.github.io/client-hints-infrastructure#abstract-opdef-append-client-hints-to-request</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-abstract-opdef-append-client-hints-to-request">3.4. Interaction with Client Hint Cache</a>
+    <li><a href="#ref-for-accept-ch-cache①">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-accept-ch-cache②">(2)</a> <a href="#ref-for-accept-ch-cache③">(3)</a> <a href="#ref-for-accept-ch-cache④">(4)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-client-hints-set">
    <a href="https://wicg.github.io/client-hints-infrastructure#client-hints-set">https://wicg.github.io/client-hints-infrastructure#client-hints-set</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-client-hints-set">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-client-hints-set①">(2)</a>
+    <li><a href="#ref-for-client-hints-set">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-environment-settings-object-client-hints-set">
-   <a href="https://wicg.github.io/client-hints-infrastructure#environment-settings-object-client-hints-set">https://wicg.github.io/client-hints-infrastructure#environment-settings-object-client-hints-set</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-abstract-opdef-create-or-override-the-cached-client-hints-set">
+   <a href="https://wicg.github.io/client-hints-infrastructure#abstract-opdef-create-or-override-the-cached-client-hints-set">https://wicg.github.io/client-hints-infrastructure#abstract-opdef-create-or-override-the-cached-client-hints-set</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-environment-settings-object-client-hints-set">3.4. Interaction with Client Hint Cache</a>
+    <li><a href="#ref-for-abstract-opdef-create-or-override-the-cached-client-hints-set">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
-  <aside class="dfn-panel" data-for="term-for-abstract-opdef-update-the-client-hints-set">
-   <a href="https://wicg.github.io/client-hints-infrastructure#abstract-opdef-update-the-client-hints-set">https://wicg.github.io/client-hints-infrastructure#abstract-opdef-update-the-client-hints-set</a><b>Referenced in:</b>
+  <aside class="dfn-panel" data-for="term-for-accept-ch-cache-origin">
+   <a href="https://wicg.github.io/client-hints-infrastructure#accept-ch-cache-origin">https://wicg.github.io/client-hints-infrastructure#accept-ch-cache-origin</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-abstract-opdef-update-the-client-hints-set">3.4. Interaction with Client Hint Cache</a>
+    <li><a href="#ref-for-accept-ch-cache-origin">3.4. Interaction with Client Hint Cache</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-update-the-client-hints-set-from-cache">
+   <a href="https://wicg.github.io/client-hints-infrastructure#update-the-client-hints-set-from-cache">https://wicg.github.io/client-hints-infrastructure#update-the-client-hints-set-from-cache</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-update-the-client-hints-set-from-cache">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-clipboard-read">
@@ -1706,18 +1688,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://fetch.spec.whatwg.org/#concept-response-status">https://fetch.spec.whatwg.org/#concept-response-status</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-response-status">2.2. Navigation fetch changes</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-request-url">
-   <a href="https://fetch.spec.whatwg.org/#concept-request-url">https://fetch.spec.whatwg.org/#concept-request-url</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-request-url">3.4. Interaction with Client Hint Cache</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-concept-response-url">
-   <a href="https://fetch.spec.whatwg.org/#concept-response-url">https://fetch.spec.whatwg.org/#concept-response-url</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-response-url">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-dom-window-showdirectorypicker">
@@ -2196,6 +2166,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-concept-origin①">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-concept-origin②">(2)</a>
    </ul>
   </aside>
+  <aside class="dfn-panel" data-for="term-for-concept-settings-object-origin">
+   <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin">https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-origin</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-concept-settings-object-origin">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-concept-settings-object-origin①">(2)</a>
+   </ul>
+  </aside>
   <aside class="dfn-panel" data-for="term-for-concept-WorkerGlobalScope-owner-set">
    <a href="https://html.spec.whatwg.org/multipage/workers.html#concept-WorkerGlobalScope-owner-set">https://html.spec.whatwg.org/multipage/workers.html#concept-WorkerGlobalScope-owner-set</a><b>Referenced in:</b>
    <ul>
@@ -2287,6 +2263,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://html.spec.whatwg.org/multipage/browsers.html#same-origin">https://html.spec.whatwg.org/multipage/browsers.html#same-origin</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-same-origin">2.2. Navigation fetch changes</a>
+    <li><a href="#ref-for-same-origin①">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-same-origin②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-same-site">
@@ -2418,6 +2395,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-map-exists">1.2. Prerendering navigables</a>
     <li><a href="#ref-for-map-exists①">2.1. Allowing activation in place of navigation</a>
+    <li><a href="#ref-for-map-exists②">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-iterate">
@@ -2473,7 +2451,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside class="dfn-panel" data-for="term-for-map-set">
    <a href="https://infra.spec.whatwg.org/#map-set">https://infra.spec.whatwg.org/#map-set</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-map-set">3.4. Interaction with Client Hint Cache</a>
+    <li><a href="#ref-for-map-set">1.2. Prerendering navigables</a>
+    <li><a href="#ref-for-map-set①">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-map-set②">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-list-size">
@@ -2481,12 +2460,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-list-size">1.2. Prerendering navigables</a>
     <li><a href="#ref-for-list-size①">5.1. APIs for creating and navigating browsing contexts by name</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="term-for-set-union">
-   <a href="https://infra.spec.whatwg.org/#set-union">https://infra.spec.whatwg.org/#set-union</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-set-union">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-user-agent">
@@ -2765,7 +2738,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-concept-url-origin">1.2. Prerendering navigables</a> <a href="#ref-for-concept-url-origin①">(2)</a>
     <li><a href="#ref-for-concept-url-origin②">2.2. Navigation fetch changes</a>
-    <li><a href="#ref-for-concept-url-origin③">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-concept-url-origin④">(2)</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-url-scheme">
@@ -3019,11 +2991,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[CLIENT-HINTS-INFRASTRUCTURE]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="term-for-accept-ch-cache">accept-ch cache</span>
-     <li><span class="dfn-paneled" id="term-for-add-a-new-accept-ch-cache-entry">add a new accept-ch cache entry</span>
-     <li><span class="dfn-paneled" id="term-for-abstract-opdef-append-client-hints-to-request">append client hints to request</span>
      <li><span class="dfn-paneled" id="term-for-client-hints-set">client hints set</span>
-     <li><span class="dfn-paneled" id="term-for-environment-settings-object-client-hints-set">client hints set <small>(for environment settings object)</small></span>
-     <li><span class="dfn-paneled" id="term-for-abstract-opdef-update-the-client-hints-set">update the client hints set</span>
+     <li><span class="dfn-paneled" id="term-for-abstract-opdef-create-or-override-the-cached-client-hints-set">create or override the cached client hints set</span>
+     <li><span class="dfn-paneled" id="term-for-accept-ch-cache-origin">origin</span>
+     <li><span class="dfn-paneled" id="term-for-update-the-client-hints-set-from-cache">update the client hints set from cache</span>
     </ul>
    <li>
     <a data-link-type="biblio">[CLIPBOARD-APIS]</a> defines the following terms:
@@ -3069,8 +3040,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-concept-network-error">network error</span>
      <li><span class="dfn-paneled" id="term-for-concept-response">response</span>
      <li><span class="dfn-paneled" id="term-for-concept-response-status">status</span>
-     <li><span class="dfn-paneled" id="term-for-concept-request-url">url <small>(for request)</small></span>
-     <li><span class="dfn-paneled" id="term-for-concept-response-url">url <small>(for response)</small></span>
     </ul>
    <li>
     <a data-link-type="biblio">[FILE-SYSTEM-ACCESS]</a> defines the following terms:
@@ -3172,6 +3141,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-dom-open">open(url, target, features)</span>
      <li><span class="dfn-paneled" id="term-for-opener-browsing-context">opener browsing context</span>
      <li><span class="dfn-paneled" id="term-for-concept-origin">origin</span>
+     <li><span class="dfn-paneled" id="term-for-concept-settings-object-origin">origin <small>(for environment settings object)</small></span>
      <li><span class="dfn-paneled" id="term-for-concept-WorkerGlobalScope-owner-set">owner set</span>
      <li><span class="dfn-paneled" id="term-for-nav-parent">parent</span>
      <li><span class="dfn-paneled" id="term-for-playing-the-media-resource">playing the media resource</span>
@@ -3224,7 +3194,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="term-for-map-remove">remove <small>(for map)</small></span>
      <li><span class="dfn-paneled" id="term-for-map-set">set</span>
      <li><span class="dfn-paneled" id="term-for-list-size">size</span>
-     <li><span class="dfn-paneled" id="term-for-set-union">union</span>
      <li><span class="dfn-paneled" id="term-for-user-agent">user agent</span>
     </ul>
    <li>
@@ -3594,24 +3563,24 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-prerendering-navigable⑥">2.3. Maintaining a trivial session history</a> <a href="#ref-for-prerendering-navigable⑦">(2)</a> <a href="#ref-for-prerendering-navigable⑧">(3)</a>
     <li><a href="#ref-for-prerendering-navigable⑨">2.4. Interaction with worker lifetime</a> <a href="#ref-for-prerendering-navigable①⓪">(2)</a>
     <li><a href="#ref-for-prerendering-navigable①①">3.1. Interaction with Page Visibility</a>
-    <li><a href="#ref-for-prerendering-navigable①②">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-prerendering-navigable①③">(2)</a> <a href="#ref-for-prerendering-navigable①④">(3)</a> <a href="#ref-for-prerendering-navigable①⑤">(4)</a>
-    <li><a href="#ref-for-prerendering-navigable①⑥">4. The `Supports-Loading-Mode` HTTP response header</a>
-    <li><a href="#ref-for-prerendering-navigable①⑦">5. Preventing nonsensical behaviors</a>
-    <li><a href="#ref-for-prerendering-navigable①⑧">5.1. APIs for creating and navigating browsing contexts by name</a>
-    <li><a href="#ref-for-prerendering-navigable①⑨">6. Preventing intrusive behaviors</a>
-    <li><a href="#ref-for-prerendering-navigable②⓪">6.1. Downloading resources</a> <a href="#ref-for-prerendering-navigable②①">(2)</a>
-    <li><a href="#ref-for-prerendering-navigable②②">6.2. User prompts</a> <a href="#ref-for-prerendering-navigable②③">(2)</a>
-    <li><a href="#ref-for-prerendering-navigable②④">6.3. Delaying async API results</a>
-    <li><a href="#ref-for-prerendering-navigable②⑤">6.3.1. The [DelayWhilePrerendering] extended attribute</a> <a href="#ref-for-prerendering-navigable②⑥">(2)</a>
-    <li><a href="#ref-for-prerendering-navigable②⑦">6.3.4. Geolocation API</a> <a href="#ref-for-prerendering-navigable②⑧">(2)</a> <a href="#ref-for-prerendering-navigable②⑨">(3)</a>
-    <li><a href="#ref-for-prerendering-navigable③⓪">6.3.5. Web Serial API</a>
-    <li><a href="#ref-for-prerendering-navigable③①">6.3.6. Notifications API</a> <a href="#ref-for-prerendering-navigable③②">(2)</a> <a href="#ref-for-prerendering-navigable③③">(3)</a>
-    <li><a href="#ref-for-prerendering-navigable③④">6.3.9. Generic Sensor API</a>
-    <li><a href="#ref-for-prerendering-navigable③⑤">6.3.11. Battery Status API</a>
-    <li><a href="#ref-for-prerendering-navigable③⑥">6.3.12. Screen Orientation API</a>
-    <li><a href="#ref-for-prerendering-navigable③⑦">6.3.13. Gamepad</a> <a href="#ref-for-prerendering-navigable③⑧">(2)</a>
-    <li><a href="#ref-for-prerendering-navigable③⑨">6.3.16. Media Capture and Streams</a>
-    <li><a href="#ref-for-prerendering-navigable④⓪">6.4. Implicitly restricted APIs</a>
+    <li><a href="#ref-for-prerendering-navigable①②">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-prerendering-navigable①③">(2)</a> <a href="#ref-for-prerendering-navigable①④">(3)</a>
+    <li><a href="#ref-for-prerendering-navigable①⑤">4. The `Supports-Loading-Mode` HTTP response header</a>
+    <li><a href="#ref-for-prerendering-navigable①⑥">5. Preventing nonsensical behaviors</a>
+    <li><a href="#ref-for-prerendering-navigable①⑦">5.1. APIs for creating and navigating browsing contexts by name</a>
+    <li><a href="#ref-for-prerendering-navigable①⑧">6. Preventing intrusive behaviors</a>
+    <li><a href="#ref-for-prerendering-navigable①⑨">6.1. Downloading resources</a> <a href="#ref-for-prerendering-navigable②⓪">(2)</a>
+    <li><a href="#ref-for-prerendering-navigable②①">6.2. User prompts</a> <a href="#ref-for-prerendering-navigable②②">(2)</a>
+    <li><a href="#ref-for-prerendering-navigable②③">6.3. Delaying async API results</a>
+    <li><a href="#ref-for-prerendering-navigable②④">6.3.1. The [DelayWhilePrerendering] extended attribute</a> <a href="#ref-for-prerendering-navigable②⑤">(2)</a>
+    <li><a href="#ref-for-prerendering-navigable②⑥">6.3.4. Geolocation API</a> <a href="#ref-for-prerendering-navigable②⑦">(2)</a> <a href="#ref-for-prerendering-navigable②⑧">(3)</a>
+    <li><a href="#ref-for-prerendering-navigable②⑨">6.3.5. Web Serial API</a>
+    <li><a href="#ref-for-prerendering-navigable③⓪">6.3.6. Notifications API</a> <a href="#ref-for-prerendering-navigable③①">(2)</a> <a href="#ref-for-prerendering-navigable③②">(3)</a>
+    <li><a href="#ref-for-prerendering-navigable③③">6.3.9. Generic Sensor API</a>
+    <li><a href="#ref-for-prerendering-navigable③④">6.3.11. Battery Status API</a>
+    <li><a href="#ref-for-prerendering-navigable③⑤">6.3.12. Screen Orientation API</a>
+    <li><a href="#ref-for-prerendering-navigable③⑥">6.3.13. Gamepad</a> <a href="#ref-for-prerendering-navigable③⑦">(2)</a>
+    <li><a href="#ref-for-prerendering-navigable③⑧">6.3.16. Media Capture and Streams</a>
+    <li><a href="#ref-for-prerendering-navigable③⑨">6.4. Implicitly restricted APIs</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="prerendering-traversable">
@@ -3707,12 +3676,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <ul>
     <li><a href="#ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache">1.2. Prerendering navigables</a>
     <li><a href="#ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache①">3.4. Interaction with Client Hint Cache</a> <a href="#ref-for-prerendering-navigable-prerender-scoped-accept-ch-cache②">(2)</a>
-   </ul>
-  </aside>
-  <aside class="dfn-panel" data-for="add-a-new-prerender-accept-ch-cache-entry">
-   <b><a href="#add-a-new-prerender-accept-ch-cache-entry">#add-a-new-prerender-accept-ch-cache-entry</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-add-a-new-prerender-accept-ch-cache-entry">3.4. Interaction with Client Hint Cache</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="http-headerdef-supports-loading-mode">
