@@ -535,7 +535,7 @@ This stores which client hints each origin has opted into receiving, until it ca
   1. Otherwise, [=map/set=] [=Accept-CH cache=][|origin|] to |hintSet|.
 </div>
 
-<h2 id="supports-loading-mode">The \`<dfn http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
+<h2 id="supports-loading-mode">The \`<dfn export http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
 
 <em>The following section would be added as a sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsers">Loading web pages</a> section.</em>
 
@@ -543,11 +543,11 @@ In some cases, cross-origin web pages might not be prepared to be loaded in a no
 
 <p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored. However, authors are best off avoiding any form except the single-token one, for future compatibility.
 
-The \`<code><dfn for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering navigable=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
+The \`<code><dfn export for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering navigable=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
 
-The \`<code><dfn for="Supports-Loading-Mode">uncredentialed-prefetch</dfn></code>\` token indicates that the response is suitable to use even if a top-level navigation to this URL would ordinarily send [=credentials=] such as cookies. For instance, the response may be identical or it may be semantically equivalent (e.g., an HTML resource containing script which can update the document after navigation, when local user state is available).
+The \`<code><dfn export for="Supports-Loading-Mode">uncredentialed-prefetch</dfn></code>\` token indicates that the response is suitable to use even if a top-level navigation to this URL would ordinarily send [=credentials=] such as cookies. For instance, the response may be identical or it may be semantically equivalent (e.g., an HTML resource containing script which can update the document after navigation, when local user state is available).
 
-To <dfn>get the supported loading modes</dfn> for a [=response=] |response|:
+To <dfnexport >get the supported loading modes</dfn> for a [=response=] |response|:
 
 1. If |response| is a [=network error=], then return an empty list.
 

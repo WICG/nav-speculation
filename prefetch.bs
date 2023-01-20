@@ -519,9 +519,8 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
                 1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
                 1. Let |hasConflictingCredentials| be true if there are [=credentials=] associated with |currentURL| and |hypotheticalPartitionKey|, and false otherwise.
                 1. If |hasConflictingCredentials| is true:
-                    1. Let |supportsLoadingModes| be the result of [=getting a structured field value=] given <a http-header>`` `Supports-Loading-Mode` ``</a> and "`list`" from |response|'s [=response/header list=].
-                    1. Let |supportsUncredentialedPrefetch| be true if |supportsLoadingMode| contains an item which is the <a spec="RFC8941">Token</a> "`uncredentialed-prefetch`", and false otherwise.
-                    1. If |supportsUncredentialedPrefetch| is false, then [=set/append=] |currentURL|'s [=url/origin=] to |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/origins with conflicting credentials=].
+                    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
+                    1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then [=set/append=] |currentURL|'s [=url/origin=] to |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/origins with conflicting credentials=].
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -633,8 +632,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=] whose [=cross-partition prefetch state/origins with conflicting credentials=] is not [=set/empty=], then set |navigationParams| to null.
 
-            <div class="note">This means that if any origin along the redirect chain had credentials (and did not override this behavior using <a http-header>), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-            <div class="issue">Update this to include the `` `Supports-Loading-Mode` `` mechanism to allow responses to continue despite cookies.</div>
+            <div class="note">This means that if any origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
             1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
             1. [=Assert=]: |navigationParams|'s [=navigation params/response=] is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
@@ -754,21 +752,3 @@ The following parameters are defined for the "`prefetch`" token:
 
     This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
   </div>
-
-<!--
-<h2 id="supports-loading-mode-header">The `Supports-Loading-Mode` HTTP request header</h2>
-
-The <dfn http-header>`` `Supports-Loading-Mode` ``</dfn> HTTP response header specifies that the response can be used by the user agent despite unusual circumstances (not necessarily specified in the request headers).
-
-In the context of this specification, it is specifically used to indicate that a response can be used to satisfy a prefetch request, even if the user agent has [=credentials=] which would ordinarily have been sent, but were not because the prefetch was initiated from another site.
-
-<div class="note">[[FENCED-FRAME]] is an example of another specification that intends to use this response header field</div>
-
-The header field is an [[RFC8941]] Structured Header whose value must be a a <a spec="RFC8941">List</a>. Its ABNF is:
-
-```
-Supports-Loading-Mode = sf-list
-```
-
-It may contain a <a spec="RFC8941">Item</a> member which is the <a spec="RFC8941">Token</a> "`uncredentialed-prefetch`". If so, this response is suitable to use even if a top-level navigation to this URL would ordinarily send [=credentials=] such as cookies. For instance, the response may be identical or it may be semantically equivalent (e.g., an HTML resource containing script which can update the document after navigation when the user state is available).
--->
