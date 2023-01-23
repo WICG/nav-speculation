@@ -205,7 +205,7 @@ A <dfn>cross-partition prefetch state</dfn> is a [=struct=] with the following [
 * <dfn for="cross-partition prefetch state">isolated partition key</dfn>, a [=network partition key=] whose first item is an [=opaque origin=] and which represents a separate partition in which state can be temporarily stored
 * <dfn for="cross-partition prefetch state">origins with conflicting credentials</dfn>, an [=ordered set=] of [=origins=] (initially empty)
 
-<p class="note">Prefetches which start in a different partition as their referrer (e.g., because the URL is cross-site) abort when they would return to that partition (and thus would be credentialed normally), and when an origin for which credentials would have been sent was encountered (unless the response specifically indicates otherwise in a [:Supports-Loading-Mode:] header field).</p>
+<p class="note">Prefetches which start in a different partition as their referrer (e.g., because the URL is cross-site) abort when they would return to that partition (and thus would be credentialed normally). Unless the response indicates otherwise using [:Supports-Loading-Mode:], a request which would have ordinarily sent credentials but could not due to cross-partition prefetch also causes a prefetch to be abandoned.</p>
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 

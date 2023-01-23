@@ -541,7 +541,7 @@ This stores which client hints each origin has opted into receiving, until it ca
 
 In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header can be used. This header is a [=structured header=]; if present its value must be one or more of the [=structured header/tokens=] listed below.
 
-<p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored. However, authors are best off avoiding any form except the single-token one, for future compatibility.
+<p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored.
 
 The \`<code><dfn export for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering navigable=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
 
