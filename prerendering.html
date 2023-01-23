@@ -632,7 +632,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-17">17 January 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-01-23">23 January 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1158,10 +1158,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </div>
    <h2 class="heading settled" data-level="4" id="supports-loading-mode"><span class="secno">4. </span><span class="content">The `<dfn class="dfn-paneled" data-dfn-type="http-header" data-export id="http-headerdef-supports-loading-mode"><code>Supports-Loading-Mode</code></dfn>` HTTP response header</span><a class="self-link" href="#supports-loading-mode"></a></h2>
    <p><em>The following section would be added as a sub-section of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsers">Loading web pages</a> section.</em></p>
-   <p>In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the `<a data-link-type="http-header" href="#http-headerdef-supports-loading-mode" id="ref-for-http-headerdef-supports-loading-mode"><code>Supports-Loading-Mode</code></a>` HTTP response header can be used. This header is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#section-1" id="ref-for-section-1">structured header</a>; if present its value must be the single <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens">token</a> `<code><a data-link-type="dfn" href="#supports-loading-mode-credentialed-prerender" id="ref-for-supports-loading-mode-credentialed-prerender①">credentialed-prerender</a></code>`.</p>
-   <p class="note" role="note">The parsing is actually done as a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists">list</a> of <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens①">tokens</a>, and unknown tokens will be ignored. However, authors are best off avoiding any form except the single-token one, for future compatibility. </p>
-   <p>The `<code><dfn class="dfn-paneled" data-dfn-for="Supports-Loading-Mode" data-dfn-type="dfn" data-noexport id="supports-loading-mode-credentialed-prerender">credentialed-prerender</dfn></code>` token indicates that the response can be used to create a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑤">prerendering navigable</a>, despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in <a href="#navigate-fetch-patch">§ 2.2 Navigation fetch changes</a>.</p>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="get-the-supported-loading-modes">get the supported loading modes</dfn> for a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> <var>response</var>:</p>
+   <p>In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the `<a data-link-type="http-header" href="#http-headerdef-supports-loading-mode" id="ref-for-http-headerdef-supports-loading-mode"><code>Supports-Loading-Mode</code></a>` HTTP response header can be used. This header is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#section-1" id="ref-for-section-1">structured header</a>; if present its value must be one or more of the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens">tokens</a> listed below.</p>
+   <p class="note" role="note">The parsing is actually done as a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists">list</a> of <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens①">tokens</a>, and unknown tokens will be ignored. </p>
+   <p>The `<code><dfn class="dfn-paneled" data-dfn-for="Supports-Loading-Mode" data-dfn-type="dfn" data-export id="supports-loading-mode-credentialed-prerender">credentialed-prerender</dfn></code>` token indicates that the response can be used to create a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⑤">prerendering navigable</a>, despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in <a href="#navigate-fetch-patch">§ 2.2 Navigation fetch changes</a>.</p>
+   <p>The `<code><dfn data-dfn-for="Supports-Loading-Mode" data-dfn-type="dfn" data-export id="supports-loading-mode-uncredentialed-prefetch">uncredentialed-prefetch<a class="self-link" href="#supports-loading-mode-uncredentialed-prefetch"></a></dfn></code>` token indicates that the response is suitable to use even if a top-level navigation to this URL would ordinarily send <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials">credentials</a> such as cookies. For instance, the response may be identical or it may be semantically equivalent (e.g., an HTML resource containing script which can update the document after navigation, when local user state is available).</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="get-the-supported-loading-modes">get the supported loading modes</dfn> for a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> <var>response</var>:</p>
    <ol>
     <li data-md>
      <p>If <var>response</var> is a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error">network error</a>, then return an empty list.</p>
@@ -1501,6 +1502,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#start-referrer-initiated-prerendering">start referrer-initiated prerendering</a><span>, in § 1.2</span>
    <li><a href="#start-user-agent-initiated-prerendering">start user-agent initiated prerendering</a><span>, in § 1.2</span>
    <li><a href="#http-headerdef-supports-loading-mode">Supports-Loading-Mode</a><span>, in § 4</span>
+   <li><a href="#supports-loading-mode-uncredentialed-prefetch">uncredentialed-prefetch</a><span>, in § 4</span>
   </ul>
   <aside class="dfn-panel" data-for="term-for-dom-mediadevices-selectaudiooutput">
    <a href="https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput">https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput</a><b>Referenced in:</b>
@@ -1645,6 +1647,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <a href="https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess">https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-dom-navigator-requestmediakeysystemaccess">6.3.14. Encrypted Media Extensions</a>
+   </ul>
+  </aside>
+  <aside class="dfn-panel" data-for="term-for-credentials">
+   <a href="https://fetch.spec.whatwg.org/#credentials">https://fetch.spec.whatwg.org/#credentials</a><b>Referenced in:</b>
+   <ul>
+    <li><a href="#ref-for-credentials">4. The `Supports-Loading-Mode` HTTP response header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="term-for-concept-request-current-url">
@@ -3033,6 +3041,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="term-for-credentials">credentials</span>
      <li><span class="dfn-paneled" id="term-for-concept-request-current-url">current url</span>
      <li><span class="dfn-paneled" id="term-for-concept-header-list-get-structured-header">get a structured field value</span>
      <li><span class="dfn-paneled" id="term-for-concept-response-header-list">header list</span>
@@ -3688,7 +3697,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <b><a href="#supports-loading-mode-credentialed-prerender">#supports-loading-mode-credentialed-prerender</a></b><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-supports-loading-mode-credentialed-prerender">2.2. Navigation fetch changes</a>
-    <li><a href="#ref-for-supports-loading-mode-credentialed-prerender①">4. The `Supports-Loading-Mode` HTTP response header</a>
    </ul>
   </aside>
   <aside class="dfn-panel" data-for="get-the-supported-loading-modes">
