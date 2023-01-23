@@ -116,6 +116,10 @@ spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: dfn; text: domain-matches; url: cookie-domain
   type: dfn; text: canonicalized host name; url: cookie-domain-canonicalize
   type: dfn; text: path-matches; url: cookie-path
+spec: nav-speculation; urlPrefix: prerendering.html
+  type: dfn
+    text: getting the supported loading modes; url: get-the-supported-loading-modes
+    text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
 </pre>
 
 <h2 id="concepts">Concepts</h2>
@@ -201,7 +205,7 @@ A <dfn>cross-partition prefetch state</dfn> is a [=struct=] with the following [
 * <dfn for="cross-partition prefetch state">isolated partition key</dfn>, a [=network partition key=] whose first item is an [=opaque origin=] and which represents a separate partition in which state can be temporarily stored
 * <dfn for="cross-partition prefetch state">origins with conflicting credentials</dfn>, an [=ordered set=] of [=origins=] (initially empty)
 
-<p class="note">Prefetches which start in a different partition as their referrer (e.g., because the URL is cross-site) abort when they would return to that partition (and thus would be credentialed normally), and when an origin for which credentials would have been sent is encountered.</p>
+<p class="note">Prefetches which start in a different partition as their referrer (e.g., because the URL is cross-site) abort when they would return to that partition (and thus would be credentialed normally). Unless the response indicates otherwise using [:Supports-Loading-Mode:], a request which would have ordinarily sent credentials but could not due to cross-partition prefetch also causes a prefetch to be abandoned.</p>
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
@@ -478,11 +482,6 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             1. If |request| cannot be fetched given |prefetchRecord|'s [=prefetch record/anonymization policy=] for an [=implementation-defined=] reason, then set |response| to a [=network error=] and [=iteration/break=].
 
                 <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-            <!-- TODO(jbroman): where do we stash |originsWithConflictingCredentials|? on the prefetch record? -->
-            1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
-                1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |navigable|, |request|'s [=request/current URL=], and null.
-                1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
-                1. If there are [=credentials=] associated with |request|'s [=request/current URL=] and |hypotheticalPartitionKey|, then [=set/append=] |request|'s [=request/current URL=]'s [=url/origin=] to |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/origins with conflicting credentials=].
             1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
         1. Set |response| to null.
         1. If |fetchController| is null, then set |fetchController| to the result of [=fetching=] |request|, with <i>[=fetch/processEarlyHintsResponse=]</i> set to |processEarlyHintsResponse| as defined below, <i>[=fetch/processResponse=]</i> set to |processResponse| as defined below, and <i>[=fetch/useParallelQueue=]</i> set to true.
@@ -506,7 +505,15 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |request|'s [=request/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |request|'s [=request/referrer=].
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
         1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
-        1. If |prefetchRecord| was given, then [=redirect chain/update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
+        1. If |prefetchRecord| was given, then:
+            1. [=redirect chain/Update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
+            1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=]:
+                1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |navigable|, |currentURL|, and null.
+                1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
+                1. Let |hasConflictingCredentials| be true if there are [=credentials=] associated with |currentURL| and |hypotheticalPartitionKey|, and false otherwise.
+                1. If |hasConflictingCredentials| is true:
+                    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
+                    1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then [=set/append=] |currentURL|'s [=url/origin=] to |prefetchRecord|'s [=prefetch record/partition state=]'s [=cross-partition prefetch state/origins with conflicting credentials=].
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -618,8 +625,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/partition state=] is a [=cross-partition prefetch state=] whose [=cross-partition prefetch state/origins with conflicting credentials=] is not [=set/empty=], then set |navigationParams| to null.
 
-            <div class="note">This means that if any origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-            <div class="issue">Update this to include the `` `Supports-Loading-Mode` `` mechanism to allow responses to continue despite cookies.</div>
+            <div class="note">This means that if any origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
             1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
             1. [=Assert=]: |navigationParams|'s [=navigation params/response=] is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.

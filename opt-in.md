@@ -48,7 +48,8 @@ To resolve this problem, user agents must only preload pages which either:
 * Have no stored credentials (for prefetch) or storage of any kind (for prerender); or
 * Indicate that they are prepared to perform this sort of upgrade, by sending the appropriate `Supports-Loading-Mode` header value: either `uncredentialed-prefetch`, `uncredentialed-prerender`, or both.
 
-_Note: these values are not currently implemented in Chromium._
+> **Note**
+> `uncredentialed-prerender` is somewhat speculative at this point; see [cross-site prerendering](prerendering-cross-site.md) for some of the complexity there.
 
 ### Cross-origin same-site prerendering
 
