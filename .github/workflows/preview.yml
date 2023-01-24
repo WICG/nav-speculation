@@ -1,0 +1,66 @@
+name: Preview
+on:
+  pull_request:
+    paths:
+    - '**.bs'
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      PULL_NUMBER: "${{ github.event.number }}"
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+    - name: Build (head)
+      run: |
+        make ci
+        mkdir -p upload
+        mv out upload/head
+    - name: Build (base)
+      id: build_base
+      continue-on-error: true
+      run: |
+        git checkout HEAD^
+        make ci
+        mv out upload/base
+    - name: Checkout w3c/htmldiff-ui
+      if: ${{ steps.build_base.outcome == 'success' }}
+      uses: actions/checkout@v3
+      with:
+        repository: w3c/htmldiff-ui
+        ref: refs/heads/main
+        path: htmldiff-ui
+    - name: Diff
+      if: ${{ steps.build_base.outcome == 'success' }}
+      shell: bash
+      run: |
+        mkdir -p upload/diff
+        for head_file in $(find upload/head -name '*.html'); do
+          base_file=upload/base/"${head_file#upload/head/}"
+          diff_file=upload/diff/"${head_file#upload/head/}"
+          if [[ -e "$base_file" ]]; then
+            if cmp -s "$head_file" "$base_file"; then
+              rm "$base_file" "$head_file"
+            else
+              perl htmldiff-ui/htmldiff.pl "$base_file" "$head_file" "$diff_file"
+            fi
+          fi
+        done
+    - name: Compress
+      shell: bash
+      run: |
+        which brotli >/dev/null || sudo apt-get install -y brotli
+        mkdir -p upload-compressed/{base,head,diff}
+        for file in $(find upload -name '*.html'); do
+          dir=`dirname upload-compressed/"${file#upload/}"`
+          mkdir -p "$dir"
+          brotli "$file" -o upload-compressed/"${file#upload/}"
+        done
+        echo -n "$PULL_NUMBER" >upload-compressed/.pull-number
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: upload-compressed
+        path: upload-compressed/

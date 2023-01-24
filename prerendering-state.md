@@ -10,7 +10,7 @@ doc](https://docs.google.com/document/d/1Xzw0k8DgltI2ohapuDKmjRZLv7NVrRFGusW8IBt
 
 ## Background
 
-Pages need to know when they're being rendered inside a [prerendering browsing context](browsing-context.md).
+Pages need to know when they're being rendered inside a [prerendering browsing context](https://wicg.github.io/nav-speculation/prerendering.html#prerendering-browsing-context).
 Some examples of divergent behavior:
 
 * Avoid fetching large video resources
@@ -74,8 +74,8 @@ partial interface Document {
 };
 ```
 
-`document.prerendering` returns true if the document's top-level browsing context is a [prerendering browsing
-context](browsing-context.md). The `prerenderingchange` event is fired whenever this value changes.
+`document.prerendering` returns true if the document's top-level browsing context is a prerendering browsing
+context. The `prerenderingchange` event is fired whenever this value changes.
 
 A state separate from visibility ensures existing visibility-based states are correctly accounted for. It also forces
 authors to consider their page's behavior in light of prerendering restrictions and non-interactivity and the fact that
@@ -135,8 +135,8 @@ answers here aren't clear but this is worth considering.
 
 ### Naming bikeshed
 
-We've called this state `prerendering` here to make clear the association between it and a [prerendering browsing
-context](browsing-context.md). However, this _may_ be misleading in some cases. Portals aren't exactly prerendering in the way most authors
+We've called this state `prerendering` here to make clear the association between it and a prerendering browsing
+context. However, this _may_ be misleading in some cases. Portals aren't exactly prerendering in the way most authors
 would think about it. Additionally, a portal may enter the prerendering state from a regular context; this feels
 unintuitive to call "prerendering".
 
