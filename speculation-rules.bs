@@ -630,9 +630,8 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. [=Assert=]: This step is not reached.
 </div>
 
-<h2 id="content-security-policy">Content-Security-Policy</h2>
-<h3 id="content-security-policy-patches">Required Spec Patches</h3>
-Inline script use is also restricted by the [[CSP]], but there is a case a developer doesn't want to permit general inline scripts, but want to permit inline speculation rules. So, we make the following change that extends [[CSP]] to support a new source keyword for inline speculation rules.
+<h2 id="content-security-policy">Content Security Policy</h2>
+Inline script use is restricted by [[CSP]], but there are cases where a developer doesn't want to permit general inline scripts, but wants to permit inline speculation rules. So, we make the following change that extends [[CSP]] to support a new source keyword for inline speculation rules.
 
 <h3 id="content-security-policy-patches-directives">Directives</h3>
 In the [[CSP#framework-directives]], we define several associated algorithms, and an <dfn dfn-type="grammar" link-type="grammar">inline check</dfn> algorithm needs a patch to define how to choose the type argument.
@@ -671,7 +670,7 @@ Also we make the following change for [[CSP#directive-script-src]].
   3.  Inline <{script}> blocks MUST pass through [[CSP#should-block-inline]]. Their behavior will be blocked unless every policy allows inline script, either implicitly by not specifying a `script-src` (or `default-src`) directive, or explicitly, by specifying "`unsafe-inline`", a <a grammar>nonce-source</a> or a <a grammar>hash-source</a> that matches the inline block, or specifying "`inline-speculation-rules`" on the type attribute being "`speculationrules`".
 
 <h3 id="content-security-policy-patches-allow-all-inline">Does a source list allow all inline behavior for type?</h3>
-The algorighm needs a patch to handle the "`script speculationrules`" type.
+The algorithm needs a patch to handle the "`script speculationrules`" type.
 
   2.  <a for=set>For each</a> |expression| of list:
 
