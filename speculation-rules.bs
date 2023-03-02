@@ -641,13 +641,13 @@ In the [[CSP#framework-directives]], we define several associated algorithms, an
       and is executed during [[CSP#should-block-inline]] and during
       [[CSP#should-block-navigation-request]] for `javascript:` requests. This
       algorithm returns "`Allowed`" unless otherwise specified.
-      The <a>`type`</a> string is set to
+      <ins>The <a>`type`</a> string is set to
       "<dfn grammar noexport>`script speculationrules`</dfn>"
       if the {{Element}} is {{HTMLScriptElement}} and the {{HTMLScriptElement/type}}
       attribute is "`speculationrules`", or set to
       "<dfn grammar noexport>`script attribute`</dfn>" for
       JavaScript event handlers. Otherwise, it is set to 
-      "<dfn grammar noexport>`script`</dfn>".
+      "<dfn grammar noexport>`script`</dfn>".</ins>
 
 <h3 id="content-security-policy-patches-source-lists">Source Lists</h3>
 In the [[CSP#framework-directive-source-list]], we change the following definition to have a new source, `inline-speculation-rules`.
@@ -656,18 +656,18 @@ In the [[CSP#framework-directive-source-list]], we change the following definiti
   <dfn>keyword-source</dfn> = "<dfn>'self'</dfn>" / "<dfn>'unsafe-inline'</dfn>" / "<dfn>'unsafe-eval'</dfn>"
     / "<dfn>'strict-dynamic'</dfn>" / "<dfn>'unsafe-hashes'</dfn>"
     / "<dfn>'report-sample'</dfn>" / "<dfn>'unsafe-allow-redirects'</dfn>"
-    / "<dfn>'wasm-unsafe-eval'</dfn>" / "<dfn>'inline-speculation-rules'</dfn>"
+    / "<dfn>'wasm-unsafe-eval'</dfn>"<ins> / "<dfn>'inline-speculation-rules'</dfn>"</ins>
 </pre>
 
 <h3 id="content-security-policy-patches-should-block-inline">Should element's inline type behavior be blocked by Content Security Policy?</h3>
 Also, we make a following change for a note in [[CSP#should-block-inline]].
 
-Note: The valid values for <a>`type`</a> are "`script`", "`script attribute`", "`script speculationrules`", "`style`", and "`style attribute`".
+Note: The valid values for <a>`type`</a> are "`script`", "`script attribute`", <ins>"`script speculationrules`", </ins>"`style`", and "`style attribute`".
 
 <h3 id="content-security-policy-patches-script-src">script-src</h3>
 Also we make the following change for [[CSP#directive-script-src]].
 
-  3.  Inline <{script}> blocks MUST pass through [[CSP#should-block-inline]]. Their behavior will be blocked unless every policy allows inline script, either implicitly by not specifying a `script-src` (or `default-src`) directive, or explicitly, by specifying "`unsafe-inline`", a <a grammar>nonce-source</a> or a <a grammar>hash-source</a> that matches the inline block, or specifying "`inline-speculation-rules`" on the type attribute being "`speculationrules`".
+  3.  Inline <{script}> blocks MUST pass through [[CSP#should-block-inline]]. Their behavior will be blocked unless every policy allows inline script, either implicitly by not specifying a `script-src` (or `default-src`) directive, or explicitly, by specifying "`unsafe-inline`", a <a grammar>nonce-source</a> or a <a grammar>hash-source</a> that matches the inline block<ins>, or specifying "`inline-speculation-rules`" on the type attribute being "`speculationrules`"</ins>.
 
 <h3 id="content-security-policy-patches-allow-all-inline">Does a source list allow all inline behavior for type?</h3>
 The algorithm needs a patch to handle the "`script speculationrules`" type.
@@ -684,9 +684,9 @@ The algorithm needs a patch to handle the "`script speculationrules`" type.
           Note: `'strict-dynamic'` only applies to scripts, not other resource
           types. Usage is explained in more detail in [[CSP#strict-dynamic-usage]].
 
-      3.  If <a>`type`</a> is "`script speculationrules`" and |expression| matches the
+      3.  <ins>If <a>`type`</a> is "`script speculationrules`" and |expression| matches the
           <a grammar>keyword-source</a> "<a grammar>`'inline-speculation-rules'`</a>",
-          set `allow all inline` to `true`.
+          set `allow all inline` to `true`.</ins>
 
       4.  If |expression| is an <a>ASCII case-insensitive</a> match for the
           <a grammar>`keyword-source`</a> "<a grammar>`'unsafe-inline'`</a>",
@@ -695,7 +695,7 @@ The algorithm needs a patch to handle the "`script speculationrules`" type.
 <h3 id="content-security-policy-patches-match-element-to-source-list">Does element match source list for type and source?</h3>
 The algorithm needs patches to handle the "`script speculationrules`" type at the step 2 and 5.
 
-  2.  If <a>`type`</a> is "`script`", "`script speculationrules`", or "`style`", and
+  2.  If <a>`type`</a> is "`script`",<ins> "`script speculationrules`",</ins> or "`style`", and
       [[CSP#is-element-nonceable]] returns "`Nonceable`" when executed upon |element|:
 
       1.  <a for=set>For each</a> |expression| of |list|:
@@ -717,7 +717,7 @@ The algorithm needs patches to handle the "`script speculationrules`" type at th
           "<a grammar>`'unsafe-hashes'`</a>",
           set |unsafe-hashes flag| to `true`. Break out of the loop.
 
-  5.  If <a>`type`</a> is "`script`", "`script speculationrules`", "`style`",
+  5.  If <a>`type`</a> is "`script`",<ins> "`script speculationrules`",</ins> "`style`",
       or |unsafe-hashes flag| is `true`:
 
 <h2 id="security-considerations">Security considerations</h2>
