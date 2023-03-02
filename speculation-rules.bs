@@ -634,20 +634,20 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 Inline script use is restricted by [[CSP]], but there are cases where a developer doesn't want to permit general inline scripts, but wants to permit inline speculation rules. So, we make the following change that extends [[CSP]] to support a new source keyword for inline speculation rules.
 
 <h3 id="content-security-policy-patches-directives">Directives</h3>
-In the [[CSP#framework-directives]], we define several associated algorithms, and an <dfn dfn-type="grammar" link-type="grammar">inline check</dfn> algorithm needs a patch to define how to choose the type argument.
+In the [[CSP#framework-directives]], we define several associated algorithms, and an <dfn grammar noexport>inline check</dfn> algorithm needs a patch to define how to choose the type argument.
 
-  3.  An <dfn for="directive" export>inline check</dfn>, which takes an {{Element}}, a
+  3.  An <dfn for="directive" noexport>inline check</dfn>, which takes an {{Element}}, a
       <dfn>`type`</dfn> string, a policy, and a source string as arguments,
       and is executed during [[CSP#should-block-inline]] and during
       [[CSP#should-block-navigation-request]] for `javascript:` requests. This
       algorithm returns "`Allowed`" unless otherwise specified.
       The <a>`type`</a> string is set to
-      "<dfn dfn-type="grammar" link-type="grammer">`script speculationrules`</dfn>"
+      "<dfn grammar noexport>`script speculationrules`</dfn>"
       if the {{Element}} is {{HTMLScriptElement}} and the {{HTMLScriptElement/type}}
       attribute is "`speculationrules`", or set to
-      "<dfn dfn-type="grammar" link-type="grammer">`script attribute`</dfn>" for
+      "<dfn grammar noexport>`script attribute`</dfn>" for
       JavaScript event handlers. Otherwise, it is set to 
-      "<dfn dfn-type="grammar" link-type="grammer">`script`</dfn>".
+      "<dfn grammar noexport>`script`</dfn>".
 
 <h3 id="content-security-policy-patches-source-lists">Source Lists</h3>
 In the [[CSP#framework-directive-source-list]], we change the following definition to have a new source, `inline-speculation-rules`.
