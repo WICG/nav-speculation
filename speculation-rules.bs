@@ -22,6 +22,7 @@ spec:html; type:element-attr; for:a; text:referrerpolicy
 spec:html; type:element-attr; for:a; text:rel
 spec:html; type:element; text:link
 spec:html; type:element; text:script
+spec:html; type:element; text:style
 spec:selectors-4; type:dfn; text:selector
 spec:selectors-4; type:selector; text::link
 spec:selectors-4; type:selector; text::visited
@@ -237,6 +238,14 @@ Inside the [=prepare the script element=] algorithm we make the following change
       1. If |result| is not null, [=list/append=] it to |document|'s [=document/list of speculation rule sets=].
       1. [=Mark as ready=] <var ignore>el</var> given |result|.
       1. [=Consider speculation=] for |document|.
+    </dd>
+  </dl>
+
+* Replace "script" argument with |type| that is set through the following steps, and passed to [[CSP#should-block-inline]] algorithm.
+  <dl>
+    <dd>
+      1. Let |cspType| be "script".
+      1. If |type| is "`speculationrules`", then set |cspType| to "`script speculationrules`".
     </dd>
   </dl>
 
@@ -632,6 +641,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 
 <h2 id="content-security-policy">Content Security Policy</h2>
 Inline script use is restricted by [[CSP]], but there are cases where a developer doesn't want to permit general inline scripts, but wants to permit inline speculation rules. So, we make the following change that extends [[CSP]] to support a new source keyword for inline speculation rules.
+Also, this changes affect 
 
 <h3 id="content-security-policy-patches-directives">Directives</h3>
 In [[CSP#framework-directives]], we define several associated algorithms, and an <dfn grammar noexport>inline check</dfn> algorithm needs a patch to define how to choose the type argument.
