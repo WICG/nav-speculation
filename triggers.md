@@ -18,7 +18,7 @@
   - [Document rules](#document-rules)
     - [Alternatives](#alternatives)
   - [Using the Document's base URL for external speculation rule sets](#using-the-documents-base-url-for-external-speculation-rule-sets)
-  - [Content-Security-Policy](#content-security-policy)
+  - [Content Security Policy](#content-security-policy)
 - [Future extensions](#future-extensions)
   - [Scores](#scores)
   - [Handler URLs](#handler-urls)
@@ -281,7 +281,7 @@ For document rules, `"relative_to"` can be paired directly with `"href_matches"`
 
 (In the above example, only the first `href_matches` would use the document's base URL.)
 
-### Content-Security-Policy
+### Content Security Policy
 
 Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` and `script-src-elem` CSP directive. To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword. Using `script-src 'inline-speculation-rules'` or `script-src-elem 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
 
