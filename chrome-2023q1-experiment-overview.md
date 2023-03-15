@@ -109,12 +109,14 @@ Beginning in Chrome 113, you can explicitly specify what "eagerness" level the b
 
 Initially, these behave as follows (but this is subject to change):
 
-:  `eager` (default for list rules)
-:: as soon as practicable
-:  `moderate`
-:: after hovering for 200 milliseconds (or pointer down, if that is sooner)
-:  `conservative` (default for document rules)
-:: on pointer (e.g., mouse, touch) down
+<dl>
+<dt><code>"eager"</code> (default for list rules)</dt>
+<dd>as soon as practicable</dd>
+<dt><code>"moderate"</code></dt>
+<dd>after hovering for 200 milliseconds (or pointer down, if that is sooner)</dd>
+<dt><code>"conservative"</code> (default for document rules)</dt>
+<dd>on pointer (e.g., mouse, touch) down</dd>
+</dl>
 
 ## Observing and measuring prefetch
 
