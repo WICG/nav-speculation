@@ -88,6 +88,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: target snapshot params; url: target-snapshot-params
       for: target snapshot params
         text: sandboxing flags; url: target-snapshot-params-sandbox
+    urlPrefix: document-lifecycle.html
+      text: create and initialize a Document object; url: initialise-the-document-object
     urlPrefix: document-sequences.html
       text: active browsing context; url: nav-bc
       text: container document; url: nav-container-document
@@ -120,6 +122,8 @@ spec: nav-speculation; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
+spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
+  type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
 
 <h2 id="concepts">Concepts</h2>
@@ -307,6 +311,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         :: |record|'s [=prefetch record/fetch controller=]
         :  [=navigation params/commit early hints=]
         :: null
+        :  [=navigation params/delivery type=]
+        :: "`navigational-prefetch`"
 
             <p class="note">This implies that early hints delivered for prefetched documents won't be processed. This could be revised in the future if it is common for there to be useful resource hints which are not repeated in the main response headers. Since prefetches aren't currently served until the response headers arrive, early hints would not be processed any earlier than ordinary response headers. It might be possible for a future specification to allow early hints found during prefetching to be used in some way.</p>
 </div>
@@ -326,6 +332,16 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 </div>
 
 <h2 id="html-patches">HTML Patches</h2>
+
+This section contains patches to [[HTML]].
+
+Add an additional item to [=navigation params=] as follows:
+:  <dfn for="navigation params">delivery type</dfn>
+:: a [=string=] (corresponding to {{PerformanceResourceTiming}} [=PerformanceResourceTiming/delivery type=])
+
+Update all creation sites to supply an empty string, except for any in this document which supply a different value (in [=create navigation params from a prefetch record=]).
+
+<hr>
 
 <div algorithm>
     <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
@@ -575,6 +591,18 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
         :: |fetchController|
         :  [=navigation params/commit early hints=]
         :: |commitEarlyHints|
+</div>
+
+<div algorithm="create and initialize a Document object">
+    Update the steps to [=create and initialize a Document object=] to add an additional argument to [=create the navigation timing entry=], as follows: <var ignore>navigationParams</var>'s [=navigation params/delivery type=].
+</div>
+
+<h2 id="navigation-timing-patches">Navigation Timing Patches</h2>
+
+This section contains patches to [[NAVIGATION-TIMING]].
+
+<div algorithm="create the navigation timing entry">
+    Add an additional parameter to [=create the navigation timing entry=], which is a [=string=] <var ignore>deliveryType</var>, and pass it as an additional argument to [=setup the resource timing entry=].
 </div>
 
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
