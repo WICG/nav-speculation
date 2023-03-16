@@ -1,15 +1,12 @@
 # Chrome 2023 Q1 Experiment Overview
 
-In early 2023, Google Chrome will be running an origin trial to allow developers to try out several new enhancements related to speculation rules and prefetching. These enhancements are focused around allowing the browser to automatically assist with prefetching with minimal developer work, and allowing developers to measure when their pages are successfully prefetched.
+Google Chrome is running an origin trial to allow developers to try out several new enhancements related to speculation rules and prefetching. These enhancements are focused around allowing the browser to automatically assist with prefetching with minimal developer work, and allowing developers to measure when their pages are successfully prefetched.
 
 These enhancements can also be used for prerendering (except `deliveryType`).
 
 ## Opting into the origin trial
 
-Developers can sign up for an [origin trial](https://developer.chrome.com/docs/web-platform/origin-trials/) token.
-
-> **Note**
-> This trial is not yet available. We'll update this with a link when it launches.
+Developers can sign up for an [origin trial](https://developer.chrome.com/docs/web-platform/origin-trials/) token on the [origin trial dashboard](https://developer.chrome.com/origintrials/#/view_trial/705939241590325249).
 
 Most developers will only need a token for their own origin, and can use it the usual way.
 
@@ -87,7 +84,39 @@ If this pattern syntax is unfamiliar, see the [caveats](#caveats) below, or [rea
 
 In Chrome 110, when the user starts to click or touch a link, Chrome will check if your `"document"` rules match its URL. If so, Chrome will start prefetching that URL, typically 100 to 200 milliseconds before the actual `"click"` event happens.
 
-As the experiment continues, we may modify this heuristic or add new ones, for example based on hover dwell time.
+Beginning in Chrome 113, you can also select links by CSS selector:
+
+```json
+{"prefetch": [
+   {"source": "document",
+    "where": {"selector_matches": ":has(> img.hero), .call-to-action"}}
+]}
+```
+
+As the experiment continues, further changes may be made.
+
+## Specifying eagerness
+
+Beginning in Chrome 113, you can explicitly specify what "eagerness" level the browser uses for your speculation rules.
+
+```json
+{"prefetch": [
+   {"source": "document",
+    "where": {"selector_matches": ":has(> img.hero), .call-to-action"},
+    "eagerness": "moderate"}
+]}
+```
+
+Initially, these behave as follows (but this is subject to change):
+
+<dl>
+<dt><code>"eager"</code> (default for list rules)</dt>
+<dd>as soon as practicable</dd>
+<dt><code>"moderate"</code></dt>
+<dd>after hovering for 200 milliseconds (or pointer down, if that is sooner)</dd>
+<dt><code>"conservative"</code> (default for document rules)</dt>
+<dd>on pointer (e.g., mouse, touch) down</dd>
+</dl>
 
 ## Observing and measuring prefetch
 
