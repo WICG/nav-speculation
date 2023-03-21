@@ -527,6 +527,8 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 
         <div class="note">This corresponds to the elements which match '':any-link'' [=pseudo-class=], or which appear in the {{Document/links}} collection.</div>
 
+    1. Let |href| be the result of running |descendant|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
+    1. If |href|'s [=url/scheme=] is not an [=HTTP(S) scheme=], [=iteration/continue=].
     1. If |predicate| [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
   1. Return |links|.
 </div>
