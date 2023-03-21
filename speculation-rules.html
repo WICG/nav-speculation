@@ -502,7 +502,7 @@ dfn > a.self-link::before      { content: "#"; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-15">15 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-21">21 March 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1272,6 +1272,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>If <var>descendant</var> is not an <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element" id="ref-for-the-a-element">a</a></code> with an <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href" id="ref-for-attr-hyperlink-href">href</a></code> attribute or <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element" id="ref-for-the-area-element">area</a></code> element with an <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href" id="ref-for-attr-hyperlink-href①">href</a></code> attribute, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①①">continue</a>.</p>
         <div class="note" role="note">This corresponds to the elements which match <a class="css" data-link-type="maybe" href="https://drafts.csswg.org/selectors-4/#any-link-pseudo" id="ref-for-any-link-pseudo">:any-link</a> <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#pseudo-class" id="ref-for-pseudo-class">pseudo-class</a>, or which appear in the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/dom.html#dom-document-links" id="ref-for-dom-document-links">links</a></code> collection.</div>
        <li data-md>
+        <p>Let <var>href</var> be the result of running <var>descendant</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href">href</a></code> getter steps.</p>
+       <li data-md>
+        <p>If <var>href</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme①">scheme</a> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme①">HTTP(S) scheme</a>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①②">continue</a>.</p>
+       <li data-md>
         <p>If <var>predicate</var> <a data-link-type="dfn" href="#document-rule-predicate-matches" id="ref-for-document-rule-predicate-matches">matches</a> <var>descendant</var>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append⑨">append</a> <var>descendant</var> to <var>links</var>.</p>
       </ol>
      <li data-md>
@@ -1331,7 +1335,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
             <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①①">For each</a> <var>link</var> of <var>links</var>:</p>
             <ol>
              <li data-md>
-              <p>⌛ Let <var>href</var> be the result of running <var>link</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href">href</a></code> getter steps.</p>
+              <p>⌛ Let <var>href</var> be the result of running <var>link</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href①">href</a></code> getter steps.</p>
              <li data-md>
               <p>⌛ Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy①">computing a speculative action referrer policy</a> given <var>rule</var> and <var>link</var>.</p>
              <li data-md>
@@ -1361,7 +1365,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
             <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①④">For each</a> <var>link</var> of <var>links</var>:</p>
             <ol>
              <li data-md>
-              <p>⌛ Let <var>href</var> be the result of running <var>link</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href①">href</a></code> getter steps.</p>
+              <p>⌛ Let <var>href</var> be the result of running <var>link</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href②">href</a></code> getter steps.</p>
              <li data-md>
               <p>⌛ Let <var>target</var> be <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint③">target navigable name hint</a>.</p>
              <li data-md>
@@ -1380,7 +1384,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑤">For each</a> <var>prefetchRecord</var> of <var>document</var>’s <a data-link-type="dfn" href="prefetch.html#document-prefetch-records" id="ref-for-document-prefetch-records">prefetch records</a>:</p>
       <ol>
        <li data-md>
-        <p>⌛ If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label①">label</a> is not "<code>speculation-rules</code>", then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①②">continue</a>.</p>
+        <p>⌛ If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label①">label</a> is not "<code>speculation-rules</code>", then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①③">continue</a>.</p>
        <li data-md>
         <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑤">Assert</a>: <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state①">state</a> is not "<code>canceled</code>".</p>
        <li data-md>
@@ -1463,7 +1467,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>predicate</var> is a <a data-link-type="dfn" href="#document-rule-url-pattern-predicate" id="ref-for-document-rule-url-pattern-predicate②">document rule URL pattern predicate</a>, then:</p>
       <ol>
        <li data-md>
-        <p>Let <var>href</var> be the result of running <var>el</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href②">href</a></code> getter steps.</p>
+        <p>Let <var>href</var> be the result of running <var>el</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href③">href</a></code> getter steps.</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②⓪">For each</a> <var>pattern</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-url-pattern-predicate-patterns" id="ref-for-document-rule-url-pattern-predicate-patterns①">patterns</a>:</p>
         <ol>
@@ -1896,6 +1900,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <span id="infopaneltitle-for-eee9530598241978208f91db49f6cfd6" style="display:none">Info about the 'http(s) scheme' external reference.</span><a href="https://fetch.spec.whatwg.org/#http-scheme">https://fetch.spec.whatwg.org/#http-scheme</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-http-scheme">1.6. Parsing</a>
+    <li><a href="#ref-for-http-scheme①">1.7. Processing model</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-731849104592df0f69027b4122c950f6" class="dfn-panel" data-for="731849104592df0f69027b4122c950f6" id="infopanel-for-731849104592df0f69027b4122c950f6">
@@ -2036,8 +2041,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <aside aria-labelledby="infopaneltitle-for-cd18d78e00d33977531816821f2bfef0" class="dfn-panel" data-for="cd18d78e00d33977531816821f2bfef0" id="infopanel-for-cd18d78e00d33977531816821f2bfef0">
    <span id="infopaneltitle-for-cd18d78e00d33977531816821f2bfef0" style="display:none">Info about the 'href (for HTMLHyperlinkElementUtils)' external reference.</span><a href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href">https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href</a><b>Referenced in:</b>
    <ul>
-    <li><a href="#ref-for-dom-hyperlink-href">1.7. Processing model</a> <a href="#ref-for-dom-hyperlink-href①">(2)</a>
-    <li><a href="#ref-for-dom-hyperlink-href②">1.8. Document rule predicate matching</a>
+    <li><a href="#ref-for-dom-hyperlink-href">1.7. Processing model</a> <a href="#ref-for-dom-hyperlink-href①">(2)</a> <a href="#ref-for-dom-hyperlink-href②">(3)</a>
+    <li><a href="#ref-for-dom-hyperlink-href③">1.8. Document rule predicate matching</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-b6fa43bcd8ef9153d8aacd1729ddb8fa" class="dfn-panel" data-for="b6fa43bcd8ef9153d8aacd1729ddb8fa" id="infopanel-for-b6fa43bcd8ef9153d8aacd1729ddb8fa">
@@ -2261,7 +2266,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#ref-for-iteration-continue">1.4. The `Speculation-Rules` header</a> <a href="#ref-for-iteration-continue①">(2)</a>
     <li><a href="#ref-for-iteration-continue②">1.5. External speculation rule sets</a> <a href="#ref-for-iteration-continue③">(2)</a>
     <li><a href="#ref-for-iteration-continue④">1.6. Parsing</a> <a href="#ref-for-iteration-continue⑤">(2)</a> <a href="#ref-for-iteration-continue⑥">(3)</a> <a href="#ref-for-iteration-continue⑦">(4)</a> <a href="#ref-for-iteration-continue⑧">(5)</a> <a href="#ref-for-iteration-continue⑨">(6)</a> <a href="#ref-for-iteration-continue①⓪">(7)</a>
-    <li><a href="#ref-for-iteration-continue①①">1.7. Processing model</a> <a href="#ref-for-iteration-continue①②">(2)</a>
+    <li><a href="#ref-for-iteration-continue①①">1.7. Processing model</a> <a href="#ref-for-iteration-continue①②">(2)</a> <a href="#ref-for-iteration-continue①③">(3)</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-0d3ee326a162c16997e7bb20e8b7133c" class="dfn-panel" data-for="0d3ee326a162c16997e7bb20e8b7133c" id="infopanel-for-0d3ee326a162c16997e7bb20e8b7133c">
@@ -2538,6 +2543,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <span id="infopaneltitle-for-67f83ca6d3c695660bfc2f054f534ffb" style="display:none">Info about the 'scheme' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-scheme">https://url.spec.whatwg.org/#concept-url-scheme</a><b>Referenced in:</b>
    <ul>
     <li><a href="#ref-for-concept-url-scheme">1.6. Parsing</a>
+    <li><a href="#ref-for-concept-url-scheme①">1.7. Processing model</a>
    </ul>
   </aside>
   <aside aria-labelledby="infopaneltitle-for-fc05c76e016d3aec6a25a91c066500c8" class="dfn-panel" data-for="fc05c76e016d3aec6a25a91c066500c8" id="infopanel-for-fc05c76e016d3aec6a25a91c066500c8">
