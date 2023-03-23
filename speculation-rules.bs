@@ -51,7 +51,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: get an element's target; url: get-an-element's-target
     urlPrefix: links.html
       text: following a hyperlink; url: following-hyperlinks-2
-      text: url; url: concept-hyperlink-url
+      text: url; url: concept-hyperlink-url; for: HTMLHyperlinkElementUtils
   type: attr-value
     urlPrefix: links.html
       for: a/rel
@@ -528,7 +528,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 
         <div class="note">This corresponds to the elements which match '':any-link'' [=pseudo-class=], or which appear in the {{Document/links}} collection.</div>
 
-    1. Let |url| be |descendant|'s [=url=].
+    1. Let |url| be |descendant|'s [=HTMLHyperlinkElementUtils/url=].
     1. If |url| is null, or its [=url/scheme=] is not an [=HTTP(S) scheme=], [=iteration/continue=].
     1. If |predicate| [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
   1. Return |links|.
@@ -562,7 +562,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
         1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
         1. &#x231B; [=list/For each=] |link| of |links|:
-          1. &#x231B; Let |url| be |link|'s [=url=].
+          1. &#x231B; Let |url| be |link|'s [=HTMLHyperlinkElementUtils/url=].
           1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
           1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/anonymization policy=] |anonymizationPolicy|, and [=prefetch candidate/referrer policy=] |referrerPolicy| to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
@@ -573,7 +573,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
         1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
         1. &#x231B; [=list/For each=] |link| of |links|:
-          1. &#x231B; Let |url| be the |link|'s [=url=].
+          1. &#x231B; Let |url| be the |link|'s [=HTMLHyperlinkElementUtils/url=].
           1. &#x231B; Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
           1. &#x231B; If |target| is null, set it to the result of [=getting an element's target=] given |link|.
           1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
