@@ -4,7 +4,7 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version a5f70c68e, updated Wed Mar 22 08:02:23 2023 -0700" name="generator">
+  <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
 <style>
 /* domintro and XXX from https://resources.whatwg.org/standard.css */
@@ -634,7 +634,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-22">22 March 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-03-23">23 March 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -764,7 +764,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 
     // Under "special event handler IDL attributes that only apply to Document objects"
     <c- b>attribute</c-> <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/webappapis.html#eventhandler" id="ref-for-eventhandler"><c- n>EventHandler</c-></a> <a class="idl-code" data-link-type="attribute" data-type="EventHandler" href="#dom-document-onprerenderingchange" id="ref-for-dom-document-onprerenderingchange"><c- g>onprerenderingchange</c-></a>;
-};</pre>
+};
+</pre>
    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="attribute" data-export id="dom-document-onprerenderingchange"><code>onprerenderingchange</code></dfn> attribute is an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-idl-attributes" id="ref-for-event-handler-idl-attributes">event handler IDL attribute</a> corresponding to the <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="event" data-export id="eventdef-document-prerenderingchange"><code>prerenderingchange</code></dfn> <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-event-type" id="ref-for-event-handler-event-type">event handler event type</a>. (We would update the corresponding table in <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>, which currently only contains <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/webappapis.html#handler-onreadystatechange" id="ref-for-handler-onreadystatechange">onreadystatechange</a></code>.)</p>
    <p>As is customary for <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>, the definition of <code class="idl"><a data-link-type="idl" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering①">prerendering</a></code> would be located in another section of the spec; we’d place it in the new section introduced below:</p>
    <h3 class="heading settled" data-level="1.2" id="prerendering-navigables"><span class="secno">1.2. </span><span class="content">Prerendering navigables</span><a class="self-link" href="#prerendering-navigables"></a></h3>
@@ -1040,7 +1041,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       </ol>
     </ol>
    </div>
-   <div class="algorithm" data-algorithm="attempt to populate the history entry&apos;s document patch">
+   <div class="algorithm" data-algorithm="attempt to populate the history entry’s document patch">
      In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#attempt-to-populate-the-history-entry&apos;s-document" id="ref-for-attempt-to-populate-the-history-entry&apos;s-document">attempt to populate the history entry’s document</a>, append the following after the steps which establish the value of <var>failure</var>, but before the other steps which act on it: 
     <ol>
      <li data-md>
@@ -1093,7 +1094,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <h3 class="heading settled" data-level="2.4" id="interaction-with-workers"><span class="secno">2.4. </span><span class="content">Interaction with worker lifetime</span><a class="self-link" href="#interaction-with-workers"></a></h3>
-   <div class="algorithm" data-algorithm="The worker&apos;s lifetime patch">
+   <div class="algorithm" data-algorithm="The worker’s lifetime patch">
      In <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#the-worker&apos;s-lifetime" id="ref-for-the-worker&apos;s-lifetime">The worker’s lifetime</a>, modify the definition of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker">active needed worker</a>, to count workers with a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable⑨">prerendering navigable</a> owner as not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker①">active</a>: 
     <p>A worker is said to be an <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker②">active needed worker</a> if any of its <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#concept-WorkerGlobalScope-owner-set" id="ref-for-concept-WorkerGlobalScope-owner-set">owners</a> are either <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⓪">Document</a></code> objects that are <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active">fully active</a> and their <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable③">node navigable</a> is not a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①⓪">prerendering navigable</a>, or <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker" id="ref-for-active-needed-worker③">active needed workers</a>.</p>
     <p class="note" role="note">This means that the worker’s script would load, but the execution would be suspended until the document is activated. </p>
@@ -1116,7 +1117,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>Extend the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming①">PerformanceNavigationTiming</a></code> interface as follows:</p>
 <pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming②"><c- g>PerformanceNavigationTiming</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp①"><c- n>DOMHighResTimeStamp</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMHighResTimeStamp" href="#dom-performancenavigationtiming-activationstart" id="ref-for-dom-performancenavigationtiming-activationstart"><c- g>activationStart</c-></a>;
-};</pre>
+};
+</pre>
    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceNavigationTiming" data-dfn-type="attribute" data-export id="dom-performancenavigationtiming-activationstart"><code>activationStart</code></dfn> getter steps are:</p>
    <ol>
     <li data-md>
@@ -3528,9 +3530,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     // Under "special event handler IDL attributes that only apply to Document objects"
     <c- b>attribute</c-> <a data-link-type="idl-name" href="https://html.spec.whatwg.org/multipage/webappapis.html#eventhandler"><c- n>EventHandler</c-></a> <a class="idl-code" data-link-type="attribute" data-type="EventHandler" href="#dom-document-onprerenderingchange"><c- g>onprerenderingchange</c-></a>;
 };
+
 <c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming"><c- g>PerformanceNavigationTiming</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp"><c- n>DOMHighResTimeStamp</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMHighResTimeStamp" href="#dom-performancenavigationtiming-activationstart"><c- g>activationStart</c-></a>;
 };
+
 </pre>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
