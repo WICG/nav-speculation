@@ -197,7 +197,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
 * <dfn export for="prefetch record">source partition key</dfn>, a [=network partition key=] or null (the default)
 * <dfn export for="prefetch record">isolated partition key</dfn>, a [=network partition key=] whose first item is an [=opaque origin=] and which represents a separate partition in which cross-partition state can be temporarily stored, or null (the default)
-* <dfn export for="prefetch record">origins with conflicting credentials</dfn>, an [=ordered set=] of [=origins=] (initially empty)
+* <dfn export for="prefetch record">has conflicting credentials</dfn>, a [=boolean=] (initially false)
 
 <div class="note">This tracks prefetches from when they are started to when they are ultimately used or discarded. Consequently some of these fields are immutable, some pertain to the ongoing activity (like [=prefetch record/fetch controller=]), and some (like [=prefetch record/expiry time=]) are populated when the prefetch completes.</div>
 
@@ -521,7 +521,9 @@ Update all creation sites to supply an empty string, except for any in this docu
             1. Let |hasConflictingCredentials| be true if |hypotheticalPartitionKey| is not equal to |prefetchRecord|'s [=prefetch record/source partition key=] and there are [=credentials=] associated with |currentURL| and |hypotheticalPartitionKey|, and false otherwise.
             1. If |hasConflictingCredentials| is true:
                 1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
-                1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then [=set/append=] |currentURL|'s [=url/origin=] to |prefetchRecord|'s [=prefetch record/origins with conflicting credentials=].
+                1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then set |prefetchRecord|'s [=prefetch record/has conflicting credentials=] to true.
+
+                    <p class="note">This does not immediately abort the prefetch or stop following redirects, because doing so might reveal whether or not the user has stored state outside the current partition, before the user navigates. Instead, the prefetch continues as though there were no conflicting credentials, except that the prefetch cannot actually be used. User agents may wish to [=report a warning to the console=] or otherwise inform authors that this has happened.</p>
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -629,7 +631,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=In parallel=]:
         1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
-        1. If |prefetchRecord|'s [=prefetch record/origins with conflicting credentials=] is not [=set/empty=], then set |navigationParams| to null.
+        1. If |prefetchRecord| [=prefetch record/has conflicting credentials=], then set |navigationParams| to null.
 
             <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
