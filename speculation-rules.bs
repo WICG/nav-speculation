@@ -807,12 +807,12 @@ Some user agents <a href="https://privacycg.github.io/storage-partitioning/">par
 
 The <a href="prefetch.html">prefetch specification</a> allows issuing HTTP requests which behave consistently with the partitioning scheme. If a navigation using its response would load a document in the same partition (approximately, the top-level site would not change), then partitioned state (e.g., cookies) can be sent, as they can with subresource requests and scripted fetches. If it would load a document in another partition, it would be inconsistent with the partitioning scheme to use partitioned state for the destination partition (since this would cross the boundary between partitions without a top-level navigation) and also inconsistent to use partitioned state within the originating partition (since this would result in the user seeing a document with different state than a non-prefetched navigation). Instead, a third, initially empty, partition is used for such requests. These requests therefore contain no partitioned state from either partition (though it may still be possible to fingerprint the user agent by other means).
 
-A notable exception to this policy is that in order to determine if using an empty partition affected the resource returned by a cross-partition request, one of two conditions have to be met:
+However, the response to a prefetch request in an empty partition can only be used if:
 
-1. the response must declare that the resource is equivalent to one that would have been received with credentials, or
-1. the destination partition contained no partitioned state
+1. the response declares that the resource can be used even if an ordinary navigation would have sent credentials; or
+1. the destination partition contains no credentials which would have been included
 
-In the latter case, it is necessary to examine cross-partition state. To avoid this being a workaround for the partitioning scheme, the prefetch must continue <em>even if the existence of conflicting partitioned state will preclude it being used for navigation</em>.
+Checking the latter requires examining the destination partition's state. To avoid this being a workaround for the partitioning scheme, the prefetch must continue <em>even if the existence of conflicting partitioned state will preclude it being used for navigation</em>.
 
 Redirects are possible between these two types of requests. A redirect from a same- to cross-partition URL could contain information derived from partitioned state in the originating partition; however, this is equivalent to the originating document fetching the same-partition URL itself and then issuing a request for the cross-partition URL. A redirect from a cross- to same-origin URL could carry state from the isolated partition, but since this partition has no prior state this does not enable tracking based on the user's prior browsing activity on that site, and the document could construct the same state by issuing uncredentialed requests itself.
 
