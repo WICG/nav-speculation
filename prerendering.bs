@@ -27,7 +27,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: active needed worker; url: workers.html#active-needed-worker
     text: attempt to populate the history entry's document; url: browsing-the-web.html#attempt-to-populate-the-history-entry's-document
     text: check if unloading is user-canceled; url: browsing-the-web.html#checking-if-unloading-is-user-canceled
-    text: create a new nested navigable; url: document-sequences.html#create-a-new-nested-navigable
+    text: create a new child navigable; url: document-sequences.html#create-a-new-child-navigable
     text: create a new top-level traversable; url: document-sequences.html#creating-a-new-top-level-traversable
     text: create navigation params by fetching; url: browsing-the-web.html#create-navigation-params-by-fetching
     text: current playback position; url: media.html#current-playback-position
@@ -347,8 +347,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
 <h3 id="creating-navigables-patch">Modifications to creating navigables</h3>
 
-<div algorithm="create a new nested navigable patch">
-  To ensure that any [=child navigables=] inherit their [=navigable/parent=]'s [=navigable/loading mode=], modify [=create a new nested navigable=] by appending the following step:
+<div algorithm="create a new child navigable patch">
+  To ensure that any [=child navigables=] inherit their [=navigable/parent=]'s [=navigable/loading mode=], modify [=create a new child navigable=] by appending the following step:
 
   1. Set <var ignore>navigable</var>'s [=navigable/loading mode=] to <var ignore>element</var>'s [=node navigable=]'s [=navigable/loading mode=].
 </div>
