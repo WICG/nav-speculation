@@ -413,7 +413,7 @@ Update all creation sites to supply an empty string, except for any in this docu
 <hr>
 
 <div algorithm="attempt to populate the history entry's document">
-    In <a spec=HTML>attempt to populate the history entry's document</a>, add an optional {{Document}} |sourceDocument| argument, plumb it from <a spec=HTML>navigate</a>, and replace the step which invokes <a spec=HTML>create navigation params by fetching</a> with the following:
+    In <a spec=HTML>attempt to populate the history entry's document</a>, add an optional {{Document}} |sourceDocument| argument, and replace the step which invokes <a spec=HTML>create navigation params by fetching</a> with the following:
 
     1. Otherwise, if both of the following are true:
         * <var ignore>entry</var>'s [=session history entry/URL=]'s [=url/scheme=] is a [=fetch scheme=]; and
@@ -423,8 +423,9 @@ Update all creation sites to supply an empty string, except for any in this docu
 
             1. Let |request| be the result of [=creating a navigation request=] given <var ignore>entry</var>, <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=], <var ignore>navigable</var>'s [=navigable/container=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/has transient activation=].
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
-            1. If <var ignore>navigable</var>'s [=navigable/loading mode=] is "`prerender`", then set |referringDocument| to |sourceDocument|.
+            1. If |sourceDocument| is given, then set |referringDocument| to |sourceDocument|.
             1. Otherwise, set |referringDocument| to <var ignore>navigable</var>'s [=navigable/active document=].
+               <p class="issue">Or should we fallback to null instead? A notable case where this shouldn't be null is <a spec=HTML>reload</a>, but I'm not sure about other cases.</p>
             1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given |referringDocument|, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
             1. If <var ignore>documentResource</var> is null and |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
@@ -435,6 +436,8 @@ Update all creation sites to supply an empty string, except for any in this docu
                 1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given <var ignore>navigable</var>'s [=navigable/active document=] and <var ignore>entry</var>'s [=session history entry/document state=]'s [=document state/initiator origin=].
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, |coopEnforcementResult|, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
 
+    The |sourceDocument| argument should be plumbed from <a spec=HTML>navigate</a>'s |sourceDocument| and <a spec=HTML>traverse the history by a delta</a>'s |sourceDocument|.
+    <p class="issue">How about other callers, i.e. <a spec=HTML>apply pending history changes</a>, <a spec=HTML>finalize a same-document navigation</a> and <a spec=HTML>finalize a cross-document navigation</a>?</p>
 </div>
 
 <hr>
