@@ -684,25 +684,32 @@ Also we make the following change for [[CSP#directive-script-src]].
 <h3 id="content-security-policy-patches-allow-all-inline">Does a source list allow all inline behavior for type?</h3>
 The algorithm needs a patch to handle the "`script speculationrules`" type.
 
-  2.  <a for=set>For each</a> |expression| of list:
+  1.  Let |allow all inline| be `false`.
+
+  2.  <ins>Let |ignore allow all inline| be `false`.</ins>
+
+  3.  <a for=set>For each</a> |expression| of list:
 
       1.  If |expression| matches the <a grammar>`nonce-source`</a> or
-          <a grammar>`hash-source`</a> grammar, return "`Does Not Allow`".
+          <a grammar>`hash-source`</a>, <ins>set |ignore allow all inline| to `true`.</ins>
 
       2.  If <a>`type`</a> is "`script`", "`script attribute`" or "`navigation`"
           and |expression| matches the <a grammar>keyword-source</a>
-          "<a grammar>`'strict-dynamic'`</a>", return "`Does Not Allow`".
+          "<a grammar>`'strict-dynamic'`</a>", <ins>set |ignore allow all inline| to `true`.</ins>
 
           Note: `'strict-dynamic'` only applies to scripts, not other resource
           types. Usage is explained in more detail in [[CSP#strict-dynamic-usage]].
 
-      3.  <ins>If <a>`type`</a> is "`script speculationrules`" and |expression| matches the
-          <a grammar>keyword-source</a> "<a grammar>`'inline-speculation-rules'`</a>",
-          set `allow all inline` to `true`.</ins>
-
-      4.  If |expression| is an <a>ASCII case-insensitive</a> match for the
+      3.  If |expression| is an <a>ASCII case-insensitive</a> match for the
           <a grammar>`keyword-source`</a> "<a grammar>`'unsafe-inline'`</a>",
-          set `allow all inline` to `true`.
+          set |allow all inline| to `true`.
+
+      4.  <ins>If <a>`type`</a> is "`script speculationrules`" and |expression| is an
+          <a>ASCII case-insensitive</a> match for the <a grammar>keyword-source</a>
+          "<a grammar>`'inline-speculation-rules'`</a>", return "`Allows`".</ins>
+
+  4. If |allow all inline| is `true` <ins>and |ignore allow all inline| is `false`</ins>,
+     return "`Allows`". Otherwise, return "`Does Not Allow`".
 
 <h3 id="content-security-policy-patches-match-element-to-source-list">Does element match source list for type and source?</h3>
 The algorithm needs patches to handle the "`script speculationrules`" type at the step 2 and 5.
