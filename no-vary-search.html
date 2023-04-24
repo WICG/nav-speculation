@@ -4,7 +4,7 @@
   <title>No-Vary-Search</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version d9bd89757, updated Thu Mar 23 10:06:53 2023 -0700" name="generator">
+  <meta content="Bikeshed version bf22245b8, updated Tue Apr 18 15:53:37 2023 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/no-vary-search.html" rel="canonical">
 <style>
 #example-equivalence-canonicalization table {
@@ -234,8 +234,7 @@ figcaption:not(.no-marker)::before {
     position: absolute;
     z-index: 35;
     width: 20em;
-    min-width: min-content;
-    max-width: 300px;
+    width: 300px;
     height: auto;
     max-height: 500px;
     overflow: auto;
@@ -252,8 +251,15 @@ figcaption:not(.no-marker)::before {
 .dfn-panel a { color: var(--dfnpanel-text); }
 .dfn-panel a:not(:hover) { text-decoration: none !important; border-bottom: none !important; }
 .dfn-panel > b + b { margin-top: 0.25em; }
-.dfn-panel ul { padding: 0; }
-.dfn-panel li { list-style: inside; }
+.dfn-panel ul { padding: 0 0 0 1em; list-style: none; }
+.dfn-panel li a {
+    white-space: pre;
+    display: inline-block;
+    max-width: calc(300px - 1.5em - 1em);
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
@@ -264,7 +270,7 @@ figcaption:not(.no-marker)::before {
     max-height: 30vh;
 }
 
-.dfn-paneled { cursor: pointer; }
+.dfn-paneled[role="button"] { cursor: pointer; }
 </style>
 <style>/* style-issues */
 a[href].issue-return {
@@ -405,16 +411,15 @@ c-[vi] { color: #0077aa } /* Name.Variable.Instance */
 c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
 </style>
 <style>/* style-var-click-highlighting */
-
-    var { cursor: pointer; }
-    var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-    var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-    var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-    var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-    var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-    var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-    var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
-    </style>
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
 <style>/* style-darkmode */
 
 @media (prefers-color-scheme: dark) {
@@ -611,7 +616,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">No-Vary-Search</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-06">6 April 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-04-24">24 April 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1048,273 +1053,61 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><a href="#url-search-variance-vary-params-wildcard">dfn for URL search variance/vary params</a><span>, in § 3</span>
     </ul>
   </ul>
-  <aside aria-labelledby="infopaneltitle-for-e877283e03bb3ea91d8d6071dd884479" class="dfn-panel" data-for="e877283e03bb3ea91d8d6071dd884479" id="infopanel-for-e877283e03bb3ea91d8d6071dd884479">
-   <span id="infopaneltitle-for-e877283e03bb3ea91d8d6071dd884479" style="display:none">Info about the 'utf-8 decode without bom' external reference.</span><a href="https://encoding.spec.whatwg.org/#utf-8-decode-without-bom">https://encoding.spec.whatwg.org/#utf-8-decode-without-bom</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-utf-8-decode-without-bom">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-7d20d86aab82c14f214b792b61bc7cb8" class="dfn-panel" data-for="7d20d86aab82c14f214b792b61bc7cb8" id="infopanel-for-7d20d86aab82c14f214b792b61bc7cb8">
-   <span id="infopaneltitle-for-7d20d86aab82c14f214b792b61bc7cb8" style="display:none">Info about the 'get a structured field value' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header">https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-header-list-get-structured-header">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d94cb5e6252c9158478ebbe8a624e99c" class="dfn-panel" data-for="d94cb5e6252c9158478ebbe8a624e99c" id="infopanel-for-d94cb5e6252c9158478ebbe8a624e99c">
-   <span id="infopaneltitle-for-d94cb5e6252c9158478ebbe8a624e99c" style="display:none">Info about the 'header list' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response-header-list">https://fetch.spec.whatwg.org/#concept-response-header-list</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-response-header-list">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d203414c2b48c23fddab90ef753bb7cf" class="dfn-panel" data-for="d203414c2b48c23fddab90ef753bb7cf" id="infopanel-for-d203414c2b48c23fddab90ef753bb7cf">
-   <span id="infopaneltitle-for-d203414c2b48c23fddab90ef753bb7cf" style="display:none">Info about the 'response' external reference.</span><a href="https://fetch.spec.whatwg.org/#concept-response">https://fetch.spec.whatwg.org/#concept-response</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-response">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-61c7c9c76ff1cedf412e7a18bbe24e2c" class="dfn-panel" data-for="61c7c9c76ff1cedf412e7a18bbe24e2c" id="infopanel-for-61c7c9c76ff1cedf412e7a18bbe24e2c">
-   <span id="infopaneltitle-for-61c7c9c76ff1cedf412e7a18bbe24e2c" style="display:none">Info about the 'ascii string' external reference.</span><a href="https://infra.spec.whatwg.org/#ascii-string">https://infra.spec.whatwg.org/#ascii-string</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-ascii-string">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0d4cc8e47c65b15b2be5e5e730a09d3c" class="dfn-panel" data-for="0d4cc8e47c65b15b2be5e5e730a09d3c" id="infopanel-for-0d4cc8e47c65b15b2be5e5e730a09d3c">
-   <span id="infopaneltitle-for-0d4cc8e47c65b15b2be5e5e730a09d3c" style="display:none">Info about the 'boolean' external reference.</span><a href="https://infra.spec.whatwg.org/#boolean">https://infra.spec.whatwg.org/#boolean</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-boolean">3. Data model</a>
-    <li><a href="#ref-for-boolean①">4. Parsing</a> <a href="#ref-for-boolean②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-6e2a0a09507290bb1cc50a58f5bbde89" class="dfn-panel" data-for="6e2a0a09507290bb1cc50a58f5bbde89" id="infopanel-for-6e2a0a09507290bb1cc50a58f5bbde89">
-   <span id="infopaneltitle-for-6e2a0a09507290bb1cc50a58f5bbde89" style="display:none">Info about the 'code unit less than' external reference.</span><a href="https://infra.spec.whatwg.org/#code-unit-less-than">https://infra.spec.whatwg.org/#code-unit-less-than</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-code-unit-less-than">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-eb75379b05abc264a531a791358e1eba" class="dfn-panel" data-for="eb75379b05abc264a531a791358e1eba" id="infopanel-for-eb75379b05abc264a531a791358e1eba">
-   <span id="infopaneltitle-for-eb75379b05abc264a531a791358e1eba" style="display:none">Info about the 'contain' external reference.</span><a href="https://infra.spec.whatwg.org/#list-contain">https://infra.spec.whatwg.org/#list-contain</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list-contain">4. Parsing</a>
-    <li><a href="#ref-for-list-contain①">5. Comparing</a> <a href="#ref-for-list-contain②">(2)</a> <a href="#ref-for-list-contain③">(3)</a> <a href="#ref-for-list-contain④">(4)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-0d3ee326a162c16997e7bb20e8b7133c" class="dfn-panel" data-for="0d3ee326a162c16997e7bb20e8b7133c" id="infopanel-for-0d3ee326a162c16997e7bb20e8b7133c">
-   <span id="infopaneltitle-for-0d3ee326a162c16997e7bb20e8b7133c" style="display:none">Info about the 'exist' external reference.</span><a href="https://infra.spec.whatwg.org/#map-exists">https://infra.spec.whatwg.org/#map-exists</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-map-exists">4. Parsing</a> <a href="#ref-for-map-exists①">(2)</a> <a href="#ref-for-map-exists②">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-fe3f74dd1b285770252c770a316e8b0d" class="dfn-panel" data-for="fe3f74dd1b285770252c770a316e8b0d" id="infopanel-for-fe3f74dd1b285770252c770a316e8b0d">
-   <span id="infopaneltitle-for-fe3f74dd1b285770252c770a316e8b0d" style="display:none">Info about the 'isomorphic encode' external reference.</span><a href="https://infra.spec.whatwg.org/#isomorphic-encode">https://infra.spec.whatwg.org/#isomorphic-encode</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-isomorphic-encode">4. Parsing</a>
-    <li><a href="#ref-for-isomorphic-encode①">5. Comparing</a> <a href="#ref-for-isomorphic-encode②">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-c783a9adeafb412d3bdeaeb1c6a29d96" class="dfn-panel" data-for="c783a9adeafb412d3bdeaeb1c6a29d96" id="infopanel-for-c783a9adeafb412d3bdeaeb1c6a29d96">
-   <span id="infopaneltitle-for-c783a9adeafb412d3bdeaeb1c6a29d96" style="display:none">Info about the 'item (for list)' external reference.</span><a href="https://infra.spec.whatwg.org/#list-item">https://infra.spec.whatwg.org/#list-item</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list-item">4. Parsing</a> <a href="#ref-for-list-item①">(2)</a> <a href="#ref-for-list-item②">(3)</a> <a href="#ref-for-list-item③">(4)</a>
-    <li><a href="#ref-for-list-item④">5. Comparing</a> <a href="#ref-for-list-item⑤">(2)</a> <a href="#ref-for-list-item⑥">(3)</a> <a href="#ref-for-list-item⑦">(4)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-8f72f3d00098519c33ad2ab5758b234b" class="dfn-panel" data-for="8f72f3d00098519c33ad2ab5758b234b" id="infopanel-for-8f72f3d00098519c33ad2ab5758b234b">
-   <span id="infopaneltitle-for-8f72f3d00098519c33ad2ab5758b234b" style="display:none">Info about the 'item (for struct)' external reference.</span><a href="https://infra.spec.whatwg.org/#struct-item">https://infra.spec.whatwg.org/#struct-item</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-struct-item">3. Data model</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d970c9402d2ebe6e16b496ab9414f037" class="dfn-panel" data-for="d970c9402d2ebe6e16b496ab9414f037" id="infopanel-for-d970c9402d2ebe6e16b496ab9414f037">
-   <span id="infopaneltitle-for-d970c9402d2ebe6e16b496ab9414f037" style="display:none">Info about the 'keys' external reference.</span><a href="https://infra.spec.whatwg.org/#map-getting-the-keys">https://infra.spec.whatwg.org/#map-getting-the-keys</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-map-getting-the-keys">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-fafd38d2108e357bcc9a6fd7f3cd04a7" class="dfn-panel" data-for="fafd38d2108e357bcc9a6fd7f3cd04a7" id="infopanel-for-fafd38d2108e357bcc9a6fd7f3cd04a7">
-   <span id="infopaneltitle-for-fafd38d2108e357bcc9a6fd7f3cd04a7" style="display:none">Info about the 'list' external reference.</span><a href="https://infra.spec.whatwg.org/#list">https://infra.spec.whatwg.org/#list</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list">3. Data model</a> <a href="#ref-for-list①">(2)</a> <a href="#ref-for-list②">(3)</a> <a href="#ref-for-list③">(4)</a>
-    <li><a href="#ref-for-list④">4. Parsing</a> <a href="#ref-for-list⑤">(2)</a>
-    <li><a href="#ref-for-list⑥">5. Comparing</a> <a href="#ref-for-list⑦">(2)</a> <a href="#ref-for-list⑧">(3)</a> <a href="#ref-for-list⑨">(4)</a> <a href="#ref-for-list①⓪">(5)</a> <a href="#ref-for-list①①">(6)</a> <a href="#ref-for-list①②">(7)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-bed8381510f5967f5d37a33de776e857" class="dfn-panel" data-for="bed8381510f5967f5d37a33de776e857" id="infopanel-for-bed8381510f5967f5d37a33de776e857">
-   <span id="infopaneltitle-for-bed8381510f5967f5d37a33de776e857" style="display:none">Info about the 'size' external reference.</span><a href="https://infra.spec.whatwg.org/#list-size">https://infra.spec.whatwg.org/#list-size</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list-size">5. Comparing</a> <a href="#ref-for-list-size①">(2)</a> <a href="#ref-for-list-size②">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-5fb4deaae17e7d0002c6bfbab5baf65e" class="dfn-panel" data-for="5fb4deaae17e7d0002c6bfbab5baf65e" id="infopanel-for-5fb4deaae17e7d0002c6bfbab5baf65e">
-   <span id="infopaneltitle-for-5fb4deaae17e7d0002c6bfbab5baf65e" style="display:none">Info about the 'sorting in ascending order' external reference.</span><a href="https://infra.spec.whatwg.org/#list-sort-in-ascending-order">https://infra.spec.whatwg.org/#list-sort-in-ascending-order</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-list-sort-in-ascending-order">5. Comparing</a> <a href="#ref-for-list-sort-in-ascending-order①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-40b59bc325bd4d66701dfd8b7f1847c0" class="dfn-panel" data-for="40b59bc325bd4d66701dfd8b7f1847c0" id="infopanel-for-40b59bc325bd4d66701dfd8b7f1847c0">
-   <span id="infopaneltitle-for-40b59bc325bd4d66701dfd8b7f1847c0" style="display:none">Info about the 'string' external reference.</span><a href="https://infra.spec.whatwg.org/#string">https://infra.spec.whatwg.org/#string</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-string">3. Data model</a> <a href="#ref-for-string①">(2)</a>
-    <li><a href="#ref-for-string②">4. Parsing</a> <a href="#ref-for-string③">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3ee316b93eb2dbe81d01a666cce50f9b" class="dfn-panel" data-for="3ee316b93eb2dbe81d01a666cce50f9b" id="infopanel-for-3ee316b93eb2dbe81d01a666cce50f9b">
-   <span id="infopaneltitle-for-3ee316b93eb2dbe81d01a666cce50f9b" style="display:none">Info about the 'struct' external reference.</span><a href="https://infra.spec.whatwg.org/#struct">https://infra.spec.whatwg.org/#struct</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-struct">3. Data model</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-35a770fa01542cb11801796082208978" class="dfn-panel" data-for="35a770fa01542cb11801796082208978" id="infopanel-for-35a770fa01542cb11801796082208978">
-   <span id="infopaneltitle-for-35a770fa01542cb11801796082208978" style="display:none">Info about the 'while' external reference.</span><a href="https://infra.spec.whatwg.org/#iteration-while">https://infra.spec.whatwg.org/#iteration-while</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-iteration-while">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-a540e168b9362abe672be9c14c8c980d" class="dfn-panel" data-for="a540e168b9362abe672be9c14c8c980d" id="infopanel-for-a540e168b9362abe672be9c14c8c980d">
-   <span id="infopaneltitle-for-a540e168b9362abe672be9c14c8c980d" style="display:none">Info about the 'boolean' external reference.</span><a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-boolean">https://www.rfc-editor.org/rfc/rfc8941.html#name-boolean</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-name-boolean">2. HTTP header field definition</a> <a href="#ref-for-name-boolean①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-1f2339de2d19933aae95a86a512531c0" class="dfn-panel" data-for="1f2339de2d19933aae95a86a512531c0" id="infopanel-for-1f2339de2d19933aae95a86a512531c0">
-   <span id="infopaneltitle-for-1f2339de2d19933aae95a86a512531c0" style="display:none">Info about the 'dictionary' external reference.</span><a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-dictionaries">https://www.rfc-editor.org/rfc/rfc8941.html#name-dictionaries</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-name-dictionaries">2. HTTP header field definition</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3d5d37bf63fc8645bb138eaca9fd44f6" class="dfn-panel" data-for="3d5d37bf63fc8645bb138eaca9fd44f6" id="infopanel-for-3d5d37bf63fc8645bb138eaca9fd44f6">
-   <span id="infopaneltitle-for-3d5d37bf63fc8645bb138eaca9fd44f6" style="display:none">Info about the 'inner list' external reference.</span><a href="https://www.rfc-editor.org/rfc/rfc8941.html#name-inner-lists">https://www.rfc-editor.org/rfc/rfc8941.html#name-inner-lists</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-name-inner-lists">2. HTTP header field definition</a> <a href="#ref-for-name-inner-lists①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-dc4fc5b30477deff4c7eb57a6eebd0e7" class="dfn-panel" data-for="dc4fc5b30477deff4c7eb57a6eebd0e7" id="infopanel-for-dc4fc5b30477deff4c7eb57a6eebd0e7">
-   <span id="infopaneltitle-for-dc4fc5b30477deff4c7eb57a6eebd0e7" style="display:none">Info about the 'structured header' external reference.</span><a href="https://www.rfc-editor.org/rfc/rfc8941.html#section-1">https://www.rfc-editor.org/rfc/rfc8941.html#section-1</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-section-1">2. HTTP header field definition</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-3126780c491c468189bbc63b578b102b" class="dfn-panel" data-for="3126780c491c468189bbc63b578b102b" id="infopanel-for-3126780c491c468189bbc63b578b102b">
-   <span id="infopaneltitle-for-3126780c491c468189bbc63b578b102b" style="display:none">Info about the 'application/x-www-form-urlencoded' external reference.</span><a href="https://url.spec.whatwg.org/#concept-urlencoded">https://url.spec.whatwg.org/#concept-urlencoded</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-urlencoded">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-8135e1bba65282312a7812610e7057a1" class="dfn-panel" data-for="8135e1bba65282312a7812610e7057a1" id="infopanel-for-8135e1bba65282312a7812610e7057a1">
-   <span id="infopaneltitle-for-8135e1bba65282312a7812610e7057a1" style="display:none">Info about the 'host' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-host">https://url.spec.whatwg.org/#concept-url-host</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-host">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-e9a94946ac8591256d98595361b6ab6f" class="dfn-panel" data-for="e9a94946ac8591256d98595361b6ab6f" id="infopanel-for-e9a94946ac8591256d98595361b6ab6f">
-   <span id="infopaneltitle-for-e9a94946ac8591256d98595361b6ab6f" style="display:none">Info about the 'password' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-password">https://url.spec.whatwg.org/#concept-url-password</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-password">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-75ccf7f4179f63dff9f682d9c35046bb" class="dfn-panel" data-for="75ccf7f4179f63dff9f682d9c35046bb" id="infopanel-for-75ccf7f4179f63dff9f682d9c35046bb">
-   <span id="infopaneltitle-for-75ccf7f4179f63dff9f682d9c35046bb" style="display:none">Info about the 'path' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-path">https://url.spec.whatwg.org/#concept-url-path</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-path">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-aeb74eb6ceb6e6ae679861d951e4ea50" class="dfn-panel" data-for="aeb74eb6ceb6e6ae679861d951e4ea50" id="infopanel-for-aeb74eb6ceb6e6ae679861d951e4ea50">
-   <span id="infopaneltitle-for-aeb74eb6ceb6e6ae679861d951e4ea50" style="display:none">Info about the 'percent-decode' external reference.</span><a href="https://url.spec.whatwg.org/#percent-decode">https://url.spec.whatwg.org/#percent-decode</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-percent-decode">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-c565e5d889e5b0afe19851d2428ee938" class="dfn-panel" data-for="c565e5d889e5b0afe19851d2428ee938" id="infopanel-for-c565e5d889e5b0afe19851d2428ee938">
-   <span id="infopaneltitle-for-c565e5d889e5b0afe19851d2428ee938" style="display:none">Info about the 'port' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-port">https://url.spec.whatwg.org/#concept-url-port</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-port">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d4903414a495f752f42338823a0b455e" class="dfn-panel" data-for="d4903414a495f752f42338823a0b455e" id="infopanel-for-d4903414a495f752f42338823a0b455e">
-   <span id="infopaneltitle-for-d4903414a495f752f42338823a0b455e" style="display:none">Info about the 'query' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-query">https://url.spec.whatwg.org/#concept-url-query</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-query">5. Comparing</a> <a href="#ref-for-concept-url-query①">(2)</a> <a href="#ref-for-concept-url-query②">(3)</a> <a href="#ref-for-concept-url-query③">(4)</a> <a href="#ref-for-concept-url-query④">(5)</a> <a href="#ref-for-concept-url-query⑤">(6)</a> <a href="#ref-for-concept-url-query⑥">(7)</a> <a href="#ref-for-concept-url-query⑦">(8)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-67f83ca6d3c695660bfc2f054f534ffb" class="dfn-panel" data-for="67f83ca6d3c695660bfc2f054f534ffb" id="infopanel-for-67f83ca6d3c695660bfc2f054f534ffb">
-   <span id="infopaneltitle-for-67f83ca6d3c695660bfc2f054f534ffb" style="display:none">Info about the 'scheme' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-scheme">https://url.spec.whatwg.org/#concept-url-scheme</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-scheme">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-fc05c76e016d3aec6a25a91c066500c8" class="dfn-panel" data-for="fc05c76e016d3aec6a25a91c066500c8" id="infopanel-for-fc05c76e016d3aec6a25a91c066500c8">
-   <span id="infopaneltitle-for-fc05c76e016d3aec6a25a91c066500c8" style="display:none">Info about the 'url' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url">https://url.spec.whatwg.org/#concept-url</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url">5. Comparing</a> <a href="#ref-for-concept-url①">(2)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-d225525242ff801be50aeb7e8dd16eb1" class="dfn-panel" data-for="d225525242ff801be50aeb7e8dd16eb1" id="infopanel-for-d225525242ff801be50aeb7e8dd16eb1">
-   <span id="infopaneltitle-for-d225525242ff801be50aeb7e8dd16eb1" style="display:none">Info about the 'urlencoded parser' external reference.</span><a href="https://url.spec.whatwg.org/#concept-urlencoded-parser">https://url.spec.whatwg.org/#concept-urlencoded-parser</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-urlencoded-parser">4. Parsing</a>
-    <li><a href="#ref-for-concept-urlencoded-parser①">5. Comparing</a> <a href="#ref-for-concept-urlencoded-parser②">(2)</a> <a href="#ref-for-concept-urlencoded-parser③">(3)</a> <a href="#ref-for-concept-urlencoded-parser④">(4)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-7ff99a7dbd3893ebe61baef548c58216" class="dfn-panel" data-for="7ff99a7dbd3893ebe61baef548c58216" id="infopanel-for-7ff99a7dbd3893ebe61baef548c58216">
-   <span id="infopaneltitle-for-7ff99a7dbd3893ebe61baef548c58216" style="display:none">Info about the 'username' external reference.</span><a href="https://url.spec.whatwg.org/#concept-url-username">https://url.spec.whatwg.org/#concept-url-username</a><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-concept-url-username">5. Comparing</a>
-   </ul>
-  </aside>
   <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[ENCODING]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="e877283e03bb3ea91d8d6071dd884479">utf-8 decode without bom</span>
+     <li><span class="dfn-paneled" id="a3033be5">utf-8 decode without bom</span>
     </ul>
    <li>
     <a data-link-type="biblio">[FETCH]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="7d20d86aab82c14f214b792b61bc7cb8">get a structured field value</span>
-     <li><span class="dfn-paneled" id="d94cb5e6252c9158478ebbe8a624e99c">header list</span>
-     <li><span class="dfn-paneled" id="d203414c2b48c23fddab90ef753bb7cf">response</span>
+     <li><span class="dfn-paneled" id="5c66de35">get a structured field value</span>
+     <li><span class="dfn-paneled" id="f7b00a8b">header list</span>
+     <li><span class="dfn-paneled" id="ee7bba09">response</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="61c7c9c76ff1cedf412e7a18bbe24e2c">ascii string</span>
-     <li><span class="dfn-paneled" id="0d4cc8e47c65b15b2be5e5e730a09d3c">boolean</span>
-     <li><span class="dfn-paneled" id="6e2a0a09507290bb1cc50a58f5bbde89">code unit less than</span>
-     <li><span class="dfn-paneled" id="eb75379b05abc264a531a791358e1eba">contain</span>
-     <li><span class="dfn-paneled" id="0d3ee326a162c16997e7bb20e8b7133c">exist</span>
-     <li><span class="dfn-paneled" id="fe3f74dd1b285770252c770a316e8b0d">isomorphic encode</span>
-     <li><span class="dfn-paneled" id="c783a9adeafb412d3bdeaeb1c6a29d96">item <small>(for list)</small></span>
-     <li><span class="dfn-paneled" id="8f72f3d00098519c33ad2ab5758b234b">item <small>(for struct)</small></span>
-     <li><span class="dfn-paneled" id="d970c9402d2ebe6e16b496ab9414f037">keys</span>
-     <li><span class="dfn-paneled" id="fafd38d2108e357bcc9a6fd7f3cd04a7">list</span>
-     <li><span class="dfn-paneled" id="bed8381510f5967f5d37a33de776e857">size</span>
-     <li><span class="dfn-paneled" id="5fb4deaae17e7d0002c6bfbab5baf65e">sorting in ascending order</span>
-     <li><span class="dfn-paneled" id="40b59bc325bd4d66701dfd8b7f1847c0">string</span>
-     <li><span class="dfn-paneled" id="3ee316b93eb2dbe81d01a666cce50f9b">struct</span>
-     <li><span class="dfn-paneled" id="35a770fa01542cb11801796082208978">while</span>
+     <li><span class="dfn-paneled" id="2d5a2765">ascii string</span>
+     <li><span class="dfn-paneled" id="36858240">boolean</span>
+     <li><span class="dfn-paneled" id="4135591f">code unit less than</span>
+     <li><span class="dfn-paneled" id="ae8def21">contain</span>
+     <li><span class="dfn-paneled" id="1243a891">exist</span>
+     <li><span class="dfn-paneled" id="16b1470a">isomorphic encode</span>
+     <li><span class="dfn-paneled" id="5afbefcd">item <small>(for list)</small></span>
+     <li><span class="dfn-paneled" id="c88f3887">item <small>(for struct)</small></span>
+     <li><span class="dfn-paneled" id="31db57e6">keys</span>
+     <li><span class="dfn-paneled" id="649608b9">list</span>
+     <li><span class="dfn-paneled" id="0204d188">size</span>
+     <li><span class="dfn-paneled" id="bccbabba">sorting in ascending order</span>
+     <li><span class="dfn-paneled" id="0698d556">string</span>
+     <li><span class="dfn-paneled" id="984221ca">struct</span>
+     <li><span class="dfn-paneled" id="cbdc89b4">while</span>
     </ul>
    <li>
     <a data-link-type="biblio">[RFC8941]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="a540e168b9362abe672be9c14c8c980d">boolean</span>
-     <li><span class="dfn-paneled" id="1f2339de2d19933aae95a86a512531c0">dictionary</span>
-     <li><span class="dfn-paneled" id="3d5d37bf63fc8645bb138eaca9fd44f6">inner list</span>
-     <li><span class="dfn-paneled" id="dc4fc5b30477deff4c7eb57a6eebd0e7">structured header</span>
+     <li><span class="dfn-paneled" id="d65c1d68">boolean</span>
+     <li><span class="dfn-paneled" id="d71d1eda">dictionary</span>
+     <li><span class="dfn-paneled" id="2892a577">inner list</span>
+     <li><span class="dfn-paneled" id="928a0e65">structured header</span>
     </ul>
    <li>
     <a data-link-type="biblio">[URL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="3126780c491c468189bbc63b578b102b">application/x-www-form-urlencoded</span>
-     <li><span class="dfn-paneled" id="8135e1bba65282312a7812610e7057a1">host</span>
-     <li><span class="dfn-paneled" id="e9a94946ac8591256d98595361b6ab6f">password</span>
-     <li><span class="dfn-paneled" id="75ccf7f4179f63dff9f682d9c35046bb">path</span>
-     <li><span class="dfn-paneled" id="aeb74eb6ceb6e6ae679861d951e4ea50">percent-decode</span>
-     <li><span class="dfn-paneled" id="c565e5d889e5b0afe19851d2428ee938">port</span>
-     <li><span class="dfn-paneled" id="d4903414a495f752f42338823a0b455e">query</span>
-     <li><span class="dfn-paneled" id="67f83ca6d3c695660bfc2f054f534ffb">scheme</span>
-     <li><span class="dfn-paneled" id="fc05c76e016d3aec6a25a91c066500c8">url</span>
-     <li><span class="dfn-paneled" id="d225525242ff801be50aeb7e8dd16eb1">urlencoded parser</span>
-     <li><span class="dfn-paneled" id="7ff99a7dbd3893ebe61baef548c58216">username</span>
+     <li><span class="dfn-paneled" id="36265cc4">application/x-www-form-urlencoded</span>
+     <li><span class="dfn-paneled" id="b85ee3be">host</span>
+     <li><span class="dfn-paneled" id="a1288f2a">password</span>
+     <li><span class="dfn-paneled" id="c0868016">path</span>
+     <li><span class="dfn-paneled" id="5abf08c8">percent-decode</span>
+     <li><span class="dfn-paneled" id="852ada56">port</span>
+     <li><span class="dfn-paneled" id="3ab2ec8b">query</span>
+     <li><span class="dfn-paneled" id="3a711be7">scheme</span>
+     <li><span class="dfn-paneled" id="dcffbccd">url</span>
+     <li><span class="dfn-paneled" id="10d9e2a0">urlencoded parser</span>
+     <li><span class="dfn-paneled" id="218c9455">username</span>
     </ul>
   </ul>
   <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
@@ -1336,99 +1129,68 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dt id="biblio-rfc9111">[RFC9111]
    <dd>R. Fielding, Ed.; M. Nottingham, Ed.; J. Reschke, Ed.. <a href="https://www.rfc-editor.org/rfc/rfc9111"><cite>HTTP Caching</cite></a>. June 2022. Internet Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc9111">https://www.rfc-editor.org/rfc/rfc9111</a>
   </dl>
-  <aside aria-labelledby="infopaneltitle-for-http-headerdef-no-vary-search" class="dfn-panel" data-for="http-headerdef-no-vary-search" id="infopanel-for-http-headerdef-no-vary-search">
-   <span id="infopaneltitle-for-http-headerdef-no-vary-search" style="display:none">Info about the 'No-Vary-Search' definition.</span><b><a href="#http-headerdef-no-vary-search">#http-headerdef-no-vary-search</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-http-headerdef-no-vary-search">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-url-search-variance" class="dfn-panel" data-for="url-search-variance" id="infopanel-for-url-search-variance">
-   <span id="infopaneltitle-for-url-search-variance" style="display:none">Info about the 'URL search variance' definition.</span><b><a href="#url-search-variance">#url-search-variance</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-url-search-variance">3. Data model</a> <a href="#ref-for-url-search-variance①">(2)</a>
-    <li><a href="#ref-for-url-search-variance②">4. Parsing</a> <a href="#ref-for-url-search-variance③">(2)</a>
-    <li><a href="#ref-for-url-search-variance④">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-url-search-variance-no-vary-params" class="dfn-panel" data-for="url-search-variance-no-vary-params" id="infopanel-for-url-search-variance-no-vary-params">
-   <span id="infopaneltitle-for-url-search-variance-no-vary-params" style="display:none">Info about the 'no-vary params' definition.</span><b><a href="#url-search-variance-no-vary-params">#url-search-variance-no-vary-params</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-url-search-variance-no-vary-params">3. Data model</a> <a href="#ref-for-url-search-variance-no-vary-params①">(2)</a> <a href="#ref-for-url-search-variance-no-vary-params②">(3)</a>
-    <li><a href="#ref-for-url-search-variance-no-vary-params③">4. Parsing</a> <a href="#ref-for-url-search-variance-no-vary-params④">(2)</a> <a href="#ref-for-url-search-variance-no-vary-params⑤">(3)</a> <a href="#ref-for-url-search-variance-no-vary-params⑥">(4)</a> <a href="#ref-for-url-search-variance-no-vary-params⑦">(5)</a> <a href="#ref-for-url-search-variance-no-vary-params⑧">(6)</a> <a href="#ref-for-url-search-variance-no-vary-params⑨">(7)</a>
-    <li><a href="#ref-for-url-search-variance-no-vary-params①⓪">5. Comparing</a> <a href="#ref-for-url-search-variance-no-vary-params①①">(2)</a> <a href="#ref-for-url-search-variance-no-vary-params①②">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-url-search-variance-no-vary-params-wildcard" class="dfn-panel" data-for="url-search-variance-no-vary-params-wildcard" id="infopanel-for-url-search-variance-no-vary-params-wildcard">
-   <span id="infopaneltitle-for-url-search-variance-no-vary-params-wildcard" style="display:none">Info about the 'wildcard' definition.</span><b><a href="#url-search-variance-no-vary-params-wildcard">#url-search-variance-no-vary-params-wildcard</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-url-search-variance-no-vary-params-wildcard">3. Data model</a>
-    <li><a href="#ref-for-url-search-variance-no-vary-params-wildcard①">4. Parsing</a> <a href="#ref-for-url-search-variance-no-vary-params-wildcard②">(2)</a> <a href="#ref-for-url-search-variance-no-vary-params-wildcard③">(3)</a> <a href="#ref-for-url-search-variance-no-vary-params-wildcard④">(4)</a> <a href="#ref-for-url-search-variance-no-vary-params-wildcard⑤">(5)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-url-search-variance-vary-params" class="dfn-panel" data-for="url-search-variance-vary-params" id="infopanel-for-url-search-variance-vary-params">
-   <span id="infopaneltitle-for-url-search-variance-vary-params" style="display:none">Info about the 'vary params' definition.</span><b><a href="#url-search-variance-vary-params">#url-search-variance-vary-params</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-url-search-variance-vary-params">3. Data model</a> <a href="#ref-for-url-search-variance-vary-params①">(2)</a> <a href="#ref-for-url-search-variance-vary-params②">(3)</a>
-    <li><a href="#ref-for-url-search-variance-vary-params③">4. Parsing</a> <a href="#ref-for-url-search-variance-vary-params④">(2)</a> <a href="#ref-for-url-search-variance-vary-params⑤">(3)</a> <a href="#ref-for-url-search-variance-vary-params⑥">(4)</a> <a href="#ref-for-url-search-variance-vary-params⑦">(5)</a> <a href="#ref-for-url-search-variance-vary-params⑧">(6)</a> <a href="#ref-for-url-search-variance-vary-params⑨">(7)</a> <a href="#ref-for-url-search-variance-vary-params①⓪">(8)</a> <a href="#ref-for-url-search-variance-vary-params①①">(9)</a>
-    <li><a href="#ref-for-url-search-variance-vary-params①②">5. Comparing</a> <a href="#ref-for-url-search-variance-vary-params①③">(2)</a> <a href="#ref-for-url-search-variance-vary-params①④">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-url-search-variance-vary-params-wildcard" class="dfn-panel" data-for="url-search-variance-vary-params-wildcard" id="infopanel-for-url-search-variance-vary-params-wildcard">
-   <span id="infopaneltitle-for-url-search-variance-vary-params-wildcard" style="display:none">Info about the 'wildcard' definition.</span><b><a href="#url-search-variance-vary-params-wildcard">#url-search-variance-vary-params-wildcard</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-url-search-variance-vary-params-wildcard">3. Data model</a> <a href="#ref-for-url-search-variance-vary-params-wildcard①">(2)</a>
-    <li><a href="#ref-for-url-search-variance-vary-params-wildcard②">4. Parsing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-url-search-variance-vary-on-key-order" class="dfn-panel" data-for="url-search-variance-vary-on-key-order" id="infopanel-for-url-search-variance-vary-on-key-order">
-   <span id="infopaneltitle-for-url-search-variance-vary-on-key-order" style="display:none">Info about the 'vary on key order' definition.</span><b><a href="#url-search-variance-vary-on-key-order">#url-search-variance-vary-on-key-order</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-url-search-variance-vary-on-key-order">3. Data model</a>
-    <li><a href="#ref-for-url-search-variance-vary-on-key-order①">4. Parsing</a> <a href="#ref-for-url-search-variance-vary-on-key-order②">(2)</a>
-    <li><a href="#ref-for-url-search-variance-vary-on-key-order③">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-default-url-search-variance" class="dfn-panel" data-for="default-url-search-variance" id="infopanel-for-default-url-search-variance">
-   <span id="infopaneltitle-for-default-url-search-variance" style="display:none">Info about the 'default URL search variance' definition.</span><b><a href="#default-url-search-variance">#default-url-search-variance</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-default-url-search-variance">4. Parsing</a> <a href="#ref-for-default-url-search-variance①">(2)</a> <a href="#ref-for-default-url-search-variance②">(3)</a> <a href="#ref-for-default-url-search-variance③">(4)</a> <a href="#ref-for-default-url-search-variance④">(5)</a> <a href="#ref-for-default-url-search-variance⑤">(6)</a> <a href="#ref-for-default-url-search-variance⑥">(7)</a> <a href="#ref-for-default-url-search-variance⑦">(8)</a> <a href="#ref-for-default-url-search-variance⑧">(9)</a> <a href="#ref-for-default-url-search-variance⑨">(10)</a> <a href="#ref-for-default-url-search-variance①⓪">(11)</a>
-    <li><a href="#ref-for-default-url-search-variance①①">5. Comparing</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-obtain-a-url-search-variance" class="dfn-panel" data-for="obtain-a-url-search-variance" id="infopanel-for-obtain-a-url-search-variance">
-   <span id="infopaneltitle-for-obtain-a-url-search-variance" style="display:none">Info about the 'obtain a URL search variance' definition.</span><b><a href="#obtain-a-url-search-variance">#obtain-a-url-search-variance</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-obtain-a-url-search-variance">2. HTTP header field definition</a>
-    <li><a href="#ref-for-obtain-a-url-search-variance①">3. Data model</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-parse-a-key" class="dfn-panel" data-for="parse-a-key" id="infopanel-for-parse-a-key">
-   <span id="infopaneltitle-for-parse-a-key" style="display:none">Info about the 'parse a key' definition.</span><b><a href="#parse-a-key">#parse-a-key</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-parse-a-key">4. Parsing</a> <a href="#ref-for-parse-a-key①">(2)</a> <a href="#ref-for-parse-a-key②">(3)</a>
-   </ul>
-  </aside>
-  <aside aria-labelledby="infopaneltitle-for-equivalent-modulo-search-variance" class="dfn-panel" data-for="equivalent-modulo-search-variance" id="infopanel-for-equivalent-modulo-search-variance">
-   <span id="infopaneltitle-for-equivalent-modulo-search-variance" style="display:none">Info about the 'equivalent modulo search variance' definition.</span><b><a href="#equivalent-modulo-search-variance">#equivalent-modulo-search-variance</a></b><b>Referenced in:</b>
-   <ul>
-    <li><a href="#ref-for-equivalent-modulo-search-variance">4. Parsing</a>
-   </ul>
-  </aside>
 <script>/* script-dfn-panel */
 "use strict";
 {
-    function queryAll(sel) {
-        return [].slice.call(document.querySelectorAll(sel));
+    const dfnsJson = window.dfnsJson || {};
+
+    function genDfnPanel({dfnID, url, dfnText, refSections, external}) {
+        return mk.aside({
+            class: "dfn-panel",
+            id: `infopanel-for-${dfnID}`,
+            "data-for": dfnID,
+            "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+            },
+            mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
+                `Info about the '${dfnText}' ${external?"external":""} reference.`),
+            mk.a({href:url}, url),
+            mk.b({}, "Referenced in:"),
+            mk.ul({},
+                ...refSections.map(section=>
+                    mk.li({},
+                        ...section.refs.map((ref, refI)=>
+                            [
+                                mk.a({
+                                    href: `#${ref.id}`
+                                    },
+                                    (refI == 0) ? section.title : `(${refI + 1})`
+                                ),
+                                " ",
+                            ]
+                        ),
+                    ),
+                ),
+            ),
+        );
     }
 
-    // Add popup behavior to all dfns to show the corresponding dfn-panel.
-    var dfns = document.querySelectorAll('.dfn-paneled');
-    for (let dfn of dfns) { insertDfnPopupAction(dfn); }
+    function genAllDfnPanels() {
+        for(const panelData of Object.values(window.dfnpanelData)) {
+            const dfnID = panelData.dfnID;
+            const dfn = document.getElementById(dfnID);
+            if(!dfn) {
+                console.log(`Can't find dfn#${dfnID}.`, panelData);
+            } else {
+                const panel = genDfnPanel(panelData);
+                append(document.body, panel);
+                insertDfnPopupAction(dfn, panel)
+            }
+        }
+    }
 
-    document.body.addEventListener("click", (e) => {
-        // If not handled already, just hide all dfn panels.
-        hideAllDfnPanels();
-    });
+    document.addEventListener("DOMContentLoaded", ()=>{
+        genAllDfnPanels();
+
+        // Add popup behavior to all dfns to show the corresponding dfn-panel.
+        var dfns = queryAll('.dfn-paneled');
+        for(let dfn of dfns) { ; }
+
+        document.body.addEventListener("click", (e) => {
+            // If not handled already, just hide all dfn panels.
+            hideAllDfnPanels();
+        });
+    })
+
 
     function hideAllDfnPanels() {
         // Turn off any currently "on" or "activated" panels.
@@ -1478,52 +1240,290 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         }
     }
 
-    function insertDfnPopupAction(dfn) {
+    function insertDfnPopupAction(dfn, dfnPanel) {
         // Find dfn panel
-        const dfnPanel = document.querySelector(`.dfn-panel[data-for='${dfn.id}']`);
-        if (dfnPanel) {
-            const panelWrapper = document.createElement('span');
-            panelWrapper.appendChild(dfnPanel);
-            panelWrapper.style.position = "relative";
-            panelWrapper.style.height = "0px";
-            dfn.insertAdjacentElement("afterend", panelWrapper);
-            dfn.setAttribute('role', 'button');
-            dfn.setAttribute('aria-expanded', 'false')
-            dfn.tabIndex = 0;
-            dfn.classList.add('has-dfn-panel');
-            dfn.addEventListener('click', (event) => {
-                showDfnPanel(dfnPanel, dfn);
+        const panelWrapper = document.createElement('span');
+        panelWrapper.appendChild(dfnPanel);
+        panelWrapper.style.position = "relative";
+        panelWrapper.style.height = "0px";
+        dfn.insertAdjacentElement("afterend", panelWrapper);
+        dfn.setAttribute('role', 'button');
+        dfn.setAttribute('aria-expanded', 'false')
+        dfn.tabIndex = 0;
+        dfn.classList.add('has-dfn-panel');
+        dfn.addEventListener('click', (event) => {
+            showDfnPanel(dfnPanel, dfn);
+            event.stopPropagation();
+        });
+        dfn.addEventListener('keypress', (event) => {
+            const kc = event.keyCode;
+            // 32->Space, 13->Enter
+            if(kc == 32 || kc == 13) {
+                toggleDfnPanel(dfnPanel, dfn);
                 event.stopPropagation();
-            });
-            dfn.addEventListener('keypress', (event) => {
-                const kc = event.keyCode;
-                // 32->Space, 13->Enter
-                if(kc == 32 || kc == 13) {
-                    toggleDfnPanel(dfnPanel, dfn);
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            });
+                event.preventDefault();
+            }
+        });
 
-            dfnPanel.addEventListener('click', (event) => {
+        dfnPanel.addEventListener('click', (event) => {
+            if (event.target.nodeName == 'A') {
                 pinDfnPanel(dfnPanel);
+            }
+            event.stopPropagation();
+        });
+
+        dfnPanel.addEventListener('keydown', (event) => {
+            if(event.keyCode == 27) { // Escape key
+                hideDfnPanel(dfnPanel, dfn);
                 event.stopPropagation();
-            });
-
-            dfnPanel.addEventListener('keydown', (event) => {
-                if(event.keyCode == 27) { // Escape key
-                    hideDfnPanel(dfnPanel, dfn);
-                    event.stopPropagation();
-                    event.preventDefault();
-                }
-            })
-
-        } else {
-            console.log("Couldn't find .dfn-panel[data-for='" + dfn.id + "']");
-        }
+                event.preventDefault();
+            }
+        })
     }
 }
 </script>
+<script>/* script-dfn-panel-json */
+window.dfnpanelData = {};
+window.dfnpanelData['a3033be5'] = {"dfnID": "a3033be5", "url": "https://encoding.spec.whatwg.org/#utf-8-decode-without-bom", "dfnText": "utf-8 decode without bom", "refSections": [{"refs": [{"id": "ref-for-utf-8-decode-without-bom"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['5c66de35'] = {"dfnID": "5c66de35", "url": "https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header", "dfnText": "get a structured field value", "refSections": [{"refs": [{"id": "ref-for-concept-header-list-get-structured-header"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['f7b00a8b'] = {"dfnID": "f7b00a8b", "url": "https://fetch.spec.whatwg.org/#concept-response-header-list", "dfnText": "header list", "refSections": [{"refs": [{"id": "ref-for-concept-response-header-list"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['ee7bba09'] = {"dfnID": "ee7bba09", "url": "https://fetch.spec.whatwg.org/#concept-response", "dfnText": "response", "refSections": [{"refs": [{"id": "ref-for-concept-response"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['2d5a2765'] = {"dfnID": "2d5a2765", "url": "https://infra.spec.whatwg.org/#ascii-string", "dfnText": "ascii string", "refSections": [{"refs": [{"id": "ref-for-ascii-string"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['36858240'] = {"dfnID": "36858240", "url": "https://infra.spec.whatwg.org/#boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-boolean"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-boolean\u2460"}, {"id": "ref-for-boolean\u2461"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['4135591f'] = {"dfnID": "4135591f", "url": "https://infra.spec.whatwg.org/#code-unit-less-than", "dfnText": "code unit less than", "refSections": [{"refs": [{"id": "ref-for-code-unit-less-than"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['ae8def21'] = {"dfnID": "ae8def21", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "contain", "refSections": [{"refs": [{"id": "ref-for-list-contain"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-list-contain\u2460"}, {"id": "ref-for-list-contain\u2461"}, {"id": "ref-for-list-contain\u2462"}, {"id": "ref-for-list-contain\u2463"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['1243a891'] = {"dfnID": "1243a891", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "exist", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['16b1470a'] = {"dfnID": "16b1470a", "url": "https://infra.spec.whatwg.org/#isomorphic-encode", "dfnText": "isomorphic encode", "refSections": [{"refs": [{"id": "ref-for-isomorphic-encode"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-isomorphic-encode\u2460"}, {"id": "ref-for-isomorphic-encode\u2461"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['5afbefcd'] = {"dfnID": "5afbefcd", "url": "https://infra.spec.whatwg.org/#list-item", "dfnText": "item (for list)", "refSections": [{"refs": [{"id": "ref-for-list-item"}, {"id": "ref-for-list-item\u2460"}, {"id": "ref-for-list-item\u2461"}, {"id": "ref-for-list-item\u2462"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-list-item\u2463"}, {"id": "ref-for-list-item\u2464"}, {"id": "ref-for-list-item\u2465"}, {"id": "ref-for-list-item\u2466"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['c88f3887'] = {"dfnID": "c88f3887", "url": "https://infra.spec.whatwg.org/#struct-item", "dfnText": "item (for struct)", "refSections": [{"refs": [{"id": "ref-for-struct-item"}], "title": "3. Data model"}], "external": true};
+window.dfnpanelData['31db57e6'] = {"dfnID": "31db57e6", "url": "https://infra.spec.whatwg.org/#map-getting-the-keys", "dfnText": "keys", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-keys"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}, {"id": "ref-for-list\u2460"}, {"id": "ref-for-list\u2461"}, {"id": "ref-for-list\u2462"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-list\u2463"}, {"id": "ref-for-list\u2464"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-list\u2465"}, {"id": "ref-for-list\u2466"}, {"id": "ref-for-list\u2467"}, {"id": "ref-for-list\u2468"}, {"id": "ref-for-list\u2460\u24ea"}, {"id": "ref-for-list\u2460\u2460"}, {"id": "ref-for-list\u2460\u2461"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['0204d188'] = {"dfnID": "0204d188", "url": "https://infra.spec.whatwg.org/#list-size", "dfnText": "size", "refSections": [{"refs": [{"id": "ref-for-list-size"}, {"id": "ref-for-list-size\u2460"}, {"id": "ref-for-list-size\u2461"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['bccbabba'] = {"dfnID": "bccbabba", "url": "https://infra.spec.whatwg.org/#list-sort-in-ascending-order", "dfnText": "sorting in ascending order", "refSections": [{"refs": [{"id": "ref-for-list-sort-in-ascending-order"}, {"id": "ref-for-list-sort-in-ascending-order\u2460"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['984221ca'] = {"dfnID": "984221ca", "url": "https://infra.spec.whatwg.org/#struct", "dfnText": "struct", "refSections": [{"refs": [{"id": "ref-for-struct"}], "title": "3. Data model"}], "external": true};
+window.dfnpanelData['cbdc89b4'] = {"dfnID": "cbdc89b4", "url": "https://infra.spec.whatwg.org/#iteration-while", "dfnText": "while", "refSections": [{"refs": [{"id": "ref-for-iteration-while"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['d65c1d68'] = {"dfnID": "d65c1d68", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-name-boolean"}, {"id": "ref-for-name-boolean\u2460"}], "title": "2. HTTP header field definition"}], "external": true};
+window.dfnpanelData['d71d1eda'] = {"dfnID": "d71d1eda", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-dictionaries", "dfnText": "dictionary", "refSections": [{"refs": [{"id": "ref-for-name-dictionaries"}], "title": "2. HTTP header field definition"}], "external": true};
+window.dfnpanelData['2892a577'] = {"dfnID": "2892a577", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-inner-lists", "dfnText": "inner list", "refSections": [{"refs": [{"id": "ref-for-name-inner-lists"}, {"id": "ref-for-name-inner-lists\u2460"}], "title": "2. HTTP header field definition"}], "external": true};
+window.dfnpanelData['928a0e65'] = {"dfnID": "928a0e65", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#section-1", "dfnText": "structured header", "refSections": [{"refs": [{"id": "ref-for-section-1"}], "title": "2. HTTP header field definition"}], "external": true};
+window.dfnpanelData['36265cc4'] = {"dfnID": "36265cc4", "url": "https://url.spec.whatwg.org/#concept-urlencoded", "dfnText": "application/x-www-form-urlencoded", "refSections": [{"refs": [{"id": "ref-for-concept-urlencoded"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['b85ee3be'] = {"dfnID": "b85ee3be", "url": "https://url.spec.whatwg.org/#concept-url-host", "dfnText": "host", "refSections": [{"refs": [{"id": "ref-for-concept-url-host"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['a1288f2a'] = {"dfnID": "a1288f2a", "url": "https://url.spec.whatwg.org/#concept-url-password", "dfnText": "password", "refSections": [{"refs": [{"id": "ref-for-concept-url-password"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['c0868016'] = {"dfnID": "c0868016", "url": "https://url.spec.whatwg.org/#concept-url-path", "dfnText": "path", "refSections": [{"refs": [{"id": "ref-for-concept-url-path"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['5abf08c8'] = {"dfnID": "5abf08c8", "url": "https://url.spec.whatwg.org/#percent-decode", "dfnText": "percent-decode", "refSections": [{"refs": [{"id": "ref-for-percent-decode"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['852ada56'] = {"dfnID": "852ada56", "url": "https://url.spec.whatwg.org/#concept-url-port", "dfnText": "port", "refSections": [{"refs": [{"id": "ref-for-concept-url-port"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['3ab2ec8b'] = {"dfnID": "3ab2ec8b", "url": "https://url.spec.whatwg.org/#concept-url-query", "dfnText": "query", "refSections": [{"refs": [{"id": "ref-for-concept-url-query"}, {"id": "ref-for-concept-url-query\u2460"}, {"id": "ref-for-concept-url-query\u2461"}, {"id": "ref-for-concept-url-query\u2462"}, {"id": "ref-for-concept-url-query\u2463"}, {"id": "ref-for-concept-url-query\u2464"}, {"id": "ref-for-concept-url-query\u2465"}, {"id": "ref-for-concept-url-query\u2466"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['3a711be7'] = {"dfnID": "3a711be7", "url": "https://url.spec.whatwg.org/#concept-url-scheme", "dfnText": "scheme", "refSections": [{"refs": [{"id": "ref-for-concept-url-scheme"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['dcffbccd'] = {"dfnID": "dcffbccd", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['10d9e2a0'] = {"dfnID": "10d9e2a0", "url": "https://url.spec.whatwg.org/#concept-urlencoded-parser", "dfnText": "urlencoded parser", "refSections": [{"refs": [{"id": "ref-for-concept-urlencoded-parser"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-concept-urlencoded-parser\u2460"}, {"id": "ref-for-concept-urlencoded-parser\u2461"}, {"id": "ref-for-concept-urlencoded-parser\u2462"}, {"id": "ref-for-concept-urlencoded-parser\u2463"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['218c9455'] = {"dfnID": "218c9455", "url": "https://url.spec.whatwg.org/#concept-url-username", "dfnText": "username", "refSections": [{"refs": [{"id": "ref-for-concept-url-username"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['http-headerdef-no-vary-search'] = {"dfnID": "http-headerdef-no-vary-search", "url": "#http-headerdef-no-vary-search", "dfnText": "No-Vary-Search", "refSections": [{"refs": [{"id": "ref-for-http-headerdef-no-vary-search"}], "title": "4. Parsing"}], "external": false};
+window.dfnpanelData['url-search-variance'] = {"dfnID": "url-search-variance", "url": "#url-search-variance", "dfnText": "URL search variance", "refSections": [{"refs": [{"id": "ref-for-url-search-variance"}, {"id": "ref-for-url-search-variance\u2460"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance\u2461"}, {"id": "ref-for-url-search-variance\u2462"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-url-search-variance\u2463"}], "title": "5. Comparing"}], "external": false};
+window.dfnpanelData['url-search-variance-no-vary-params'] = {"dfnID": "url-search-variance-no-vary-params", "url": "#url-search-variance-no-vary-params", "dfnText": "no-vary params", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-no-vary-params"}, {"id": "ref-for-url-search-variance-no-vary-params\u2460"}, {"id": "ref-for-url-search-variance-no-vary-params\u2461"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-no-vary-params\u2462"}, {"id": "ref-for-url-search-variance-no-vary-params\u2463"}, {"id": "ref-for-url-search-variance-no-vary-params\u2464"}, {"id": "ref-for-url-search-variance-no-vary-params\u2465"}, {"id": "ref-for-url-search-variance-no-vary-params\u2466"}, {"id": "ref-for-url-search-variance-no-vary-params\u2467"}, {"id": "ref-for-url-search-variance-no-vary-params\u2468"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-url-search-variance-no-vary-params\u2460\u24ea"}, {"id": "ref-for-url-search-variance-no-vary-params\u2460\u2460"}, {"id": "ref-for-url-search-variance-no-vary-params\u2460\u2461"}], "title": "5. Comparing"}], "external": false};
+window.dfnpanelData['url-search-variance-no-vary-params-wildcard'] = {"dfnID": "url-search-variance-no-vary-params-wildcard", "url": "#url-search-variance-no-vary-params-wildcard", "dfnText": "wildcard", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-no-vary-params-wildcard"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-no-vary-params-wildcard\u2460"}, {"id": "ref-for-url-search-variance-no-vary-params-wildcard\u2461"}, {"id": "ref-for-url-search-variance-no-vary-params-wildcard\u2462"}, {"id": "ref-for-url-search-variance-no-vary-params-wildcard\u2463"}, {"id": "ref-for-url-search-variance-no-vary-params-wildcard\u2464"}], "title": "4. Parsing"}], "external": false};
+window.dfnpanelData['url-search-variance-vary-params'] = {"dfnID": "url-search-variance-vary-params", "url": "#url-search-variance-vary-params", "dfnText": "vary params", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-vary-params"}, {"id": "ref-for-url-search-variance-vary-params\u2460"}, {"id": "ref-for-url-search-variance-vary-params\u2461"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-vary-params\u2462"}, {"id": "ref-for-url-search-variance-vary-params\u2463"}, {"id": "ref-for-url-search-variance-vary-params\u2464"}, {"id": "ref-for-url-search-variance-vary-params\u2465"}, {"id": "ref-for-url-search-variance-vary-params\u2466"}, {"id": "ref-for-url-search-variance-vary-params\u2467"}, {"id": "ref-for-url-search-variance-vary-params\u2468"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u24ea"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u2460"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-url-search-variance-vary-params\u2460\u2461"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u2462"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u2463"}], "title": "5. Comparing"}], "external": false};
+window.dfnpanelData['url-search-variance-vary-params-wildcard'] = {"dfnID": "url-search-variance-vary-params-wildcard", "url": "#url-search-variance-vary-params-wildcard", "dfnText": "wildcard", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-vary-params-wildcard"}, {"id": "ref-for-url-search-variance-vary-params-wildcard\u2460"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-vary-params-wildcard\u2461"}], "title": "4. Parsing"}], "external": false};
+window.dfnpanelData['url-search-variance-vary-on-key-order'] = {"dfnID": "url-search-variance-vary-on-key-order", "url": "#url-search-variance-vary-on-key-order", "dfnText": "vary on key order", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-vary-on-key-order"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-vary-on-key-order\u2460"}, {"id": "ref-for-url-search-variance-vary-on-key-order\u2461"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-url-search-variance-vary-on-key-order\u2462"}], "title": "5. Comparing"}], "external": false};
+window.dfnpanelData['default-url-search-variance'] = {"dfnID": "default-url-search-variance", "url": "#default-url-search-variance", "dfnText": "default URL search variance", "refSections": [{"refs": [{"id": "ref-for-default-url-search-variance"}, {"id": "ref-for-default-url-search-variance\u2460"}, {"id": "ref-for-default-url-search-variance\u2461"}, {"id": "ref-for-default-url-search-variance\u2462"}, {"id": "ref-for-default-url-search-variance\u2463"}, {"id": "ref-for-default-url-search-variance\u2464"}, {"id": "ref-for-default-url-search-variance\u2465"}, {"id": "ref-for-default-url-search-variance\u2466"}, {"id": "ref-for-default-url-search-variance\u2467"}, {"id": "ref-for-default-url-search-variance\u2468"}, {"id": "ref-for-default-url-search-variance\u2460\u24ea"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-default-url-search-variance\u2460\u2460"}], "title": "5. Comparing"}], "external": false};
+window.dfnpanelData['obtain-a-url-search-variance'] = {"dfnID": "obtain-a-url-search-variance", "url": "#obtain-a-url-search-variance", "dfnText": "obtain a URL search variance", "refSections": [{"refs": [{"id": "ref-for-obtain-a-url-search-variance"}], "title": "2. HTTP header field definition"}, {"refs": [{"id": "ref-for-obtain-a-url-search-variance\u2460"}], "title": "3. Data model"}], "external": false};
+window.dfnpanelData['parse-a-key'] = {"dfnID": "parse-a-key", "url": "#parse-a-key", "dfnText": "parse a key", "refSections": [{"refs": [{"id": "ref-for-parse-a-key"}, {"id": "ref-for-parse-a-key\u2460"}, {"id": "ref-for-parse-a-key\u2461"}], "title": "4. Parsing"}], "external": false};
+window.dfnpanelData['equivalent-modulo-search-variance'] = {"dfnID": "equivalent-modulo-search-variance", "url": "#equivalent-modulo-search-variance", "dfnText": "equivalent modulo search variance", "refSections": [{"refs": [{"id": "ref-for-equivalent-modulo-search-variance"}], "title": "4. Parsing"}], "external": false};</script>
+<script>/* script-dom-helper */
+function query(sel) { return document.querySelector(sel); }
+
+function queryAll(sel) { return [...document.querySelectorAll(sel)]; }
+
+function iter(obj) {
+	if(!obj) return [];
+	var it = obj[Symbol.iterator];
+	if(it) return it;
+	return Object.entries(obj);
+}
+
+function mk(tagname, attrs, ...children) {
+	const el = document.createElement(tagname);
+	for(const [k,v] of iter(attrs)) {
+		if(k.slice(0,3) == "_on") {
+			const eventName = k.slice(3);
+			el.addEventListener(eventName, v);
+		} else if(k[0] == "_") {
+			// property, not attribute
+			el[k.slice(1)] = v;
+		} else {
+			if(v === false || v == null) {
+        continue;
+      } else if(v === true) {
+        el.setAttribute(k, "");
+        continue;
+      } else {
+  			el.setAttribute(k, v);
+      }
+		}
+	}
+	append(el, children);
+	return el;
+}
+
+/* Create shortcuts for every known HTML element */
+[
+  "a",
+  "abbr",
+  "acronym",
+  "address",
+  "applet",
+  "area",
+  "article",
+  "aside",
+  "audio",
+  "b",
+  "base",
+  "basefont",
+  "bdo",
+  "big",
+  "blockquote",
+  "body",
+  "br",
+  "button",
+  "canvas",
+  "caption",
+  "center",
+  "cite",
+  "code",
+  "col",
+  "colgroup",
+  "datalist",
+  "dd",
+  "del",
+  "details",
+  "dfn",
+  "dialog",
+  "div",
+  "dl",
+  "dt",
+  "em",
+  "embed",
+  "fieldset",
+  "figcaption",
+  "figure",
+  "font",
+  "footer",
+  "form",
+  "frame",
+  "frameset",
+  "head",
+  "header",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "html",
+  "i",
+  "iframe",
+  "img",
+  "input",
+  "ins",
+  "kbd",
+  "label",
+  "legend",
+  "li",
+  "link",
+  "main",
+  "map",
+  "mark",
+  "meta",
+  "meter",
+  "nav",
+  "nobr",
+  "noscript",
+  "object",
+  "ol",
+  "optgroup",
+  "option",
+  "output",
+  "p",
+  "param",
+  "pre",
+  "progress",
+  "q",
+  "s",
+  "samp",
+  "script",
+  "section",
+  "select",
+  "small",
+  "source",
+  "span",
+  "strike",
+  "strong",
+  "style",
+  "sub",
+  "summary",
+  "sup",
+  "table",
+  "tbody",
+  "td",
+  "template",
+  "textarea",
+  "tfoot",
+  "th",
+  "thead",
+  "time",
+  "title",
+  "tr",
+  "u",
+  "ul",
+  "var",
+  "video",
+  "wbr",
+  "xmp",
+].forEach(tagname=>{
+	mk[tagname] = (...args) => mk(tagname, ...args);
+});
+
+function* nodesFromChildList(children) {
+	for(const child of children.flat(Infinity)) {
+		if(child instanceof Node) {
+			yield child;
+		} else {
+			yield new Text(child);
+		}
+	}
+}
+function append(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		if(el instanceof Node) el.appendChild(child);
+		else el.push(child);
+	}
+	return el;
+}
+
+function insertAfter(el, ...children) {
+	for(const child of nodesFromChildList(children)) {
+		el.parentNode.insertBefore(child, el.nextSibling);
+	}
+	return el;
+}
+
+function clearContents(el) {
+	el.innerHTML = "";
+	return el;
+}
+
+function parseHTML(markup) {
+	if(markup.toLowerCase().trim().indexOf('<!doctype') === 0) {
+		const doc = document.implementation.createHTMLDocument("");
+		doc.documentElement.innerHTML = markup;
+		return doc;
+	} else {
+		const el = mk.template({});
+		el.innerHTML = markup;
+		return el.content;
+	}
+}</script>
 <script>/* script-var-click-highlighting */
 
     "use strict";
@@ -1608,4 +1608,4 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
             return "selected" + index;
         }
     }
-    </script>
+</script>
