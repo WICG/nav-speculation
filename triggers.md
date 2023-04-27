@@ -19,8 +19,8 @@
     - [Alternatives](#alternatives)
   - [Using the Document's base URL for external speculation rule sets](#using-the-documents-base-url-for-external-speculation-rule-sets)
   - [Content Security Policy](#content-security-policy)
+  - [Eagerness](#eagerness)
 - [Future extensions](#future-extensions)
-  - [Scores](#scores)
   - [Handler URLs](#handler-urls)
   - [External speculation rules via script elements](#external-speculation-rules-via-script-elements)
   - [More speculation actions](#more-speculation-actions)
@@ -289,9 +289,10 @@ The `default-src` directive can be used to restrict which URLs can be prefetched
 
 ### Eagerness
 
-Developers can control how eagerly the browser preloads links in order to balance the performance advantage against resource overhead.
+Developers may provide hints about how eagerly the browser should preload links in order to balance the performance advantage against resource overhead.
 This field accepts one of `"conservative"`, `"moderate"`  or `"eager"` strings as the value, and it is applicable to both `"prefetch"` and `"prerender"` actions and both `"list"` or `"document"` sources.
 If not specified, list rules default to `"eager"` and document rules default to `"conservative"`.
+The user agent takes this into consideration along with its own heuristics, so it may select a link that the author has indicated as less eager than another, if the less eager candidate is considered a better choice.
 
 ```json
 {
@@ -318,29 +319,6 @@ If not specified, list rules default to `"eager"` and document rules default to 
 ```
 
 ## Future extensions
-
-### Scores
-
-A rule may include a _score_ between 0.0 and 1.0 (inclusive), defaulting to 0.5, which is a hint about how likely the user is to navigate to the URL. It is expected that UAs will treat this monotonically (i.e., all else equal, increasing the score associated with a rule will make the UA speculate no less than before for that URL, and decreasing the score will not make the UA speculate where it previously did not). However, the user agent may select a link with a lower author-assigned score than another if its heuristics suggest it is a better choice.
-
-A modification of the above example, which works off of the highly-sophisticated model that people tend to click on the top-voted link more often than the later ones, would be:
-
-```json
-{"prefetch": [
-  {"source": "list",
-   "urls": ["/item?id=32480009"],
-   "score": 0.8},
-  {"source": "list",
-   "urls": [
-    "https://support.signal.org/hc/en-us/articles/4850133017242",
-    "https://discord.com/blog/how-discord-supercharges-network-disks-for-extreme-low-latency",
-    "https://github.com/containers/krunvm"
-   ],
-   "score": 0.5}
-]}
-```
-
-This might instead be more coarsely expressed, e.g., as an enumeration.
 
 ### Handler URLs
 
