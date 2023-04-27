@@ -230,11 +230,10 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 </div>
 
 <div algorithm="find a matching prefetch record">
-    To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+    To <dfn export>find a matching prefetch record</dfn> given a [=source snapshot params=] |sourceSnapshotParams|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
-    1. [=Assert=]: |document| is [=Document/fully active=].
-    1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
-    1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+    1. Let |currentTime| be the [=current high resolution time=] for |sourceSnapshotParams|'s [=source snapshot params/fetch client=]'s [=environment settings object/global object=].
+    1. [=list/For each=] |record| of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=]:
         1. If |record|'s [=prefetch record/URL=] is not equal to |url|, then [=iteration/continue=].
         1. If |record|'s [=prefetch record/state=] is not "`completed`", then [=iteration/continue=].
         1. If |record|'s [=prefetch record/sandboxing flag set=] is empty and |sandboxFlags| is not empty, then [=iteration/continue=].
@@ -242,7 +241,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
             <div class="note">
               Strictly speaking, it would still be possible for this to be valid if sandbox flags have been added to the container since prefetch but those flags would not cause an error due to cross origin opener policy. This is expected to be rare and so isn't handled.
             </div>
-        1. [=list/Remove=] |record| from |document|'s [=Document/prefetch records=].
+        1. [=list/Remove=] |record| from |sourceSnapshotParams|'s [=source snapshot params/prefetch records=].
         1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
         1. If |record|'s [=prefetch record/redirect chain=] [=redirect chain/has updated credentials=], return null.
         1. Return |record|.
@@ -411,8 +410,16 @@ Update all creation sites to supply an empty string, except for any in this docu
 
 <hr>
 
+Add an additional item to [=source snapshot params=] as follows:
+:  <dfn for="source snapshot params">prefetch records</dfn>
+:: a a [=list=] of [=prefetch records=].
+
+When to [=snapshot source snapshot params=], set [=source snapshot params/prefetch records=] to <var ignore>sourceDocument</var>'s [=Document/prefetch records=].
+
+<hr>
+
 <div algorithm="attempt to populate the history entry's document">
-    In <a spec=HTML>attempt to populate the history entry's document</a>, add an optional {{Document}} |sourceDocumentForPrefetches| argument, and replace the step which invokes <a spec=HTML>create navigation params by fetching</a> with the following:
+    In <a spec=HTML>attempt to populate the history entry's document</a>, replace the step which invokes <a spec=HTML>create navigation params by fetching</a> with the following:
 
     1. Otherwise, if both of the following are true:
         * <var ignore>entry</var>'s [=session history entry/URL=]'s [=url/scheme=] is a [=fetch scheme=]; and
@@ -422,10 +429,7 @@ Update all creation sites to supply an empty string, except for any in this docu
 
             1. Let |request| be the result of [=creating a navigation request=] given <var ignore>entry</var>, <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=], <var ignore>navigable</var>'s [=navigable/container=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/has transient activation=].
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
-            1. If |sourceDocumentForPrefetches| is given, then set |referringDocument| to |sourceDocumentForPrefetches|.
-            1. Otherwise, set |referringDocument| to <var ignore>navigable</var>'s [=navigable/active document=].
-               <p class="issue">Or should we fallback to null instead? A notable case where this shouldn't be null is <a spec=HTML>reload</a>, but I'm not sure about other cases.</p>
-            1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given |referringDocument|, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
+            1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
             1. If <var ignore>documentResource</var> is null and |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
@@ -435,8 +439,6 @@ Update all creation sites to supply an empty string, except for any in this docu
                 1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given <var ignore>navigable</var>'s [=navigable/active document=] and <var ignore>entry</var>'s [=session history entry/document state=]'s [=document state/initiator origin=].
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, |coopEnforcementResult|, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
 
-    The |sourceDocumentForPrefetches| argument should be plumbed from <a spec=HTML>navigate</a>'s |sourceDocument| and <a spec=HTML>traverse the history by a delta</a>'s |sourceDocument|.
-    <p class="issue">How about other callers, i.e. <a spec=HTML>apply pending history changes</a>, <a spec=HTML>finalize a same-document navigation</a> and <a spec=HTML>finalize a cross-document navigation</a>?</p>
 </div>
 
 <hr>
