@@ -388,14 +388,14 @@ For the preloading case, the fact that we don't know whether a preloaded page co
   "prefetch": [{
     "source": "list",
     "urls": ["/products"],
-    "score": 0.1
+    "eagerness": "conservative"
   }]
 }
 </script>
 <a href="/products?id=123">click me</a>
 ```
 
-Here, the `"score": 0.1` value is [meant to indicate](./triggers.md#scores) that the browser _may_ prefetch the given URL, and not that it _should_ prefetch the given URL. So, the browser probably won't prefetch `/products` on page load.
+Here, the conservative [eagerness](./triggers.md#eagerness) value indicates that the browser _may_ prefetch the given URL, and not that it _should_ prefetch the given URL. So, the browser probably won't prefetch `/products` on page load.
 
 But, let's say the user presses down on the link. Now it seems pretty likely that `/products?id=123` is going to be visited, so it might be a good time to prefetch `/products`. After all, `/products` might come back with `No-Vary-Search` indicating that the `id` query parameter is unimportant.
 
@@ -408,7 +408,7 @@ Also consider what happens if the headers for `/products` have not come back by 
 
 To solve this, we could have the speculation rules syntax provide a hint for what it expects the `No-Vary-Search` value to be. We would still have to verify the result (at least in cross-origin cases, for security; and proably in same-origin cases too, to avoid weird bugs). But it would help feed into the heuristics in such "may preload" cases.
 
-Any solution in this area is probably best thought through together with the design work on [document rules](./triggers.md#document-rules), [scores](./triggers.md#scores), and maybe [`No-Vary-Path`](#no-vary-path), since they would all likely be used together.
+Any solution in this area is probably best thought through together with the design work on [document rules](./triggers.md#document-rules), [eagerness](./triggers.md#eagerness), and maybe [`No-Vary-Path`](#no-vary-path), since they would all likely be used together.
 
 ### A `<meta>` version
 
