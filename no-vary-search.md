@@ -55,7 +55,6 @@ No-Vary-Search: params, except=("productId")
 - [Extensibility](#extensibility)
   - [More complex no-vary rules](#more-complex-no-vary-rules)
   - [`No-Vary-Path`](#no-vary-path)
-  - [A referrer hint](#a-referrer-hint)
   - [A `<meta>` version](#a-meta-version)
 - [Security and privacy considerations](#security-and-privacy-considerations)
 
@@ -173,6 +172,8 @@ No-Vary-Search: key-order, params, except=("productId")
 #### … preloading caches
 
 This repository contains specifications for in-memory URL-keyed caches for [prefetch records](https://wicg.github.io/nav-speculation/prefetch.html#document-prefetch-records) and [prerendering browsing contexts](https://wicg.github.io/nav-speculation/prerendering.html#document-prerendering-browsing-contexts-map). This proposal updates the key construction and matching procedure for these caches.
+
+To improve matching opportunities in the case of ongoing preloads pending response headers, we also allow speculation rules to provide a [hint](./triggers.md#no-vary-search-hint) of the expected value of `No-Vary-Search`.
 
 _Note: our [intent](https://github.com/WICG/nav-speculation/issues/170), not yet reflected in the specs, is for these caches to respect at least some of the general `Vary` header semantics._
 
@@ -377,38 +378,6 @@ In particular, splitting apart query and path handling makes sense because their
 The security considerations for `No-Vary-Path` _might_ be trickier than [those for `No-Vary-Search`](#security-and-privacy-considerations), given the existence of shared hosting environments that are sometimes sharded by path alone. Although path is not usually recognized as a security boundary on the web platform, some features like [service workers](https://w3c.github.io/ServiceWorker/#path-restriction) have decided to add some path-based restrictions, so if we explore `No-Vary-Path` we'll need to carefully study their discussions and conclusions.
 
 Any future work on `No-Vary-Path` could benefit from the infrastructure work we do on `No-Vary-Search`, since it would have the same [integrations](#integration-with) and a generally similar processing model.
-
-### A referrer hint
-
-For the preloading case, the fact that we don't know whether a preloaded page considers query parameters important until the response comes back with its `No-Vary-Search` header causes a tradeoff. Consider this page:
-
-```html
-<script type=speculationrules>
-{
-  "prefetch": [{
-    "source": "list",
-    "urls": ["/products"],
-    "eagerness": "conservative"
-  }]
-}
-</script>
-<a href="/products?id=123">click me</a>
-```
-
-Here, the conservative [eagerness](./triggers.md#eagerness) value indicates that the browser _may_ prefetch the given URL, and not that it _should_ prefetch the given URL. So, the browser probably won't prefetch `/products` on page load.
-
-But, let's say the user presses down on the link. Now it seems pretty likely that `/products?id=123` is going to be visited, so it might be a good time to prefetch `/products`. After all, `/products` might come back with `No-Vary-Search` indicating that the `id` query parameter is unimportant.
-
-We now have two paths:
-
-1. `/products` _does_ have `No-Vary-Search: params=("id")`. For example, `/products?id=123` means to render the products view, and use client-side script to highlight the `X`th product. Then, our prefetch was great.
-1. `/products` _does not_ have `No-Vary-Search: params=("id")`. For example, `/products` is an index listing all the products, whereas `/products?id=123` is a specific product page. Then, our prefetch was wasted, and we need to go fetch the separate `/products?id=123` page.
-
-Also consider what happens if the headers for `/products` have not come back by the time the user releases the press, i.e. confirmed the intent to navigate. Do we wait on `/products` to finish? This makes (1) better and (2) worse. Or do we start a concurrent fetch to `/products?id=123`? This makes (1) worse and (2) better.
-
-To solve this, we could have the speculation rules syntax provide a hint for what it expects the `No-Vary-Search` value to be. We would still have to verify the result (at least in cross-origin cases, for security; and proably in same-origin cases too, to avoid weird bugs). But it would help feed into the heuristics in such "may preload" cases.
-
-Any solution in this area is probably best thought through together with the design work on [document rules](./triggers.md#document-rules), [eagerness](./triggers.md#eagerness), and maybe [`No-Vary-Path`](#no-vary-path), since they would all likely be used together.
 
 ### A `<meta>` version
 
