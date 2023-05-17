@@ -328,6 +328,27 @@ We would like preloading to make use of the improved matching enabled by the [`N
 {
   "prefetch": [{
     "source": "list",
+    "urls": ["/products"]
+  }]
+}
+</script>
+<a href="/products?id=123">Product ABC</a>
+```
+
+Consider what happens if the user starts a navigation to `/products?id=123` when the headers for the prefetch of `/products` have not been received yet. We have two cases:
+
+1. `/products` _has_ `No-Vary-Search: params=("id")`. For example, `/products?id=123` means to render the products view, and use client-side script to highlight the `X`th product. Then, our prefetch could be usable.
+1. `/products` _does not_ have `No-Vary-Search: params=("id")`. For example, `/products` is an index listing all the products, whereas `/products?id=123` is a specific product page. Then, our prefetch was wasted, and we need to go fetch the separate `/products?id=123` page.
+
+Should we wait for the prefetch of `/products` to finish? This makes case (1) better and case (2) worse. Or do we start a concurrent fetch to `/products?id=123`? This makes case (1) worse and case (2) better.
+
+Furthermore, for prefetches triggered by the user agent's heuristics, not knowing the `No-Vary-Search` value creates an additional tradeoff of whether to perform the prefetch. Consider the following:
+
+```html
+<script type="speculationrules">
+{
+  "prefetch": [{
+    "source": "list",
     "urls": ["/products"],
     "eagerness": "conservative"
   }]
@@ -336,14 +357,7 @@ We would like preloading to make use of the improved matching enabled by the [`N
 <a href="/products?id=123">Product ABC</a>
 ```
 
-Here, the conservative [eagerness](#eagerness) value indicates that the browser _may_ prefetch the given URL, and not that it _should_ prefetch the given URL. So, the browser probably won't prefetch `/products` on page load. But, let's say the user presses down on the link. Now it seems pretty likely that `/products?id=123` is going to be visited, so it might be a good time to prefetch `/products`. After all, `/products` might come back with `No-Vary-Search` indicating that the `id` query parameter is unimportant.
-
-We now have two cases:
-
-1. `/products` _does_ have `No-Vary-Search: params=("id")`. For example, `/products?id=123` means to render the products view, and use client-side script to highlight the `X`th product. Then, our prefetch was great.
-1. `/products` _does not_ have `No-Vary-Search: params=("id")`. For example, `/products` is an index listing all the products, whereas `/products?id=123` is a specific product page. Then, our prefetch was wasted, and we need to go fetch the separate `/products?id=123` page.
-
-Also consider what happens if the headers for `/products` have not come back by the time the user releases the press, i.e. confirmed the intent to navigate. Do we wait on `/products` to finish? This makes case (1) better and case (2) worse. Or do we start a concurrent fetch to `/products?id=123`? This makes case (1) worse and case (2) better.
+Here, the conservative [eagerness](#eagerness) value indicates that the browser _may_ prefetch the given URL, and not that it _should_ prefetch the given URL. So, the browser probably won't prefetch `/products` on page load. But, let's say the user presses down on the link. Now it seems pretty likely that `/products?id=123` is going to be visited, so it might be a good time to prefetch `/products`. After all, `/products` might come back with `No-Vary-Search` indicating that the `id` query parameter is unimportant. If we're in case (1) as described above, then the prefetch is valuable. If we're in case (2), then prefetching is wasteful.
 
 To solve this, we have the speculation rules syntax provide a hint for what the author expects the `No-Vary-Search` value to be. A rule may have an `"expects_no_vary_search"` field which has the expected [header value](./no-vary-search.md#the-header) as a string.
 
@@ -353,15 +367,14 @@ To solve this, we have the speculation rules syntax provide a hint for what the 
   "prefetch": [{
     "source": "list",
     "urls": ["/products"],
-    "expects_no_vary_search": "params=(\"id\")",
-    "eagerness": "conservative"
+    "expects_no_vary_search": "params=(\"id\")"
   }]
 }
 </script>
 <a href="/products?id=123">Product ABC</a>
 ```
 
-With this, the author indicates that case (1) described above is what the server is expected to produce. This informs the user agent's heuristics that prefetching `/products` is an appropriate thing to do when it is likely that there will be a navigation to `/products?id=123`. Furthermore, if the navigation starts while there is an ongoing prefetch, this informs the user agent that it is appropriate to wait for the prefetch, instead of immediately starting another fetch.
+With this, the author indicates that case (1) described above is what the server is expected to produce. If a navigation starts while there is an ongoing prefetch of `/products`, this informs the user agent that it is appropriate to wait for the prefetch, instead of immediately starting another fetch. Furthermore, in the non-eager version, this informs the user agent's heuristics that prefetching `/products` is an appropriate thing to do when it is likely that there will be a navigation to `/products?id=123`.
 
 We expect the typical use case for this will involve the author copying the header value verbatim into the `expects_no_vary_search` field, so we use a string representation of the [structured header value](./no-vary-search.md#the-header), instead of creating a second representation based on JSON structures.
 
