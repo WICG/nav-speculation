@@ -93,6 +93,13 @@ spec: client-hints-infrastructure; urlPrefix: https://wicg.github.io/client-hint
       text: client hints set; url: environment-settings-object-client-hints-set
     for: accept-ch-cache
       text: origin; url:accept-ch-cache-origin
+spec: web-audio; urlPrefix: https://webaudio.github.io/web-audio-api/
+  type: dfn
+    text: allowed to start; url: allowed-to-start
+    text: AudioContext; url: AudioContext
+    text: [[control thread state]] ; url: dom-baseaudiocontext-control-thread-state-slot
+    text: running; url: dom-audiocontextstate-running
+    text: Queue a control message; url: queuing
 
 </pre>
 <pre class="biblio">
@@ -786,6 +793,20 @@ Add {{[DelayWhilePrerendering]}} to {{Navigator/getUserMedia()}}, {{MediaDevices
 
   1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then return.
 </div>
+
+<h4 id="web-audio-patch">Web Audio API</h4>
+
+The concept, [=allowed to start=], is used in the spec, but details are not defined as implementation details.
+To restrict auto playback while prerendering, add the following note and steps in the [=AudioContext=] interface section.
+
+<p class="note">
+The [=AudioContext=] is never allowed to start while prerendering.
+If [=allowed to start=] algorithm runs and returns false only due to the prerendering,
+then append the following steps to [=this=]'s [=Document/post-prerendering activation steps list=].
+</p>
+
+1. Set the [=[[control thread state]]=] on the [=AudioContext=] to [=running=].
+1. [=Queue a control message=] to resume the [=AudioContext=]
 
 <h4 id="audio-output-patch">Audio Output Devices API</h4>
 
