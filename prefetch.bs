@@ -523,7 +523,7 @@ Update all creation sites to supply an empty string, except for any in this docu
                 1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
                 1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then set |prefetchRecord|'s [=prefetch record/has conflicting credentials=] to true.
 
-                    <p class="note">This does not immediately abort the prefetch or stop following redirects, because doing so might reveal whether or not the user has stored state outside the current partition, before the user navigates. Instead, the prefetch continues as though there were no conflicting credentials, except that the prefetch cannot actually be used. User agents may wish to [=report a warning to the console=] or otherwise inform authors that this has happened.</p>
+                    <p class="note allow-2119">This does not immediately abort the prefetch or stop following redirects, because doing so might reveal whether or not the user has stored state outside the current partition, before the user navigates. Instead, the prefetch continues as though there were no conflicting credentials, except that the prefetch cannot actually be used. User agents may wish to [=report a warning to the console=] or otherwise inform authors that this has happened.</p>
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
