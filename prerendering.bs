@@ -816,14 +816,13 @@ Also modify [=AudioContext constructor=] steps to have the following step before
   1. [=Queue a control message=] to resume the [=AudioContext=]
 
 <p class="note">
-Users might call [=resume()=].
-It ensurs the context is not [=allow to start=], and appends a {{Promise}} to [=[[pending resume promises]]=].
+Users might call [=resume()=] that ensurs the context is not [=allow to start=] and appends a {{Promise}} to [=[[pending resume promises]]=].
 The {{Promise}} will be resolved in the activation steps above.
 </p>
 
 <p class="note">
 The [=AudioScheduledSourceNode=] interface has [=start(when)=] method and the [=AudioBufferSourceNode=] interface has [=start(when, offset, duration)=] method that might affect [=[[control thread state]]=].
-But they don't as the context is not [=allowed to start=].
+But they don't as the context is not [=allowed to start=] and it prevents the algorithm from setting the [=[[control thread state]]=].
 This would not matter because the node can automatically start when the context starts.
 </p>
 
