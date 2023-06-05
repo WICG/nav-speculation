@@ -96,18 +96,11 @@ spec: client-hints-infrastructure; urlPrefix: https://wicg.github.io/client-hint
 spec: web-audio; urlPrefix: https://webaudio.github.io/web-audio-api/
   type: dfn
     text: allowed to start; url: allowed-to-start
-    text: AudioContext; url: AudioContext
-    text: AudioContext constructor; url: AudioContext-constructors
     text: control message; url: control-message
     text: [[control thread state]]; url: dom-baseaudiocontext-control-thread-state-slot
     text: running; url: dom-audiocontextstate-running
     text: queue a control message; url: queuing
-    text: resume(); url: dom-audiocontext-resume
     text: [[pending resume promises]]; url: dom-audiocontext-pending-resume-promises-slot
-    text: AudioScheduledSourceNode; url: AudioScheduledSourceNode
-    text: start(when); url: dom-audioscheduledsourcenode-start
-    text: AudioBufferSourceNode; url: AudioBufferSourceNode
-    text: start(when, offset, duration); url: dom-audiobuffersourcenode-start
 
 </pre>
 <pre class="biblio">
@@ -805,23 +798,23 @@ Add {{[DelayWhilePrerendering]}} to {{Navigator/getUserMedia()}}, {{MediaDevices
 <h4 id="web-audio-patch">Web Audio API</h4>
 
 The concept, [=allowed to start=], is used in the spec, but details are not defined as implementation details.
-To restrict auto playback while prerendering, add the following rule in the [=AudioContext=] interface section.
+To restrict auto playback while prerendering, add the following rule in the {{AudioContext}} interface section.
 
-The [=AudioContext=] is never [=allowed to start=] while prerendering.
+The {{AudioContext}} is never [=allowed to start=] while prerendering.
 
-Also modify [=AudioContext constructor=] steps to have the following step before returning the constructed object.
+Also modify {{AudioContext/AudioContext()}} constructor steps to have the following step before returning the constructed object.
 
 1. Else if the context is not [=allow to start=] only due to the prerendering, then append the following steps to [=this=]'s [=Document/post-prerendering activation steps list=].
-  1. Set the [=[[control thread state]]=] on the [=AudioContext=] to [=running=].
-  1. [=Queue a control message=] to resume the [=AudioContext=]
+  1. Set the [=[[control thread state]]=] on the {{AudioContext}} to [=running=].
+  1. [=Queue a control message=] to resume the {{AudioContext}}
 
 <p class="note">
-Users might call [=resume()=] that ensurs the context is not [=allow to start=] and appends a {{Promise}} to [=[[pending resume promises]]=].
+Users might call {{AudioContext/resume()}} that ensurs the context is not [=allow to start=] and appends a {{Promise}} to [=[[pending resume promises]]=].
 The {{Promise}} will be resolved in the activation steps above.
 </p>
 
 <p class="note">
-The [=AudioScheduledSourceNode=] interface has [=start(when)=] method and the [=AudioBufferSourceNode=] interface has [=start(when, offset, duration)=] method that might affect [=[[control thread state]]=].
+The {{AudioScheduledSourceNode}} interface has {{AudioScheduledSourceNode/start(when)}} method and the {{AudioBufferSourceNode}} interface has {{AudioBufferSourceNode/start(when, offset, duration)}} method that might affect [=[[control thread state]]=].
 But they don't as the context is not [=allowed to start=] and it prevents the algorithm from setting the [=[[control thread state]]=].
 This would not matter because the node can automatically start when the context starts.
 </p>
