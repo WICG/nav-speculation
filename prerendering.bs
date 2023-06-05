@@ -797,24 +797,24 @@ Add {{[DelayWhilePrerendering]}} to {{Navigator/getUserMedia()}}, {{MediaDevices
 
 <h4 id="web-audio-patch">Web Audio API</h4>
 
-The concept, [=allowed to start=], is used in the spec, but details are not defined as implementation details.
+The concept, [=allowed to start=], is used in the spec, but details are left [=implementation-defined=].
 To restrict auto playback while prerendering, add the following rule in the {{AudioContext}} interface section.
 
 The {{AudioContext}} is never [=allowed to start=] while prerendering.
 
 Also modify {{AudioContext/AudioContext()}} constructor steps to have the following step before returning the constructed object.
 
-1. Else if the context is not [=allow to start=] only due to the prerendering, then append the following steps to [=this=]'s [=Document/post-prerendering activation steps list=].
-  1. Set the [=[[control thread state]]=] on the {{AudioContext}} to [=running=].
-  1. [=Queue a control message=] to resume the {{AudioContext}}
+1. Else if |context| is not [=allow to start=] only due to the prerendering, then append the following steps to |context|'s [=Document/post-prerendering activation steps list=].
+  1. Set the [=[[control thread state]]=] on |context| to [=running=].
+  1. [=Queue a control message=] to resume |context|.
 
 <p class="note">
-Users might call {{AudioContext/resume()}} that ensurs the context is not [=allow to start=] and appends a {{Promise}} to [=[[pending resume promises]]=].
+Developers might call {{AudioContext/resume()}} while prerendering. In that case, the context is not [=allow to start=], and appends a {{Promise}} to [=[[pending resume promises]]=].
 The {{Promise}} will be resolved in the activation steps above.
 </p>
 
 <p class="note">
-The {{AudioScheduledSourceNode}} interface has {{AudioScheduledSourceNode/start(when)}} method and the {{AudioBufferSourceNode}} interface has {{AudioBufferSourceNode/start(when, offset, duration)}} method that might affect [=[[control thread state]]=].
+The {{AudioScheduledSourceNode}} interface has a {{AudioScheduledSourceNode/start(when)}} method and the {{AudioBufferSourceNode}} interface has a {{AudioBufferSourceNode/start(when, offset, duration)}} method that might affect [=[[control thread state]]=].
 But they don't as the context is not [=allowed to start=] and it prevents the algorithm from setting the [=[[control thread state]]=].
 This would not matter because the node can automatically start when the context starts.
 </p>
