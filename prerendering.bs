@@ -93,6 +93,14 @@ spec: client-hints-infrastructure; urlPrefix: https://wicg.github.io/client-hint
       text: client hints set; url: environment-settings-object-client-hints-set
     for: accept-ch-cache
       text: origin; url:accept-ch-cache-origin
+spec: web-audio; urlPrefix: https://webaudio.github.io/web-audio-api/
+  type: dfn
+    text: allowed to start; url: allowed-to-start
+    text: control message; url: control-message
+    text: [[control thread state]]; url: dom-baseaudiocontext-control-thread-state-slot
+    text: running; url: dom-audiocontextstate-running
+    text: queue a control message; url: queuing
+    text: [[pending resume promises]]; url: dom-audiocontext-pending-resume-promises-slot
 
 </pre>
 <pre class="biblio">
@@ -786,6 +794,30 @@ Add {{[DelayWhilePrerendering]}} to {{Navigator/getUserMedia()}}, {{MediaDevices
 
   1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then return.
 </div>
+
+<h4 id="web-audio-patch">Web Audio API</h4>
+
+The concept, [=allowed to start=], is used in the spec, but details are left [=implementation-defined=].
+To restrict auto playback while prerendering, add the following rule in the {{AudioContext}} interface section.
+
+The {{AudioContext}} is never [=allowed to start=] while prerendering.
+
+Also modify {{AudioContext/AudioContext()}} constructor steps to have the following step before returning the constructed object.
+
+1. Else if |context| is not [=allow to start=] only due to the prerendering, then append the following steps to |context|'s [=Document/post-prerendering activation steps list=].
+  1. Set the [=[[control thread state]]=] on |context| to [=running=].
+  1. [=Queue a control message=] to resume |context|.
+
+<p class="note">
+Developers might call {{AudioContext/resume()}} while prerendering. In that case, the context is not [=allow to start=], and appends a {{Promise}} to [=[[pending resume promises]]=].
+The {{Promise}} will be resolved in the activation steps above.
+</p>
+
+<p class="note">
+The {{AudioScheduledSourceNode}} interface has a {{AudioScheduledSourceNode/start(when)}} method and the {{AudioBufferSourceNode}} interface has a {{AudioBufferSourceNode/start(when, offset, duration)}} method that might affect [=[[control thread state]]=].
+But they don't as the context is not [=allowed to start=] and it prevents the algorithm from setting the [=[[control thread state]]=].
+This would not matter because the node can automatically start when the context starts.
+</p>
 
 <h4 id="audio-output-patch">Audio Output Devices API</h4>
 
