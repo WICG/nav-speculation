@@ -122,6 +122,11 @@ spec: nav-speculation; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
+spec: nav-speculation; urlPrefix: no-vary-search.html
+  type: dfn
+    text: URL search variance; url: url-search-variance
+    text: obtain a URL search variance; url: obtain-a-url-search-variance
+    text: equivalent modulo search variance; url: equivalent-modulo-search-variance
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
@@ -185,6 +190,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
+* <dfn export for="prefetch record">No-Vary-Search hint</dfn>, a [=URL search variance=]
 * <dfn export for="prefetch record">label</dfn>, a [=string=]
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
@@ -208,6 +214,24 @@ A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the 
 The user agent may [=prefetch record/cancel and discard=] records from the [=Document/prefetch records=] even if they are not expired, e.g., due to resource constraints. Since completed records with expiry times in the past will never be [=find a matching prefetch record|matching prefetch records=], they can be removed with no observable consequences.
 
 <div algorithm>
+    A [=prefetch record=] |prefetchRecord| <dfn export for="prefetch record">matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
+    1. If |prefetchRecord|'s [=prefetch record/URL=] is equal to |url|, return true.
+    1. If |prefetchRecord|'s [=prefetch record/response=] is not null:
+      1. Let |searchVariance| be the result of [=obtaining a URL search variance=] given |prefetchRecord|'s [=prefetch record/response=].
+      1. If |prefetchRecord|'s [=prefetch record/URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
+    1. Otherwise, return false.
+</div>
+
+<div algorithm>
+    A [=prefetch record=] |prefetchRecord| <dfn export for="prefetch record">possibly matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
+    1. If |prefetchRecord| [=prefetch record/matches a URL=] given |url|, return true.
+    1. If |prefetchRecord|'s [=prefetch record/response=] is null:
+      1. Let |searchVariance| be |prefetchRecord|'s [=prefetch record/No-Vary-Search hint=].
+      1. If |prefetchRecord|'s [=prefetch record/URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
+    1. Otherwise, return false.
+</div>
+
+<div algorithm>
     To <dfn export for="prefetch record">cancel and discard</dfn> a [=prefetch record=] |prefetchRecord| given a {{Document}} |document|, perform the following steps.
 
     1. [=Assert=]: |prefetchRecord| is in |document|'s [=Document/prefetch records=].
@@ -225,12 +249,13 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
-    1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] as |prefetchRecord| and whose [=prefetch record/state=] equals "`completed`".
+    1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which [=prefetch record/match a URL=] given |prefetchRecord|'s [=prefetch record/URL=] and whose [=prefetch record/state=] equals "`completed`".
     1. Set |prefetchRecord|'s [=prefetch record/state=] to "`completed`" and [=prefetch record/expiry time=] to |expiryTime|.
 </div>
 
 <div algorithm="find a matching prefetch record">
     To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+    TODO from here
 
     1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.

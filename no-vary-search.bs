@@ -22,6 +22,7 @@ spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
       text: dictionary; url: name-dictionaries
       text: boolean; url: name-boolean
       text: inner list; url: name-inner-lists
+    text: parsing structured fields; url: #text-parse
 </pre>
 <style>
 #example-equivalence-canonicalization table {
@@ -82,15 +83,14 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
 <h2 id="parsing">Parsing</h2>
 
 <div algorithm>
-  To <dfn>obtain a URL search variance</dfn> given a [=response=] |response|:
+  To <dfn>parse a URL search variance</dfn> given a [=map=] |value|:
 
-  1. Let |value| be the result of [=header list/getting a structured field value=] given [:No-Vary-Search:] and "`dictionary`" from |response|'s [=response/header list=].
-  1. If |value| is null, then return the [=default URL search variance=].
-  1. If |value|'s [=map/keys=] [=list/contains=] anything other than "`key-order`", "`params`", or "`except`", then return the [=default URL search variance=].
+  1. If |value| is null, then return null.
+  1. If |value|'s [=map/keys=] [=list/contains=] anything other than "`key-order`", "`params`", or "`except`", then return null.
   1. Let |result| be a new [=URL search variance=].
   1. Set |result|'s [=URL search variance/vary on key order=] to true.
   1. If |value|["`key-order`"] [=map/exists=]:
-    1. If |value|["`key-order`"] is not a [=boolean=], then return the [=default URL search variance=].
+    1. If |value|["`key-order`"] is not a [=boolean=], then return null.
     1. Set |result|'s [=URL search variance/vary on key order=] to the boolean negation of |value|["`key-order`"].
   1. If |value|["`params`"] [=map/exists=]:
     1. If |value|["`params`"] is a [=boolean=]:
@@ -101,16 +101,26 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
         1. Set |result|'s [=URL search variance/no-vary params=] to the empty list.
         1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
     1. Otherwise, if |value|["`params`"] is a [=list=]:
-      1. If any [=list/item=] in |value|["`params`"] is not a [=string=], then return the [=default URL search variance=].
+      1. If any [=list/item=] in |value|["`params`"] is not a [=string=], then return null.
       1. Set |result|'s [=URL search variance/no-vary params=] to the result of applying [=parse a key=] to each [=list/item=] in |value|["`params`"].
       1. Set |result|'s [=URL search variance/vary params=] to [=URL search variance/no-vary params/wildcard=].
-    1. Otherwise, return the [=default URL search variance=].
+    1. Otherwise, return null.
   1. If |value|["`except`"] [=map/exists=]:
-    1. If |value|["`params`"] is not true, then return the [=default URL search variance=].
-    1. If |value|["`except`"] is not a [=list=], then return the [=default URL search variance=].
-    1. If any [=list/item=] in |value|["`except`"] is not a [=string=], then return the [=default URL search variance=].
+    1. If |value|["`params`"] is not true, then return null.
+    1. If |value|["`except`"] is not a [=list=], then return null.
+    1. If any [=list/item=] in |value|["`except`"] is not a [=string=], then return null.
     1. Set |result|'s [=URL search variance/vary params=] to the result of applying [=parse a key=] to each [=list/item=] in |value|["`except`"].
   1. Return |result|.
+
+</div>
+
+<div algorithm>
+  To <dfn>obtain a URL search variance</dfn> given a [=response=] |response|:
+
+  1. Let |fieldValue| be the result of [=header list/getting a structured field value=] given [:No-Vary-Search:] and "`dictionary`" from |response|'s [=response/header list=].
+  1. Let |result| be the result of [=parsing a URL search variance=] given |fieldValue|.
+  1. If |result| is null, then return the [=default URL search variance=].
+  1. Otherwise return |result|.
 
   <p class="note">In general, this algorithm is strict and tends to return the [=default URL search variance=] whenever it sees something it doesn't recognize. This is because the [=default URL search variance=] behavior will just cause fewer cache hits, which is an acceptable fallback behavior.
 </div>
@@ -187,6 +197,18 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
         <td><pre highlight="http">No-Vary-Search: key-order=?0</pre>
         <td>(omit the header)
   </table>
+</div>
+
+<div algorithm>
+  To <dfn>obtain a URL search variance hint</dfn> given a [=string=] |hintValue|:
+
+  1. Let |fieldValue| be the result of [=parsing structured fields=] given |hintValue| and "`dictionary`".
+  1. If parsing failed, then return null.
+  1. Let |result| be the result of [=parsing a URL search variance=] given |fieldValue|.
+  1. If |result| is null, then return null.
+  1. Otherwise return |result|.
+
+  <p class="note">Speculation rule parsing is strict, so the return value of this algorithm surfaces parsing errors instead of silently returning the [=default URL search variance=].
 </div>
 
 <div algorithm>

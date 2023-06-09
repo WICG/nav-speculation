@@ -71,6 +71,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
       text: URL; url: prefetch-record-url
       text: anonymization policy; url: prefetch-record-anonymization-policy
       text: referrer policy; url: prefetch-record-referrer-policy
+      text: No-Vary-Search hint; url: prefetch-record-no-vary-search-hint
       text: label; url: prefetch-record-label
       text: state; url: prefetch-record-state
       text: cancel and discard; url: prefetch-record-cancel-and-discard
@@ -82,6 +83,11 @@ spec: nav-speculation; urlPrefix: prerendering.html
     text: start referrer-initiated prerendering; url: start-referrer-initiated-prerendering
     text: prerendering traversable; url: prerendering-traversable
     text: activate; for: prerendering traversable; url: prerendering-traversable-activate
+spec: nav-speculation; urlPrefix: no-vary-search.html
+  type: dfn
+    text: URL search variance; url: url-search-variance
+    text: default URL search variance; url: default-url-search-variance
+    text: obtain a URL search variance hint; url: obtain-a-url-search-variance-hint
 </pre>
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -126,6 +132,7 @@ A <dfn>speculation rule</dfn> is a [=struct=] with the following [=struct/items=
 * <dfn for="speculation rule">target navigable name hint</dfn>, a [=string=] or null
 * <dfn for="speculation rule">referrer policy</dfn>, a [=referrer policy=]
 * <dfn for="speculation rule">eagerness</dfn>, one of the [=valid eagerness strings=]
+* <dfn for="speculation rule">No-Vary-Search hint</dfn>, a [=URL search variance=]
 
 The only valid string for [=speculation rule/requirements=] to contain is "`anonymous-client-ip-when-cross-origin`".
 
@@ -361,7 +368,7 @@ add the following step
 <div algorithm="parse a speculation rule">
   To <dfn>parse a speculation rule</dfn> given a [=map=] |input|, a [=document=] |document|, and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
 
-  1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", "`target_hint`","`referrer_policy`", "`relative_to`", and "`eagerness`" then return null.
+  1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", "`target_hint`","`referrer_policy`", "`relative_to`", "`eagerness`", and "`expects_no_vary_search`" then return null.
   1. If |input|["`source`"] does not [=map/exist=] or is neither the [=string=] "`list`" nor the [=string=] "`document`", then return null.
   1. Let |source| be |input|["`source`"].
   1. Let |urls| be an empty [=list=].
@@ -403,6 +410,12 @@ add the following step
   1. If |input|["`eagerness`"] [=map/exists=]:
     1. If |input|["`eagerness`"] is not one of the [=valid eagerness strings=], then return null.
     1. Set |eagerness| to |input|["`eagerness`"].
+  1. Let |noVarySearchHint| be the [=default URL search variance=].
+  1. If |input|["`expects_no_vary_search`"] [=map/exists=]:
+    1. If |input|["`expects_no_vary_search`"] is not a [=string=], then return null.
+    1. Let |hint| be the result of [=obtaining a URL search variance hint=] given |input|["`expects_no_vary_search`"].
+    1. If |hint| is null, then return null.
+    1. Set |noVarySearchHint| to |hint|.
   1. Return a [=speculation rule=] with
     :  [=speculation rule/URLs=]
     :: |urls|
@@ -416,6 +429,8 @@ add the following step
     :: |referrerPolicy|
     :  [=speculation rule/eagerness=]
     :: |eagerness|
+    :  [=speculation rule/No-Vary-Search hint=]
+    :: |noVarySearchHint|
 </div>
 
 <div algorithm="parse a document rule predicate">
@@ -504,6 +519,7 @@ A <dfn>prefetch candidate</dfn> is a [=struct=] with the following [=struct/item
 * <dfn for="prefetch candidate">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn for="prefetch candidate">referrer policy</dfn>, a [=referrer policy=]
 * <dfn for="prefetch candidate">eagerness</dfn>, one of the [=valid eagerness strings=]
+* <dfn for="prefetch candidate">No-Vary-Search hint</dfn>, a [=URL search variance=]
 
 A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="prerender candidate">URL</dfn>, a [=URL=]
@@ -517,6 +533,8 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   * |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`"
   * |prefetchRecord|'s [=prefetch record/URL=] equals |prefetchCandidate|'s [=prefetch candidate/URL=]
   * |prefetchRecord|'s [=prefetch record/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
+
+  TODO
 </div>
 
 <div algorithm>
@@ -558,13 +576,13 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. &#x231B; If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
-        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/anonymization policy=] |anonymizationPolicy|, [=prefetch candidate/referrer policy=] |referrerPolicy|, and [=prefetch candidate/eagerness=] |rule|'s [=speculation rule/eagerness=] to |prefetchCandidates|.
+        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/anonymization policy=] |anonymizationPolicy|, [=prefetch candidate/referrer policy=] |referrerPolicy|, [=prefetch candidate/eagerness=] |rule|'s [=speculation rule/eagerness=], and [=prefetch candidate/No-Vary-Search hint=] |rule|'s [=speculation rule/No-Vary-Search hint=] to |prefetchCandidates|.
       1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
         1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
         1. &#x231B; [=list/For each=] |link| of |links|:
           1. &#x231B; Let |url| be |link|'s [=HTMLHyperlinkElementUtils/url=].
           1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
-          1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/anonymization policy=] |anonymizationPolicy|, and [=prefetch candidate/referrer policy=] |referrerPolicy| to |prefetchCandidates|.
+          1. &#x231B; [=list/Append=] a [=prefetch candidate=] with [=prefetch candidate/URL=] |url|, [=prefetch candidate/anonymization policy=] |anonymizationPolicy|, [=prefetch candidate/referrer policy=] |referrerPolicy|, and [=prefetch candidate/No-Vary-Search hint=] |rule|'s [=speculation rule/No-Vary-Search hint=] to |prefetchCandidates|.
     1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
       1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
         1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
@@ -586,7 +604,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
     1. The user agent may run the following steps:
-      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], [=prefetch record/referrer policy=] is |prefetchCandidate|'s [=prefetch candidate/referrer policy=], and [=prefetch record/label=] is "`speculation-rules`".
+      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], [=prefetch record/referrer policy=] is |prefetchCandidate|'s [=prefetch candidate/referrer policy=], [=prefetch record/No-Vary-Search hint=] is |prefetchCandidate|'s [=prefetch candidate/No-Vary-Search hint=], and [=prefetch record/label=] is "`speculation-rules`".
       1. [=Prefetch=] given |document| and |prefetchRecord|.
   1. [=list/For each=] |prerenderCandidate| of |prerenderCandidates|:
       1. The user agent may [=start referrer-initiated prerendering=] given |prerenderCandidate|'s [=prerender candidate/URL=], |document|, and |prerenderCandidate|'s [=prerender candidate/referrer policy=].
