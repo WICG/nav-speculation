@@ -107,9 +107,10 @@ spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
     text: network partition key; url: network-partition-key
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
-    text: Item; url: name-items
-    text: List; url: name-lists
-    text: Token; url: name-tokens
+    for: structured header
+      text: Item; url: name-items
+      text: List; url: name-lists
+      text: Token; url: name-tokens
 spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: http-header; text: Cookie; url: cookie
   type: http-header; text: Set-Cookie; url: set-cookie
@@ -470,7 +471,7 @@ Update all creation sites to supply an empty string, except for any in this docu
         1. If |request|'s [=request/reserved client=] is null, then set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable|, |currentURL| and |isolationOrigin|.
         1. If the result of [=should navigation request of type be blocked by Content Security Policy?=] given |request| and |cspNavigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. [[CSP]]
         1. If |prefetchRecord| was given, then:
-            1. Let |purpose| be a <a spec="RFC8941">List</a> containing the <a spec="RFC8941">Token</a> `prefetch`.
+            1. Let |purpose| be a [=structured header/List=] containing the [=structured header/Token=] `prefetch`.
             1. If |prefetchRecord|'s [=prefetch record/anonymization policy=] [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
                 1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the `prefetch` token in |purpose|.
                 1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or set |response| to a [=network error=] and [=iteration/break=].
@@ -734,13 +735,13 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
 The <dfn http-header>`` `Sec-Purpose` ``</dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
 
-The header field is an [[RFC8941]] Structured Header whose value must be a a <a spec="RFC8941">List</a>. Its ABNF is:
+The header field is an [[RFC8941]] Structured Header whose value must be a [=structured header/List=]. Its ABNF is:
 
 ```
 Sec-Purpose = sf-list
 ```
 
-It may contain a <a spec="RFC8941">Item</a> member which is the <a spec="RFC8941">Token</a> "`prefetch`". If so, this indicates the request's purpose is to download a resource it is anticipated will be fetched shortly.
+It may contain an [=structured header/Item=] member which is the [=structured header/Token=] "`prefetch`". If so, this indicates the request's purpose is to download a resource it is anticipated will be fetched shortly.
 
 <div class="issue">TODO: Are there normative implications of this that should be specified here?</div>
 
