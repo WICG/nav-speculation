@@ -290,15 +290,24 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
     1. [=Assert=]: this is running [=in parallel=].
-    1. Let |cutoff| be null.
+    1. Let |cutoffTime| be null.
     1. While true:
         1. Let |completeRecord| be the result of [=finding a matching complete prefetch record=] given |document|, |url|, and |sandboxFlags|.
         1. If |completeRecord| is not null, return |completeRecord|.
-        1. Let |potentialRecords| be an empty [=list=]. TODO
+        1. Let |potentialRecords| be an empty [=list=].
         1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
-            1. If |record|'s [=prefetch record/state=] is "`ongoing`" and |record| [=prefetch record/possibly matches a URL=] given |url|:
-        1. If |mayBecomeServable| is false, return null.
-        1. Await TODO
+            1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
+                * |record|'s [=prefetch record/state=] is "`ongoing`".
+                * |record| [=prefetch record/possibly matches a URL=] given |url|.
+                * |record|'s [=prefetch record/sandboxing flag set=] is not empty or |sandboxFlags| is empty.
+                * |record|'s [=prefetch record/expiry time=] is greater than the [=current high resolution time=] for the [=relevant global object=] of |document|.
+                * |record|'s [=prefetch record/redirect chain=] does not [=redirect chain/has updated credentials|have updated credentials=].
+                * |cutoffTime| is null or |record|'s [=prefetch record/creation time=] is less than |cutoffTime|.
+        1. If |potentialRecords| [=list/is empty=], return null.
+        1. Wait until the [=prefetch record/state=] of any element of |document|'s [=Document/prefetch records=] changes.
+        1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for the [=relevant global object=] of |document|.
+
+    <p class="note">We have a cutoff for waiting for potential matches such that an additional prefetch that started while we were blocking a navigation could still be used to serve the navigation. In the case of prefetch failure while blocking, we stop considering subsequent prefetches, so we establish a limit after which we fall back to a non-prefetch request.</p>
 </div>
 
 <div algorithm>

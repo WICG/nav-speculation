@@ -75,6 +75,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
       text: label; url: prefetch-record-label
       text: state; url: prefetch-record-state
       text: cancel and discard; url: prefetch-record-cancel-and-discard
+      text: matches a URL; url: prefetch-record-matches-a-url
     text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
     text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
     text: origin; for: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy-origin
@@ -531,10 +532,9 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   A [=prefetch candidate=] |prefetchCandidate| <dfn for="prefetch candidate">continues</dfn> a [=prefetch record=] |prefetchRecord| if the following are all true:
   * |prefetchRecord|'s [=prefetch record/label=] is "`speculation-rules`"
   * |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`"
-  * |prefetchRecord|'s [=prefetch record/URL=] equals |prefetchCandidate|'s [=prefetch candidate/URL=]
+  * |prefetchRecord| [=prefetch record/matches a URL=] given |prefetchCandidate|'s [=prefetch candidate/URL=]
   * |prefetchRecord|'s [=prefetch record/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
 
-  TODO
 </div>
 
 <div algorithm>
