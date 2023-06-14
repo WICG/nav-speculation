@@ -537,7 +537,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-06-06">6 June 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-06-13">13 June 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -604,17 +604,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="exchange record" data-dfn-type="dfn" data-noexport id="exchange-record-response">response</dfn>, a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> or null</p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="exchange record" data-dfn-type="dfn" data-noexport id="exchange-record-cookie-data">cookie data</dfn>, a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists">list</a> of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#tuple" id="ref-for-tuple">tuples</a> of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence">byte sequences</a></p>
+     <p><dfn class="dfn-paneled" data-dfn-for="exchange record" data-dfn-type="dfn" data-noexport id="exchange-record-cookie-data">cookie data</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#tuple" id="ref-for-tuple">tuples</a> of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence">byte sequences</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="exchange record" data-dfn-type="dfn" data-noexport id="exchange-record-authentication-entry">authentication entry</dfn>, an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#authentication-entry" id="ref-for-authentication-entry">authentication entry</a> or null</p>
    </ul>
    <div class="note" role="note">These records can be used to defer checks that would ordinarily happen during a navigate fetch, and to check for modified <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials">credentials</a>.</div>
-   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="redirect-chain">redirect chain</dfn> is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists①">list</a> of <a data-link-type="dfn" href="#exchange-record" id="ref-for-exchange-record">exchange records</a>.</p>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="redirect-chain">redirect chain</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①">list</a> of <a data-link-type="dfn" href="#exchange-record" id="ref-for-exchange-record">exchange records</a>.</p>
    <div class="algorithm" data-algorithm="append" data-algorithm-for="redirect chain">
      To <dfn class="dfn-paneled" data-dfn-for="redirect chain" data-dfn-type="dfn" data-noexport id="redirect-chain-append">append</dfn> a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①">request</a> <var>request</var> to a <a data-link-type="dfn" href="#redirect-chain" id="ref-for-redirect-chain">redirect chain</a> <var>redirectChain</var>: 
     <ol>
      <li data-md>
-      <p>Let <var>cookieData</var> be an empty <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists②">list</a>.</p>
+      <p>Let <var>cookieData</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②">list</a>.</p>
      <li data-md>
       <p>If the user agent is not configured to block cookies for <var>request</var>, then set <var>cookieData</var> be the result of <a data-link-type="dfn" href="#gather-cookie-data" id="ref-for-gather-cookie-data">gathering cookie data</a> for <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url">URL</a> in the cookie store associated with <var>request</var>.</p>
      <li data-md>
@@ -645,7 +645,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>Let <var>request</var> be <var>exchangeRecord</var>’s <a data-link-type="dfn" href="#exchange-record-request" id="ref-for-exchange-record-request②">request</a>.</p>
        <li data-md>
-        <p>Let <var>cookieData</var> be an empty <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists③">list</a>.</p>
+        <p>Let <var>cookieData</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a>.</p>
        <li data-md>
         <p>If the user agent is not configured to block cookies for <var>request</var>, then set <var>cookieData</var> to the result of <a data-link-type="dfn" href="#gather-cookie-data" id="ref-for-gather-cookie-data①">gathering cookie data</a> for <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-url" id="ref-for-concept-request-url①">URL</a> in the cookie store associated with <var>request</var>.</p>
        <li data-md>
@@ -664,7 +664,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <hr>
-   <p>Each <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-export id="document-prefetch-records">prefetch records</dfn>, which is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists④">list</a> of <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record">prefetch records</a>.</p>
+   <p>Each <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-export id="document-prefetch-records">prefetch records</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list④">list</a> of <a data-link-type="dfn" href="#prefetch-record" id="ref-for-prefetch-record">prefetch records</a>.</p>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="prefetch-record">prefetch record</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct①">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item①">items</a>:</p>
    <ul>
     <li data-md>
@@ -775,7 +775,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>responsePolicyContainer</var> be null.</p>
      <li data-md>
-      <p>Let <var>urlList</var> be an empty <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists⑤">list</a>.</p>
+      <p>Let <var>urlList</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a>.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">For each</a> <var>exchangeRecord</var> in <var>record</var>’s <a data-link-type="dfn" href="#prefetch-record-redirect-chain" id="ref-for-prefetch-record-redirect-chain②">redirect chain</a>:</p>
       <ol>
@@ -1107,7 +1107,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>If <var>prefetchRecord</var> was given, then:</p>
         <ol>
          <li data-md>
-          <p>Let <var>purpose</var> be a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists⑥">List</a> containing the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens">Token</a> <code>prefetch</code>.</p>
+          <p>Let <var>purpose</var> be a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists">List</a> containing the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens">Token</a> <code>prefetch</code>.</p>
          <li data-md>
           <p>If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy">anonymization policy</a> <a data-link-type="dfn" href="#prefetch-ip-anonymization-policy-requires-anonymity" id="ref-for-prefetch-ip-anonymization-policy-requires-anonymity">requires anonymity</a> for <var>request</var>, then:</p>
           <ol>
@@ -1486,7 +1486,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>Sort <var>cookieList</var> lexicographically by name, and by value if names are equal.</p>
       <div class="note" role="note">Since both are octet sequences, Unicode collation rules do not apply.</div>
      <li data-md>
-      <p>Let <var>cookieData</var> be an empty <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists⑦">list</a>.</p>
+      <p>Let <var>cookieData</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">list</a>.</p>
      <li data-md>
       <p>For each <var>cookie</var> in <var>cookieList</var>:</p>
       <ol>
@@ -1503,10 +1503,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </div>
    <h2 class="heading settled" data-level="6" id="sec-purpose-header"><span class="secno">6. </span><span class="content">The <code>Sec-Purpose</code> HTTP request header</span><a class="self-link" href="#sec-purpose-header"></a></h2>
    <p>The <dfn class="dfn-paneled" data-dfn-type="http-header" data-export id="http-headerdef-sec-purpose"><code>`Sec-Purpose`</code></dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.</p>
-   <p>The header field is an <a data-link-type="biblio" href="#biblio-rfc8941" title="Structured Field Values for HTTP">[RFC8941]</a> Structured Header whose value must be a a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists⑧">List</a>. Its ABNF is:</p>
+   <p>The header field is an <a data-link-type="biblio" href="#biblio-rfc8941" title="Structured Field Values for HTTP">[RFC8941]</a> Structured Header whose value must be a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-lists" id="ref-for-name-lists①">List</a>. Its ABNF is:</p>
 <pre>Sec-Purpose = sf-list
 </pre>
-   <p>It may contain a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-items" id="ref-for-name-items">Item</a> member which is the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens①">Token</a> "<code>prefetch</code>". If so, this indicates the request’s purpose is to download a resource it is anticipated will be fetched shortly.</p>
+   <p>It may contain an <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-items" id="ref-for-name-items">Item</a> member which is the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens" id="ref-for-name-tokens①">Token</a> "<code>prefetch</code>". If so, this indicates the request’s purpose is to download a resource it is anticipated will be fetched shortly.</p>
    <div class="issue" id="issue-2e46aaff"><a class="self-link" href="#issue-2e46aaff"></a>TODO: Are there normative implications of this that should be specified here?</div>
    <p>The following parameters are defined for the "<code>prefetch</code>" token:</p>
    <ul>
@@ -1788,6 +1788,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="860300d4">implementation-defined</span>
      <li><span class="dfn-paneled" id="6b815fdd">is empty</span>
      <li><span class="dfn-paneled" id="c88f3887">item</span>
+     <li><span class="dfn-paneled" id="649608b9">list</span>
      <li><span class="dfn-paneled" id="99c988d6">remove</span>
      <li><span class="dfn-paneled" id="0698d556">string</span>
      <li><span class="dfn-paneled" id="984221ca">struct</span>
@@ -2381,6 +2382,7 @@ window.dfnpanelData['16d07e10'] = {"dfnID": "16d07e10", "url": "https://infra.sp
 window.dfnpanelData['860300d4'] = {"dfnID": "860300d4", "url": "https://infra.spec.whatwg.org/#implementation-defined", "dfnText": "implementation-defined", "refSections": [{"refs": [{"id": "ref-for-implementation-defined"}], "title": "1. Concepts"}, {"refs": [{"id": "ref-for-implementation-defined\u2460"}, {"id": "ref-for-implementation-defined\u2461"}], "title": "2. HTML Patches"}, {"refs": [{"id": "ref-for-implementation-defined\u2462"}], "title": "5. Cookies"}], "external": true};
 window.dfnpanelData['6b815fdd'] = {"dfnID": "6b815fdd", "url": "https://infra.spec.whatwg.org/#list-is-empty", "dfnText": "is empty", "refSections": [{"refs": [{"id": "ref-for-list-is-empty"}], "title": "1. Concepts"}], "external": true};
 window.dfnpanelData['c88f3887'] = {"dfnID": "c88f3887", "url": "https://infra.spec.whatwg.org/#struct-item", "dfnText": "item", "refSections": [{"refs": [{"id": "ref-for-struct-item"}, {"id": "ref-for-struct-item\u2460"}], "title": "1. Concepts"}], "external": true};
+window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}, {"id": "ref-for-list\u2460"}, {"id": "ref-for-list\u2461"}, {"id": "ref-for-list\u2462"}, {"id": "ref-for-list\u2463"}, {"id": "ref-for-list\u2464"}], "title": "1. Concepts"}, {"refs": [{"id": "ref-for-list\u2465"}], "title": "5. Cookies"}], "external": true};
 window.dfnpanelData['99c988d6'] = {"dfnID": "99c988d6", "url": "https://infra.spec.whatwg.org/#list-remove", "dfnText": "remove", "refSections": [{"refs": [{"id": "ref-for-list-remove"}, {"id": "ref-for-list-remove\u2460"}, {"id": "ref-for-list-remove\u2461"}], "title": "1. Concepts"}], "external": true};
 window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}], "title": "1. Concepts"}, {"refs": [{"id": "ref-for-string\u2460"}], "title": "2. HTML Patches"}, {"refs": [{"id": "ref-for-string\u2461"}], "title": "3. Navigation Timing Patches"}], "external": true};
 window.dfnpanelData['984221ca'] = {"dfnID": "984221ca", "url": "https://infra.spec.whatwg.org/#struct", "dfnText": "struct", "refSections": [{"refs": [{"id": "ref-for-struct"}, {"id": "ref-for-struct\u2460"}], "title": "1. Concepts"}], "external": true};
@@ -2396,7 +2398,7 @@ window.dfnpanelData['eb72b0d8'] = {"dfnID": "eb72b0d8", "url": "https://w3c.gith
 window.dfnpanelData['b393ea32'] = {"dfnID": "b393ea32", "url": "https://w3c.github.io/resource-timing/#dfn-delivery-type", "dfnText": "delivery type", "refSections": [{"refs": [{"id": "ref-for-dfn-delivery-type"}], "title": "2. HTML Patches"}], "external": true};
 window.dfnpanelData['e9450d4d'] = {"dfnID": "e9450d4d", "url": "https://w3c.github.io/resource-timing/#dfn-setup-the-resource-timing-entry", "dfnText": "setup the resource timing entry", "refSections": [{"refs": [{"id": "ref-for-dfn-setup-the-resource-timing-entry"}], "title": "3. Navigation Timing Patches"}], "external": true};
 window.dfnpanelData['a5ee4680'] = {"dfnID": "a5ee4680", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-items", "dfnText": "item", "refSections": [{"refs": [{"id": "ref-for-name-items"}], "title": "6. The Sec-Purpose HTTP request header"}], "external": true};
-window.dfnpanelData['fa1ab848'] = {"dfnID": "fa1ab848", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-lists", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-name-lists"}, {"id": "ref-for-name-lists\u2460"}, {"id": "ref-for-name-lists\u2461"}, {"id": "ref-for-name-lists\u2462"}, {"id": "ref-for-name-lists\u2463"}, {"id": "ref-for-name-lists\u2464"}], "title": "1. Concepts"}, {"refs": [{"id": "ref-for-name-lists\u2465"}], "title": "2. HTML Patches"}, {"refs": [{"id": "ref-for-name-lists\u2466"}], "title": "5. Cookies"}, {"refs": [{"id": "ref-for-name-lists\u2467"}], "title": "6. The Sec-Purpose HTTP request header"}], "external": true};
+window.dfnpanelData['fa1ab848'] = {"dfnID": "fa1ab848", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-lists", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-name-lists"}], "title": "2. HTML Patches"}, {"refs": [{"id": "ref-for-name-lists\u2460"}], "title": "6. The Sec-Purpose HTTP request header"}], "external": true};
 window.dfnpanelData['e8409d67'] = {"dfnID": "e8409d67", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens", "dfnText": "token", "refSections": [{"refs": [{"id": "ref-for-name-tokens"}], "title": "2. HTML Patches"}, {"refs": [{"id": "ref-for-name-tokens\u2460"}], "title": "6. The Sec-Purpose HTTP request header"}], "external": true};
 window.dfnpanelData['9c5d9c4d'] = {"dfnID": "9c5d9c4d", "url": "https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url", "dfnText": "potentially trustworthy url", "refSections": [{"refs": [{"id": "ref-for-potentially-trustworthy-url"}], "title": "2. HTML Patches"}], "external": true};
 window.dfnpanelData['ed948033'] = {"dfnID": "ed948033", "url": "https://url.spec.whatwg.org/#concept-url-fragment", "dfnText": "fragment", "refSections": [{"refs": [{"id": "ref-for-concept-url-fragment"}], "title": "2. HTML Patches"}], "external": true};
