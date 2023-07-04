@@ -123,6 +123,11 @@ spec: nav-speculation; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
+spec: nav-speculation; urlPrefix: no-vary-search.html
+  type: dfn
+    text: URL search variance; url: url-search-variance
+    text: obtain a URL search variance; url: obtain-a-url-search-variance
+    text: equivalent modulo search variance; url: equivalent-modulo-search-variance
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
@@ -186,6 +191,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
+* <dfn export for="prefetch record">No-Vary-Search hint</dfn>, a [=URL search variance=]
 * <dfn export for="prefetch record">label</dfn>, a [=string=]
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
@@ -195,6 +201,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
 * <dfn export for="prefetch record">sandboxing flag set</dfn>, a [=sandboxing flag set=]
 * <dfn export for="prefetch record">redirect chain</dfn>, a [=redirect chain=] (empty by default)
+* <dfn export for="prefetch record">start time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
 * <dfn export for="prefetch record">source partition key</dfn>, a [=network partition key=] or null (the default)
 * <dfn export for="prefetch record">isolated partition key</dfn>, a [=network partition key=] whose first item is an [=opaque origin=] and which represents a separate partition in which cross-partition state can be temporarily stored, or null (the default)
@@ -206,7 +213,25 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
-The user agent may [=prefetch record/cancel and discard=] records from the [=Document/prefetch records=] even if they are not expired, e.g., due to resource constraints. Since completed records with expiry times in the past will never be [=find a matching prefetch record|matching prefetch records=], they can be removed with no observable consequences.
+The user agent may [=prefetch record/cancel and discard=] records from the [=Document/prefetch records=] even if they are not expired, e.g., due to resource constraints. Since completed records with expiry times in the past will never be [=wait for a matching prefetch record|matching prefetch records=], they can be removed with no observable consequences.
+
+<div algorithm>
+    A [=prefetch record=] |prefetchRecord| <dfn export for="prefetch record">matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
+    1. If |prefetchRecord|'s [=prefetch record/URL=] is equal to |url|, return true.
+    1. If |prefetchRecord|'s [=prefetch record/response=] is not null:
+      1. Let |searchVariance| be the result of [=obtaining a URL search variance=] given |prefetchRecord|'s [=prefetch record/response=].
+      1. If |prefetchRecord|'s [=prefetch record/URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
+    1. Otherwise, return false.
+</div>
+
+<div algorithm>
+    A [=prefetch record=] |prefetchRecord| <dfn export for="prefetch record">is expected to match a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
+    1. If |prefetchRecord| [=prefetch record/matches a URL=] given |url|, return true.
+    1. If |prefetchRecord|'s [=prefetch record/response=] is null:
+      1. Let |searchVariance| be |prefetchRecord|'s [=prefetch record/No-Vary-Search hint=].
+      1. If |prefetchRecord|'s [=prefetch record/URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
+    1. Otherwise, return false.
+</div>
 
 <div algorithm>
     To <dfn export for="prefetch record">cancel and discard</dfn> a [=prefetch record=] |prefetchRecord| given a {{Document}} |document|, perform the following steps.
@@ -230,28 +255,59 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Set |prefetchRecord|'s [=prefetch record/state=] to "`completed`" and [=prefetch record/expiry time=] to |expiryTime|.
 </div>
 
-<div algorithm="find a matching prefetch record">
-    To <dfn export>find a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+<div algorithm>
+    To <dfn export>find a matching complete prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
     1. [=Assert=]: |document| is [=Document/fully active=].
-    1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
+    1. Let |exactRecord| be null.
+    1. Let |inexactRecord| be null.
     1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
-        1. If |record|'s [=prefetch record/URL=] is not equal to |url|, then [=iteration/continue=].
         1. If |record|'s [=prefetch record/state=] is not "`completed`", then [=iteration/continue=].
         1. If |record|'s [=prefetch record/sandboxing flag set=] is empty and |sandboxFlags| is not empty, then [=iteration/continue=].
 
             <div class="note">
               Strictly speaking, it would still be possible for this to be valid if sandbox flags have been added to the container since prefetch but those flags would not cause an error due to cross origin opener policy. This is expected to be rare and so isn't handled.
             </div>
-        1. [=list/Remove=] |record| from |document|'s [=Document/prefetch records=].
-        1. If |record|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
-        1. If |record|'s [=prefetch record/redirect chain=] [=redirect chain/has updated credentials=], return null.
-        1. Return |record|.
+        1. If |record|'s [=prefetch record/URL=] is equal to |url|:
+            1. Set |exactRecord| to |record|.
+            1. [=iteration/Break=].
+        1. If |inexactRecord| is null and |record| [=prefetch record/matches a URL=] given |url|:
+            1. Set |inexactRecord| to |record|.
+    1. Let |recordToUse| be |exactRecord| if |exactRecord| is not null, otherwise |inexactRecord|.
+    1. If |recordToUse| is not null:
+        1. [=list/Remove=] |recordToUse| from |document|'s [=Document/prefetch records=].
+        1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
+        1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
+        1. If |recordToUse|'s [=prefetch record/redirect chain=] [=redirect chain/has updated credentials=], return null.
+        1. Return |recordToUse|.
     1. Return null.
 
     <p class="note">It's not obvious, but this doesn't actually require that the prefetch have received the complete body, just the response headers. In particular, a navigation to a prefetched response might nonetheless not load instantaneously.</p>
 
     <p class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it's unclear whether this is worthwhile.</p>
+</div>
+
+<div algorithm>
+    To <dfn export>wait for a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+
+    1. [=Assert=]: this is running [=in parallel=].
+    1. Let |cutoffTime| be null.
+    1. While true:
+        1. Let |completeRecord| be the result of [=finding a matching complete prefetch record=] given |document|, |url|, and |sandboxFlags|.
+        1. If |completeRecord| is not null, return |completeRecord|.
+        1. Let |potentialRecords| be an empty [=list=].
+        1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+            1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
+                * |record|'s [=prefetch record/state=] is "`ongoing`".
+                * |record| [=prefetch record/is expected to match a URL=] given |url|.
+                * |record|'s [=prefetch record/sandboxing flag set=] is not empty or |sandboxFlags| is empty.
+                * |record|'s [=prefetch record/expiry time=] is greater than the [=current high resolution time=] for the [=relevant global object=] of |document|.
+                * |cutoffTime| is null or |record|'s [=prefetch record/start time=] is less than |cutoffTime|.
+        1. If |potentialRecords| [=list/is empty=], return null.
+        1. Wait until the [=prefetch record/state=] of any element of |document|'s [=Document/prefetch records=] changes.
+        1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for the [=relevant global object=] of |document|.
+
+    <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
 </div>
 
 <div algorithm>
@@ -423,7 +479,7 @@ Update all creation sites to supply an empty string, except for any in this docu
 
             1. Let |request| be the result of [=creating a navigation request=] given <var ignore>entry</var>, <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=], <var ignore>navigable</var>'s [=navigable/container=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/has transient activation=].
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
-            1. Let |prefetchRecord| be the result of [=finding a matching prefetch record=] given <var ignore>navigable</var>'s [=navigable/active document=], <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
+            1. Let |prefetchRecord| be the result of [=waiting for a matching prefetch record=] given <var ignore>navigable</var>'s [=navigable/active document=], <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
             1. If <var ignore>documentResource</var> is null and |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
@@ -614,6 +670,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Set |prefetchRecord|'s [=prefetch record/source partition key=] to the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=]
+    1. Set |prefetchRecord|'s [=prefetch record/start time=] to the [=current high resolution time=] for the [=relevant global object=] of |document|.
     1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] for |document|'s [=Document/browsing context=] given |document|'s [=node navigable=]'s [=navigable/container=].
     1. Let |referrerPolicy| be |prefetchRecord|'s [=prefetch record/referrer policy=] if |prefetchRecord|'s [=prefetch record/referrer policy=] is not the empty string, and |document|'s [=Document/policy container=]'s [=policy container/referrer policy=] otherwise.
     1. Let |documentState| be a new [=document state=] with
