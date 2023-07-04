@@ -4,7 +4,7 @@
   <title>No-Vary-Search</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 5fcd28d6d, updated Tue May 30 13:12:11 2023 -0700" name="generator">
+  <meta content="Bikeshed version 5edf5e459, updated Thu Jun 22 11:28:01 2023 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/no-vary-search.html" rel="canonical">
 <style>
 #example-equivalence-canonicalization table {
@@ -530,27 +530,6 @@ a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
-<style>/* Boilerplate: style-style-var-click-highlighting */
-/*
-Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
-D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
-0 = lab(85,0,85)
-1 = lab(85,80,30)
-2 = lab(85,-40,40)
-3 = lab(85,-50,0)
-4 = lab(85,5,15)
-5 = lab(85,-10,-50)
-6 = lab(85,35,-15)
-*/
-var { cursor: pointer; }
-var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
-</style>
 <style>/* Boilerplate: style-syntax-highlighting */
 
 code.highlight { padding: .1em; border-radius: .3em; }
@@ -674,11 +653,32 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
     c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
 }
 </style>
+<style>/* Boilerplate: style-var-click-highlighting */
+/*
+Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
+D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
+0 = lab(85,0,85)
+1 = lab(85,80,30)
+2 = lab(85,-40,40)
+3 = lab(85,-50,0)
+4 = lab(85,5,15)
+5 = lab(85,-10,-50)
+6 = lab(85,35,-15)
+*/
+var { cursor: pointer; }
+var.selected0 { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
+var.selected1 { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
+var.selected2 { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
+var.selected3 { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
+var.selected4 { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
+var.selected5 { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
+var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+</style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">No-Vary-Search</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-06-13">13 June 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-07-04">4 July 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -772,11 +772,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p><a data-link-type="dfn" href="#url-search-variance-no-vary-params" id="ref-for-url-search-variance-no-vary-params②">no-vary params</a> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list③">list</a> if and only if the <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params②">vary params</a> is <a data-link-type="dfn" href="#url-search-variance-vary-params-wildcard" id="ref-for-url-search-variance-vary-params-wildcard①">wildcard</a>.</p>
    </ul>
    <h2 class="heading settled" data-level="4" id="parsing"><span class="secno">4. </span><span class="content">Parsing</span><a class="self-link" href="#parsing"></a></h2>
-   <div class="algorithm" data-algorithm="obtain a URL search variance">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="obtain-a-url-search-variance">obtain a URL search variance</dfn> given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> <var>response</var>: 
+   <div class="algorithm" data-algorithm="parse a URL search variance">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-url-search-variance">parse a URL search variance</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">map</a> <var>value</var>: 
     <ol>
-     <li data-md>
-      <p>Let <var>value</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header">getting a structured field value</a> given <span>`<code><a data-link-type="http-header" href="#http-headerdef-no-vary-search" id="ref-for-http-headerdef-no-vary-search">No-Vary-Search</a></code>`</span> and "<code>dictionary</code>" from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
      <li data-md>
       <p>If <var>value</var> is null, then return the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance">default URL search variance</a>.</p>
      <li data-md>
@@ -845,6 +843,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>Return <var>result</var>.</p>
     </ol>
     <p class="note" role="note">In general, this algorithm is strict and tends to return the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance⑧">default URL search variance</a> whenever it sees something it doesn’t recognize. This is because the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance⑨">default URL search variance</a> behavior will just cause fewer cache hits, which is an acceptable fallback behavior. </p>
+   </div>
+   <div class="algorithm" data-algorithm="obtain a URL search variance">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="obtain-a-url-search-variance">obtain a URL search variance</dfn> given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> <var>response</var>: 
+    <ol>
+     <li data-md>
+      <p>Let <var>fieldValue</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header">getting a structured field value</a> given <span>`<code><a data-link-type="http-header" href="#http-headerdef-no-vary-search" id="ref-for-http-headerdef-no-vary-search">No-Vary-Search</a></code>`</span> and "<code>dictionary</code>" from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>.</p>
+     <li data-md>
+      <p>Return the result of <a data-link-type="dfn" href="#parse-a-url-search-variance" id="ref-for-parse-a-url-search-variance">parsing a URL search variance</a> given <var>fieldValue</var>.</p>
+    </ol>
    </div>
    <div class="example" id="example-parsing-vary-vs-no-vary">
     <a class="self-link" href="#example-parsing-vary-vs-no-vary"></a> The following illustrates how various inputs are parsed, in terms of their impacting on the resulting <a data-link-type="dfn" href="#url-search-variance-no-vary-params" id="ref-for-url-search-variance-no-vary-params⑥">no-vary params</a> and <a data-link-type="dfn" href="#url-search-variance-vary-params" id="ref-for-url-search-variance-vary-params⑦">vary params</a>: 
@@ -952,6 +959,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <td>(omit the header) 
     </table>
    </div>
+   <div class="algorithm" data-algorithm="obtain a URL search variance hint">
+     To <dfn data-dfn-type="dfn" data-noexport id="obtain-a-url-search-variance-hint">obtain a URL search variance hint<a class="self-link" href="#obtain-a-url-search-variance-hint"></a></dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string④">string</a> <var>hintValue</var>: 
+    <ol>
+     <li data-md>
+      <p>Let <var>fieldValue</var> be the result of <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc8941.html#text-parse" id="ref-for-text-parse">parsing structured fields</a> given <var>hintValue</var> and "<code>dictionary</code>".</p>
+     <li data-md>
+      <p>If parsing failed, then return the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance①①">default URL search variance</a>.</p>
+     <li data-md>
+      <p>Return the result of <a data-link-type="dfn" href="#parse-a-url-search-variance" id="ref-for-parse-a-url-search-variance①">parsing a URL search variance</a> given <var>fieldValue</var>.</p>
+    </ol>
+   </div>
    <div class="algorithm" data-algorithm="parse a key">
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-key">parse a key</dfn> given an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string">ASCII string</a> <var>keyString</var>: 
     <ol>
@@ -989,7 +1007,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p>If the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-username" id="ref-for-concept-url-username">username</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-password" id="ref-for-concept-url-password">password</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-host" id="ref-for-concept-url-host">host</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-port" id="ref-for-concept-url-port">port</a>, or <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-path" id="ref-for-concept-url-path">path</a> of <var>urlA</var> and <var>urlB</var> differ, then return false.</p>
     <li data-md>
-     <p>If <var>searchVariance</var> is equivalent to the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance①①">default URL search variance</a>, then:</p>
+     <p>If <var>searchVariance</var> is equivalent to the <a data-link-type="dfn" href="#default-url-search-variance" id="ref-for-default-url-search-variance①②">default URL search variance</a>, then:</p>
      <ol>
       <li data-md>
        <p>If <var>urlA</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query">query</a> equals <var>urlB</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query①">query</a>, then return true.</p>
@@ -1104,7 +1122,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#url-search-variance-no-vary-params">no-vary params</a><span>, in § 3</span>
    <li><a href="#http-headerdef-no-vary-search">No-Vary-Search</a><span>, in § 2</span>
    <li><a href="#obtain-a-url-search-variance">obtain a URL search variance</a><span>, in § 4</span>
+   <li><a href="#obtain-a-url-search-variance-hint">obtain a URL search variance hint</a><span>, in § 4</span>
    <li><a href="#parse-a-key">parse a key</a><span>, in § 4</span>
+   <li><a href="#parse-a-url-search-variance">parse a URL search variance</a><span>, in § 4</span>
    <li><a href="#url-search-variance">URL search variance</a><span>, in § 3</span>
    <li><a href="#url-search-variance-vary-on-key-order">vary on key order</a><span>, in § 3</span>
    <li><a href="#url-search-variance-vary-params">vary params</a><span>, in § 3</span>
@@ -1142,6 +1162,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="c88f3887">item <small>(for struct)</small></span>
      <li><span class="dfn-paneled" id="31db57e6">keys</span>
      <li><span class="dfn-paneled" id="649608b9">list</span>
+     <li><span class="dfn-paneled" id="3fca5a9e">map</span>
      <li><span class="dfn-paneled" id="0204d188">size</span>
      <li><span class="dfn-paneled" id="bccbabba">sorting in ascending order</span>
      <li><span class="dfn-paneled" id="0698d556">string</span>
@@ -1154,6 +1175,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="d65c1d68">boolean</span>
      <li><span class="dfn-paneled" id="d71d1eda">dictionary</span>
      <li><span class="dfn-paneled" id="2892a577">inner list</span>
+     <li><span class="dfn-paneled" id="a44bca31">parsing structured fields</span>
      <li><span class="dfn-paneled" id="928a0e65">structured header</span>
     </ul>
    <li>
@@ -1513,14 +1535,16 @@ window.dfnpanelData['5afbefcd'] = {"dfnID": "5afbefcd", "url": "https://infra.sp
 window.dfnpanelData['c88f3887'] = {"dfnID": "c88f3887", "url": "https://infra.spec.whatwg.org/#struct-item", "dfnText": "item (for struct)", "refSections": [{"refs": [{"id": "ref-for-struct-item"}], "title": "3. Data model"}], "external": true};
 window.dfnpanelData['31db57e6'] = {"dfnID": "31db57e6", "url": "https://infra.spec.whatwg.org/#map-getting-the-keys", "dfnText": "keys", "refSections": [{"refs": [{"id": "ref-for-map-getting-the-keys"}], "title": "4. Parsing"}], "external": true};
 window.dfnpanelData['649608b9'] = {"dfnID": "649608b9", "url": "https://infra.spec.whatwg.org/#list", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-list"}, {"id": "ref-for-list\u2460"}, {"id": "ref-for-list\u2461"}, {"id": "ref-for-list\u2462"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-list\u2463"}, {"id": "ref-for-list\u2464"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-list\u2465"}, {"id": "ref-for-list\u2466"}, {"id": "ref-for-list\u2467"}, {"id": "ref-for-list\u2468"}, {"id": "ref-for-list\u2460\u24ea"}, {"id": "ref-for-list\u2460\u2460"}, {"id": "ref-for-list\u2460\u2461"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['3fca5a9e'] = {"dfnID": "3fca5a9e", "url": "https://infra.spec.whatwg.org/#ordered-map", "dfnText": "map", "refSections": [{"refs": [{"id": "ref-for-ordered-map"}], "title": "4. Parsing"}], "external": true};
 window.dfnpanelData['0204d188'] = {"dfnID": "0204d188", "url": "https://infra.spec.whatwg.org/#list-size", "dfnText": "size", "refSections": [{"refs": [{"id": "ref-for-list-size"}, {"id": "ref-for-list-size\u2460"}, {"id": "ref-for-list-size\u2461"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['bccbabba'] = {"dfnID": "bccbabba", "url": "https://infra.spec.whatwg.org/#list-sort-in-ascending-order", "dfnText": "sorting in ascending order", "refSections": [{"refs": [{"id": "ref-for-list-sort-in-ascending-order"}, {"id": "ref-for-list-sort-in-ascending-order\u2460"}], "title": "5. Comparing"}], "external": true};
-window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}], "title": "4. Parsing"}], "external": true};
+window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}, {"id": "ref-for-string\u2463"}], "title": "4. Parsing"}], "external": true};
 window.dfnpanelData['984221ca'] = {"dfnID": "984221ca", "url": "https://infra.spec.whatwg.org/#struct", "dfnText": "struct", "refSections": [{"refs": [{"id": "ref-for-struct"}], "title": "3. Data model"}], "external": true};
 window.dfnpanelData['cbdc89b4'] = {"dfnID": "cbdc89b4", "url": "https://infra.spec.whatwg.org/#iteration-while", "dfnText": "while", "refSections": [{"refs": [{"id": "ref-for-iteration-while"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['d65c1d68'] = {"dfnID": "d65c1d68", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-name-boolean"}, {"id": "ref-for-name-boolean\u2460"}], "title": "2. HTTP header field definition"}], "external": true};
 window.dfnpanelData['d71d1eda'] = {"dfnID": "d71d1eda", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-dictionaries", "dfnText": "dictionary", "refSections": [{"refs": [{"id": "ref-for-name-dictionaries"}], "title": "2. HTTP header field definition"}], "external": true};
 window.dfnpanelData['2892a577'] = {"dfnID": "2892a577", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-inner-lists", "dfnText": "inner list", "refSections": [{"refs": [{"id": "ref-for-name-inner-lists"}, {"id": "ref-for-name-inner-lists\u2460"}], "title": "2. HTTP header field definition"}], "external": true};
+window.dfnpanelData['a44bca31'] = {"dfnID": "a44bca31", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#text-parse", "dfnText": "parsing structured fields", "refSections": [{"refs": [{"id": "ref-for-text-parse"}], "title": "4. Parsing"}], "external": true};
 window.dfnpanelData['928a0e65'] = {"dfnID": "928a0e65", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#section-1", "dfnText": "structured header", "refSections": [{"refs": [{"id": "ref-for-section-1"}], "title": "2. HTTP header field definition"}], "external": true};
 window.dfnpanelData['36265cc4'] = {"dfnID": "36265cc4", "url": "https://url.spec.whatwg.org/#concept-urlencoded", "dfnText": "application/x-www-form-urlencoded", "refSections": [{"refs": [{"id": "ref-for-concept-urlencoded"}], "title": "4. Parsing"}], "external": true};
 window.dfnpanelData['b85ee3be'] = {"dfnID": "b85ee3be", "url": "https://url.spec.whatwg.org/#concept-url-host", "dfnText": "host", "refSections": [{"refs": [{"id": "ref-for-concept-url-host"}], "title": "5. Comparing"}], "external": true};
@@ -1540,7 +1564,8 @@ window.dfnpanelData['url-search-variance-no-vary-params-wildcard'] = {"dfnID": "
 window.dfnpanelData['url-search-variance-vary-params'] = {"dfnID": "url-search-variance-vary-params", "url": "#url-search-variance-vary-params", "dfnText": "vary params", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-vary-params"}, {"id": "ref-for-url-search-variance-vary-params\u2460"}, {"id": "ref-for-url-search-variance-vary-params\u2461"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-vary-params\u2462"}, {"id": "ref-for-url-search-variance-vary-params\u2463"}, {"id": "ref-for-url-search-variance-vary-params\u2464"}, {"id": "ref-for-url-search-variance-vary-params\u2465"}, {"id": "ref-for-url-search-variance-vary-params\u2466"}, {"id": "ref-for-url-search-variance-vary-params\u2467"}, {"id": "ref-for-url-search-variance-vary-params\u2468"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u24ea"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u2460"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-url-search-variance-vary-params\u2460\u2461"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u2462"}, {"id": "ref-for-url-search-variance-vary-params\u2460\u2463"}], "title": "5. Comparing"}], "external": false};
 window.dfnpanelData['url-search-variance-vary-params-wildcard'] = {"dfnID": "url-search-variance-vary-params-wildcard", "url": "#url-search-variance-vary-params-wildcard", "dfnText": "wildcard", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-vary-params-wildcard"}, {"id": "ref-for-url-search-variance-vary-params-wildcard\u2460"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-vary-params-wildcard\u2461"}], "title": "4. Parsing"}], "external": false};
 window.dfnpanelData['url-search-variance-vary-on-key-order'] = {"dfnID": "url-search-variance-vary-on-key-order", "url": "#url-search-variance-vary-on-key-order", "dfnText": "vary on key order", "refSections": [{"refs": [{"id": "ref-for-url-search-variance-vary-on-key-order"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-url-search-variance-vary-on-key-order\u2460"}, {"id": "ref-for-url-search-variance-vary-on-key-order\u2461"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-url-search-variance-vary-on-key-order\u2462"}], "title": "5. Comparing"}], "external": false};
-window.dfnpanelData['default-url-search-variance'] = {"dfnID": "default-url-search-variance", "url": "#default-url-search-variance", "dfnText": "default URL search variance", "refSections": [{"refs": [{"id": "ref-for-default-url-search-variance"}, {"id": "ref-for-default-url-search-variance\u2460"}, {"id": "ref-for-default-url-search-variance\u2461"}, {"id": "ref-for-default-url-search-variance\u2462"}, {"id": "ref-for-default-url-search-variance\u2463"}, {"id": "ref-for-default-url-search-variance\u2464"}, {"id": "ref-for-default-url-search-variance\u2465"}, {"id": "ref-for-default-url-search-variance\u2466"}, {"id": "ref-for-default-url-search-variance\u2467"}, {"id": "ref-for-default-url-search-variance\u2468"}, {"id": "ref-for-default-url-search-variance\u2460\u24ea"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-default-url-search-variance\u2460\u2460"}], "title": "5. Comparing"}], "external": false};
+window.dfnpanelData['default-url-search-variance'] = {"dfnID": "default-url-search-variance", "url": "#default-url-search-variance", "dfnText": "default URL search variance", "refSections": [{"refs": [{"id": "ref-for-default-url-search-variance"}, {"id": "ref-for-default-url-search-variance\u2460"}, {"id": "ref-for-default-url-search-variance\u2461"}, {"id": "ref-for-default-url-search-variance\u2462"}, {"id": "ref-for-default-url-search-variance\u2463"}, {"id": "ref-for-default-url-search-variance\u2464"}, {"id": "ref-for-default-url-search-variance\u2465"}, {"id": "ref-for-default-url-search-variance\u2466"}, {"id": "ref-for-default-url-search-variance\u2467"}, {"id": "ref-for-default-url-search-variance\u2468"}, {"id": "ref-for-default-url-search-variance\u2460\u24ea"}, {"id": "ref-for-default-url-search-variance\u2460\u2460"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-default-url-search-variance\u2460\u2461"}], "title": "5. Comparing"}], "external": false};
+window.dfnpanelData['parse-a-url-search-variance'] = {"dfnID": "parse-a-url-search-variance", "url": "#parse-a-url-search-variance", "dfnText": "parse a URL search variance", "refSections": [{"refs": [{"id": "ref-for-parse-a-url-search-variance"}, {"id": "ref-for-parse-a-url-search-variance\u2460"}], "title": "4. Parsing"}], "external": false};
 window.dfnpanelData['obtain-a-url-search-variance'] = {"dfnID": "obtain-a-url-search-variance", "url": "#obtain-a-url-search-variance", "dfnText": "obtain a URL search variance", "refSections": [{"refs": [{"id": "ref-for-obtain-a-url-search-variance"}], "title": "2. HTTP header field definition"}, {"refs": [{"id": "ref-for-obtain-a-url-search-variance\u2460"}], "title": "3. Data model"}], "external": false};
 window.dfnpanelData['parse-a-key'] = {"dfnID": "parse-a-key", "url": "#parse-a-key", "dfnText": "parse a key", "refSections": [{"refs": [{"id": "ref-for-parse-a-key"}, {"id": "ref-for-parse-a-key\u2460"}, {"id": "ref-for-parse-a-key\u2461"}], "title": "4. Parsing"}], "external": false};
 window.dfnpanelData['equivalent-modulo-search-variance'] = {"dfnID": "equivalent-modulo-search-variance", "url": "#equivalent-modulo-search-variance", "dfnText": "equivalent modulo search variance", "refSections": [{"refs": [{"id": "ref-for-equivalent-modulo-search-variance"}], "title": "4. Parsing"}], "external": false};
