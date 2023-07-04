@@ -89,6 +89,7 @@ spec: nav-speculation; urlPrefix: no-vary-search.html
     text: URL search variance; url: url-search-variance
     text: default URL search variance; url: default-url-search-variance
     text: obtain a URL search variance hint; url: obtain-a-url-search-variance-hint
+    text: equivalent modulo search variance; url: equivalent-modulo-search-variance
 </pre>
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -618,6 +619,8 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   :: User agents should enact the candidate if user behavior suggests the user may navigate to this URL in the near future. For instance, the user might have scrolled a link into the viewport and moved the cursor over or near it.
   :  "`conservative`"
   :: User agents should enact the candidate only when the user is very likely to navigate to this URL at any moment. For instance, the user might have begun to interact with a link.
+
+  <p class="note">A user agent's heuristics for enacting non-eager candidates could incorporate a [=prefetch candidate/No-Vary-Search hint=]. For example, a user hovering over a link whose URL and a candidate's [=prefetch candidate/URL=] are [=equivalent modulo search variance=] given the candidate's [=prefetch candidate/No-Vary-Search hint=] could indicate to the user agent that enacting it would be useful.</p>
 
   Notwithstanding the above, user agents should prioritize user preferences (express and implied, such as a low-data-usage mode) over eagerness expressed by the author.
 </div>

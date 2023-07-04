@@ -306,7 +306,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. Wait until the [=prefetch record/state=] of any element of |document|'s [=Document/prefetch records=] changes.
         1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for the [=relevant global object=] of |document|.
 
-    <p class="note">We have a cutoff for waiting for potential matches such that an additional prefetch that started while we were blocking a navigation could still be used to serve the navigation. In the case of prefetch failure while blocking, we stop considering subsequent prefetches, so we establish a limit after which we fall back to a non-prefetch request.</p>
+    <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
 </div>
 
 <div algorithm>
