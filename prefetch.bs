@@ -136,25 +136,26 @@ spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
 
 In light of <a href="https://privacycg.github.io/storage-partitioning/">storage partitioning</a>, this specification defines prefetch for navigations which would occur within the same partition (for example, top-level navigations within the same site) and for navigations which would occur in a separate partition (for example, top-level navigations to a different site).
 
+<div algorithm>
+    <dfn>Conflicting credentials exist</dfn> for [=response=] |response| given [=navigable=] |navigable| and [=network partition key=] |sourcePartitionKey| if the following steps return true:
+
+    1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |navigable|, |response|'s [=response/URL=], and null.
+    1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
+    1. If |hypotheticalPartitionKey| is equal to |sourcePartitionKey| or there are no [=credentials=] associated with [=response/URL=] and |hypotheticalPartitionKey|, then return false.
+    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
+    1. If |loadingModes| [=list/contains=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then return true.
+    1. Return false.
+</div>
+
+<hr>
+
 An <dfn>exchange record</dfn> is a [=struct=] with the following [=struct/items=]:
 * <dfn for="exchange record">request</dfn>, a [=request=]
 * <dfn for="exchange record">response</dfn>, a [=response=] or null
-* <dfn for="exchange record">cookie data</dfn>, a [=list=] of [=tuples=] of [=byte sequences=]
-* <dfn for="exchange record">authentication entry</dfn>, an [=authentication entry=] or null
 
 <div class="note">These records can be used to defer checks that would ordinarily happen during a navigate fetch, and to check for modified [=credentials=].</div>
 
 A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
-
-<div algorithm>
-    To <dfn for="redirect chain">append</dfn> a [=request=] |request| to a [=redirect chain=] |redirectChain|:
-
-    1. Let |cookieData| be an empty [=list=].
-    1. If the user agent is not configured to block cookies for |request|, then set |cookieData| be the result of [=gathering cookie data=] for |request|'s [=request/URL=] in the cookie store associated with |request|.
-    1. Let |authenticationEntry| be null.
-    1. If there's an [=authentication entry=] for |request| and |request|'s [=request/current URL=] does not [=include credentials=], then set |authenticationEntry| to that [=authentication entry=].
-    1. [=list/Append=] a new [=exchange record=] whose [=exchange record/request=] is a copy of |request|, [=exchange record/response=] is null, [=exchange record/cookie data=] is |cookieData|, and [=exchange record/authentication entry=] is |authenticationEntry| to |redirectChain|.
-</div>
 
 <div algorithm>
     To <dfn for="redirect chain">update the response</dfn> for a [=redirect chain=] |redirectChain| given a [=request=] |request| and [=response=] |response|:
@@ -162,25 +163,6 @@ A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
     1. [=Assert=]: |redirectChain| is not [=list/empty=].
     1. [=Assert=]: |redirectChain|'s last element's [=exchange record/request=] is the same as |request| and its [=exchange record/response=] is null.
     1. Set |redirectChain|'s last element's [=exchange record/response=] to |response|.
-</div>
-
-<div algorithm>
-    A [=redirect chain=] |redirectChain| <dfn for="redirect chain">has updated credentials</dfn> if the following steps return true:
-
-    1. [=list/For each=] |exchangeRecord| of |redirectChain|:
-        1. Let |request| be |exchangeRecord|'s [=exchange record/request=].
-        1. Let |cookieData| be an empty [=list=].
-        1. If the user agent is not configured to block cookies for |request|, then set |cookieData| to the result of [=gathering cookie data=] for |request|'s [=request/URL=] in the cookie store associated with |request|.
-        1. If |cookieData| is not identical to |exchangeRecord|'s [=exchange record/cookie data=], then user agents must return true. User agents may also return true if a modification to the cookies applicable to |request| has occurred in some other way (even though the cookie data may ultimately be identical).
-
-            <div class="note">This gives freedom to use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number instead of the full cookie data.</div>
-
-        1. Let |authenticationEntry| be null.
-        1. If there's an [=authentication entry=] for |request| and |request|'s [=request/current URL=] does not [=include credentials=], then set |authenticationEntry| to that [=authentication entry=].
-        1. If |authenticationEntry| is not identical to |exchangeRecord|'s [=exchange record/authentication entry=], then user agents must return true. User agents may also return true if a modification to the authentication entries applicable to |request| has occurred in some other way.
-
-            <div class="note">This provides similar implementation freedom to that described above for cookies.</div>
-    1. Return false.
 </div>
 
 <hr>
@@ -196,7 +178,6 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
 * <dfn export for="prefetch record">state</dfn>, which is "`ongoing`" (the default), "`completed`", or "`canceled`"
-
   <div class="note">"`canceled`" indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
 * <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
 * <dfn export for="prefetch record">sandboxing flag set</dfn>, a [=sandboxing flag set=]
@@ -205,7 +186,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
 * <dfn export for="prefetch record">source partition key</dfn>, a [=network partition key=] or null (the default)
 * <dfn export for="prefetch record">isolated partition key</dfn>, a [=network partition key=] whose first item is an [=opaque origin=] and which represents a separate partition in which cross-partition state can be temporarily stored, or null (the default)
-* <dfn export for="prefetch record">has conflicting credentials</dfn>, a [=boolean=] (initially false)
+* <dfn export for="prefetch record">had conflicting credentials</dfn>, a [=boolean=] (initially false)
 
 <div class="note">This tracks prefetches from when they are started to when they are ultimately used or discarded. Consequently some of these fields are immutable, some pertain to the ongoing activity (like [=prefetch record/fetch controller=]), and some (like [=prefetch record/expiry time=]) are populated when the prefetch completes.</div>
 
@@ -278,7 +259,11 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. [=list/Remove=] |recordToUse| from |document|'s [=Document/prefetch records=].
         1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
         1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
-        1. If |recordToUse|'s [=prefetch record/redirect chain=] [=redirect chain/has updated credentials=], return null.
+        1. [=list/For each=] |exchangeRecord| of |recordToUse|'s [=prefetch record/redirect chain=]:
+            1. If [=conflicting credentials exist=] for |exchangeRecord|'s [=exchange record/response=] given |document|'s [=node navigable=] and |recordToUse|'s [=prefetch record/source partition key=], return null.
+
+            <div class="note">This handles the case where there were no cross-partition credentials initially, but there are now. User agents could use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number.</div>
+
         1. Return |recordToUse|.
     1. Return null.
 
@@ -548,7 +533,7 @@ Update all creation sites to supply an empty string, except for any in this docu
             1. If |request| cannot be fetched given |prefetchRecord|'s [=prefetch record/anonymization policy=] for an [=implementation-defined=] reason, then set |response| to a [=network error=] and [=iteration/break=].
 
                 <div class="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-            1. [=redirect chain/Append=] |request| to |prefetchRecord|'s [=prefetch record/redirect chain=].
+            1. [=list/Append=] a new [=exchange record=] whose [=exchange record/request=] is |request| and [=exchange record/response=] is null to |prefetchRecord|'s [=prefetch record/redirect chain=].
         1. Set |response| to null.
         1. If |fetchController| is null, then set |fetchController| to the result of [=fetching=] |request|, with <i>[=fetch/processEarlyHintsResponse=]</i> set to |processEarlyHintsResponse| as defined below, <i>[=fetch/processResponse=]</i> set to |processResponse| as defined below, and <i>[=fetch/useParallelQueue=]</i> set to true.
 
@@ -573,14 +558,9 @@ Update all creation sites to supply an empty string, except for any in this docu
         1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
         1. If |prefetchRecord| was given, then:
             1. [=redirect chain/Update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
-            1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |navigable|, |currentURL|, and null.
-            1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
-            1. Let |hasConflictingCredentials| be true if |hypotheticalPartitionKey| is not equal to |prefetchRecord|'s [=prefetch record/source partition key=] and there are [=credentials=] associated with |currentURL| and |hypotheticalPartitionKey|, and false otherwise.
-            1. If |hasConflictingCredentials| is true:
-                1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
-                1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then set |prefetchRecord|'s [=prefetch record/has conflicting credentials=] to true.
+            1. If [=conflicting credentials exist=] for |response| given |navigable| and |prefetchRecord|'s [=prefetch record/source partition key=], then set |prefetchRecord|'s [=prefetch record/had conflicting credentials=] to true.
 
-                    <p class="note">This does not immediately abort the prefetch or stop following redirects, because doing so might reveal whether or not the user has stored state outside the current partition, before the user navigates. Instead, the prefetch continues as though there were no conflicting credentials, except that the prefetch cannot actually be used. User agents might wish to [=report a warning to the console=] or otherwise inform authors that this has happened.</p>
+                <p class="note">This does not immediately abort the prefetch or stop following redirects, because doing so might reveal whether or not the user has stored state outside the current partition, before the user navigates. Instead, the prefetch continues as though there were no conflicting credentials, except that the prefetch cannot actually be used. User agents might wish to [=report a warning to the console=] or otherwise inform authors that this has happened.</p>
         1. Set |locationURL| to |response|'s [=response/location URL=] given |currentURL|'s [=url/fragment=].
         1. If |locationURL| is failure or null, then [=iteration/break=].
         1. [=Assert=]: |locationURL| is a [=URL=].
@@ -689,7 +669,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=In parallel=]:
         1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
-        1. If |prefetchRecord| [=prefetch record/has conflicting credentials=], then set |navigationParams| to null.
+        1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
             <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
@@ -759,33 +739,6 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
       1. Insert |newCookie| into |cookieStore|.
 
           <div class="note">This remove-and-insert pattern is consistent with what happens when [=receiving a cookie=].</div>
-</div>
-
-<div algorithm>
-  To <dfn>gather cookie data</dfn> for [=URL=] |url| in cookie store |cookieStore|:
-
-  1. Let |cookieList| be the set of cookies from |cookieStore| that meet all of the following requirements:
-
-      * one of the following applies:
-          * the cookie's host-only flag is true and |url|'s <a spec="COOKIES" lt="canonicalized host name">canonicalized</a> [=url/host=] is identical to the cookie's domain
-          * the cookie's host-only flag is false and |url|'s <a spec="COOKIES" lt="canonicalized host name">canonicalized</a> [=url/host=] <a spec="COOKIES">domain-matches</a> the cookie's domain
-      * |url|'s [=url/path=] <a spec="COOKIES">path-matches</a> the cookie's path
-      * if the cookie's secure-only-flag is true, then |url|'s [=url/scheme=] is "`https`"
-
-  1. Sort |cookieList| lexicographically by name, and by value if names are equal.
-
-      <div class="note">Since both are octet sequences, Unicode collation rules do not apply.</div>
-
-  1. Let |cookieData| be an empty [=list=].
-  1. For each |cookie| in |cookieList|:
-      1. [=list/Append=] (|cookie|'s name, |cookie|'s value) to |cookieData|.
-  1. Return |cookieData|.
-
-  <div class="note">
-    This is essentially how the <a http-header lt="Cookie">`` `Cookie` ``</a> header is computed, except that a few details are specialized to this case, the last-access-time is not modified, and the sort order is changed to ensure it is unique.
-
-    Note that some changes to cookies would not affect this (and would not affect the <a http-header lt="Cookie">`` `Cookie` ``</a> header), such as updates to the creation-time, last-access-time, path, and various flags. Despite this, the [=redirect chain/has updated credentials=] algorithm permits user agents to treat such changes as modifications.
-  </div>
 </div>
 
 <h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
