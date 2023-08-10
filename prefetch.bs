@@ -669,7 +669,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=In parallel=]:
         1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
-        1. If |prefetchRecord| [=prefetch record/had conflicting credentials=], then set |navigationParams| to null.
+        1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
             <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
