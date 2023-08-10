@@ -4,7 +4,7 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 5edf5e459, updated Thu Jun 22 11:28:01 2023 -0700" name="generator">
+  <meta content="Bikeshed version d29f71adb, updated Wed Jul 19 11:08:56 2023 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
 <style>
 /* domintro and XXX from https://resources.whatwg.org/standard.css */
@@ -704,7 +704,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-07-04">4 July 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-08-10">10 August 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -858,7 +858,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    </dl>
    <p>The <dfn class="dfn-paneled idl-code" data-dfn-for="Document" data-dfn-type="attribute" data-export id="dom-document-prerendering"><code>prerendering</code></dfn> getter steps are to return true if <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this">this</a> has a non-null <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a> that is a <a data-link-type="dfn" href="#prerendering-navigable" id="ref-for-prerendering-navigable①">prerendering navigable</a>; otherwise, false.</p>
    <hr>
-   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-prerendering-traversables-map">prerendering traversables map</dfn>, which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a> of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URLs</a> to <a data-link-type="dfn" href="#prerendering-traversable" id="ref-for-prerendering-traversable">prerendering traversables</a>. This is used to fulfill <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">navigations</a> to a given URL by instead <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate">activating</a> the corresponding prerendering traversable.</p>
+   <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document③">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-prerendering-traversables-map">prerendering traversables map</dfn>, which is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a> of <a data-link-type="dfn" href="https://www.w3.org/TR/pub-manifest/#dfn-url" id="ref-for-dfn-url">URLs</a> to <a data-link-type="dfn" href="#prerendering-traversable" id="ref-for-prerendering-traversable">prerendering traversables</a>. This is used to fulfill <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate" id="ref-for-navigate">navigations</a> to a given URL by instead <a data-link-type="dfn" href="#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate">activating</a> the corresponding prerendering traversable.</p>
    <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document④">Document</a></code> has a <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-post-prerendering-activation-steps-list">post-prerendering activation steps list</dfn>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> where each <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-item" id="ref-for-list-item">item</a> is a series of algorithm steps. For convenience, we define the <dfn class="dfn-paneled" data-dfn-for="platform object" data-dfn-type="dfn" data-noexport id="platform-object-post-prerendering-activation-steps-list">post-prerendering activation steps list</dfn> for any platform object <var>platformObject</var> as:</p>
    <dl class="switch">
     <dt data-md>If <var>platformObject</var> is a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-node" id="ref-for-concept-node">node</a>
@@ -882,7 +882,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>Every <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑤">Document</a></code> has an <dfn class="dfn-paneled" data-dfn-for="Document" data-dfn-type="dfn" data-noexport id="document-activation-start-time">activation start time</dfn>, which is initially a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp">DOMHighResTimeStamp</a></code> with a time value of zero.</p>
    <div class="algorithm" data-algorithm="User-agent initiated prerendering">
      <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#user-agent" id="ref-for-user-agent">User agents</a> may choose to initiate prerendering without a referrer document, for example as a result of the address bar or other browser user interactions. 
-    <p>To <dfn data-dfn-type="dfn" data-export id="start-user-agent-initiated-prerendering">start user-agent initiated prerendering<a class="self-link" href="#start-user-agent-initiated-prerendering"></a></dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>startingURL</var>:</p>
+    <p>To <dfn data-dfn-type="dfn" data-export id="start-user-agent-initiated-prerendering">start user-agent initiated prerendering<a class="self-link" href="#start-user-agent-initiated-prerendering"></a></dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URL</a> <var>startingURL</var>:</p>
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert">Assert</a>: <var>startingURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a> is an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme">HTTP(S) scheme</a>.</p>
@@ -911,7 +911,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <p class="note" role="note">The user might never indicate such a commitment, or might take long enough to do so that the user agent needs to reclaim the resources used by the prerender for some more immediate task. In that case the user agent can <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#destroy-a-top-level-traversable" id="ref-for-destroy-a-top-level-traversable">destroy</a> <var>prerenderingTraversable</var>. </p>
    </div>
    <div>
-     To <dfn data-dfn-type="dfn" data-export id="start-referrer-initiated-prerendering">start referrer-initiated prerendering<a class="self-link" href="#start-referrer-initiated-prerendering"></a></dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a> <var>startingURL</var>, a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑥">Document</a></code> <var>referrerDoc</var>, and a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy">referrer policy</a> <var>referrerPolicy</var>: 
+     To <dfn data-dfn-type="dfn" data-export id="start-referrer-initiated-prerendering">start referrer-initiated prerendering<a class="self-link" href="#start-referrer-initiated-prerendering"></a></dfn> given a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> <var>startingURL</var>, a <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document⑥">Document</a></code> <var>referrerDoc</var>, and a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy">referrer policy</a> <var>referrerPolicy</var>: 
     <ol>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①">Assert</a>: <var>startingURL</var>’s <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme①">scheme</a> is an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#http-scheme" id="ref-for-http-scheme①">HTTP(S) scheme</a>.</p>
@@ -1037,7 +1037,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <h2 class="heading settled" data-level="2" id="navigation"><span class="secno">2. </span><span class="content">Navigation and session history</span><a class="self-link" href="#navigation"></a></h2>
    <h3 class="heading settled" data-level="2.1" id="navigate-activation"><span class="secno">2.1. </span><span class="content">Allowing activation in place of navigation</span><a class="self-link" href="#navigate-activation"></a></h3>
    <div>
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="get-the-matching-prerendering-navigable">get the matching prerendering navigable</dfn> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable②">navigable</a> <var>navigable</var>, a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a> <var>url</var>, a string <var>cspNavigationType</var>, and a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#post-resource" id="ref-for-post-resource">POST resource</a>, string, or null <var>documentResource</var>: 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="get-the-matching-prerendering-navigable">get the matching prerendering navigable</dfn> given a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#navigable" id="ref-for-navigable②">navigable</a> <var>navigable</var>, a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url②">URL</a> <var>url</var>, a string <var>cspNavigationType</var>, and a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#post-resource" id="ref-for-post-resource">POST resource</a>, string, or null <var>documentResource</var>: 
     <ol>
      <li data-md>
       <p>If any of the following conditions hold:</p>
@@ -1888,6 +1888,11 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="10f6701c">start()</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[PUB-MANIFEST]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="273241b0">urls</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[PUSH-API]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="c5d508d9">subscribe()</span>
@@ -2113,6 +2118,8 @@ This would not matter because the node can automatically start when the context 
    <dd>Navid Zolghadr; Mustaq Ahmed. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock 2.0</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
    <dt id="biblio-presentation-api">[PRESENTATION-API]
    <dd>Mark Foltz; Dominik Röttsches. <a href="https://w3c.github.io/presentation-api/"><cite>Presentation API</cite></a>. URL: <a href="https://w3c.github.io/presentation-api/">https://w3c.github.io/presentation-api/</a>
+   <dt id="biblio-pub-manifest">[PUB-MANIFEST]
+   <dd>Matt Garrish; Ivan Herman. <a href="https://w3c.github.io/pub-manifest/"><cite>Publication Manifest</cite></a>. URL: <a href="https://w3c.github.io/pub-manifest/">https://w3c.github.io/pub-manifest/</a>
    <dt id="biblio-push-api">[PUSH-API]
    <dd>Peter Beverloo; Martin Thomson; Marcos Caceres. <a href="https://w3c.github.io/push-api/"><cite>Push API</cite></a>. URL: <a href="https://w3c.github.io/push-api/">https://w3c.github.io/push-api/</a>
    <dt id="biblio-referrer-policy">[REFERRER-POLICY]
@@ -2126,7 +2133,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]
    <dd>Kenneth Christiansen; Raphael Kubo da Costa. <a href="https://w3c.github.io/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. URL: <a href="https://w3c.github.io/screen-wake-lock/">https://w3c.github.io/screen-wake-lock/</a>
    <dt id="biblio-serial">[SERIAL]
-   <dd>Web Serial API URL: <a href="https://wicg.github.io/serial/">https://wicg.github.io/serial/</a>
+   <dd><a href="https://wicg.github.io/serial/"><cite>Web Serial API</cite></a>. Editor's Draft. URL: <a href="https://wicg.github.io/serial/">https://wicg.github.io/serial/</a>
    <dt id="biblio-service-workers">[SERVICE-WORKERS]
    <dd>Jake Archibald; Marijn Kruisselbrink. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
    <dt id="biblio-speech-api">[SPEECH-API]
@@ -2150,7 +2157,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-webdriver-bidi">[WEBDRIVER-BIDI]
    <dd><a href="https://w3c.github.io/webdriver-bidi/"><cite>WebDriver BiDi</cite></a>. Editor's Draft. URL: <a href="https://w3c.github.io/webdriver-bidi/">https://w3c.github.io/webdriver-bidi/</a>
    <dt id="biblio-webhid">[WEBHID]
-   <dd>WebHID API URL: <a href="https://wicg.github.io/webhid/">https://wicg.github.io/webhid/</a>
+   <dd><a href="https://wicg.github.io/webhid/"><cite>WebHID API</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/webhid/">https://wicg.github.io/webhid/</a>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
    <dt id="biblio-webmidi">[WEBMIDI]
@@ -2660,6 +2667,7 @@ window.dfnpanelData['de94fc89'] = {"dfnID": "de94fc89", "url": "https://w3c.gith
 window.dfnpanelData['70465835'] = {"dfnID": "70465835", "url": "https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture", "dfnText": "requestPictureInPicture()", "refSections": [{"refs": [{"id": "ref-for-dom-htmlvideoelement-requestpictureinpicture"}], "title": "6.4. Implicitly restricted APIs"}], "external": true};
 window.dfnpanelData['90d01b95'] = {"dfnID": "90d01b95", "url": "https://w3c.github.io/pointerlock/#dom-element-requestpointerlock", "dfnText": "requestPointerLock()", "refSections": [{"refs": [{"id": "ref-for-dom-element-requestpointerlock"}], "title": "6.4. Implicitly restricted APIs"}], "external": true};
 window.dfnpanelData['10f6701c'] = {"dfnID": "10f6701c", "url": "https://w3c.github.io/presentation-api/#dom-presentationrequest-start", "dfnText": "start()", "refSections": [{"refs": [{"id": "ref-for-dom-presentationrequest-start"}], "title": "6.4. Implicitly restricted APIs"}], "external": true};
+window.dfnpanelData['273241b0'] = {"dfnID": "273241b0", "url": "https://www.w3.org/TR/pub-manifest/#dfn-url", "dfnText": "urls", "refSections": [{"refs": [{"id": "ref-for-dfn-url"}], "title": "1.2. Prerendering navigables"}], "external": true};
 window.dfnpanelData['c5d508d9'] = {"dfnID": "c5d508d9", "url": "https://w3c.github.io/push-api/#dom-pushmanager-subscribe", "dfnText": "subscribe()", "refSections": [{"refs": [{"id": "ref-for-dom-pushmanager-subscribe"}], "title": "6.3.19. Push API"}], "external": true};
 window.dfnpanelData['2d09a0dd'] = {"dfnID": "2d09a0dd", "url": "https://w3c.github.io/webappsec-referrer-policy/#referrer-policy", "dfnText": "referrer policy", "refSections": [{"refs": [{"id": "ref-for-referrer-policy"}], "title": "1.2. Prerendering navigables"}], "external": true};
 window.dfnpanelData['fa1ab848'] = {"dfnID": "fa1ab848", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-lists", "dfnText": "list", "refSections": [{"refs": [{"id": "ref-for-name-lists"}], "title": "4. The `Supports-Loading-Mode` HTTP response header"}], "external": true};
@@ -2688,7 +2696,7 @@ window.dfnpanelData['468296df'] = {"dfnID": "468296df", "url": "https://wicg.git
 window.dfnpanelData['11e5b14f'] = {"dfnID": "11e5b14f", "url": "https://storage.spec.whatwg.org/#dom-storagemanager-persist", "dfnText": "persist()", "refSections": [{"refs": [{"id": "ref-for-dom-storagemanager-persist"}], "title": "6.3.21. Storage API"}], "external": true};
 window.dfnpanelData['959ad97b'] = {"dfnID": "959ad97b", "url": "https://url.spec.whatwg.org/#concept-url-origin", "dfnText": "origin", "refSections": [{"refs": [{"id": "ref-for-concept-url-origin"}, {"id": "ref-for-concept-url-origin\u2460"}], "title": "1.2. Prerendering navigables"}, {"refs": [{"id": "ref-for-concept-url-origin\u2461"}], "title": "2.2. Navigation fetch changes"}], "external": true};
 window.dfnpanelData['3a711be7'] = {"dfnID": "3a711be7", "url": "https://url.spec.whatwg.org/#concept-url-scheme", "dfnText": "scheme", "refSections": [{"refs": [{"id": "ref-for-concept-url-scheme"}, {"id": "ref-for-concept-url-scheme\u2460"}], "title": "1.2. Prerendering navigables"}, {"refs": [{"id": "ref-for-concept-url-scheme\u2461"}], "title": "2.2. Navigation fetch changes"}], "external": true};
-window.dfnpanelData['dcffbccd'] = {"dfnID": "dcffbccd", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}, {"id": "ref-for-concept-url\u2461"}], "title": "1.2. Prerendering navigables"}, {"refs": [{"id": "ref-for-concept-url\u2462"}], "title": "2.1. Allowing activation in place of navigation"}], "external": true};
+window.dfnpanelData['dcffbccd'] = {"dfnID": "dcffbccd", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}], "title": "1.2. Prerendering navigables"}, {"refs": [{"id": "ref-for-concept-url\u2461"}], "title": "2.1. Allowing activation in place of navigation"}], "external": true};
 window.dfnpanelData['64087201'] = {"dfnID": "64087201", "url": "https://webaudio.github.io/web-audio-api/#dom-baseaudiocontext-control-thread-state-slot", "dfnText": "[[control thread state]]", "refSections": [{"refs": [{"id": "ref-for-dom-baseaudiocontext-control-thread-state-slot"}, {"id": "ref-for-dom-baseaudiocontext-control-thread-state-slot\u2460"}, {"id": "ref-for-dom-baseaudiocontext-control-thread-state-slot\u2461"}], "title": "6.3.17. Web Audio API"}], "external": true};
 window.dfnpanelData['be4e7c3b'] = {"dfnID": "be4e7c3b", "url": "https://webaudio.github.io/web-audio-api/#dom-audiocontext-pending-resume-promises-slot", "dfnText": "[[pending resume promises]]", "refSections": [{"refs": [{"id": "ref-for-dom-audiocontext-pending-resume-promises-slot"}], "title": "6.3.17. Web Audio API"}], "external": true};
 window.dfnpanelData['03294253'] = {"dfnID": "03294253", "url": "https://webaudio.github.io/web-audio-api/#allowed-to-start", "dfnText": "allowed to start", "refSections": [{"refs": [{"id": "ref-for-allowed-to-start"}, {"id": "ref-for-allowed-to-start\u2460"}, {"id": "ref-for-allowed-to-start\u2461"}, {"id": "ref-for-allowed-to-start\u2462"}, {"id": "ref-for-allowed-to-start\u2463"}], "title": "6.3.17. Web Audio API"}], "external": true};

@@ -4,7 +4,7 @@
   <title>No-Vary-Search</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 5edf5e459, updated Thu Jun 22 11:28:01 2023 -0700" name="generator">
+  <meta content="Bikeshed version d29f71adb, updated Wed Jul 19 11:08:56 2023 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/no-vary-search.html" rel="canonical">
 <style>
 #example-equivalence-canonicalization table {
@@ -678,7 +678,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">No-Vary-Search</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-07-04">4 July 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-08-10">10 August 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1002,7 +1002,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <p>and so on, since they all are <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser">parsed</a> to having the same key "<code>é 気</code>".</p>
    </div>
    <h2 class="heading settled" data-level="5" id="comparing"><span class="secno">5. </span><span class="content">Comparing</span><a class="self-link" href="#comparing"></a></h2>
-   <p>Two <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URLs</a> <var>urlA</var> and <var>urlB</var> are <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="equivalent-modulo-search-variance">equivalent modulo search variance</dfn> given a <a data-link-type="dfn" href="#url-search-variance" id="ref-for-url-search-variance④">URL search variance</a> <var>searchVariance</var> if the following algorithm returns true:</p>
+   <p>Two <a data-link-type="dfn" href="https://www.w3.org/TR/pub-manifest/#dfn-url" id="ref-for-dfn-url">URLs</a> <var>urlA</var> and <var>urlB</var> are <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="equivalent-modulo-search-variance">equivalent modulo search variance</dfn> given a <a data-link-type="dfn" href="#url-search-variance" id="ref-for-url-search-variance④">URL search variance</a> <var>searchVariance</var> if the following algorithm returns true:</p>
    <ol>
     <li data-md>
      <p>If the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-scheme" id="ref-for-concept-url-scheme">scheme</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-username" id="ref-for-concept-url-username">username</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-password" id="ref-for-concept-url-password">password</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-host" id="ref-for-concept-url-host">host</a>, <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-port" id="ref-for-concept-url-port">port</a>, or <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-path" id="ref-for-concept-url-path">path</a> of <var>urlA</var> and <var>urlB</var> differ, then return false.</p>
@@ -1014,7 +1014,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <li data-md>
        <p>Return false.</p>
      </ol>
-     <p class="note" role="note">In this case, even <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url①">URL</a> pairs that might appear the same after running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser①">application/x-www-form-urlencoded parser</a> on their <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query②">queries</a>, such as <code>https://example.com/a</code> and <code>https://example.com/a?</code>, or <code>https://example.com/foo?a=b&amp;&amp;&amp;c</code> and <code>https://example.com/foo?a=b&amp;c=</code>, will be treated as inequivalent. </p>
+     <p class="note" role="note">In this case, even <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URL</a> pairs that might appear the same after running the <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-urlencoded-parser" id="ref-for-concept-urlencoded-parser①">application/x-www-form-urlencoded parser</a> on their <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url-query" id="ref-for-concept-url-query②">queries</a>, such as <code>https://example.com/a</code> and <code>https://example.com/a?</code>, or <code>https://example.com/foo?a=b&amp;&amp;&amp;c</code> and <code>https://example.com/foo?a=b&amp;c=</code>, will be treated as inequivalent. </p>
     <li data-md>
      <p>Let <var>searchParamsA</var> and <var>searchParamsB</var> be empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑥">lists</a>.</p>
     <li data-md>
@@ -1170,6 +1170,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="cbdc89b4">while</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[PUB-MANIFEST]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="273241b0">urls</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[RFC8941]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="d65c1d68">boolean</span>
@@ -1203,6 +1208,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
+   <dt id="biblio-pub-manifest">[PUB-MANIFEST]
+   <dd>Matt Garrish; Ivan Herman. <a href="https://w3c.github.io/pub-manifest/"><cite>Publication Manifest</cite></a>. URL: <a href="https://w3c.github.io/pub-manifest/">https://w3c.github.io/pub-manifest/</a>
    <dt id="biblio-rfc8941">[RFC8941]
    <dd>M. Nottingham; P-H. Kamp. <a href="https://www.rfc-editor.org/rfc/rfc8941"><cite>Structured Field Values for HTTP</cite></a>. February 2021. Proposed Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc8941">https://www.rfc-editor.org/rfc/rfc8941</a>
    <dt id="biblio-url">[URL]
@@ -1541,6 +1548,7 @@ window.dfnpanelData['bccbabba'] = {"dfnID": "bccbabba", "url": "https://infra.sp
 window.dfnpanelData['0698d556'] = {"dfnID": "0698d556", "url": "https://infra.spec.whatwg.org/#string", "dfnText": "string", "refSections": [{"refs": [{"id": "ref-for-string"}, {"id": "ref-for-string\u2460"}], "title": "3. Data model"}, {"refs": [{"id": "ref-for-string\u2461"}, {"id": "ref-for-string\u2462"}, {"id": "ref-for-string\u2463"}], "title": "4. Parsing"}], "external": true};
 window.dfnpanelData['984221ca'] = {"dfnID": "984221ca", "url": "https://infra.spec.whatwg.org/#struct", "dfnText": "struct", "refSections": [{"refs": [{"id": "ref-for-struct"}], "title": "3. Data model"}], "external": true};
 window.dfnpanelData['cbdc89b4'] = {"dfnID": "cbdc89b4", "url": "https://infra.spec.whatwg.org/#iteration-while", "dfnText": "while", "refSections": [{"refs": [{"id": "ref-for-iteration-while"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['273241b0'] = {"dfnID": "273241b0", "url": "https://www.w3.org/TR/pub-manifest/#dfn-url", "dfnText": "urls", "refSections": [{"refs": [{"id": "ref-for-dfn-url"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['d65c1d68'] = {"dfnID": "d65c1d68", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-boolean", "dfnText": "boolean", "refSections": [{"refs": [{"id": "ref-for-name-boolean"}, {"id": "ref-for-name-boolean\u2460"}], "title": "2. HTTP header field definition"}], "external": true};
 window.dfnpanelData['d71d1eda'] = {"dfnID": "d71d1eda", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-dictionaries", "dfnText": "dictionary", "refSections": [{"refs": [{"id": "ref-for-name-dictionaries"}], "title": "2. HTTP header field definition"}], "external": true};
 window.dfnpanelData['2892a577'] = {"dfnID": "2892a577", "url": "https://www.rfc-editor.org/rfc/rfc8941.html#name-inner-lists", "dfnText": "inner list", "refSections": [{"refs": [{"id": "ref-for-name-inner-lists"}, {"id": "ref-for-name-inner-lists\u2460"}], "title": "2. HTTP header field definition"}], "external": true};
@@ -1554,7 +1562,7 @@ window.dfnpanelData['5abf08c8'] = {"dfnID": "5abf08c8", "url": "https://url.spec
 window.dfnpanelData['852ada56'] = {"dfnID": "852ada56", "url": "https://url.spec.whatwg.org/#concept-url-port", "dfnText": "port", "refSections": [{"refs": [{"id": "ref-for-concept-url-port"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['3ab2ec8b'] = {"dfnID": "3ab2ec8b", "url": "https://url.spec.whatwg.org/#concept-url-query", "dfnText": "query", "refSections": [{"refs": [{"id": "ref-for-concept-url-query"}, {"id": "ref-for-concept-url-query\u2460"}, {"id": "ref-for-concept-url-query\u2461"}, {"id": "ref-for-concept-url-query\u2462"}, {"id": "ref-for-concept-url-query\u2463"}, {"id": "ref-for-concept-url-query\u2464"}, {"id": "ref-for-concept-url-query\u2465"}, {"id": "ref-for-concept-url-query\u2466"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['3a711be7'] = {"dfnID": "3a711be7", "url": "https://url.spec.whatwg.org/#concept-url-scheme", "dfnText": "scheme", "refSections": [{"refs": [{"id": "ref-for-concept-url-scheme"}], "title": "5. Comparing"}], "external": true};
-window.dfnpanelData['dcffbccd'] = {"dfnID": "dcffbccd", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-url"}, {"id": "ref-for-concept-url\u2460"}], "title": "5. Comparing"}], "external": true};
+window.dfnpanelData['dcffbccd'] = {"dfnID": "dcffbccd", "url": "https://url.spec.whatwg.org/#concept-url", "dfnText": "url", "refSections": [{"refs": [{"id": "ref-for-concept-url"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['10d9e2a0'] = {"dfnID": "10d9e2a0", "url": "https://url.spec.whatwg.org/#concept-urlencoded-parser", "dfnText": "urlencoded parser", "refSections": [{"refs": [{"id": "ref-for-concept-urlencoded-parser"}], "title": "4. Parsing"}, {"refs": [{"id": "ref-for-concept-urlencoded-parser\u2460"}, {"id": "ref-for-concept-urlencoded-parser\u2461"}, {"id": "ref-for-concept-urlencoded-parser\u2462"}, {"id": "ref-for-concept-urlencoded-parser\u2463"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['218c9455'] = {"dfnID": "218c9455", "url": "https://url.spec.whatwg.org/#concept-url-username", "dfnText": "username", "refSections": [{"refs": [{"id": "ref-for-concept-url-username"}], "title": "5. Comparing"}], "external": true};
 window.dfnpanelData['http-headerdef-no-vary-search'] = {"dfnID": "http-headerdef-no-vary-search", "url": "#http-headerdef-no-vary-search", "dfnText": "No-Vary-Search", "refSections": [{"refs": [{"id": "ref-for-http-headerdef-no-vary-search"}], "title": "4. Parsing"}], "external": false};
