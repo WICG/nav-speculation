@@ -498,5 +498,5 @@ Another alternative would be to introduce a `Script` header, given that we’re 
 [resource-hints]: https://github.com/w3c/resource-hints
 [selector-match]: https://drafts.csswg.org/selectors-4/#match-a-selector-against-an-element
 [selectors]: https://drafts.csswg.org/selectors/
-[urlpattern]: https://github.com/WICG/urlpattern
+[urlpattern]: https://urlpattern.spec.whatwg.org/
 [webdriver]: https://github.com/w3c/webdriver
