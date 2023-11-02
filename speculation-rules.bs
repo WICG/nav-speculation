@@ -168,7 +168,7 @@ A <dfn>document rule URL pattern predicate</dfn> is a struct with the following 
 A <dfn>document rule CSS selector predicate</dfn> is a struct with the following [=struct/items=]:
 * <dfn for="document rule CSS selector predicate">selectors</dfn>, a [=list=] of [=selectors=]
 
-The following [=strings=] are <dfn>valid eagerness strings</dfn>: "`eager`", "`moderate`", "`conservative`".
+The following [=strings=] are <dfn>valid eagerness strings</dfn>: "`immediate`", "`eager`", "`moderate`", "`conservative`".
 
 <h3 id="speculation-rules-script">The <{script}> element</h3>
 
@@ -408,7 +408,7 @@ add the following step
   1. If |input|["`referrer_policy`"] [=map/exists=]:
     1. If |input|["`referrer_policy`"] is not a [=referrer policy=], then return null.
     1. Set |referrerPolicy| to |input|["`referrer_policy`"].
-  1. Let |eagerness| be "`eager`" if |source| is "`list`", and "`conservative`" otherwise.
+  1. Let |eagerness| be "`immediate`" if |source| is "`list`", and "`conservative`" otherwise.
   1. If |input|["`eagerness`"] [=map/exists=]:
     1. If |input|["`eagerness`"] is not one of the [=valid eagerness strings=], then return null.
     1. Set |eagerness| to |input|["`eagerness`"].
@@ -613,12 +613,14 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
          <p class="note">This is just a hint. The [=speculation rule/target navigable name hint=] actually has no normative implications, after being parsed. It is still perfectly fine to [=prerendering traversable/activate=] in place of a different predecessor traversable that was not hinted at.
 
   When selecting among |prefetchCandidates| and |prerenderCandidates|, user agents should consider their [=prefetch candidate/eagerness=], in accordance with the following:
+  :  "`immediate`"
+  :: The author believes this is very likely to be worthwhile, and might also expect it to require significant lead time to complete. User agents should usually enact the candidate as soon as practical, subject only to considerations such as user preferences, device conditions, and resource limits.
   :  "`eager`"
-  :: The author believes this is very likely to be worthwhile. User agents should usually enact the candidate, subject only to considerations such as user preferences, device conditions, and resource limits.
+  :: User agents should enact the candidate on even a slight suggestion that the user may navigate to this URL in the future. For instance, the user might have moved the cursor toward a link or hovered it, even momentarily, or paused scrolling when the link is one of the more prominent ones in the viewport. The author is seeking to capture as many navigations as possible, as early as possible.
   :  "`moderate`"
-  :: User agents should enact the candidate if user behavior suggests the user may navigate to this URL in the near future. For instance, the user might have scrolled a link into the viewport and moved the cursor over or near it.
+  :: User agents should enact the candidate if user behavior suggests the user may navigate to this URL in the near future. For instance, the user might have scrolled a link into the viewport and moved the cursor over it for some time. The author is seeking a balance between "`eager`" and "`conservative`".
   :  "`conservative`"
-  :: User agents should enact the candidate only when the user is very likely to navigate to this URL at any moment. For instance, the user might have begun to interact with a link.
+  :: User agents should enact the candidate only when the user is very likely to navigate to this URL at any moment. For instance, the user might have begun to interact with a link. The author is seeking to capture some of the benefits of speculative loading with a fairly small tradeoff of resources.
 
   <p class="note">A user agent's heuristics for enacting non-eager candidates could incorporate a [=prefetch candidate/No-Vary-Search hint=]. For example, a user hovering over a link whose URL and a candidate's [=prefetch candidate/URL=] are [=equivalent modulo search variance=] given the candidate's [=prefetch candidate/No-Vary-Search hint=] could indicate to the user agent that enacting it would be useful.</p>
 
