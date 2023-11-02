@@ -568,7 +568,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-11-01">1 November 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-11-02">2 November 2023</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -731,7 +731,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="document rule CSS selector predicate" data-dfn-type="dfn" data-noexport id="document-rule-css-selector-predicate-selectors">selectors</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#selector" id="ref-for-selector">selectors</a></p>
    </ul>
-   <p>The following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">strings</a> are <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-eagerness-strings">valid eagerness strings</dfn>: "<code>eager</code>", "<code>moderate</code>", "<code>conservative</code>".</p>
+   <p>The following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">strings</a> are <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-eagerness-strings">valid eagerness strings</dfn>: "<code>immediate</code>", "<code>eager</code>", "<code>moderate</code>", "<code>conservative</code>".</p>
    <h3 class="heading settled" data-level="1.2" id="speculation-rules-script"><span class="secno">1.2. </span><span class="content">The <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script" id="ref-for-script">script</a></code> element</span><a class="self-link" href="#speculation-rules-script"></a></h3>
    <p><em>Note</em>: This section contains modifications to the corresponding section of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>.</p>
    <p>To process speculation rules consistently with the existing script types, we make the following changes:</p>
@@ -1117,7 +1117,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>Set <var>referrerPolicy</var> to <var>input</var>["<code>referrer_policy</code>"].</p>
       </ol>
      <li data-md>
-      <p>Let <var>eagerness</var> be "<code>eager</code>" if <var>source</var> is "<code>list</code>", and "<code>conservative</code>" otherwise.</p>
+      <p>Let <var>eagerness</var> be "<code>immediate</code>" if <var>source</var> is "<code>list</code>", and "<code>conservative</code>" otherwise.</p>
      <li data-md>
       <p>If <var>input</var>["<code>eagerness</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①②">exists</a>:</p>
       <ol>
@@ -1498,15 +1498,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
     <p>When selecting among <var>prefetchCandidates</var> and <var>prerenderCandidates</var>, user agents should consider their <a data-link-type="dfn" href="#prefetch-candidate-eagerness" id="ref-for-prefetch-candidate-eagerness①">eagerness</a>, in accordance with the following:</p>
     <dl>
+     <dt data-md>"<code>immediate</code>"
+     <dd data-md>
+      <p>The author believes this is very likely to be worthwhile, and might also expect it to require significant lead time to complete. User agents should usually enact the candidate as soon as practical, subject only to considerations such as user preferences, device conditions, and resource limits.</p>
      <dt data-md>"<code>eager</code>"
      <dd data-md>
-      <p>The author believes this is very likely to be worthwhile. User agents should usually enact the candidate, subject only to considerations such as user preferences, device conditions, and resource limits.</p>
+      <p>User agents should enact the candidate on even a slight suggestion that the user may navigate to this URL in the future. For instance, the user might have moved the cursor toward a link or hovered it, even momentarily, or paused scrolling when the link is one of the more prominent ones in the viewport. The author is seeking to capture as many navigations as possible, as early as possible.</p>
      <dt data-md>"<code>moderate</code>"
      <dd data-md>
-      <p>User agents should enact the candidate if user behavior suggests the user may navigate to this URL in the near future. For instance, the user might have scrolled a link into the viewport and moved the cursor over or near it.</p>
+      <p>User agents should enact the candidate if user behavior suggests the user may navigate to this URL in the near future. For instance, the user might have scrolled a link into the viewport and moved the cursor over it for some time. The author is seeking a balance between "<code>eager</code>" and "<code>conservative</code>".</p>
      <dt data-md>"<code>conservative</code>"
      <dd data-md>
-      <p>User agents should enact the candidate only when the user is very likely to navigate to this URL at any moment. For instance, the user might have begun to interact with a link.</p>
+      <p>User agents should enact the candidate only when the user is very likely to navigate to this URL at any moment. For instance, the user might have begun to interact with a link. The author is seeking to capture some of the benefits of speculative loading with a fairly small tradeoff of resources.</p>
     </dl>
     <p class="note" role="note">A user agent’s heuristics for enacting non-eager candidates could incorporate a <a data-link-type="dfn" href="#prefetch-candidate-no-vary-search-hint" id="ref-for-prefetch-candidate-no-vary-search-hint③">No-Vary-Search hint</a>. For example, a user hovering over a link whose URL and a candidate’s <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url④">URL</a> are <a data-link-type="dfn" href="no-vary-search.html#equivalent-modulo-search-variance" id="ref-for-equivalent-modulo-search-variance">equivalent modulo search variance</a> given the candidate’s <a data-link-type="dfn" href="#prefetch-candidate-no-vary-search-hint" id="ref-for-prefetch-candidate-no-vary-search-hint④">No-Vary-Search hint</a> could indicate to the user agent that enacting it would be useful.</p>
     <p>Notwithstanding the above, user agents should prioritize user preferences (express and implied, such as a low-data-usage mode) over eagerness expressed by the author.</p>
