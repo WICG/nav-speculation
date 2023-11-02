@@ -865,6 +865,24 @@ Add {{[DelayWhilePrerendering]}} to {{SpeechRecognition/start()}}, {{SpeechRecog
 
 Add {{[DelayWhilePrerendering]}} to {{LockManager/request(name, callback)}}, {{LockManager/request(name, options, callback)}}, and {{LockManager/query()}}.
 
+<h4 id="custom-scheme-handlers-patch">Custom Scheme Handlers</h4>
+
+<div algorithm="dom-navigator-registerProtocolHandler patch">
+  Modify the {{NavigatorContentUtils/registerProtocolHandler(scheme, url)|registerProtocolHandler(scheme, url)}} method steps by overwriting the first few steps, before it goes [=in parallel=], as follows:
+
+  1. Let (|normalizedScheme|, |normalizedURLString|) be the result of running <a spec=HTML>normalize protocol handler parameters</a> with scheme, url, and [=this=]'s [=relevant settings object=].
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+</div>
+
+<div algorithm="dom-navigator-unregisterprotocolhandler patch">
+  Modify the {{NavigatorContentUtils/unregisterProtocolHandler(scheme, url)|unregisterProtocolHandler(scheme, url)}} method steps by overwriting the first few steps, before it goes [=in parallel=], as follows:
+
+  1. Let (|normalizedScheme|, |normalizedURLString|) be the result of running <a spec=HTML>normalize protocol handler parameters</a> with scheme, url, and [=this=]'s [=relevant settings object=].
+
+  1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
+</div>
+
 <h3 id="implicitly-restricted">Implicitly restricted APIs</h3>
 
 Some APIs do not need modifications because they will automatically fail or no-op without a property that a [=prerendering navigable=], its [=navigable/active window=], or its [=navigable/active document=] will never have. These properties include:
