@@ -291,8 +291,8 @@ The `default-src` directive can be used to restrict which URLs can be prefetched
 ### Eagerness
 
 Developers may provide hints about how eagerly the browser should preload links in order to balance the performance advantage against resource overhead.
-This field accepts one of `"conservative"`, `"moderate"`  or `"eager"` strings as the value, and it is applicable to both `"prefetch"` and `"prerender"` actions and both `"list"` or `"document"` sources.
-If not specified, list rules default to `"eager"` and document rules default to `"conservative"`.
+This field accepts one of the strings `"conservative"`, `"moderate"`, `"eager"`, and `"immediate"` as the value, and it is applicable to both `"prefetch"` and `"prerender"` actions and both `"list"` or `"document"` sources.
+If not specified, list rules default to `"immediate"` and document rules default to `"conservative"`.
 The user agent takes this into consideration along with its own heuristics, so it may select a link that the author has indicated as less eager than another, if the less eager candidate is considered a better choice.
 
 ```json
