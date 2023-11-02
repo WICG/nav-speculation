@@ -870,7 +870,7 @@ Add {{[DelayWhilePrerendering]}} to {{LockManager/request(name, callback)}}, {{L
 <div algorithm="dom-navigator-registerProtocolHandler patch">
   Modify the {{NavigatorContentUtils/registerProtocolHandler(scheme, url)|registerProtocolHandler(scheme, url)}} method steps by overwriting the first few steps, before it goes [=in parallel=], as follows:
 
-  1. Let (|normalizedScheme|, |normalizedURLString|) be the result of running <a spec=HTML>normalize protocol handler parameters</a> with scheme, url, and [=this=]'s [=relevant settings object=].
+  1. Let (<var ignore>normalizedScheme</var>, <var ignore>normalizedURLString</var>) be the result of running <a spec=HTML>normalize protocol handler parameters</a> with scheme, url, and [=this=]'s [=relevant settings object=].
 
   1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
 </div>
@@ -878,7 +878,7 @@ Add {{[DelayWhilePrerendering]}} to {{LockManager/request(name, callback)}}, {{L
 <div algorithm="dom-navigator-unregisterprotocolhandler patch">
   Modify the {{NavigatorContentUtils/unregisterProtocolHandler(scheme, url)|unregisterProtocolHandler(scheme, url)}} method steps by overwriting the first few steps, before it goes [=in parallel=], as follows:
 
-  1. Let (|normalizedScheme|, |normalizedURLString|) be the result of running <a spec=HTML>normalize protocol handler parameters</a> with scheme, url, and [=this=]'s [=relevant settings object=].
+  1. Let (<var ignore>normalizedScheme</var>, <var ignore>normalizedURLString</var>) be the result of running <a spec=HTML>normalize protocol handler parameters</a> with scheme, url, and [=this=]'s [=relevant settings object=].
 
   1. If [=this=]'s [=relevant global object=]'s [=Window/navigable=] is a [=prerendering navigable=], then append the following steps to [=this=]'s [=platform object/post-prerendering activation steps list=] and return.
 </div>
