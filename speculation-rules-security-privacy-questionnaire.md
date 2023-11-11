@@ -104,3 +104,11 @@ Yes:
 ### Do features in your specification enable origins to downgrade default security protections?
 
 No.
+
+### What happens when a document that uses your feature is kept alive in BFCache (instead of getting destroyed) after navigation, and potentially gets reused on future navigations back to the document?
+
+The prefetches and prerenders already triggered may remain in memory and be used after the document is restored from bfcache, if not expired. Additional speculation can occur after that point.
+
+### What happens when a document that uses your feature gets disconnected?
+
+User agents should not initiate preloading in a document which is not fully active.
