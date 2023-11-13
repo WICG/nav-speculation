@@ -111,4 +111,4 @@ The prefetches and prerenders already triggered may remain in memory and be used
 
 ### What happens when a document that uses your feature gets disconnected?
 
-User agents should not initiate preloading in a document which is not fully active.
+User agents [must not initiate preloading in a document which is not fully active](https://wicg.github.io/nav-speculation/speculation-rules.html#consider-speculation).
