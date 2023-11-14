@@ -240,8 +240,8 @@ An example of using these would be the following, which marks up as safe-to-prer
   "prerender": [
     {"source": "document",
      "where": {"and": [
-       {"href_matches": "/*\\?*"},
-       {"not": {"href_matches": "/logout\\?*"}},
+       {"href_matches": "/*"},
+       {"not": {"href_matches": "/logout"}},
        {"not": {"selector_matches": ".no-prerender"}}
      ]}}
   ]
@@ -274,8 +274,8 @@ For document rules, `"relative_to"` can be paired directly with `"href_matches"`
 {
   "source": "document",
   "where": {"or": [
-    {"href_matches": "/home\\?*", "relative_to": "document"},
-    {"href_matches": "/about\\?*"}
+    {"href_matches": "/home", "relative_to": "document"},
+    {"href_matches": "/about"}
   ]}
 }
 ```
@@ -309,8 +309,8 @@ The user agent takes this into consideration along with its own heuristics, so i
   "prerender": [
     {"source": "document",
      "where": {"and": [
-       {"href_matches": "/*\\?*"},
-       {"not": {"href_matches": "/logout\\?*"}},
+       {"href_matches": "/*"},
+       {"not": {"href_matches": "/logout"}},
        {"not": {"selector_matches": ".no-prerender"}}
      ]},
      "eagerness": "conservative"
