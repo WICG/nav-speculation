@@ -59,9 +59,9 @@ For example, you could permit specific same-origin URLs:
 {"prefetch": [
    {"source": "document",
     "where": {"or": [
-       {"href_matches": "/articles/*\\?*",
+       {"href_matches": "/articles/*",
         "relative_to": "document"},
-       {"href_matches": "/products/*\\?*",
+       {"href_matches": "/products/*",
         "relative_to": "document"}
     ]}}
 ]}
@@ -73,9 +73,9 @@ Or you could expressly block specific problematic URLs:
 {"prefetch": [
    {"source": "document",
     "where": {"and": [
-       {"href_matches": "/*\\?*",
+       {"href_matches": "/*",
         "relative_to": "document"},
-       {"not": {"href_matches": "*://*/logout?*"}}
+       {"not": {"href_matches": "*://*/logout"}}
     ]}}
 ]}
 ```
@@ -140,7 +140,7 @@ Fields of the performance timing entry which occurred before navigation start ar
 
 There are a few potential pitfalls to be aware of:
 
-* URL patterns which don't specify the query string only match links with no query string. Adding `?*` (with the required escaping for URL pattern and JSON syntax) or using `search: '*'` for the long form syntax will allow you to match links with any query parameters. URL patterns are constructed with a base URL (and this affects default behavior in some cases).
+* Before Chrome 121, URL patterns which don't specify the query string or fragment only match links with no query string or fragment. Adding `?*#*` (with the required escaping for URL pattern and JSON syntax) or using `search: '*', hash: '*'` for the long form syntax will allow you to match links with any query parameters or fragments. This is due to how URL patterns interact with base URLs, which [changed recently](https://github.com/whatwg/urlpattern/commit/ed205a47785a5483106b5bb59bd3f4834785f923).
 * If you use a restrictive [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP), you may need to adjust your CSP. For inline speculation rules, you'll need to permit inline scripts generally, use nonces or hashes, or use the experimental `'inline-speculation-rules'` source. For HTTP-fetched rules, the origin your rules is fetched from will need to be included in the allow list.
 * If you specify a non-default [referrer policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy), it will be respected. If it is not [sufficiently strict](https://wicg.github.io/nav-speculation/prefetch.html#list-of-sufficiently-strict-speculative-navigation-referrer-policies), then the prefetch will not occur. You can override the referrer policy which applies to your prefetches using `"referrer_policy"` in your speculation rules, or using the `referrerpolicy` attribute on individual links.
 * If you use HTTP-fetched speculation rules, and especially if fetched cross-origin, note that URLs and URL patterns in your speculation rules are resolved relative to the URL of your speculation rules (after redirects). If you want to specify URLs relative to the document instead, you can specify `"relative_to": "document"` to adjust this behavior. This may be particularly useful if you wish to select some or all same-origin links.
