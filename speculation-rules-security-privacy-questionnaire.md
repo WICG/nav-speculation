@@ -1,6 +1,6 @@
 # Security & Privacy Questionnaire (Speculation Rules)
 
-Covers the [speculation rules explainer](triggers.md). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
+Covers the [speculation rules explainer](triggers.md) and [spec](https://wicg.github.io/nav-speculation/speculation-rules.html). Based on the [W3C TAG Self-Review Questionnaire: Security and Privacy](https://w3ctag.github.io/security-questionnaire/).
 
 ### What information might this feature expose to Web sites or other parties, and for what purposes is that exposure necessary?
 
@@ -96,10 +96,19 @@ Browsers could choose to behave more conservatively, but doing so may make it po
 
 ### Does this specification have both "Security Considerations" and "Privacy Considerations" sections?
 
-Not as yet, though we recognize that it cannot be considered complete without one.
+Yes:
 
-We do discuss security and privacy considerations thoroughly in the relevant explainers, and will be porting that into the overall "prerendering revamped" specification as that specification gets more concrete.
+* [Security Considerations](https://wicg.github.io/nav-speculation/speculation-rules.html#security-considerations)
+* [Privacy Considerations](https://wicg.github.io/nav-speculation/speculation-rules.html#privacy-considerations)
 
 ### Do features in your specification enable origins to downgrade default security protections?
 
 No.
+
+### What happens when a document that uses your feature is kept alive in BFCache (instead of getting destroyed) after navigation, and potentially gets reused on future navigations back to the document?
+
+The prefetches and prerenders already triggered may remain in memory and be used after the document is restored from bfcache, if not expired. Additional speculation can occur after that point.
+
+### What happens when a document that uses your feature gets disconnected?
+
+User agents [must not initiate preloading in a document which is not fully active](https://wicg.github.io/nav-speculation/speculation-rules.html#consider-speculation).
