@@ -770,6 +770,12 @@ Otherwise, requests are always issued without using any previously existing [=cr
 
 Because links in a document could be selected using a document rule, if the document may contain user-generated markup then authors should construct their speculation rules to exclude such links that may have harmful side effects, e.g., by using a [=document rule CSS selector predicate=] to exclude links in regions with user-generated links or by using a [=document rule URL pattern predicate=] to allow only URL patterns known to be safe to fetch without side effects.
 
+The [:Speculation-Rules:] header can also cause requests to be issued. These requests are unlikely to be useful in mounting a CSRF attack, because:
+* These requests are sent with [=request/credentials mode=] "`same-origin`" (the default), so no stored credentials are included in the request, and such credentials are likely to be required to cause unwanted side effects.
+* These requests are unlikely to be useful in inferring the contents of a non-speculation rules resource, because responses with the incorrect MIME type are not honored.
+* These requests are unlikely to be useful in inferring the contents of a speculation rules resource, because they are sent with [=request/mode=] "`cors`", and so cross-origin resources must explicitly opt in using [:Access-Control-Allow-Origin:].
+* These requests are distinguishable from requests by other causes in the browser because a separate value, "`speculationrules`", is provided in the [:Sec-Fetch-Dest:] request header.
+
 <h3 id="security-xss">Cross-site scripting</h3>
 
 This specification causes activity in response to content found in the document, so it is worth considering the options open to an attacker able to inject unescaped HTML.
@@ -780,6 +786,8 @@ The same mitigations available to other features also apply here. In particular,
 
 The possibility of leaking link URLs via this mechanism is additionally mitigated by the fact that prefetch and prerender to plaintext HTTP (other than to localhost) is not permitted, and so such an on-path attacker could not directly observe preloading request URLs, but would only have access to metadata and traffic analysis. This does not, however, replace standard XSS protections.
 
+It's generally not expected that user-generated content will be added as arbitrary response headers; server operators are already going to encounter significant trouble if this is possible. It is therefore unlikely that the [:Speculation-Rules:] header meaningfully expands the XSS attack surface. Nonetheless, the [[CSP]] `script-src` directive applies in this case as well.
+
 <h3 id="type-confusion">Type confusion</h3>
 
 In the case of speculation rules in an inline `<script>`, an application which erroneously parsed speculation rules as a JavaScript script (though user agents are instructed not to execute scripts who "`type`" is unrecognized) would either interpret it as the empty block `{}` or produce a syntax error, since the U+003A COLON (`:`) after the first key is invalid JavaScript. In neither case would such an application execute harmful behavior.
@@ -788,7 +796,7 @@ Since the parsing behavior of the `<script>` element has long been part of HTML,
 
 Authors should, however, still escape any potentially attacker-controlled content inserted into speculation rules. In particular, it may be necessary to escape JSON syntax as well as, if the speculation rules are in an inline `<script>` tag, the closing `</script>` tag. [[CSP]] is a useful additional mitigation for vulnerabilities of this type.
 
-<div class="issue">Expand this section once externally loaded (via "`src`") speculation rules are specified.</div>
+Similarly, processing non-speculation rules resources as speculation rules is unlikely because this specification requires implementations to validate that its MIME type has an [=MIME type/essence=] of "`application/speculationrules+json"`.
 
 <h3 id="security-ip-anonymization">IP anonymization</h3>
 
