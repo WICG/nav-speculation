@@ -313,7 +313,7 @@ add the following step
   1. [=Assert=]: |pendingResource|'s [=pending external speculation rule resource/controller=] is null.
   1. Let |settingsObject| be |document|'s [=relevant settings object=].
   1. Let |requestURL| be |pendingResource|'s [=pending external speculation rule resource/URL=].
-  1. Let |request| be a new [=request=] whose [=request/URL=] is |requestURL|, [=request/client=] is |settingsObject|, and [=request/mode=] is "`cors`".
+  1. Let |request| be a new [=request=] whose [=request/URL=] is |requestURL|, [=request/client=] is |settingsObject|, [=request/mode=] is "`cors`", and [=request/destination=] is "`speculationrules`".
   1. Let |controller| be the result of [=fetching=] given |request| with <i>[=fetch/processResponseConsumeBody=]</i> set to the following steps given [=response=] |response| and null, failure, or a [=byte sequence=] |body|:
     1. [=list/Remove=] |pendingResource| from |pendingResources|.
     1. If any of the following conditions are true, abort these steps:
@@ -758,6 +758,19 @@ The algorithm needs patches to handle the "`script speculationrules`" type at th
   5.  If <a>`type`</a> is "`script`",<ins> "`script speculationrules`",</ins> "`style`",
       or |unsafe-hashes flag| is `true`:
 
+<h3 id="content-security-policy-patches-effective-directive">Get the effective directive for request</h3>
+
+The switch needs one additional case. At present, requests can only be issued in the case of the [:Speculation-Rules:] header, so `script-src-elem` is too specific and only `script-src` (or its fallback, `default-src`) applies.
+
+:  "`speculationrules`"
+:: 1. Return `script-src`.
+
+<h2 id="fetch">Fetch</h2>
+
+<h3 id="fetch-destination">Destination</h3>
+
+The string "`speculationrules`" is added to the list of valid [=request/destinations=] and also to the list of enumerators in {{RequestDestination}}.
+
 <h2 id="security-considerations">Security considerations</h2>
 
 <h3 id="security-csrf">Cross-site request forgery</h3>
@@ -805,6 +818,12 @@ This specification allows authors to request prefetch traffic using IP anonymiza
 To the extent IP anonymization is implemented using a proxy service, it is advisable to minimize the information available to the service operator and other entities on the network path. This likely involves, at a minimum, the use of [[TLS]] for the connection.
 
 Site operators should be aware that, similar to virtual private network (VPN) technology, the client IP address seen by the HTTP server may not exactly correspond to the user's actual network provider or location, and a traffic for multiple distinct subscribers may originate from a single client IP address. This may affect site operators' security and abuse prevention measures. IP anonymization measures may make an effort to use an egress IP address which has a similar geolocation or is located in the same jurisdiction as the user, but any such behavior is particular to the user agent and not guaranteed by this specification.
+
+<h3 id="mixed-content">Mixed content</h3>
+
+Speculation rules are either inline (so are delivered by the same origin as the document) or fetched via the [:Speculation-Rules:] header (in which case they are [=blockable mixed content|blockable=] as part of [=should fetching request be blocked as mixed content?=]).
+
+The speculative actions initiated by this specification may also have similar protections. For example, prefetching of URLs which are not [=potentially trustworthy URL|potentially trustworthy=] is not permitted at all, even from environments which are not themselves [=secure contexts=].
 
 <h2 id="privacy-considerations">Privacy considerations</h2>
 
