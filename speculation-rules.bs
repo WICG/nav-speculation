@@ -371,10 +371,10 @@ add the following step
   To <dfn>parse a speculation rule</dfn> given a [=map=] |input|, a [=document=] |document|, and a [=URL=] |baseURL|, perform the following steps. They return a [=speculation rule=] or null.
 
   1. If |input| has any [=map/key=] other than "`source`", "`urls`", "`where`", "`requires`", "`target_hint`","`referrer_policy`", "`relative_to`", "`eagerness`", and "`expects_no_vary_search`" then return null.
+
+      <p class="note">In a previous version of this specification, it was necessary to specify the type of source of the URLs. This is now automatically inferred from other keys, and the "`source`" key is ignored.</p>
   1. Let |source| be null.
-  1. If |input|["`source`"] exists, then:
-    1. Set |source| to |input|["`source`"].
-  1. Otherwise, if |input|["`urls`"] [=map/exists=] and |input|["`where`"] does not [=map/exist=], then:
+  1. If |input|["`urls`"] [=map/exists=] and |input|["`where`"] does not [=map/exist=], then:
     1. Set |source| to "`list`".
   1. Otherwise, if |input|["`where`"] [=map/exists=] and |input|["`urls`"] does not [=map/exist=], then:
     1. Set |source| to "`document`".
