@@ -568,7 +568,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2023-12-06">6 December 2023</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-01-11">11 January 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -581,7 +581,7 @@ var.selected6 { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
     </dl>
    </div>
    <div data-fill-with="warning"></div>
-   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2023 the Contributors to the Speculation Rules Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
+   <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2024 the Contributors to the Speculation Rules Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
 A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available. </p>
    <hr title="Separator for header">
   </div>
@@ -1039,9 +1039,27 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key">key</a> other than "<code>source</code>", "<code>urls</code>", "<code>where</code>", "<code>requires</code>", "<code>target_hint</code>","<code>referrer_policy</code>", "<code>relative_to</code>", "<code>eagerness</code>", and "<code>expects_no_vary_search</code>" then return null.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>source</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exist</a> or is neither the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑥">string</a> "<code>list</code>" nor the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑦">string</a> "<code>document</code>", then return null.</p>
+      <p>Let <var>source</var> be null.</p>
      <li data-md>
-      <p>Let <var>source</var> be <var>input</var>["<code>source</code>"].</p>
+      <p>If <var>input</var>["<code>source</code>"] exists, then:</p>
+      <ol>
+       <li data-md>
+        <p>Set <var>source</var> to <var>input</var>["<code>source</code>"].</p>
+      </ol>
+     <li data-md>
+      <p>Otherwise, if <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exists</a> and <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exist</a>, then:</p>
+      <ol>
+       <li data-md>
+        <p>Set <var>source</var> to "<code>list</code>".</p>
+      </ol>
+     <li data-md>
+      <p>Otherwise, if <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exists</a> and <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exist</a>, then:</p>
+      <ol>
+       <li data-md>
+        <p>Set <var>source</var> to "<code>document</code>".</p>
+      </ol>
+     <li data-md>
+      <p>If <var>source</var> is neither the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑥">string</a> "<code>list</code>" nor the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑦">string</a> "<code>document</code>", then return null.</p>
      <li data-md>
       <p>Let <var>urls</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑨">list</a>.</p>
      <li data-md>
@@ -1050,11 +1068,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>source</var> is "<code>list</code>":</p>
       <ol>
        <li data-md>
-        <p>If <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exists</a>, then return null.</p>
+        <p>If <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exist</a>, is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>, or has any element which is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑧">string</a>, then return null.</p>
+        <p>If <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exist</a>, is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>, or has any element which is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑧">string</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a>:</p>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a>:</p>
         <ol>
          <li data-md>
           <p>Let <var>relativeTo</var> be <var>input</var>["<code>relative_to</code>"].</p>
@@ -1080,11 +1098,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>source</var> is "<code>document</code>":</p>
       <ol>
        <li data-md>
-        <p>If <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a>, then return null.</p>
+        <p>If <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exists</a>, then return null.</p>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">exists</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exist</a>, then set <var>predicate</var> to a <a data-link-type="dfn" href="#document-rule-conjunction" id="ref-for-document-rule-conjunction①">document rule conjunction</a> whose <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses">clauses</a> is an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a>.</p>
+        <p>If <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①①">exist</a>, then set <var>predicate</var> to a <a data-link-type="dfn" href="#document-rule-conjunction" id="ref-for-document-rule-conjunction①">document rule conjunction</a> whose <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses">clauses</a> is an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a>.</p>
         <p class="note" role="note">Such a predicate will match all links.</p>
        <li data-md>
         <p>Otherwise, set <var>predicate</var> to the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate">parsing a document rule predicate</a> given <var>input</var>["<code>where</code>"], <var>document</var> and <var>baseURL</var>.</p>
@@ -1094,7 +1112,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>requirements</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set②">ordered set</a>.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>, then return null.</p>
+      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①②">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>, then return null.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑤">For each</a> <var>requirement</var> of <var>input</var>["<code>requires</code>"]:</p>
       <ol>
@@ -1106,7 +1124,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>targetHint</var> be null.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>target_hint</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">exists</a>:</p>
+      <p>If <var>input</var>["<code>target_hint</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①③">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>target_hint</code>"] is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword" id="ref-for-valid-navigable-target-name-or-keyword">valid navigable target name or keyword</a>, then return null.</p>
@@ -1116,7 +1134,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>referrerPolicy</var> be the empty string.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>referrer_policy</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①①">exists</a>:</p>
+      <p>If <var>input</var>["<code>referrer_policy</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①④">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>referrer_policy</code>"] is not a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a>, then return null.</p>
@@ -1126,7 +1144,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>eagerness</var> be "<code>immediate</code>" if <var>source</var> is "<code>list</code>", and "<code>conservative</code>" otherwise.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>eagerness</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①②">exists</a>:</p>
+      <p>If <var>input</var>["<code>eagerness</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑤">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>eagerness</code>"] is not one of the <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings①">valid eagerness strings</a>, then return null.</p>
@@ -1136,7 +1154,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>noVarySearchHint</var> be the <a data-link-type="dfn" href="no-vary-search.html#default-url-search-variance" id="ref-for-default-url-search-variance">default URL search variance</a>.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>expects_no_vary_search</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①③">exists</a>:</p>
+      <p>If <var>input</var>["<code>expects_no_vary_search</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑥">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>expects_no_vary_search</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⓪">string</a>, then return null.</p>
@@ -1176,7 +1194,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>If <var>input</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">map</a>, then return null.</p>
      <li data-md>
-      <p>If <var>input</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①④">contain</a> exactly one of "<code>and</code>", "<code>or</code>", "<code>not</code>", "<code>href_matches</code>" and "<code>selector_matches</code>", then return null. Otherwise, let <var>predicateType</var> be that key.</p>
+      <p>If <var>input</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑦">contain</a> exactly one of "<code>and</code>", "<code>or</code>", "<code>not</code>", "<code>href_matches</code>" and "<code>selector_matches</code>", then return null. Otherwise, let <var>predicateType</var> be that key.</p>
       <p class="note" role="note">This makes sure it is unambiguous what type of predicate is being used.</p>
      <li data-md>
       <p>If <var>predicateType</var> is "<code>and</code>" or "<code>or</code>", then:</p>
@@ -1225,7 +1243,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key③">key</a> other than "<code>href_matches</code>" and "<code>relative_to</code>", then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑤">exists</a>, then:</p>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑧">exists</a>, then:</p>
         <ol>
          <li data-md>
           <p>Let <var>relativeTo</var> be <var>input</var>["<code>relative_to</code>"].</p>
@@ -2569,9 +2587,9 @@ window.dfnpanelData['7f9469b5'] = {"dfnID": "7f9469b5", "url": "https://infra.sp
 window.dfnpanelData['77b4c09a'] = {"dfnID": "77b4c09a", "url": "https://infra.spec.whatwg.org/#assert", "dfnText": "assert", "refSections": [{"refs": [{"id": "ref-for-assert"}], "title": "1.2. The script element"}, {"refs": [{"id": "ref-for-assert\u2460"}, {"id": "ref-for-assert\u2461"}, {"id": "ref-for-assert\u2462"}], "title": "1.5. External speculation rule sets"}, {"refs": [{"id": "ref-for-assert\u2463"}], "title": "1.6. Parsing"}, {"refs": [{"id": "ref-for-assert\u2464"}], "title": "1.7. Processing model"}, {"refs": [{"id": "ref-for-assert\u2465"}], "title": "1.8. Document rule predicate matching"}], "external": true};
 window.dfnpanelData['3de9e659'] = {"dfnID": "3de9e659", "url": "https://infra.spec.whatwg.org/#byte-sequence", "dfnText": "byte sequence", "refSections": [{"refs": [{"id": "ref-for-byte-sequence"}], "title": "1.5. External speculation rule sets"}], "external": true};
 window.dfnpanelData['ae8def21'] = {"dfnID": "ae8def21", "url": "https://infra.spec.whatwg.org/#list-contain", "dfnText": "contain (for list)", "refSections": [{"refs": [{"id": "ref-for-list-contain"}, {"id": "ref-for-list-contain\u2460"}], "title": "1.5. External speculation rule sets"}, {"refs": [{"id": "ref-for-list-contain\u2461"}], "title": "1.7. Processing model"}], "external": true};
-window.dfnpanelData['a326add7'] = {"dfnID": "a326add7", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "contain (for map)", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}, {"id": "ref-for-map-exists\u2462"}, {"id": "ref-for-map-exists\u2463"}, {"id": "ref-for-map-exists\u2464"}, {"id": "ref-for-map-exists\u2465"}, {"id": "ref-for-map-exists\u2466"}, {"id": "ref-for-map-exists\u2467"}, {"id": "ref-for-map-exists\u2468"}, {"id": "ref-for-map-exists\u2460\u24ea"}, {"id": "ref-for-map-exists\u2460\u2460"}, {"id": "ref-for-map-exists\u2460\u2461"}, {"id": "ref-for-map-exists\u2460\u2462"}, {"id": "ref-for-map-exists\u2460\u2463"}, {"id": "ref-for-map-exists\u2460\u2464"}], "title": "1.6. Parsing"}], "external": true};
+window.dfnpanelData['a326add7'] = {"dfnID": "a326add7", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "contain (for map)", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}, {"id": "ref-for-map-exists\u2462"}, {"id": "ref-for-map-exists\u2463"}, {"id": "ref-for-map-exists\u2464"}, {"id": "ref-for-map-exists\u2465"}, {"id": "ref-for-map-exists\u2466"}, {"id": "ref-for-map-exists\u2467"}, {"id": "ref-for-map-exists\u2468"}, {"id": "ref-for-map-exists\u2460\u24ea"}, {"id": "ref-for-map-exists\u2460\u2460"}, {"id": "ref-for-map-exists\u2460\u2461"}, {"id": "ref-for-map-exists\u2460\u2462"}, {"id": "ref-for-map-exists\u2460\u2463"}, {"id": "ref-for-map-exists\u2460\u2464"}, {"id": "ref-for-map-exists\u2460\u2465"}, {"id": "ref-for-map-exists\u2460\u2466"}, {"id": "ref-for-map-exists\u2460\u2467"}], "title": "1.6. Parsing"}], "external": true};
 window.dfnpanelData['f937b7b6'] = {"dfnID": "f937b7b6", "url": "https://infra.spec.whatwg.org/#iteration-continue", "dfnText": "continue", "refSections": [{"refs": [{"id": "ref-for-iteration-continue"}, {"id": "ref-for-iteration-continue\u2460"}], "title": "1.4. The `Speculation-Rules` header"}, {"refs": [{"id": "ref-for-iteration-continue\u2461"}, {"id": "ref-for-iteration-continue\u2462"}], "title": "1.5. External speculation rule sets"}, {"refs": [{"id": "ref-for-iteration-continue\u2463"}, {"id": "ref-for-iteration-continue\u2464"}, {"id": "ref-for-iteration-continue\u2465"}, {"id": "ref-for-iteration-continue\u2466"}, {"id": "ref-for-iteration-continue\u2467"}, {"id": "ref-for-iteration-continue\u2468"}, {"id": "ref-for-iteration-continue\u2460\u24ea"}], "title": "1.6. Parsing"}, {"refs": [{"id": "ref-for-iteration-continue\u2460\u2460"}, {"id": "ref-for-iteration-continue\u2460\u2461"}, {"id": "ref-for-iteration-continue\u2460\u2462"}, {"id": "ref-for-iteration-continue\u2460\u2463"}], "title": "1.7. Processing model"}], "external": true};
-window.dfnpanelData['1243a891'] = {"dfnID": "1243a891", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "exist", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}, {"id": "ref-for-map-exists\u2462"}, {"id": "ref-for-map-exists\u2463"}, {"id": "ref-for-map-exists\u2464"}, {"id": "ref-for-map-exists\u2465"}, {"id": "ref-for-map-exists\u2466"}, {"id": "ref-for-map-exists\u2467"}, {"id": "ref-for-map-exists\u2468"}, {"id": "ref-for-map-exists\u2460\u24ea"}, {"id": "ref-for-map-exists\u2460\u2460"}, {"id": "ref-for-map-exists\u2460\u2461"}, {"id": "ref-for-map-exists\u2460\u2462"}, {"id": "ref-for-map-exists\u2460\u2463"}, {"id": "ref-for-map-exists\u2460\u2464"}], "title": "1.6. Parsing"}], "external": true};
+window.dfnpanelData['1243a891'] = {"dfnID": "1243a891", "url": "https://infra.spec.whatwg.org/#map-exists", "dfnText": "exist", "refSections": [{"refs": [{"id": "ref-for-map-exists"}, {"id": "ref-for-map-exists\u2460"}, {"id": "ref-for-map-exists\u2461"}, {"id": "ref-for-map-exists\u2462"}, {"id": "ref-for-map-exists\u2463"}, {"id": "ref-for-map-exists\u2464"}, {"id": "ref-for-map-exists\u2465"}, {"id": "ref-for-map-exists\u2466"}, {"id": "ref-for-map-exists\u2467"}, {"id": "ref-for-map-exists\u2468"}, {"id": "ref-for-map-exists\u2460\u24ea"}, {"id": "ref-for-map-exists\u2460\u2460"}, {"id": "ref-for-map-exists\u2460\u2461"}, {"id": "ref-for-map-exists\u2460\u2462"}, {"id": "ref-for-map-exists\u2460\u2463"}, {"id": "ref-for-map-exists\u2460\u2464"}, {"id": "ref-for-map-exists\u2460\u2465"}, {"id": "ref-for-map-exists\u2460\u2466"}, {"id": "ref-for-map-exists\u2460\u2467"}], "title": "1.6. Parsing"}], "external": true};
 window.dfnpanelData['16d07e10'] = {"dfnID": "16d07e10", "url": "https://infra.spec.whatwg.org/#list-iterate", "dfnText": "for each (for list)", "refSections": [{"refs": [{"id": "ref-for-list-iterate"}], "title": "1.4. The `Speculation-Rules` header"}, {"refs": [{"id": "ref-for-list-iterate\u2460"}], "title": "1.5. External speculation rule sets"}, {"refs": [{"id": "ref-for-list-iterate\u2461"}, {"id": "ref-for-list-iterate\u2462"}, {"id": "ref-for-list-iterate\u2463"}, {"id": "ref-for-list-iterate\u2464"}, {"id": "ref-for-list-iterate\u2465"}, {"id": "ref-for-list-iterate\u2466"}, {"id": "ref-for-list-iterate\u2467"}], "title": "1.6. Parsing"}, {"refs": [{"id": "ref-for-list-iterate\u2468"}, {"id": "ref-for-list-iterate\u2460\u24ea"}, {"id": "ref-for-list-iterate\u2460\u2460"}, {"id": "ref-for-list-iterate\u2460\u2461"}, {"id": "ref-for-list-iterate\u2460\u2462"}, {"id": "ref-for-list-iterate\u2460\u2463"}, {"id": "ref-for-list-iterate\u2460\u2464"}, {"id": "ref-for-list-iterate\u2460\u2465"}, {"id": "ref-for-list-iterate\u2460\u2466"}], "title": "1.7. Processing model"}, {"refs": [{"id": "ref-for-list-iterate\u2460\u2467"}, {"id": "ref-for-list-iterate\u2460\u2468"}, {"id": "ref-for-list-iterate\u2461\u24ea"}, {"id": "ref-for-list-iterate\u2461\u2460"}], "title": "1.8. Document rule predicate matching"}, {"refs": [{"id": "ref-for-list-iterate\u2461\u2461"}], "title": "2.5. Does a source list allow all inline behavior for type?"}, {"refs": [{"id": "ref-for-list-iterate\u2461\u2462"}, {"id": "ref-for-list-iterate\u2461\u2463"}], "title": "2.6. Does element match source list for type and source?"}], "external": true};
 window.dfnpanelData['45209803'] = {"dfnID": "45209803", "url": "https://infra.spec.whatwg.org/#map-iterate", "dfnText": "for each (for map)", "refSections": [{"refs": [{"id": "ref-for-map-iterate"}], "title": "1.6. Parsing"}], "external": true};
 window.dfnpanelData['7a87d819'] = {"dfnID": "7a87d819", "url": "https://infra.spec.whatwg.org/#string-is", "dfnText": "is", "refSections": [{"refs": [{"id": "ref-for-string-is"}], "title": "2.6. Does element match source list for type and source?"}], "external": true};
