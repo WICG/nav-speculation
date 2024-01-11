@@ -88,12 +88,10 @@ The following example illustrates the basic idea:
 <script type="speculationrules">
 {
   "prerender": [
-    {"source": "list",
-     "urls": ["/home", "/about"]}
+    {"urls": ["/home", "/about"]}
   ],
   "prefetch": [
-    {"source": "list",
-     "urls": ["https://en.wikipedia.org/wiki/Hamster_racing"],
+    {"urls": ["https://en.wikipedia.org/wiki/Hamster_racing"],
      "requires": ["anonymous-client-ip-when-cross-origin"]}
   ]
 }
@@ -115,11 +113,13 @@ Since these are rules for optional behavior (the UA is always free not to specul
 
 The rules are divided into a number of simple pieces that build on one another, and could be shipped largely independently, due to the conservative parsing strategy.
 
+It was previously necessary for `"source"` to be specified explicitly for each rule; it is now possible to infer it in most cases. Some browser versions may not yet support this inference.
+
 ### List rules
 
-Currently, the only type of rule specified is a _list_ rule, denoted by `"source": "list"`. A list rule has an express list of the _URLs_ to which the rule applies. The list can contain any URLs, even ones for which no link or other reference to the URL exists in the document. This is especially useful in cases where the expected navigation corresponds to a link that will be added dynamically, or to an anticipated script-initiated navigation.
+A _list_ rule is denoted by `"source": "list"`, or implicitly by the presence of a `"urls"` key. A list rule has an express list of the _URLs_ to which the rule applies. The list can contain any URLs, even ones for which no link or other reference to the URL exists in the document. This is especially useful in cases where the expected navigation corresponds to a link that will be added dynamically, or to an anticipated script-initiated navigation.
 
-These URLs will be parsed relative to the document base URL (if inline in a document) or relative to the external resource URL (if externally fetched).
+These URLs are be parsed relative to the document base URL (if inline in a document) or relative to the external resource URL (if externally fetched).
 
 ### Requirements
 
@@ -129,8 +129,7 @@ Currently the only requirement that is specified is denoted by `"anonymous-clien
 
 ```json
 {"prefetch": [
-  {"source": "list",
-   "urls": [
+  {"urls": [
     "/item?id=32480009",
     "https://support.signal.org/hc/en-us/articles/4850133017242",
     "https://discord.com/blog/how-discord-supercharges-network-disks-for-extreme-low-latency",
@@ -152,7 +151,6 @@ To help with this, `"prerender"` rules can have a `"target_hint"` field, which c
 <script type=speculationrules>
 {
   "prerender": [{
-    "source": "list",
     "target_hint": "_blank",
     "urls": ["page.html"]
   }]
@@ -168,12 +166,10 @@ Note that if a page is truly unsure whether a given URL will be prerendered into
 ```json
 {
   "prerender": [
-   {"source": "list",
-    "target_hint": "_self",
+   {"target_hint": "_self",
     "urls": ["page.html"]
    },
-   {"source": "list",
-    "target_hint": "_blank",
+   {"target_hint": "_blank",
     "urls": ["page.html"]
    }]
 }
@@ -189,8 +185,7 @@ For example:
 ```json
 {
   "prefetch": [
-    {"source": "list",
-     "urls": ["https://en.wikipedia.org/wiki/Lethe"],
+    {"urls": ["https://en.wikipedia.org/wiki/Lethe"],
      "referrer_policy": "no-referrer"
     }
   ]
@@ -206,7 +201,7 @@ Note that referrer policy matching is not done between the speculative request a
 
 ### Document rules
 
-In addition to list rules, we envision _document_ rules, denoted by `"source": "document"`. These allow the user agent to find URLs for speculation from link elements in the page. They may include criteria which restrict which of these links can be used.
+In addition to list rules, we envision _document_ rules, denoted by `"source": "document"` or implicitly by the presence of a `"where"` key. These allow the user agent to find URLs for speculation from link elements in the page. They may include criteria which restrict which of these links can be used.
 
 The URL can be compared against [URL patterns][urlpattern] (parsed relative to the same base URL as URLs in list rules).
 
@@ -238,8 +233,7 @@ An example of using these would be the following, which marks up as safe-to-prer
 ```json
 {
   "prerender": [
-    {"source": "document",
-     "where": {"and": [
+    {"where": {"and": [
        {"href_matches": "/*"},
        {"not": {"href_matches": "/logout"}},
        {"not": {"selector_matches": ".no-prerender"}}
@@ -262,7 +256,6 @@ For rule sets that are externally fetched, urls in list rules and url patterns i
 
 ```json
 {
-  "source": "list",
   "urls": ["/home", "/about"],
   "relative_to": "document"
 }
@@ -272,7 +265,6 @@ For document rules, `"relative_to"` can be paired directly with `"href_matches"`
 
 ```json
 {
-  "source": "document",
   "where": {"or": [
     {"href_matches": "/home", "relative_to": "document"},
     {"href_matches": "/about"}
@@ -298,8 +290,7 @@ The user agent takes this into consideration along with its own heuristics, so i
 ```json
 {
   "prefetch": [
-    {"source": "list",
-     "urls": [
+    {"urls": [
        "https://en.wikipedia.org/wiki/Lethe",
        "https://github.com/containers/krunvm"
      ],
@@ -307,8 +298,7 @@ The user agent takes this into consideration along with its own heuristics, so i
     }
   ],
   "prerender": [
-    {"source": "document",
-     "where": {"and": [
+    {"where": {"and": [
        {"href_matches": "/*"},
        {"not": {"href_matches": "/logout"}},
        {"not": {"selector_matches": ".no-prerender"}}
@@ -327,7 +317,6 @@ We would like preloading to make use of the improved matching enabled by the [`N
 <script type="speculationrules">
 {
   "prefetch": [{
-    "source": "list",
     "urls": ["/products"]
   }]
 }
@@ -348,7 +337,6 @@ Furthermore, for prefetches triggered by the user agent's heuristics, not knowin
 <script type="speculationrules">
 {
   "prefetch": [{
-    "source": "list",
     "urls": ["/products"],
     "eagerness": "conservative"
   }]
@@ -365,7 +353,6 @@ To solve this, we have the speculation rules syntax provide a hint for what the 
 <script type="speculationrules">
 {
   "prefetch": [{
-    "source": "list",
     "urls": ["/products"],
     "expects_no_vary_search": "params=(\"id\")"
   }]
