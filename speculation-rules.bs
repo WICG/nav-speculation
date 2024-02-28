@@ -16,6 +16,7 @@ Boilerplate: omit conformance
 </pre>
 <pre class="link-defaults">
 spec:csp3; type:grammar; text:base64-value
+spec:fetch; type:dfn; text:credentials
 spec:html; type:element; text:a
 spec:html; type:element-attr; for:a; text:href
 spec:html; type:element-attr; for:a; text:referrerpolicy
@@ -163,7 +164,7 @@ A <dfn>document rule negation</dfn> is a struct with the following [=struct/item
 * <dfn for="document rule negation">clause</dfn>, a [=document rule predicate=]
 
 A <dfn>document rule URL pattern predicate</dfn> is a struct with the following [=struct/items=]:
-* <dfn for="document rule URL pattern predicate">patterns</dfn>, a [=list=] of {{URLPattern}}s
+* <dfn for="document rule URL pattern predicate">patterns</dfn>, a [=list=] of [=URL patterns=]
 
 A <dfn>document rule CSS selector predicate</dfn> is a struct with the following [=struct/items=]:
 * <dfn for="document rule CSS selector predicate">selectors</dfn>, a [=list=] of [=selectors=]
@@ -475,20 +476,8 @@ add the following step
     1. If |rawPatterns| is not a [=list=], then set |rawPatterns| to « |rawPatterns| ».
     1. Let |patterns| be an empty [=list=].
     1. [=list/For each=] |rawPattern| of |rawPatterns|:
-      1. Let |serializedBaseURL| be the [=URL serializer|serialization=] of |baseURL|.
-      1. Let |pattern| be null.
-      1. If |rawPattern| is a [=string=], then:
-        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern/URLPattern(input, baseURL)}} constructor steps given |rawPattern| and |serializedBaseURL|. If those steps throw, catch the exception and return null.
-      1. Otherwise, if |rawPattern| is a [=map=], then:
-        1. Let |init| be «[ "`baseURL`" → |serializedBaseURL| ]», representing a dictionary of type {{URLPatternInit}}.
-        1. [=map/For each=] |key| → |value| of |rawPattern|:
-          1. If |key| is not the [=identifier=] of a [=dictionary member=] of {{URLPatternInit}} or one of its [=inherited dictionaries=], |value| is not a [=string=], or the member's type is not declared to be {{USVString}}, then return null.
-
-            <div class="note">This will need to be updated if {{URLPattern}} gains members of other types.</div>
-          1. Set |init|[|key|] to |value|.
-        1. Set |pattern| to the result of constructing a {{URLPattern}} using the {{URLPattern/URLPattern(input, baseURL)}} constructor steps given |init|. If those steps throw, catch the exception and return null.
-      1. Otherwise, return null.
-      1. [=Assert=]: |pattern| is a {{URLPattern}}.
+      1. Let |pattern| be the result of [=building a URL pattern from an Infra value=] |rawPattern| given |baseURL|. If this step throws, catch the exception and return null.
+      1. [=Assert=]: |pattern| is a [=URL pattern=].
       1. [=list/Append=] |pattern| to |patterns|.
     1. Return a [=document rule URL pattern predicate=] whose [=document rule URL pattern predicate/patterns=] is |patterns|.
   1. If |predicateType| is "`selector_matches`":
@@ -553,7 +542,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
 
     1. If |descendant| is not [=being rendered=] or is part of [=skipped contents=], [=iteration/continue=].
 
-        <div class="note">Such links, though present in the document, aren't available for the user to interact with and are unlikely to be good candidates. In addition, they may not have their style or layout computed, which might make CSS selector matching less efficient in user agents which skip some or all of that work for these elements.</div>
+        <div class="note">Such links, though present in the document, aren't available for the user to interact with and are unlikely to be good candidates. In addition, they might not have their style or layout computed, which might make CSS selector matching less efficient in user agents which skip some or all of that work for these elements.</div>
     1. Let |url| be |descendant|'s [=HTMLHyperlinkElementUtils/url=].
     1. If |url| is null, or its [=url/scheme=] is not an [=HTTP(S) scheme=], [=iteration/continue=].
     1. If |predicate| [=document rule predicate/matches=] |descendant|, then [=list/append=] |descendant| to |links|.
@@ -659,7 +648,7 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. If |predicate| is a [=document rule URL pattern predicate=], then:
     1. Let |href| be the result of running |el|'s {{HTMLHyperlinkElementUtils/href}} getter steps.
     1. [=list/For each=] |pattern| of |predicate|'s [=document rule URL pattern predicate/patterns=]:
-      1. [=URLPattern/Match=] given |pattern| and |href|. If the result is not null, return true.
+      1. Perform a [=URL pattern/match=] given |pattern| and |href|. If the result is not null, return true.
     1. Return false.
   1. If |predicate| is a [=document rule CSS selector predicate=], then:
     1. [=list/For each=] |selector| of |predicate|'s [=document rule CSS selector predicate/selectors=]:
