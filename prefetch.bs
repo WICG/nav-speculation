@@ -20,6 +20,7 @@ spec:fetch; type:dfn; text:credentials
 <pre class="anchors">
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
+    text: destroy a top-level traversable; url: document-sequences.html#destroy-a-top-level-traversable
     urlPrefix: browsers.html
       text: CSP-derived sandboxing flags; url: csp-derived-sandboxing-flags
       text: cross-origin opener policy enforcement result; url: coop-enforcement-result
@@ -126,6 +127,7 @@ spec: nav-speculation; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
+    text: prerendering traversable; url: prerendering-traversable
 spec: nav-speculation; urlPrefix: no-vary-search.html
   type: dfn
     text: URL search variance; url: url-search-variance
@@ -259,7 +261,6 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
             1. Set |inexactRecord| to |record|.
     1. Let |recordToUse| be |exactRecord| if |exactRecord| is not null, otherwise |inexactRecord|.
     1. If |recordToUse| is not null:
-        1. [=list/Remove=] |recordToUse| from |document|'s [=Document/prefetch records=].
         1. Let |currentTime| be the [=current high resolution time=] for the [=relevant global object=] of |document|.
         1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
         1. [=list/For each=] |exchangeRecord| of |recordToUse|'s [=prefetch record/redirect chain=]:
@@ -321,13 +322,20 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |response|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |exchangeRecord|'s [=exchange record/request=]'s [=request/referrer=].
     1. Set |request|'s [=request/URL list=] to |urlList|.
     1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |record|'s [=prefetch record/response=]'s [=response/URL=], |documentState|'s [=document state/history policy container=], |sourceSnapshotParams|'s [=source snapshot params/source policy container=], null, and |responsePolicyContainer|.
+    1. Let |response| be |record|'s [=prefetch record/response=].
+    1. Optionally, set |response| to a [=response/clone=] of |response|.
+
+       <p class="note">An implementation might wish to do this if it believes that the prefetch will be consumed more than once. For example, if in the future the response is consumed by a prerender, that [=prerendering traversable=] might be [=destroy a top-level traversable|destroyed=] through various means. Normally that would mean the response is discarded, but if the implementation performs this step, then the prefetched response will still be available to serve a future navigation. [[PRERENDERING-REVAMPED]]
+    1. If the user agent did not perform the previous optional step, then it must [=list/remove=] |record| from |navigable|'s [=navigable/active document=]'s [=Document/prefetch records=].
+
+
     1. Return a new [=navigation params=], with:
         :  [=navigation params/id=]
         :: |navigationId|
         :  [=navigation params/request=]
         :: |request|
         :  [=navigation params/response=]
-        :: |record|'s [=prefetch record/response=]
+        :: |response|
         :  [=navigation params/origin=]
         :: |responseOrigin|
         :  [=navigation params/policy container=]
@@ -346,6 +354,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         :: |navTimingType|
         :  [=navigation params/fetch controller=]
         :: |record|'s [=prefetch record/fetch controller=]
+           <p class="note">In the case where the above <span class=allow-2119>optional</span> step is taken, and thus |record| could end up generating multiple [=navigation params=] via multiple calls to this algorithm, it is OK that all such [=navigation params=] share the same [=navigation params/fetch controller=]. This is because the only use of a [=navigation params=]'s [=navigation params/fetch controller=] is to calculate navigation timing information, which we want to be the same for any reuses.</p>
         :  [=navigation params/commit early hints=]
         :: null
         :  [=navigation params/delivery type=]
