@@ -27,6 +27,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
     text: active needed worker; url: workers.html#active-needed-worker
     text: attempt to populate the history entry's document; url: browsing-the-web.html#attempt-to-populate-the-history-entry's-document
+    text: can have its URL rewritten; url: nav-history-apis.html#can-have-its-url-rewritten
     text: check if unloading is user-canceled; url: browsing-the-web.html#checking-if-unloading-is-user-canceled
     text: create a new child navigable; url: document-sequences.html#create-a-new-child-navigable
     text: create a new top-level traversable; url: document-sequences.html#creating-a-new-top-level-traversable
@@ -34,13 +35,16 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: current playback position; url: media.html#current-playback-position
     text: destroy a top-level traversable; url: document-sequences.html#destroy-a-top-level-traversable
     text: finalize a cross-document navigation; url: browsing-the-web.html#finalize-a-cross-document-navigation
+    text: fire a push-replace-reload navigate event; url: nav-history-apis.html#fire-a-push/replace/reload-navigate-event
     text: hand-off to external software; url: browsing-the-web.html#hand-off-to-external-software
     text: history handling behavior; url: browsing-the-web.html#history-handling-behavior
     text: navigation and traversal task source; url: webappapis.html#navigation-and-traversal-task-source
+    text: navigation API; url: nav-history-apis.html#window-navigation-api
     text: navigation ID; url: browsing-the-web.html#navigation-id
     text: playing the media resource; url: media.html#playing-the-media-resource
     text: session history entry; url: browsing-the-web.html#session-history-entry
     text: the worker's lifetime; url: workers.html#the-worker's-lifetime
+    text: URL and history update steps; url: browsing-the-web.html#url-and-history-update-steps
     for: Document
       text: abort; url: document-lifecycle.html#abort-a-document
       text: destroy; url: document-lifecycle.html#destroy-a-document
@@ -55,6 +59,8 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     for: navigation params
       text: request; url: browsing-the-web.html#navigation-params-request
       text: response; url: browsing-the-web.html#navigation-params-response
+    for: NavigationType
+      text: replace; url: nav-history-apis.html#dom-navigationtype-replace
     for: session history entry
       text: document state; url: browsing-the-web.html#she-document-state
       text: document; url: browsing-the-web.html#she-document
@@ -73,6 +79,12 @@ spec: picture-in-picture; urlPrefix: https://w3c.github.io/picture-in-picture/
 spec: mediacapture-main; urlPrefix: https://w3c.github.io/mediacapture-main/
   type: dfn
     text: device change notification steps; url: dfn-device-change-notification-steps
+spec: nav-speculation; urlPrefix: no-vary-search.html
+  type: dfn
+    text: URL search variance; url: url-search-variance
+    text: default URL search variance; url: default-url-search-variance
+    text: obtain a URL search variance; url: obtain-a-url-search-variance
+    text: equivalent modulo search variance; url: equivalent-modulo-search-variance
 spec: nav-speculation; urlPrefix: prefetch.html
   type: dfn
     text: supports prefetch; url: supports-prefetch
@@ -200,7 +212,33 @@ The <dfn attribute for="Document">prerendering</dfn> getter steps are to return 
 
 <hr>
 
-Every {{Document}} has a <dfn for="Document">prerendering traversables map</dfn>, which is an [=ordered map=] of [=URLs=] to [=prerendering traversables=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering traversable/activating=] the corresponding prerendering traversable.
+Every [=navigable=] has a <dfn for="navigable">initial prerender search variance</dfn>, which is a [=URL search variance=] or null, and is initially null.
+
+Every {{Document}} has <dfn export for="Document">prerender records</dfn>, which is a [=list=] of [=prerender records=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering traversable/activating=] the corresponding prerendering traversable.
+
+A <dfn export>prerender record</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn export for="prerender record">starting URL</dfn>, a [=URL=]
+* <dfn export for="prerender record">No-Vary-Search hint</dfn>, a [=URL search variance=] (the [=default URL search variance=] by default)
+* <dfn export for="prerender record">start time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
+* <dfn export for="prerender record">prerendering traversable</dfn>, a [=prerendering traversable=]
+
+<div algorithm>
+    A [=prerender record=] |prerenderRecord| <dfn export for="prerender record">matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
+    1. If |prerenderRecord|'s [=prerender record/starting URL=] is equal to |url|, return true.
+    1. Let |searchVariance| be |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=navigable/initial prerender search variance=].
+    1. If |searchVariance| is not null:
+      1. If |prerenderRecord|'s [=prerender record/starting URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
+    1. Otherwise, return false.
+</div>
+
+<div algorithm>
+    A [=prerender record=] |prerenderRecord| <dfn export for="prerender record">is expected to match a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
+    1. If |prerenderRecord| [=prerender record/matches a URL=] given |url|, return true.
+    1. If |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=navigable/initial prerender search variance=] is null:
+      1. Let |searchVariance| be |prerenderRecord|'s [=prerender record/No-Vary-Search hint=].
+      1. If |prerenderRecord|'s [=prerender record/starting URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
+    1. Otherwise, return false.
+</div>
 
 Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
 
@@ -243,7 +281,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div>
-  To <dfn export>start referrer-initiated prerendering</dfn> given a [=URL=] |startingURL|, a {{Document}} |referrerDoc|, and a [=referrer policy=] |referrerPolicy|:
+  To <dfn export>start referrer-initiated prerendering</dfn> given a [=URL=] |startingURL|, a {{Document}} |referrerDoc|, a [=referrer policy=] |referrerPolicy|, and a [=URL search variance=] |nvsHint|:
 
   1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
@@ -259,15 +297,18 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
 
-  1. If |referrerDoc|'s [=Document/prerendering traversables map=][|startingURL|] [=map/exists=], then return.
+  1. [=list/For each=] |record| of |referrerDoc|'s [=Document/prerender records=]:
+      1. If |record|'s [=prerender record/starting URL=] is |startingURL|, then return.
 
   1. Let |prerenderingTraversable| be the result of [=creating a new top-level traversable=].
 
   1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
 
-  1. Set |referrerDoc|'s [=Document/prerendering traversables map=][|startingURL|] to |prerenderingTraversable|.
+  1. Let |prerenderRecord| be a [=prerender record=] with [=prerender record/starting URL=] |startingURL|, [=prerender record/No-Vary-Search hint=] |nvsHint|, [=prerender record/start time=] the [=current high resolution time=] for the [=relevant global object=] of |referrerDoc|, and [=prerender record/prerendering traversable=] |prerenderingTraversable|.
 
-  1. Set |prerenderingTraversable|'s [=prerendering traversable/remove from referrer=] to be an algorithm which [=map/removes=] |referrerDoc|[|startingURL|].
+  1. [=list/Append=] |prerenderRecord| to |referrerDoc|'s [=Document/prerender records=].
+
+  1. Set |prerenderingTraversable|'s [=prerendering traversable/remove from referrer=] to be an algorithm which [=list/removes=] |prerenderRecord| from |referrerDoc|'s [=Document/prerender records=].
 
      <p class="note">As with all [=top-level traversables=], the [=prerendering traversable=] can be [=destroy a top-level traversable|destroyed=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too many resources.
 
@@ -275,7 +316,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div algorithm>
-  To <dfn for="prerendering traversable">activate</dfn> a [=prerendering traversable=] |successorTraversable| in place of a [=top-level traversable=] |predecessorTraversable| given a [=history handling behavior=] |historyHandling| and an optional [=navigation ID=] |navigationId|:
+TODO activate call sites
+  To <dfn for="prerendering traversable">activate</dfn> a [=prerendering traversable=] |successorTraversable| in place of a [=top-level traversable=] |predecessorTraversable| given a [=history handling behavior=] |historyHandling|, a [=URL=] |startingUrl|, a [=URL=] |activationUrl|, an optional [=navigation ID=] |navigationId|:
 
   1. [=Assert=]: |successorTraversable|'s [=navigable/active document=]'s [=Document/is initial about:blank=] is false.
 
@@ -294,6 +336,20 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
     1. If |unloadPromptCanceled| is true, or |predecessorTraversable|'s [=navigable/ongoing navigation=] is no longer |navigationId|, then abort these steps.
 
     1. [=Queue a global task=] on the [=navigation and traversal task source=] given |predecessorTraversable|'s [=navigable/active window=] to [=Document/abort=] |predecessorTraversable|'s [=navigable/active document=].
+
+    1. Let |successorDocument| be |successorTraversable|'s [=navigable/active document=].
+
+    1. If |startingUrl| equals |successorDocument|'s [=Document/URL=] and |startingUrl| does not equal |activationUrl|:
+
+      1. [=Assert=]: |successorDocument| [=can have its URL rewritten=] to |activationUrl|.
+
+      1. Let |navigation| be |successorDocument|'s [=relevant global object=]'s [=navigation API=].
+
+      1. Let |continue| be the result of [=firing a push-replace-reload navigate event=] at |navigation| given "[=NavigationType/replace=]", |activationUrl|, and true.
+
+      1. If |continue| is true, run the [=URL and history update steps=] given |successorDocument| and |activationUrl|.
+
+      <p class="note">This allows for the URL of the prerender to match the URL actually navigated to, in the case of inexact matching based on [:No-Vary-Search:].
 
     1. [=traversable navigable/Append session history traversal steps=] to |predecessorTraversable| to perform the following steps:
 
@@ -366,9 +422,28 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
-<div>
-  To <dfn>get the matching prerendering navigable</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
+<div algorithm>
+  To <dfn>find a matching complete prerender record</dfn> given a {{Document}} |predecessorDocument| and [=URL=] |url|:
 
+    1. Let |exactRecord| be null.
+    1. Let |inexactRecord| be null.
+    1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prerender records=]:
+        1. If |record|'s [=prerender record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true, then [=iteration/continue=].
+        1. If |record|'s [=prerender record/starting URL=] is equal to |url|:
+            1. Set |exactRecord| to |record|.
+            1. [=iteration/Break=].
+        1. If |inexactRecord| is null and |record| [=prerender record/matches a URL=] given |url|:
+            1. Set |inexactRecord| to |record|.
+    1. Let |recordToUse| be |exactRecord| if |exactRecord| is not null, otherwise |inexactRecord|.
+    1. If |recordToUse| is not null:
+        1. [=list/Remove=] |recordToUse| from |predecessorDocument|'s [=Document/prerender records=].
+    1. Return |recordToUse|.
+</div>
+
+<div algorithm>
+  To <dfn>wait for a matching prerendering navigable</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
+
+  1. [=Assert=]: this is running [=in parallel=].
   1. If any of the following conditions hold:
 
       * |navigable| is not a [=top-level traversable=];
@@ -380,7 +455,21 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     then return null.
 
-  1. Return |navigable|'s [=navigable/active document=]'s [=Document/prerendering traversables map=][|url|], if it [=map/exists=]; otherwise return null.
+  1. Let |predecessorDocument| be |navigable|'s [=navigable/active document=].
+  1. Let |cutoffTime| be null.
+  1. While true:
+      1. Let |completeRecord| be the result of [=finding a matching complete prerender record=] given |predecessorDocument| and |url|.
+      1. If |completeRecord| is not null, return |completeRecord|'s [=prerender record/prerendering traversable=].
+      1. Let |potentialRecords| be an empty [=list=].
+      1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prerender records=]:
+          1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
+              * |record|'s [=prerender record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true.
+              * |record| [=prerender record/is expected to match a URL=] given |url|.
+              * |cutoffTime| is null or |record|'s [=prerender record/start time=] is less than |cutoffTime|.
+      1. If |potentialRecords| [=list/is empty=], return null.
+      1. Wait until the [=navigable/ongoing navigation=] of the [=prerender record/prerendering traversable=] of any element of |predecessorDocument|'s [=Document/prerender records=] changes.
+      1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prerender record/prerendering traversable=] whose [=navigable/active document=]'s [=Document/is initial about:blank=] is false, set |cutoffTime| to the [=current high resolution time=] for the [=relevant global object=] of |predecessorDocument|.
+
 </div>
 
 Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activate|activation=] of a [=prerendering traversable=] in place of a normal navigation as follows:
@@ -388,13 +477,9 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 <div algorithm="navigate activate patch">
   In [=navigate=], insert the following steps as the first ones after we go [=in parallel=]:
 
-  1. Let |matchingPrerenderedNavigable| be the result of [=getting the matching prerendering navigable=] given |navigable|, <var ignore>url</var>, <var ignore>cspNavigationType</var>, and <var ignore>documentResource</var>.
+  1. Let |matchingPrerenderedNavigable| be the result of [=waiting for a matching prerendering navigable=] given |navigable|, <var ignore>url</var>, <var ignore>cspNavigationType</var>, and <var ignore>documentResource</var>.
 
   1. If |matchingPrerenderedNavigable| is not null, then:
-
-    1. Wait until either |matchingPrerenderedNavigable|'s [=navigable/active document=]'s [=Document/is initial about:blank=] is false, or |matchingPrerenderedNavigable| is [=destroy a top-level traversable|destroyed=].
-
-    1. If |matchingPrerenderedNavigable| was not destroyed, then:
 
       1. [=prerendering traversable/Activate=] |matchingPrerenderedNavigable| in place of |navigable| given <var ignore>historyHandling</var> and <var ignore>navigationId</var>.
 
@@ -446,6 +531,10 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
     1. [=destroy a top-level traversable|Destroy=] |navigable|'s [=navigable/top-level traversable=].
 
     1. Return.
+
+  1. If |navigable| is a [=prerendering navigable=] and |navigable|'s [=navigable/initial prerender search variance=] is null:
+    1. Set |navigable|'s [=navigable/initial prerender search variance=] to the result of [=obtaining a URL search variance=] given |navigationParams|'s [=navigation params/response=].
+
 </div>
 
 <div algorithm="hand-off to external software patch">
