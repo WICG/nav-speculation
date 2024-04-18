@@ -267,15 +267,21 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">We treat this initial navigations as |prerenderingTraversable| navigating itself, which will ensure all relevant security checks pass.
 
-  1. When the user indicates they wish to commit the navigation and create a new user-visible [=top-level traversable=] while doing so (e.g., by pressing <kbd><kbd>Shift</kbd>+<kbd>Enter</kbd></kbd> after typing in the address bar):
+  1. Let |record| be a [=prerender record=] with [=prerender record/starting URL=] |startingURL| and [=prerender record/prerendering traversable=] |prerenderingTraversable|.
 
-    1. Update the user agent's user interface to present |prerenderingTraversable|, e.g., by creating a new tab/window.
+  1. When the user indicates they wish to commit a navigation to an |activationUrl| which is a [=URL=] such that |record| [=prerender record/matches a URL=] given |activationUrl|:
 
-    1. [=prerendering traversable/Finalize activation=] for |prerenderingTraversable| given |startingURL|'s [=url/origin=].
+    1. If the user indicates they wish to create a new user-visible [=top-level traversable=] while doing so (e.g., by pressing <kbd><kbd>Shift</kbd>+<kbd>Enter</kbd></kbd> after typing in the address bar):
 
-  1. Alternately, when they use indicates they wish to commit the navigation into an existing [=top-level traversable=] |predecessorTraversable| (e.g., by pressing <kbd>Enter</kbd> after typing in the address bar):
+      1. TODO update URL
 
-    1. [=prerendering traversable/Activate=] |prerenderingTraversable| in place of |predecessorTraversable| given "`push`".
+      1. Update the user agent's user interface to present |prerenderingTraversable|, e.g., by creating a new tab/window.
+
+      1. [=prerendering traversable/Finalize activation=] for |prerenderingTraversable| given |startingURL|'s [=url/origin=].
+
+    1. Alternately, if the user indicates they wish to commit the navigation into an existing [=top-level traversable=] |predecessorTraversable| (e.g., by pressing <kbd>Enter</kbd> after typing in the address bar):
+
+      1. [=prerendering traversable/Activate=] |prerenderingTraversable| in place of |predecessorTraversable| given "`push`", |startingURL|, and |activationUrl|.
 
   <p class="note">The user might never indicate such a commitment, or might take long enough to do so that the user agent needs to reclaim the resources used by the prerender for some more immediate task. In that case the user agent can [=destroy a top-level traversable|destroy=] |prerenderingTraversable|.
 </div>
@@ -316,7 +322,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div algorithm>
-TODO activate call sites
+
   To <dfn for="prerendering traversable">activate</dfn> a [=prerendering traversable=] |successorTraversable| in place of a [=top-level traversable=] |predecessorTraversable| given a [=history handling behavior=] |historyHandling|, a [=URL=] |startingUrl|, a [=URL=] |activationUrl|, an optional [=navigation ID=] |navigationId|:
 
   1. [=Assert=]: |successorTraversable|'s [=navigable/active document=]'s [=Document/is initial about:blank=] is false.
@@ -346,6 +352,7 @@ TODO activate call sites
       1. Let |navigation| be |successorDocument|'s [=relevant global object=]'s [=navigation API=].
 
       1. Let |continue| be the result of [=firing a push-replace-reload navigate event=] at |navigation| given "[=NavigationType/replace=]", |activationUrl|, and true.
+         <p class="issue">Should we do this or just do the update without the event? TODO: resolve before submit
 
       1. If |continue| is true, run the [=URL and history update steps=] given |successorDocument| and |activationUrl|.
 
@@ -441,7 +448,7 @@ TODO activate call sites
 </div>
 
 <div algorithm>
-  To <dfn>wait for a matching prerendering navigable</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
+  To <dfn>wait for a matching prerendering record</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
 
   1. [=Assert=]: this is running [=in parallel=].
   1. If any of the following conditions hold:
@@ -459,7 +466,7 @@ TODO activate call sites
   1. Let |cutoffTime| be null.
   1. While true:
       1. Let |completeRecord| be the result of [=finding a matching complete prerender record=] given |predecessorDocument| and |url|.
-      1. If |completeRecord| is not null, return |completeRecord|'s [=prerender record/prerendering traversable=].
+      1. If |completeRecord| is not null, return |completeRecord|.
       1. Let |potentialRecords| be an empty [=list=].
       1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prerender records=]:
           1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
@@ -477,11 +484,14 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 <div algorithm="navigate activate patch">
   In [=navigate=], insert the following steps as the first ones after we go [=in parallel=]:
 
-  1. Let |matchingPrerenderedNavigable| be the result of [=waiting for a matching prerendering navigable=] given |navigable|, <var ignore>url</var>, <var ignore>cspNavigationType</var>, and <var ignore>documentResource</var>.
+  1. Let |matchingPrerenderRecord| be the result of [=waiting for a matching prerendering record=] given |navigable|, <var ignore>url</var>, <var ignore>cspNavigationType</var>, and <var ignore>documentResource</var>.
 
-  1. If |matchingPrerenderedNavigable| is not null, then:
+  1. If |matchingPrerenderRecord| is not null, then:
+      1. Let |matchingPrerenderedNavigable| be |matchingPrerenderRecord|'s [=prerender record/prerendering traversable=].
 
-      1. [=prerendering traversable/Activate=] |matchingPrerenderedNavigable| in place of |navigable| given <var ignore>historyHandling</var> and <var ignore>navigationId</var>.
+      1. Let |startingUrl| be |matchingPrerenderRecord|'s [=prerender record/starting URL=].
+
+      1. [=prerendering traversable/Activate=] |matchingPrerenderedNavigable| in place of |navigable| given <var ignore>historyHandling</var>, |startingUrl|, <var ignore>url</var>, and <var ignore>navigationId</var>.
 
       1. Abort these steps.
 </div>
