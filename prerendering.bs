@@ -35,7 +35,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: current playback position; url: media.html#current-playback-position
     text: destroy a top-level traversable; url: document-sequences.html#destroy-a-top-level-traversable
     text: finalize a cross-document navigation; url: browsing-the-web.html#finalize-a-cross-document-navigation
-    text: fire a push-replace-reload navigate event; url: nav-history-apis.html#fire-a-push/replace/reload-navigate-event
+    text: fire a push/replace/reload navigate event; url: nav-history-apis.html#fire-a-push/replace/reload-navigate-event
     text: hand-off to external software; url: browsing-the-web.html#hand-off-to-external-software
     text: history handling behavior; url: browsing-the-web.html#history-handling-behavior
     text: navigation and traversal task source; url: webappapis.html#navigation-and-traversal-task-source
@@ -203,7 +203,7 @@ By default, a [=navigable=]'s [=navigable/loading mode=] is "`default`". A navig
 
 <p class="note">Although there are only two values for the [=navigable/loading mode=], we use a flexible structure in anticipation of other future loading modes, such as those provided by fenced frames, portals, and uncredentialed (cross-site) prerendering. It's not yet clear whether that anticipation is correct; if, as those features gain full specifications, it turns out not to be, we will instead convert this into a boolean.
 
-Every [=prerendering traversable=] has an <dfn for="prerendering traversable">initial prerender search variance</dfn>, which is a [=URL search variance=] or null, and is initially null.
+Every [=prerendering traversable=] has a <dfn for="prerendering traversable">prerender initial response search variance</dfn>, which is a [=URL search variance=] or null, and is initially null.
 
 <dl class="domintro">
   <dt><code><var ignore>document</var>.{{Document/prerendering}}</code></dt>
@@ -226,19 +226,19 @@ A <dfn export>prerender record</dfn> is a [=struct=] with the following [=struct
 <div algorithm>
     A [=prerender record=] |prerenderRecord| <dfn export for="prerender record">matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
     1. If |prerenderRecord|'s [=prerender record/starting URL=] is equal to |url|, return true.
-    1. Let |searchVariance| be |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=prerendering traversable/initial prerender search variance=].
+    1. Let |searchVariance| be |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=prerendering traversable/prerender initial response search variance=].
     1. If |searchVariance| is not null:
       1. If |prerenderRecord|'s [=prerender record/starting URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
-    1. Otherwise, return false.
+    1. Return false.
 </div>
 
 <div algorithm>
     A [=prerender record=] |prerenderRecord| <dfn export for="prerender record">is expected to match a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
     1. If |prerenderRecord| [=prerender record/matches a URL=] given |url|, return true.
-    1. If |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=prerendering traversable/initial prerender search variance=] is null:
-      1. Let |searchVariance| be |prerenderRecord|'s [=prerender record/No-Vary-Search hint=].
-      1. If |prerenderRecord|'s [=prerender record/starting URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
-    1. Otherwise, return false.
+    1. If |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=prerendering traversable/prerender initial response search variance=] is null:
+      1. Let |expectedSearchVariance| be |prerenderRecord|'s [=prerender record/No-Vary-Search hint=].
+      1. If |prerenderRecord|'s [=prerender record/starting URL=] and |url| are [=equivalent modulo search variance=] given |expectedSearchVariance|, return true.
+    1. Return false.
 </div>
 
 Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
@@ -334,8 +334,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
     1. Let |navigation| be |successorDocument|'s [=relevant global object=]'s [=navigation API=].
 
-    1. Let |continue| be the result of [=firing a push-replace-reload navigate event=] at |navigation| given "[=NavigationType/replace=]", |activationURL|, and true.
-       <p class="issue">Should we do this or just do the update without the event? TODO: resolve before submit
+    1. Let |continue| be the result of <a>firing a push/replace/reload <code>navigate</code> event</a> at |navigation| given "[=NavigationType/replace=]", |activationURL|, and true.
 
     1. If |continue| is true, run the [=URL and history update steps=] given |successorDocument| and |activationURL|.
 
@@ -441,16 +440,14 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 <div algorithm>
   To <dfn>find a matching complete prerender record</dfn> given a {{Document}} |predecessorDocument| and [=URL=] |url|:
 
-    1. Let |exactRecord| be null.
-    1. Let |inexactRecord| be null.
+    1. Let |recordToUse| be null.
     1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prerender records=]:
         1. If |record|'s [=prerender record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true, then [=iteration/continue=].
         1. If |record|'s [=prerender record/starting URL=] is equal to |url|:
-            1. Set |exactRecord| to |record|.
+            1. Set |recordToUse| to |record|.
             1. [=iteration/Break=].
-        1. If |inexactRecord| is null and |record| [=prerender record/matches a URL=] given |url|:
-            1. Set |inexactRecord| to |record|.
-    1. Let |recordToUse| be |exactRecord| if |exactRecord| is not null, otherwise |inexactRecord|.
+        1. If |recordToUse| is null and |record| [=prerender record/matches a URL=] given |url|:
+            1. Set |recordToUse| to |record|.
     1. If |recordToUse| is not null:
         1. [=list/Remove=] |recordToUse| from |predecessorDocument|'s [=Document/prerender records=].
     1. Return |recordToUse|.
@@ -554,9 +551,9 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 
     1. Return.
 
-  1. If |navigable| is a [=prerendering traversable=] and |navigable|'s [=prerendering traversable/initial prerender search variance=] is null:
+  1. If |navigable| is a [=prerendering traversable=] and |navigable|'s [=prerendering traversable/prerender initial response search variance=] is null:
 
-    1. Set |navigable|'s [=prerendering traversable/initial prerender search variance=] to the result of [=obtaining a URL search variance=] given |navigationParams|'s [=navigation params/response=].
+    1. Set |navigable|'s [=prerendering traversable/prerender initial response search variance=] to the result of [=obtaining a URL search variance=] given |navigationParams|'s [=navigation params/response=].
 
 </div>
 
