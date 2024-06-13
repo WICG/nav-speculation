@@ -4,7 +4,7 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version d765c696b, updated Fri Mar 8 15:58:52 2024 -0800" name="generator">
+  <meta content="Bikeshed version 4afc1fdf9, updated Tue May 28 15:43:17 2024 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -751,7 +751,7 @@ var[data-var-color="6"] { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBC
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-05-07">7 May 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-06-13">13 June 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -858,6 +858,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        </ol>
       <li><a href="#implicitly-restricted"><span class="secno">6.4</span> <span class="content">Implicitly restricted APIs</span></a>
      </ol>
+    <li><a href="#security-considerations"><span class="secno">7</span> <span class="content">Security considerations</span></a>
+    <li><a href="#privacy-considerations"><span class="secno">8</span> <span class="content">Privacy considerations</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
@@ -1785,6 +1787,14 @@ This would not matter because the node can automatically start when the context 
     <li data-md>
      <p><a data-link-type="dfn" href="https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm" id="ref-for-request-picture-in-picture-algorithm">Request Picture-in-Picture</a> as invoked due to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture" id="ref-for-dom-htmlvideoelement-requestpictureinpicture">video.requestPictureInPicture()</a></code> requires either <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#transient-activation" id="ref-for-transient-activation③">transient activation</a>, or the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#visibility-state" id="ref-for-visibility-state③">visibility state</a> to have been "<code>visible</code>". <a data-link-type="biblio" href="#biblio-picture-in-picture" title="Picture-in-Picture">[PICTURE-IN-PICTURE]</a></p>
    </ul>
+   <h2 class="heading settled" data-level="7" id="security-considerations"><span class="secno">7. </span><span class="content">Security considerations</span><a class="self-link" href="#security-considerations"></a></h2>
+   <p>See <a href="speculation-rules.html#security-considerations">Security considerations (Speculation Rules)</a>.</p>
+   <p>For the integration of this spec with No-Vary-Search, see <a href="no-vary-search.html#security-considerations">No-Vary-Search Security considerations</a>.</p>
+   <p class="issue" id="issue-6008153e"><a class="self-link" href="#issue-6008153e"></a>Add security considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>.</p>
+   <h2 class="heading settled" data-level="8" id="privacy-considerations"><span class="secno">8. </span><span class="content">Privacy considerations</span><a class="self-link" href="#privacy-considerations"></a></h2>
+   <p>See <a href="speculation-rules.html#privacy-considerations">Privacy considerations (Speculation Rules)</a>.</p>
+   <p>For the integration of this spec with No-Vary-Search, see <a href="no-vary-search.html#privacy-considerations">No-Vary-Search Privacy considerations</a>.</p>
+   <p class="issue" id="issue-be92bd7a"><a class="self-link" href="#issue-be92bd7a"></a>Add privacy considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>.</p>
   </main>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -2326,7 +2336,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-background-fetch">[BACKGROUND-FETCH]
    <dd><a href="https://wicg.github.io/background-fetch/"><cite>Background Fetch</cite></a>. cg-draft. URL: <a href="https://wicg.github.io/background-fetch/">https://wicg.github.io/background-fetch/</a>
    <dt id="biblio-battery-status">[BATTERY-STATUS]
-   <dd>Anssi Kostiainen; Mounir Lamouri; Raphael Kubo da Costa. <a href="https://w3c.github.io/battery/"><cite>Battery Status API</cite></a>. URL: <a href="https://w3c.github.io/battery/">https://w3c.github.io/battery/</a>
+   <dd>Anssi Kostiainen; Raphael Kubo da Costa. <a href="https://w3c.github.io/battery/"><cite>Battery Status API</cite></a>. URL: <a href="https://w3c.github.io/battery/">https://w3c.github.io/battery/</a>
    <dt id="biblio-client-hints-infrastructure">[CLIENT-HINTS-INFRASTRUCTURE]
    <dd><a href="https://wicg.github.io/client-hints-infrastructure/"><cite>Client Hints Infrastructure</cite></a>. cg-draft. URL: <a href="https://wicg.github.io/client-hints-infrastructure/">https://wicg.github.io/client-hints-infrastructure/</a>
    <dt id="biblio-clipboard-apis">[CLIPBOARD-APIS]
@@ -2370,7 +2380,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-picture-in-picture">[PICTURE-IN-PICTURE]
    <dd>Francois Beaufort. <a href="https://w3c.github.io/picture-in-picture/"><cite>Picture-in-Picture</cite></a>. URL: <a href="https://w3c.github.io/picture-in-picture/">https://w3c.github.io/picture-in-picture/</a>
    <dt id="biblio-pointerlock-2">[POINTERLOCK-2]
-   <dd>Navid Zolghadr; Mustaq Ahmed. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock 2.0</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
+   <dd>Mustaq Ahmed; Vincent Scheib. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock 2.0</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
    <dt id="biblio-presentation-api">[PRESENTATION-API]
    <dd>Mark Foltz; Dominik Röttsches. <a href="https://w3c.github.io/presentation-api/"><cite>Presentation API</cite></a>. URL: <a href="https://w3c.github.io/presentation-api/">https://w3c.github.io/presentation-api/</a>
    <dt id="biblio-push-api">[PUSH-API]
@@ -2384,7 +2394,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-screen-orientation">[SCREEN-ORIENTATION]
    <dd>Marcos Caceres. <a href="https://w3c.github.io/screen-orientation/"><cite>Screen Orientation</cite></a>. URL: <a href="https://w3c.github.io/screen-orientation/">https://w3c.github.io/screen-orientation/</a>
    <dt id="biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]
-   <dd>Marcos Caceres; Kenneth Christiansen; Raphael Kubo da Costa. <a href="https://w3c.github.io/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. URL: <a href="https://w3c.github.io/screen-wake-lock/">https://w3c.github.io/screen-wake-lock/</a>
+   <dd>Kenneth Christiansen; Raphael Kubo da Costa; Marcos Caceres. <a href="https://w3c.github.io/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. URL: <a href="https://w3c.github.io/screen-wake-lock/">https://w3c.github.io/screen-wake-lock/</a>
    <dt id="biblio-serial">[SERIAL]
    <dd><a href="https://wicg.github.io/serial/"><cite>Web Serial API</cite></a>. Editor's Draft. URL: <a href="https://wicg.github.io/serial/">https://wicg.github.io/serial/</a>
    <dt id="biblio-service-workers">[SERVICE-WORKERS]
@@ -2445,6 +2455,8 @@ This would not matter because the node can automatically start when the context 
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
    <div class="issue">The concept of a fenced frame navigable is not yet defined but we need to link to it once it exists. <a class="issue-return" href="#issue-4798b01c" title="Jump to section">↵</a></div>
+   <div class="issue">Add security considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>. <a class="issue-return" href="#issue-6008153e" title="Jump to section">↵</a></div>
+   <div class="issue">Add privacy considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>. <a class="issue-return" href="#issue-be92bd7a" title="Jump to section">↵</a></div>
   </div>
 <script>/* Boilerplate: script-dom-helper */
 "use strict";
