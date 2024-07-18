@@ -676,19 +676,6 @@ To <dfn export>get the supported loading modes</dfn> for a [=response=] |respons
 
 1. Return a [=list=] containing all elements of |slmHeader| that are [=structured header/tokens=].
 
-<h2 id="nonsense-behaviors">Preventing nonsensical behaviors</h2>
-
-Some behaviors might make sense in most [=navigables=], but do not make sense in [=prerendering navigables=]. This section enumerates specification patches to enforce such restrictions.
-
-<h3 id="patch-window-apis">APIs for creating and navigating browsing contexts by name</h3>
-
-Modify the definition of <a spec=HTML>script-closable</a> to prevent window closing while in a [=prerendering navigable=]:
-
-A [=navigable=] is <dfn noexport>script-closable</dfn> if either of the following is true:
-
-* it is an [=auxiliary browsing context=] that was created by script (as opposed to by an action of the user); or
-* it is a [=top-level traversable=] <ins>that is not a [=prerendering traversable=]</ins> and whose [=traversable navigable/session history entries=]'s [=list/size=] is 1.
-
 <h2 id="intrusive-behaviors">Preventing intrusive behaviors</h2>
 
 Various behaviors are disallowed in [=prerendering navigables=] because they would be intrusive to the user, since the prerendered content is not being actively interacted with.
