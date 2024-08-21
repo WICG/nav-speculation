@@ -143,7 +143,7 @@ We require that user agents discard any rules with requirements that are not rec
 
 ### Window name targeting hints
 
-It is desired by developers to further maximize pre-rendering capability by supporting prerendering pages in different windows. However, for implementation reasons, it can be difficult for user agents to prerender content without knowing which window it will end up in. For example, the browser might prerender content assuming that it will be activated in the current window, replacing the current content, but then the user might end up clicking on an `<a href="page.html" target="_blank">` link, so the prerendered content is wasted.
+It is desired by developers to further maximize pre-rendering capability by supporting prerendering pages into different windows. However, for implementation reasons, it can be difficult for user agents to prerender content without knowing which window it will end up in. For example, the browser might prerender content assuming that it will be activated in the current window, replacing the current content, but then the user might end up clicking on an `<a href="page.html" target="_blank">` link, so the prerendered content is wasted.
 
 To help with this, `"prerender"` rules can have a `"target_hint"` field, which contains a [valid browsing context name or keyword](https://html.spec.whatwg.org/#valid-browsing-context-name-or-keyword) indicating where the page expects the prerendered content to be activated. (The name "target" comes from the HTML `target=""` attribute on hyperlinks.)
 
