@@ -143,7 +143,7 @@ We require that user agents discard any rules with requirements that are not rec
 
 ### Window name targeting hints
 
-For implementation reasons, it can be difficult for user agents to prerender content without knowing which window it will end up in. For example, the browser might prerender content assuming that it will be activated in the current window, replacing the current content, but then the user might end up clicking on an `<a href="page.html" target="_blank">` link, so the prerendered content is wasted.
+It is desired by developers to further maximize pre-rendering capability by supporting prerendering pages into different windows. However, for implementation reasons, it can be difficult for user agents to prerender content without knowing which window it will end up in. For example, the browser might prerender content assuming that it will be activated in the current window, replacing the current content, but then the user might end up clicking on an `<a href="page.html" target="_blank">` link, so the prerendered content is wasted.
 
 To help with this, `"prerender"` rules can have a `"target_hint"` field, which contains a [valid browsing context name or keyword](https://html.spec.whatwg.org/#valid-browsing-context-name-or-keyword) indicating where the page expects the prerendered content to be activated. (The name "target" comes from the HTML `target=""` attribute on hyperlinks.)
 
@@ -160,6 +160,8 @@ To help with this, `"prerender"` rules can have a `"target_hint"` field, which c
 ```
 
 This is just a hint, and is not binding on the implementation. Indeed, we hope that it one day becomes unnecessary, and all implementations can activate prerendered content into any target window. At that point, the field can be safely ignored, and removed from the specification. But at least for Chromium, getting to that point might take a year or so of engineering effort, so in the meantime `"target_hint"` gives developers a way to use prerendering in combination with new windows.
+
+To check Chromium's progress on removing the `target_hint` field, see [this issue](https://crbug.com/361129302).
 
 Note that if a page is truly unsure whether a given URL will be prerendered into the current window or a new one, they could include prerendering rules for multiple target windows:
 
