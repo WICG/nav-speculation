@@ -160,7 +160,8 @@ To help with this, `"prerender"` rules can have a `"target_hint"` field, which c
 ```
 
 This is just a hint, and is not binding on the implementation. Indeed, we hope that it one day becomes unnecessary, and all implementations can activate prerendered content into any target window. At that point, the field can be safely ignored, and removed from the specification. But at least for Chromium, getting to that point might take a year or so of engineering effort, so in the meantime `"target_hint"` gives developers a way to use prerendering in combination with new windows.
-To check the progress of removing target_hint field, please to [progress tracker](https://crbug.com/361129302).
+
+To check Chromium's progress on removing the `target_hint` field, see [this issue](https://crbug.com/361129302).
 
 Note that if a page is truly unsure whether a given URL will be prerendered into the current window or a new one, they could include prerendering rules for multiple target windows:
 
