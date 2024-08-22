@@ -4,7 +4,7 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version a1dabb26c, updated Mon Jun 17 15:00:44 2024 -0700" name="generator">
+  <meta content="Bikeshed version 6270e4735, updated Tue Aug 6 12:12:30 2024 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -737,21 +737,43 @@ D50 2deg illuminant, L in [0,100], a and b in [-128, 128]
 4 = lab(85,5,15)
 5 = lab(85,-10,-50)
 6 = lab(85,35,-15)
+
+For darkmode:
+0 = oklab(50%   0%  108%)
+1 = oklab(50% -51%   51%)
+2 = oklab(50% -64%  -20%)
+3 = oklab(50%   6%   19%)
+4 = oklab(50% -12%  -64%)
+5 = oklab(50%  44%  -19%)  
+6 = oklab(50% 102%   38%)
 */
+
 [data-algorithm] var { cursor: pointer; }
-var[data-var-color="0"] { background-color: #F4D200; box-shadow: 0 0 0 2px #F4D200; }
-var[data-var-color="1"] { background-color: #FF87A2; box-shadow: 0 0 0 2px #FF87A2; }
-var[data-var-color="2"] { background-color: #96E885; box-shadow: 0 0 0 2px #96E885; }
-var[data-var-color="3"] { background-color: #3EEED2; box-shadow: 0 0 0 2px #3EEED2; }
-var[data-var-color="4"] { background-color: #EACFB6; box-shadow: 0 0 0 2px #EACFB6; }
-var[data-var-color="5"] { background-color: #82DDFF; box-shadow: 0 0 0 2px #82DDFF; }
-var[data-var-color="6"] { background-color: #FFBCF2; box-shadow: 0 0 0 2px #FFBCF2; }
+var[data-var-color] { background-color: var(--var-bg); box-shadow: 0 0 0 2px var(--var-bg); }
+
+var[data-var-color] { --var-bg: #F4D200; }
+var[data-var-color="1"] { --var-bg: #FF87A2; }
+var[data-var-color="2"] { --var-bg: #96E885; }
+var[data-var-color="3"] { --var-bg: #3EEED2; }
+var[data-var-color="4"] { --var-bg: #EACFB6; }
+var[data-var-color="5"] { --var-bg: #82DDFF; }
+var[data-var-color="6"] { --var-vg: #FFBCF2; }
+
+@media (prefers-color-scheme: dark) {
+	var[data-var-color] { --var-bg: #bc1a00; }
+	var[data-var-color="1"] { --var-bg: #007f00; }
+	var[data-var-color="2"] { --var-bg: #008698; }
+	var[data-var-color="3"] { --var-bg: #7f5b2b; }
+	var[data-var-color="4"] { --var-bg: #004df3; }
+	var[data-var-color="5"] { --var-bg: #a1248a; }
+	var[data-var-color="6"] { --var-vg: #ff0000; }
+}
 </style>
  <body class="h-entry">
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-07-17">17 July 2024</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2024-08-21">21 August 2024</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1886,7 +1908,7 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="3aec4bbc">current realm</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[ENCRYPTED-MEDIA]</a> defines the following terms:
+    <a data-link-type="biblio">[ENCRYPTED-MEDIA-2]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="fa431459">requestMediaKeySystemAccess()</span>
     </ul>
@@ -2115,7 +2137,7 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="59624151">requestPermission()</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[PAYMENT-REQUEST-1.1]</a> defines the following terms:
+    <a data-link-type="biblio">[PAYMENT-REQUEST]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="ab86e0f1">show()</span>
     </ul>
@@ -2323,8 +2345,8 @@ This would not matter because the node can automatically start when the context 
    <dd>Nina Satragno; Marcos Caceres. <a href="https://w3c.github.io/webappsec-credential-management/"><cite>Credential Management Level 1</cite></a>. URL: <a href="https://w3c.github.io/webappsec-credential-management/">https://w3c.github.io/webappsec-credential-management/</a>
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
-   <dt id="biblio-encrypted-media">[ENCRYPTED-MEDIA]
-   <dd>David Dorwin; et al. <a href="https://w3c.github.io/encrypted-media/"><cite>Encrypted Media Extensions</cite></a>. URL: <a href="https://w3c.github.io/encrypted-media/">https://w3c.github.io/encrypted-media/</a>
+   <dt id="biblio-encrypted-media-2">[ENCRYPTED-MEDIA-2]
+   <dd>Joey Parrish; Greg Freedman. <a href="https://w3c.github.io/encrypted-media/"><cite>Encrypted Media Extensions</cite></a>. URL: <a href="https://w3c.github.io/encrypted-media/">https://w3c.github.io/encrypted-media/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-file-system-access">[FILE-SYSTEM-ACCESS]
@@ -2353,8 +2375,8 @@ This would not matter because the node can automatically start when the context 
    <dd>Yoav Weiss; Noam Rosenthal. <a href="https://w3c.github.io/navigation-timing/"><cite>Navigation Timing Level 2</cite></a>. URL: <a href="https://w3c.github.io/navigation-timing/">https://w3c.github.io/navigation-timing/</a>
    <dt id="biblio-notifications">[NOTIFICATIONS]
    <dd>Anne van Kesteren. <a href="https://notifications.spec.whatwg.org/"><cite>Notifications API Standard</cite></a>. Living Standard. URL: <a href="https://notifications.spec.whatwg.org/">https://notifications.spec.whatwg.org/</a>
-   <dt id="biblio-payment-request-11">[PAYMENT-REQUEST-1.1]
-   <dd>Marcos Caceres; Rouslan Solomakhin; Ian Jacobs. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API 1.1</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
+   <dt id="biblio-payment-request">[PAYMENT-REQUEST]
+   <dd>Marcos Caceres; Rouslan Solomakhin; Ian Jacobs. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
    <dt id="biblio-picture-in-picture">[PICTURE-IN-PICTURE]
    <dd>Francois Beaufort. <a href="https://w3c.github.io/picture-in-picture/"><cite>Picture-in-Picture</cite></a>. URL: <a href="https://w3c.github.io/picture-in-picture/">https://w3c.github.io/picture-in-picture/</a>
    <dt id="biblio-pointerlock-2">[POINTERLOCK-2]
@@ -2412,8 +2434,6 @@ This would not matter because the node can automatically start when the context 
   <dl>
    <dt id="biblio-no-vary-search">[NO-VARY-SEARCH]
    <dd><a href="https://wicg.github.io/nav-speculation/no-vary-search.html"><cite>No-Vary-Search</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/nav-speculation/no-vary-search.html">https://wicg.github.io/nav-speculation/no-vary-search.html</a>
-   <dt id="biblio-payment-request">[PAYMENT-REQUEST]
-   <dd>Marcos Caceres; Rouslan Solomakhin; Ian Jacobs. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
    <dt id="biblio-pointerlock">[POINTERLOCK]
    <dd>Vincent Scheib. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
   </dl>
@@ -3496,7 +3516,7 @@ let refsData = {
 "https://w3c.github.io/clipboard-apis/#dom-clipboard-readtext": {"export":true,"for_":["Clipboard"],"level":"1","normative":true,"shortname":"clipboard-apis","spec":"clipboard-apis","status":"current","text":"readText()","type":"method","url":"https://w3c.github.io/clipboard-apis/#dom-clipboard-readtext"},
 "https://w3c.github.io/clipboard-apis/#dom-clipboard-write": {"export":true,"for_":["Clipboard"],"level":"1","normative":true,"shortname":"clipboard-apis","spec":"clipboard-apis","status":"current","text":"write(data)","type":"method","url":"https://w3c.github.io/clipboard-apis/#dom-clipboard-write"},
 "https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext": {"export":true,"for_":["Clipboard"],"level":"1","normative":true,"shortname":"clipboard-apis","spec":"clipboard-apis","status":"current","text":"writeText(data)","type":"method","url":"https://w3c.github.io/clipboard-apis/#dom-clipboard-writetext"},
-"https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess": {"export":true,"for_":["Navigator"],"level":"1","normative":true,"shortname":"encrypted-media","spec":"encrypted-media","status":"current","text":"requestMediaKeySystemAccess()","type":"method","url":"https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess"},
+"https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess": {"export":true,"for_":["Navigator"],"level":"2","normative":true,"shortname":"encrypted-media","spec":"encrypted-media-2","status":"current","text":"requestMediaKeySystemAccess()","type":"method","url":"https://w3c.github.io/encrypted-media/#dom-navigator-requestmediakeysystemaccess"},
 "https://w3c.github.io/gamepad/#dfn-gamepadconnected": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"gamepad","spec":"gamepad","status":"current","text":"gamepadconnected","type":"event","url":"https://w3c.github.io/gamepad/#dfn-gamepadconnected"},
 "https://w3c.github.io/gamepad/#dfn-gamepaddisconnected": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"gamepad","spec":"gamepad","status":"current","text":"gamepaddisconnected","type":"event","url":"https://w3c.github.io/gamepad/#dfn-gamepaddisconnected"},
 "https://w3c.github.io/gamepad/#dom-gamepad": {"export":true,"for_":[],"level":"1","normative":true,"shortname":"gamepad","spec":"gamepad","status":"current","text":"Gamepad","type":"interface","url":"https://w3c.github.io/gamepad/#dom-gamepad"},
@@ -3516,7 +3536,7 @@ let refsData = {
 "https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput": {"export":true,"for_":["MediaDevices"],"level":"1","normative":true,"shortname":"audio-output","spec":"audio-output","status":"current","text":"selectAudioOutput()","type":"method","url":"https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput"},
 "https://w3c.github.io/mediacapture-screen-share/#dom-mediadevices-getdisplaymedia": {"export":true,"for_":["MediaDevices"],"level":"1","normative":true,"shortname":"screen-capture","spec":"screen-capture","status":"current","text":"getDisplayMedia()","type":"method","url":"https://w3c.github.io/mediacapture-screen-share/#dom-mediadevices-getdisplaymedia"},
 "https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming": {"export":true,"for_":[],"level":"2","normative":true,"shortname":"navigation-timing","spec":"navigation-timing-2","status":"current","text":"PerformanceNavigationTiming","type":"interface","url":"https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming"},
-"https://w3c.github.io/payment-request/#dom-paymentrequest-show": {"export":true,"for_":["PaymentRequest"],"level":"1","normative":true,"shortname":"payment-request","spec":"payment-request-1.1","status":"current","text":"show()","type":"method","url":"https://w3c.github.io/payment-request/#dom-paymentrequest-show"},
+"https://w3c.github.io/payment-request/#dom-paymentrequest-show": {"export":true,"for_":["PaymentRequest"],"level":"1","normative":true,"shortname":"payment-request","spec":"payment-request","status":"current","text":"show()","type":"method","url":"https://w3c.github.io/payment-request/#dom-paymentrequest-show"},
 "https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture": {"export":true,"for_":["HTMLVideoElement"],"level":"1","normative":true,"shortname":"picture-in-picture","spec":"picture-in-picture","status":"current","text":"requestPictureInPicture()","type":"method","url":"https://w3c.github.io/picture-in-picture/#dom-htmlvideoelement-requestpictureinpicture"},
 "https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm": {"export":true,"for_":[],"level":"","normative":true,"shortname":"picture-in-picture","spec":"picture-in-picture","status":"anchor-block","text":"request picture-in-picture","type":"dfn","url":"https://w3c.github.io/picture-in-picture/#request-picture-in-picture-algorithm"},
 "https://w3c.github.io/pointerlock/#dom-element-requestpointerlock": {"export":true,"for_":["Element"],"level":"2","normative":true,"shortname":"pointerlock","spec":"pointerlock-2","status":"current","text":"requestPointerLock()","type":"method","url":"https://w3c.github.io/pointerlock/#dom-element-requestpointerlock"},
