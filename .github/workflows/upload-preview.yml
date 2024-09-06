@@ -15,16 +15,16 @@ jobs:
       pull-requests: 'write'
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 2
     - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v0
+      uses: google-github-actions/auth@v2
       with:
         workload_identity_provider: 'projects/28141583151/locations/global/workloadIdentityPools/github/providers/github-actions'
         service_account: 'github@spec-previews.iam.gserviceaccount.com'
     - name: Fetch artifact
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         script: |
           const fs = require('fs');
@@ -71,7 +71,7 @@ jobs:
           content-encoding: br
           cache-control: no-transform, max-age=30
     - name: Post comment
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       env:
         GCS_BASE: "spec-previews/${{ github.repository }}/pull/${{ env.PULL_NUMBER }}"
       with:
