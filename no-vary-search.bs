@@ -57,11 +57,12 @@ TODO: probably give some more introductory non-normative text. Look at what othe
 
 It has the following authoring conformance requirements:
 
-* The dictionary must only contain entries whose keys are one of `key-order`, `params`, `except`.
 * If present, the `key-order` entry's value must be a [=structured header/boolean=].
 * If present, the `params` entry's value must be either a [=structured header/boolean=] or an [=structured header/inner list=].
 * If present, the `except` entry's value must be a [=structured header/inner list=].
 * The `except` entry must only be present if the `params` entry is also present, and the `params` entry's value is the boolean value true.
+
+The dictionary may contain entries whose keys are not one of `key-order`, `params`, and `except`, but their meaning is not defined by this specification. Implementations of this specification will ignore such entries (but future documents may assign meaning to such entries).
 
 <p class="note">As always, the authoring conformance requirements are not binding on implementations. Implementations instead need to implement the processing model given by the [=obtain a URL search variance=] algorithm.
 
@@ -112,7 +113,11 @@ The [=obtain a URL search variance=] algorithm ensures that all [=URL search var
     1. Set |result|'s [=URL search variance/vary params=] to the result of applying [=parse a key=] to each [=list/item=] in |value|["`except`"].
   1. Return |result|.
 
-  <p class="note">In general, this algorithm is strict and tends to return the [=default URL search variance=] whenever it sees something it doesn't recognize. This is because the [=default URL search variance=] behavior will just cause fewer cache hits, which is an acceptable fallback behavior.
+  <div class="note">
+    <p>In general, this algorithm is strict and tends to return the [=default URL search variance=] whenever it sees something it doesn't recognize. This is because the [=default URL search variance=] behavior will just cause fewer cache hits, which is an acceptable fallback behavior.</p>
+
+    <p>However, unrecognized keys at the top level are ignored, to make it easier to extend this specification in the future. To avoid misbehavior with existing client software, such extensions will likely expand, rather than reduce, the set of requests that a cached response can match.</p>
+  </div>
 </div>
 
 <div algorithm>
