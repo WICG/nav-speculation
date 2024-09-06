@@ -10,7 +10,7 @@ jobs:
     env:
       PULL_NUMBER: "${{ github.event.number }}"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 2
     - name: Build (head)
@@ -27,7 +27,7 @@ jobs:
         mv out upload/base
     - name: Checkout w3c/htmldiff-ui
       if: ${{ steps.build_base.outcome == 'success' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: w3c/htmldiff-ui
         ref: refs/heads/main
@@ -60,7 +60,7 @@ jobs:
         done
         echo -n "$PULL_NUMBER" >upload-compressed/.pull-number
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: upload-compressed
         path: upload-compressed/
