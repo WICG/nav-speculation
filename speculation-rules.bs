@@ -85,12 +85,12 @@ spec: nav-speculation; urlPrefix: prerendering.html
     text: start referrer-initiated prerendering; url: start-referrer-initiated-prerendering
     text: prerendering traversable; url: prerendering-traversable
     text: activate; for: prerendering traversable; url: prerendering-traversable-activate
-spec: nav-speculation; urlPrefix: no-vary-search.html
+spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html
   type: dfn
-    text: URL search variance; url: url-search-variance
-    text: default URL search variance; url: default-url-search-variance
-    text: obtain a URL search variance hint; url: obtain-a-url-search-variance-hint
-    text: equivalent modulo search variance; url: equivalent-modulo-search-variance
+    text: URL search variance; url: name-data-model
+    text: default URL search variance; url: iref-default-url-search-variance
+    text: obtain a URL search variance; url: name-obtain-a-url-search-varianc
+    text: equivalent modulo search variance; url: name-comparing
 </pre>
 <style>
 /* domintro from https://resources.whatwg.org/standard.css */
@@ -422,7 +422,7 @@ add the following step
   1. Let |noVarySearchHint| be the [=default URL search variance=].
   1. If |input|["`expects_no_vary_search`"] [=map/exists=]:
     1. If |input|["`expects_no_vary_search`"] is not a [=string=], then return null.
-    1. Set |noVarySearchHint| to the result of [=obtaining a URL search variance hint=] given |input|["`expects_no_vary_search`"].
+    1. Set |noVarySearchHint| to the result of [=obtaining a URL search variance=] given |input|["`expects_no_vary_search`"].
   1. Return a [=speculation rule=] with
     :  [=speculation rule/URLs=]
     :: |urls|
