@@ -755,10 +755,11 @@ The algorithm needs patches to handle the "`script speculationrules`" type at th
 
 <h3 id="content-security-policy-patches-effective-directive">Get the effective directive for request</h3>
 
-The switch needs one additional case. At present, requests can only be issued in the case of the [:Speculation-Rules:] header, so `script-src-elem` is too specific and only `script-src` (or its fallback, `default-src`) applies.
+In [[CSP#effective-directive-for-a-request]], the switch on the request [=request/destination=] needs one additional case.
+<p class="note">At present, requests can only be issued in the case of the [:Speculation-Rules:] header, so CSP does not apply. If support is added for loading external rule sets via `<script src>`, for which CSP would apply, then the CSP directive selection will need to distinguish this case, such as by the introduction of a new request [=request/initiator=].</p>
 
 :  "`speculationrules`"
-:: 1. Return `script-src`.
+:: 1. Return null.
 
 <h2 id="fetch">Fetch</h2>
 
@@ -794,7 +795,7 @@ The same mitigations available to other features also apply here. In particular,
 
 The possibility of leaking link URLs via this mechanism is additionally mitigated by the fact that prefetch and prerender to plaintext HTTP (other than to localhost) is not permitted, and so such an on-path attacker could not directly observe preloading request URLs, but would only have access to metadata and traffic analysis. This does not, however, replace standard XSS protections.
 
-It's generally not expected that user-generated content will be added as arbitrary response headers; server operators are already going to encounter significant trouble if this is possible. It is therefore unlikely that the [:Speculation-Rules:] header meaningfully expands the XSS attack surface. Nonetheless, the [[CSP]] `script-src` directive applies in this case as well.
+It's generally not expected that user-generated content will be added as arbitrary response headers; server operators are already going to encounter significant trouble if this is possible. It is therefore unlikely that the [:Speculation-Rules:] header meaningfully expands the XSS attack surface. Therefore, [[CSP]] does not apply to the loading of rule sets via the header.
 
 <h3 id="type-confusion">Type confusion</h3>
 
