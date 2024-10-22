@@ -98,7 +98,7 @@ The following example illustrates the basic idea:
 </script>
 ```
 
-(The use of `<script>` is basically because only a few elements allow the HTML parser to enter RCDATA mode, and `<script>` has already been used in this way. This doesn't necessarily mean that these rules should respect the `script-src` CSP directive.)
+(The use of `<script>` is basically because only a few elements allow the HTML parser to enter RCDATA mode, and `<script>` has already been used in this way. See [this section](#content-security-policy) for the impact of this choice on CSP.)
 
 For use cases where it is preferable to provide speculation rule sets without modifying a document, we introduce the `Speculation-Rules` HTTP header. The header's values are URLs to external resources containing speculation rule sets. The rules are expressed in the same JSON object format as the inline case. The MIME type of the resource must be `application/speculationrules+json`.
 
@@ -280,6 +280,8 @@ For document rules, `"relative_to"` can be paired directly with `"href_matches"`
 
 Speculation rules can be embedded inline within a `script` tag with `type="speculationrules"`, and restricted by the `script-src` and `script-src-elem` CSP directive. To allow inline speculation rules, use either the `'inline-speculation-rules'` or `'unsafe-inline'` keyword. Using `script-src 'inline-speculation-rules'` or `script-src-elem 'inline-speculation-rules'` helps developers to permit inline speculation rules but still disallow unsafe inline JavaScript.
 
+The loading of rules via the `Speculation-Rules` HTTP header is not restricted by CSP.
+
 The `default-src` directive can be used to restrict which URLs can be prefetched or prerendered.
 
 ### Eagerness
@@ -385,11 +387,9 @@ Another possible future extension, which would likely need to be restricted to s
 
 ### External speculation rules via script elements
 
-Like import maps, `<script>` elements can currently only load speculation rules inline, with the speculation rules JSON being contained in the `<script>` element's child text content. However, [like import maps](https://github.com/WICG/import-maps/issues/235), it would be convenient for authors if we allowed `<script type="speculationrules">` to instead have an `src=""` attribute pointing to an external URL.
+Like import maps, `<script>` elements can currently only load speculation rules inline, with the speculation rules JSON being contained in the `<script>` element's child text content. However, [like import maps](https://github.com/WICG/import-maps/issues/235), it would be convenient for authors if we allowed `<script type="speculationrules">` to instead have a `src=""` attribute pointing to an external URL.
 
-The requirements for external rule sets loaded via the `Speculation-Rules` header would also apply here, such as the use of the `application/speculationrules+json` MIME type.
-
-Some questions to answer here include the interaction with CSP. The answers might not necessarily be the same for import maps and speculation rules, since import maps give a more direct ability to interfere with script execution.
+The requirements for external rule sets loaded via the `Speculation-Rules` header would also apply here, such as the use of the `application/speculationrules+json` MIME type. Unlike the header, we would enforce CSP for `<script src>`.
 
 ### More speculation actions
 
