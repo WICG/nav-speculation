@@ -1,6 +1,7 @@
 SHELL=/bin/bash
 
-bikeshed_files = no-vary-search.bs prefetch.bs prerendering.bs speculation-rules.bs
+bikeshed_files = prefetch.bs prerendering.bs speculation-rules.bs
+html_files = index.html no-vary-search.html
 
 .PHONY: ci clean local remote
 
@@ -9,7 +10,7 @@ local: $(bikeshed_files)
 
 remote: $(bikeshed_files:.bs=.html)
 
-ci: index.html $(bikeshed_files:.bs=.html)
+ci: $(html_files) $(bikeshed_files:.bs=.html)
 	mkdir -p out
 	cp $^ out/
 
