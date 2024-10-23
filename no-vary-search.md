@@ -1,5 +1,9 @@
 # The `No-Vary-Search` HTTP response header
 
+> [!IMPORTANT]
+> Work on this feature has moved to the IETF HTTP working group.
+> The [latest draft](https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html) and [issue tracker](https://github.com/httpwg/http-extensions/labels/no-vary-search) can be found there.
+
 Caching is useful for making web pages load faster, and thus creating better user experiences. Prominent caches on the web platform include the HTTP cache, as well as the subjects of this repository, the prefetch and prerender caches.
 
 One of the most important cache keys for web resources is the resource's URL. However, sometimes multiple URLs can represent the same resource. This leads to caches not always being as helpful as they could be: if the browser has the resource cached under one URL, but the resource is then requested under another, the cached version will be ignored.
