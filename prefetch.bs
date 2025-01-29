@@ -114,6 +114,7 @@ spec: RFC9651; urlPrefix: https://www.rfc-editor.org/rfc/rfc9651.html
     for: structured header
       text: Item; url: name-items
       text: List; url: name-lists
+      text: String; url: name-strings
       text: Token; url: name-tokens
 spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: http-header; text: Cookie; url: cookie
@@ -123,7 +124,10 @@ spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: dfn; text: domain-matches; url: cookie-domain
   type: dfn; text: canonicalized host name; url: cookie-domain-canonicalize
   type: dfn; text: path-matches; url: cookie-path
-spec: nav-speculation; urlPrefix: prerendering.html
+spec: speculation-rules; urlPrefix: speculation-rules.html
+  type: dfn
+    text: speculation rules tag; url: speculation-rules-tag
+spec: prerendering-revamped; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
@@ -175,6 +179,7 @@ A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
 Each {{Document}} has <dfn export for="Document">prefetch records</dfn>, which is a [=list=] of [=prefetch records=].
 
 A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn export for="prefetch record">tags</dfn>, an [=ordered set=] of [=speculation rules tags=]
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
@@ -274,6 +279,21 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     <p class="note">It's not obvious, but this doesn't actually require that the prefetch have received the complete body, just the response headers. In particular, a navigation to a prefetched response might nonetheless not load instantaneously.</p>
 
     <p class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it's unclear whether this is worthwhile.</p>
+</div>
+
+<div algorithm>
+  A {{Document}} |document| <dfn>has a matching ongoing prefetch record</dfn> given a [=prefetch record=] |recordUnderConsideration| if the following algorithm returns true:
+
+  1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+    1. If all of the following are true:
+
+      * |record|'s [=prefetch record/state=] is "`ongoing`";
+      * |record|'s [=prefetch record/URL=] is [=equivalent modulo search variance=] to |recordUnderConsideration|'s [=prefetch record/URL=] given |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=], or |record|'s [=prefetch record/URL=] is [=equivalent modulo search variance=] to |recordUnderConsideration|'s [=prefetch record/URL=] given |record|'s [=prefetch record/No-Vary-Search hint=]; and
+      * |record|'s [=prefetch record/anonymization policy=] equals |recordUnderConsideration|'s [=prefetch record/anonymization policy=],
+
+      then return true.
+
+  1. Return false.
 </div>
 
 <div algorithm>
@@ -657,6 +677,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 <div algorithm>
     To <dfn export>prefetch</dfn> given a {{Document}} document and a [=prefetch record=] |prefetchRecord|, perform the following steps.
 
+    1. If |document| [=has a matching ongoing prefetch record=] given |prefetchRecord|, then return.
     1. Let |sourceSnapshotParams| be the result of [=snapshotting source snapshot params=] given |document|.
     1. Let |targetSnapshotParams| be the result of [=snapshotting target snapshot params=] given |document|'s [=node navigable=].
     1. Set |prefetchRecord|'s [=prefetch record/source partition key=] to the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
@@ -676,6 +697,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :  [=session history entry/document state=]
         :: |documentState|
     1. Let |request| be the result of [=creating a navigation request=] given |entry|, |document|'s [=relevant settings object=], |document|'s [=node navigable=]'s [=navigable/container=], and false.
+    1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Speculation-Tags` ``</a>, |prefetchRecord|'s [=prefetch record/tags=]) in |request|'s [=request/header list=].
     1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |document| and |document|'s [=Document/origin=].
     1. Let |global| be |document|'s [=relevant global object=].
     1. [=In parallel=]:
@@ -757,15 +779,9 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
 The <dfn http-header>`` `Sec-Purpose` ``</dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
 
-The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=]. Its ABNF is:
-
-```
-Sec-Purpose = sf-list
-```
+The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=].
 
 It may contain an [=structured header/Item=] member which is the [=structured header/Token=] "`prefetch`". If so, this indicates the request's purpose is to download a resource it is anticipated will be fetched shortly.
-
-<div class="issue">TODO: Are there normative implications of this that should be specified here?</div>
 
 The following parameters are defined for the "`prefetch`" token:
 
@@ -780,6 +796,12 @@ The following parameters are defined for the "`prefetch`" token:
 
     This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
   </div>
+
+<h2 id="sec-speculation-tags-header">The `Sec-Speculation-Tags` HTTP request header</h2>
+
+The <dfn http-header>`` `Sec-Speculation-Tags` ``</dfn> HTTP request header specifies the web developer-provided tags associated with the speculative navigation request. It can also be used to distinguish speculative navigation requests from other speculative requests, since <a http-header>`` `Sec-Purpose` ``</a> can be sent by both categories of request.
+
+The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=]. The list can contain either [=structured header/Token=] or [=structured header/String=] values. String values represent developer-provided tags, whereas token values represent predefined tags. As of now, the only predefined tag is `null`, which indicates a speculative navigation request with no developer-defined tag.
 
 <h2 id="security-considerations">Security considerations</h2>
 
