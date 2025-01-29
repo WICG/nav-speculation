@@ -187,6 +187,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">label</dfn>, a [=string=]
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
+* <dfn export for="prefetch record">for prerender</dfn>, a boolean (false by default)
 * <dfn export for="prefetch record">state</dfn>, which is "`ongoing`" (the default), "`completed`", or "`canceled`"
   <div class="note">"`canceled`" indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
 * <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
@@ -546,10 +547,11 @@ Update all creation sites to supply an empty string, except for any in this docu
         1. If |prefetchRecord| was given, then:
             1. Let |purpose| be a [=structured header/List=] containing the [=structured header/Token=] `prefetch`.
             1. If |prefetchRecord|'s [=prefetch record/anonymization policy=] [=prefetch IP anonymization policy/requires anonymity=] for |request|, then:
-                1. Add a parameter whose key is <a for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</a> and whose value is true to the `prefetch` token in |purpose|.
+                1. Add a parameter whose key is "<a for="Sec-Purpose prefetch">`anonymous-client-ip`</a>" and whose value is true to the `prefetch` token in |purpose|.
                 1. The user agent must use a [=connection=] which anonymizes the client IP address (e.g., using a proxy) when fetching |request|, or set |response| to a [=network error=] and [=iteration/break=].
 
                     <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
+            1. If |prefetchRecord|'s [=prefetch record/for prerender=] is true, then add a parameter whose key is "<a for="Sec-Purpose prefetch">`prerender`</a>" and whose value is true to the `prefetch` token in |purpose|.
             1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
 
                 <div class="note">
@@ -781,15 +783,25 @@ The <dfn http-header>`` `Sec-Purpose` ``</dfn> HTTP request header specifies tha
 
 The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=].
 
-It may contain an [=structured header/Item=] member which is the [=structured header/Token=] "`prefetch`". If so, this indicates the request's purpose is to download a resource it is anticipated will be fetched shortly.
+It may contain an [=structured header/Item=] member which is the [=structured header/Token=] `prefetch`. If so, this indicates the request's purpose is to download a resource it is anticipated will be fetched shortly.
 
-The following parameters are defined for the "`prefetch`" token:
+The following parameters are defined for the `prefetch` token:
 
-* A parameter whose key is <dfn for="Sec-Purpose prefetch" lt="anonymous-client-ip">"`anonymous-client-ip`"</dfn>.
+* A parameter whose key is "<dfn for="Sec-Purpose prefetch">`anonymous-client-ip`</dfn>".
 
   If present with a value other than boolean false (`` `?0` `` in the field value), this parameter indicates that the prefetch request is being made using an anonymous client IP. Consequently, servers should not rely on it matching, or sharing a geographic location or network operator with, the client's IP address from which a non-prefetch request would have been made.
 
   If a suitable response is not possible, for example because the resource depends on the client's geographic location, there is no other means of determining the location (e.g., the <a href="https://www.ietf.org/archive/id/draft-geohash-hint-00.html">Geohash client hint</a>), and no location-agnostic response is available, then the server should respond with an appropriate HTTP status code and response headers which mark the response as not suitable for caching.
+
+  <div class="note">
+    A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values.
+
+    This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
+  </div>
+
+* A parameter whose key is "<dfn for="Sec-Purpose prefetch">`prerender`</dfn>".
+
+  If present with a value other than boolean false (`` `?0` `` in the field value), this parameter indicates that the prefetch request is being made in anticipation of a prerender.
 
   <div class="note">
     A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values.

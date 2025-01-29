@@ -74,6 +74,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
       text: anonymization policy; url: prefetch-record-anonymization-policy
       text: referrer policy; url: prefetch-record-referrer-policy
       text: No-Vary-Search hint; url: prefetch-record-no-vary-search-hint
+      text: for prerender; url: prefetch-record-for-prerender
       text: label; url: prefetch-record-label
       text: state; url: prefetch-record-state
       text: cancel and discard; url: prefetch-record-cancel-and-discard
@@ -618,7 +619,6 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
     1. &#x231B; [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
     1. &#x231B; If no element of |prefetchCandidates| [=prefetch candidate/continues=] |prefetchRecord|, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|.
   1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
-
   1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
     1. The user agent may run the following steps:
       1. Let |tagsToSend| be the result of [=collecting tags for matching prefetch candidates=] given |prefetchCandidate| and |prefetchCandidates|.
@@ -627,7 +627,9 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   1. [=list/For each=] |prerenderCandidate| of |prerenderCandidates|:
     1. The user agent may run the following steps:
       1. Let |tagsToSend| be the result of [=collecting tags for matching prerender candidates=] given |prerenderCandidate| and |prerenderCandidates|.
-      1. The user agent may [=start referrer-initiated prerendering=] given |tagsToSend|, |prerenderCandidate|'s [=prerender candidate/URL=], |document|, |prerenderCandidate|'s [=prerender candidate/referrer policy=], and |prerenderCandidate|'s [=prerender candidate/No-Vary-Search hint=].
+      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/tags=] is |tagsToSend|, [=prefetch record/URL=] is |prerenderCandidate|'s [=prerender candidate/URL=], [=prefetch record/anonymization policy=] is null, [=prefetch record/referrer policy=] is |prerenderCandidate|'s [=prerender candidate/referrer policy=], [=prefetch record/No-Vary-Search hint=] is |prerenderCandidate|'s [=prerender candidate/No-Vary-Search hint=], and [=prefetch record/label=] is "`speculation-rules`".
+
+      1. The user agent may [=start referrer-initiated prerendering=] given |document| and |prefetchRecord|.
 
          The user agent can use |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] as a hint to their implementation of the [=start referrer-initiated prerendering=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering traversable/activate|activation=] of the created [=prerendering traversable=] to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the [=rules for choosing a navigable=] given |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] and |document|'s [=node navigable=].
 
@@ -646,6 +648,30 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   <p class="note">A user agent's heuristics for enacting non-eager candidates could incorporate a [=prefetch candidate/No-Vary-Search hint=]. For example, a user hovering over a link whose URL and a candidate's [=prefetch candidate/URL=] are [=equivalent modulo search variance=] given the candidate's [=prefetch candidate/No-Vary-Search hint=] could indicate to the user agent that enacting it would be useful.</p>
 
   Notwithstanding the above, user agents should prioritize user preferences (express and implied, such as a low-data-usage mode) over eagerness expressed by the author.
+
+  <div class="example" id="example-multiple-matching-rules">
+    <p>It's possible for multiple speculation rules to generate "the same" speculative navigation request, represented in the above algorithm by multiple similar candidates. For example, consider
+
+    <pre highlight="json">
+    {
+      "prefetch": [
+        {
+          "urls": ["next.html"],
+          "tag": "foo"
+        },
+        {
+          "urls": ["next.html"],
+          "referrer_policy": "no-referrer",
+          "tag": "bar"
+        }
+      ]
+    }
+    </pre>
+
+    <p>Because [=prefetching=] or [=start referrer-initiated prerendering|prerendering=] is a no-op if there is already a matching request in progress, following the above algorithm will generally result in the first rule winning. So in our example, the request will be made with the default referrer policy, not <code>[="no-referrer"=]</code>. However, the process of [=collecting tags for matching prefetch candidates|collecting tags=] will ensure that `Sec-Speculation-Tags: "foo", "bar"` is sent, since either one "could have" caused the relevant speculative fetch.</p>
+
+    <p>Because of the "<span class="allow-2119">may</span>" step in the algorithm, user agents could technically instead choose to let the second rule win, but this is expected to be rare. Usually, a user agent would either skip none or all of the matching rules, at least within a given [=prefetch candidate/eagerness=] level.</p>
+  </div>
 </div>
 
 <p class="issue">

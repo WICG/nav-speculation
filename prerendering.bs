@@ -215,7 +215,19 @@ Every [=prerendering traversable=] has a <dfn for="prerendering traversable">pre
 
 The <dfn attribute for="Document">prerendering</dfn> getter steps are to return true if [=this=] has a non-null [=node navigable=] that is a [=prerendering navigable=]; otherwise, false.
 
-<hr>
+Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
+
+<dl class="switch">
+  : If |platformObject| is a [=node=]
+  :: 1. Return |platformObject|'s [=Node/node document=]'s [=Document/post-prerendering activation steps list=].
+  : Otherwise
+  :: 1. Assert: |platformObject|'s [=relevant global object=] is a {{Window}} object.
+  :: 1. Return |platformObject|'s [=relevant global object=]'s [=associated Document=]'s [=Document/post-prerendering activation steps list=].
+</dl>
+
+Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
+
+<h3 id="prerender-records">Prerender records</h3>
 
 Every {{Document}} has <dfn export for="Document">prerender records</dfn>, which is a [=list=] of [=prerender records=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering traversable/activating=] the corresponding prerendering traversable.
 
@@ -243,17 +255,7 @@ A <dfn export>prerender record</dfn> is a [=struct=] with the following [=struct
     1. Return false.
 </div>
 
-Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
-
-<dl class="switch">
-  : If |platformObject| is a [=node=]
-  :: 1. Return |platformObject|'s [=Node/node document=]'s [=Document/post-prerendering activation steps list=].
-  : Otherwise
-  :: 1. Assert: |platformObject|'s [=relevant global object=] is a {{Window}} object.
-  :: 1. Return |platformObject|'s [=relevant global object=]'s [=associated Document=]'s [=Document/post-prerendering activation steps list=].
-</dl>
-
-Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
+<h3 id="prerendering-algorithms">Prerender algorithms</h3>
 
 <div algorithm="User-agent initiated prerendering">
   [=User agents=] may choose to initiate prerendering without a referrer document, for example as a result of the address bar or other browser user interactions.
@@ -290,9 +292,9 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div>
-  To <dfn export>start referrer-initiated prerendering</dfn> given a [=URL=] |startingURL|, a {{Document}} |referrerDoc|, a [=referrer policy=] |referrerPolicy|, and a [=URL search variance=] |nvsHint|:
+  To <dfn export>start referrer-initiated prerendering</dfn> given a {{Document}} |referrerDoc| and a [=prefetch record=] |prefetchRecord|:
 
-  1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
+  1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
   1. If |referrerDoc|'s [=node navigable=] is not a [=top-level traversable=], then return.
 
@@ -302,12 +304,16 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">This avoids having to deal with any potential opener relationship between the prerendering traversable and |referrerDoc|'s [=Document/browsing context=]'s [=opener browsing context=].
 
-  1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |startingURL|'s [=url/origin=], then return.
+  1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=], then return.
 
      <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
 
   1. [=list/For each=] |record| of |referrerDoc|'s [=Document/prerender records=]:
+      1. TODO this should take into account both No-Vary-Search hints, like we made prefetch do. Or maybe doing a prefetch will take care of that for us?? Make the prefetch algorithm return whether or not it was successful??
+
       1. If |record|'s [=prerender record/starting URL=] is |startingURL|, then return.
+
+  1. TODO do the prefetch and set the prerender flag so we get sec-purpose and tags for free. But we still need to create the traversable and navigate it as well, it's just now "navigate" will grab the prefetch.
 
   1. Let |prerenderingTraversable| be the result of [=creating a new top-level traversable=].
 
