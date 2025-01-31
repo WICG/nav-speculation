@@ -357,10 +357,9 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
            <p class="note">In the case where the above <span class=allow-2119>optional</span> step is taken, and thus |record| could end up generating multiple [=navigation params=] via multiple calls to this algorithm, it is OK that all such [=navigation params=] share the same [=navigation params/fetch controller=]. This is because the only use of a [=navigation params=]'s [=navigation params/fetch controller=] is to calculate navigation timing information, which we want to be the same for any reuses.</p>
         :  [=navigation params/commit early hints=]
         :: null
+           <p class="note" id="no-early-hints">This implies that early hints delivered for prefetched documents won't be processed. This could be revised in the future if it is common for there to be useful resource hints which are not repeated in the main response headers. Since prefetches aren't currently served until the response headers arrive, early hints would not be processed any earlier than ordinary response headers. It might be possible for a future specification to allow early hints found during prefetching to be used in some way.</p>
         :  [=navigation params/delivery type=]
         :: "`navigational-prefetch`"
-
-            <p class="note">This implies that early hints delivered for prefetched documents won't be processed. This could be revised in the future if it is common for there to be useful resource hints which are not repeated in the main response headers. Since prefetches aren't currently served until the response headers arrive, early hints would not be processed any earlier than ordinary response headers. It might be possible for a future specification to allow early hints found during prefetching to be used in some way.</p>
 </div>
 
 A <dfn export>prefetch IP anonymization policy</dfn> is either null or a [=cross-origin prefetch IP anonymization policy=].
@@ -700,7 +699,11 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         <div class="note">In particular, this means that error responses aren't stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a <a http-header>`` `Sec-Purpose` ``</a> request header indicating prefetch.</div>
     1. Return true.
 
-    <div class="note">A future draft of this specification is expected to provide a way for responses to be marked as eligible or ineligible explicitly.</div>
+    <div class="note">
+      <p>Although 103 is not an [=ok status=], early hints do not prevent prefetching. The [=supports prefetch=] predicate is only used on the actual [=response=], which never has a 1xx status.
+
+      <p>That said, as <a href="#no-early-hints">noted elsewhere</a>, early hints are currently ignored during prefetching.</p>
+    </div>
 </div>
 
 <h2 id="cookies">Cookies</h2>
