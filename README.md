@@ -38,4 +38,4 @@ Our current proposals are focused around allowing cross-origin/site prefetching,
 
 ## Portals
 
-The [portals](https://github.com/WICG/portals/blob/master/README.md) proposal was one of our earliest efforts in this space. We eventually realized that it's part of a larger constellation of features, and decided to turn our attention to prefetching and prerendering, and make them rock-solid, before we return to portals. Once we're confident in the foundations of prerendering content without a visible portal onto it, we plan to return to the portals specification and rebase it on prerendering.
+The [portals](https://github.com/WICG/portals) proposal was one of our earliest efforts in this space. We eventually realized that it's part of a larger constellation of features, and decided to turn our attention to prefetching and prerendering. At this time, portals is not being pursued.
