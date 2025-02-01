@@ -610,7 +610,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-01-30">30 January 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-01-31">31 January 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1009,10 +1009,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <dt data-md><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-commit-early-hints" id="ref-for-navigation-params-commit-early-hints">commit early hints</a>
        <dd data-md>
         <p>null</p>
+        <p class="note" id="no-early-hints" role="note"><a class="self-link" href="#no-early-hints"></a>This implies that early hints delivered for prefetched documents won’t be processed. This could be revised in the future if it is common for there to be useful resource hints which are not repeated in the main response headers. Since prefetches aren’t currently served until the response headers arrive, early hints would not be processed any earlier than ordinary response headers. It might be possible for a future specification to allow early hints found during prefetching to be used in some way.</p>
        <dt data-md><a data-link-type="dfn" href="#navigation-params-delivery-type" id="ref-for-navigation-params-delivery-type">delivery type</a>
        <dd data-md>
         <p>"<code>navigational-prefetch</code>"</p>
-        <p class="note" role="note">This implies that early hints delivered for prefetched documents won’t be processed. This could be revised in the future if it is common for there to be useful resource hints which are not repeated in the main response headers. Since prefetches aren’t currently served until the response headers arrive, early hints would not be processed any earlier than ordinary response headers. It might be possible for a future specification to allow early hints found during prefetching to be used in some way.</p>
       </dl>
     </ol>
    </div>
@@ -1547,7 +1547,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Return true.</p>
     </ol>
-    <div class="note" role="note">A future draft of this specification is expected to provide a way for responses to be marked as eligible or ineligible explicitly.</div>
+    <div class="note" role="note">
+     <p>Although 103 is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status①">ok status</a>, early hints do not prevent prefetching. The <a data-link-type="dfn" href="#supports-prefetch" id="ref-for-supports-prefetch①">supports prefetch</a> predicate is only used on the actual <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response⑥">response</a>, which never has a 1xx status. </p>
+     <p>That said, as <a href="#no-early-hints">noted elsewhere</a>, early hints are currently ignored during prefetching.</p>
+    </div>
    </div>
    <h2 class="heading settled" data-level="5" id="cookies"><span class="secno">5. </span><span class="content">Cookies</span><a class="self-link" href="#cookies"></a></h2>
    <p><a data-link-type="biblio" href="#biblio-cookies" title="HTTP State Management Mechanism">[COOKIES]</a> defines "cookies" which can be set using the <a data-link-type="http-header" href="https://httpwg.org/specs/rfc6265.html#set-cookie" id="ref-for-set-cookie"><code>`Set-Cookie`</code></a> response header field. Because the "<code>uncredentialed</code>" partitioning scheme forces a separate <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key③">network partition key</a> to be used, it’s necessary to copy these cookies into the ordinary partition as though they had been <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model">received</a> at the time of navigation.</p>
@@ -2356,7 +2359,7 @@ let dfnPanelData = {
 "a15b83c5": {"dfnID":"a15b83c5","dfnText":"NavigationTimingType","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-navigationtimingtype"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-dom-navigationtimingtype\u2460"}],"title":"2. HTML Patches"}],"url":"https://w3c.github.io/navigation-timing/#dom-navigationtimingtype"},
 "a1d47575": {"dfnID":"a1d47575","dfnText":"status","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-status"}],"title":"4. Prefetch algorithms"}],"url":"https://fetch.spec.whatwg.org/#concept-response-status"},
 "a1e6e861": {"dfnID":"a1e6e861","dfnText":"cookie","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-document-cookie"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#dom-document-cookie"},
-"a27468c5": {"dfnID":"a27468c5","dfnText":"ok status","external":true,"refSections":[{"refs":[{"id":"ref-for-ok-status"}],"title":"4. Prefetch algorithms"}],"url":"https://fetch.spec.whatwg.org/#ok-status"},
+"a27468c5": {"dfnID":"a27468c5","dfnText":"ok status","external":true,"refSections":[{"refs":[{"id":"ref-for-ok-status"},{"id":"ref-for-ok-status\u2460"}],"title":"4. Prefetch algorithms"}],"url":"https://fetch.spec.whatwg.org/#ok-status"},
 "a33db89a": {"dfnID":"a33db89a","dfnText":"fetch","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-fetch"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#concept-fetch"},
 "a4b0cf35": {"dfnID":"a4b0cf35","dfnText":"value","external":true,"refSections":[{"refs":[{"id":"ref-for-coop-struct-value"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-coop-struct-value\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#coop-struct-value"},
 "a6b85a00": {"dfnID":"a6b85a00","dfnText":"credentials","external":true,"refSections":[{"refs":[{"id":"ref-for-credentials"},{"id":"ref-for-credentials\u2460"}],"title":"1. Concepts"}],"url":"https://fetch.spec.whatwg.org/#credentials"},
@@ -2421,7 +2424,7 @@ let dfnPanelData = {
 "eb62573b": {"dfnID":"eb62573b","dfnText":"HTTP(S) scheme","external":true,"refSections":[{"refs":[{"id":"ref-for-http-scheme"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-http-scheme\u2460"}],"title":"4. Prefetch algorithms"}],"url":"https://fetch.spec.whatwg.org/#http-scheme"},
 "eb72b0d8": {"dfnID":"eb72b0d8","dfnText":"PerformanceResourceTiming","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-performanceresourcetiming"}],"title":"2. HTML Patches"}],"url":"https://w3c.github.io/resource-timing/#dom-performanceresourcetiming"},
 "ed948033": {"dfnID":"ed948033","dfnText":"fragment","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-fragment"}],"title":"2. HTML Patches"}],"url":"https://url.spec.whatwg.org/#concept-url-fragment"},
-"ee7bba09": {"dfnID":"ee7bba09","dfnText":"response","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response"},{"id":"ref-for-concept-response\u2460"},{"id":"ref-for-concept-response\u2461"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-concept-response\u2462"},{"id":"ref-for-concept-response\u2463"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-concept-response\u2464"}],"title":"4. Prefetch algorithms"}],"url":"https://fetch.spec.whatwg.org/#concept-response"},
+"ee7bba09": {"dfnID":"ee7bba09","dfnText":"response","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response"},{"id":"ref-for-concept-response\u2460"},{"id":"ref-for-concept-response\u2461"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-concept-response\u2462"},{"id":"ref-for-concept-response\u2463"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-concept-response\u2464"},{"id":"ref-for-concept-response\u2465"}],"title":"4. Prefetch algorithms"}],"url":"https://fetch.spec.whatwg.org/#concept-response"},
 "ee98f837": {"dfnID":"ee98f837","dfnText":"POST resource","external":true,"refSections":[{"refs":[{"id":"ref-for-post-resource"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#post-resource"},
 "eed7ae2f": {"dfnID":"eed7ae2f","dfnText":"url (for cross-origin opener policy enforcement result)","external":true,"refSections":[{"refs":[{"id":"ref-for-coop-enforcement-url"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#coop-enforcement-url"},
 "exchange-record": {"dfnID":"exchange-record","dfnText":"exchange record","external":false,"refSections":[{"refs":[{"id":"ref-for-exchange-record"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-exchange-record\u2460"}],"title":"2. HTML Patches"}],"url":"#exchange-record"},
@@ -2465,7 +2468,7 @@ let dfnPanelData = {
 "redirect-chain": {"dfnID":"redirect-chain","dfnText":"redirect chain","external":false,"refSections":[{"refs":[{"id":"ref-for-redirect-chain"},{"id":"ref-for-redirect-chain\u2460"}],"title":"1. Concepts"}],"url":"#redirect-chain"},
 "redirect-chain-update-the-response": {"dfnID":"redirect-chain-update-the-response","dfnText":"update the response","external":false,"refSections":[{"refs":[{"id":"ref-for-redirect-chain-update-the-response"}],"title":"2. HTML Patches"}],"url":"#redirect-chain-update-the-response"},
 "sec-purpose-prefetch-anonymous-client-ip": {"dfnID":"sec-purpose-prefetch-anonymous-client-ip","dfnText":"\"anonymous-client-ip\"","external":false,"refSections":[{"refs":[{"id":"ref-for-sec-purpose-prefetch-anonymous-client-ip"}],"title":"2. HTML Patches"}],"url":"#sec-purpose-prefetch-anonymous-client-ip"},
-"supports-prefetch": {"dfnID":"supports-prefetch","dfnText":"supports prefetch","external":false,"refSections":[{"refs":[{"id":"ref-for-supports-prefetch"}],"title":"4. Prefetch algorithms"}],"url":"#supports-prefetch"},
+"supports-prefetch": {"dfnID":"supports-prefetch","dfnText":"supports prefetch","external":false,"refSections":[{"refs":[{"id":"ref-for-supports-prefetch"},{"id":"ref-for-supports-prefetch\u2460"}],"title":"4. Prefetch algorithms"}],"url":"#supports-prefetch"},
 "wait-for-a-matching-prefetch-record": {"dfnID":"wait-for-a-matching-prefetch-record","dfnText":"wait for a matching prefetch record","external":false,"refSections":[{"refs":[{"id":"ref-for-wait-for-a-matching-prefetch-record"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-wait-for-a-matching-prefetch-record\u2460"}],"title":"2. HTML Patches"}],"url":"#wait-for-a-matching-prefetch-record"},
 };
 
