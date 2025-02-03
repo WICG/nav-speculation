@@ -242,12 +242,11 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 </div>
 
 <div algorithm>
-    To <dfn export>find a matching complete prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+    To <dfn export>find a matching complete prefetch record</dfn> given a [=source snapshot params=] |sourceSnapshotParams|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
-    1. [=Assert=]: |document| is [=Document/fully active=].
     1. Let |exactRecord| be null.
     1. Let |inexactRecord| be null.
-    1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+    1. [=list/For each=] |record| of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=]:
         1. If |record|'s [=prefetch record/state=] is not "`completed`", then [=iteration/continue=].
         1. If |record|'s [=prefetch record/sandboxing flag set=] is empty and |sandboxFlags| is not empty, then [=iteration/continue=].
 
@@ -277,7 +276,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 </div>
 
 <div algorithm>
-    To <dfn export>wait for a matching prefetch record</dfn> given a {{Document}} |document|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+    To <dfn export>wait for a matching prefetch record</dfn> given a [=source snapshot params=] |sourceSnapshotParams|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
 
     1. [=Assert=]: this is running [=in parallel=].
     1. Let |cutoffTime| be null.
@@ -285,7 +284,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. Let |completeRecord| be the result of [=finding a matching complete prefetch record=] given |document|, |url|, and |sandboxFlags|.
         1. If |completeRecord| is not null, return |completeRecord|.
         1. Let |potentialRecords| be an empty [=list=].
-        1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+        1. [=list/For each=] |record| of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=]:
             1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
                 * |record|'s [=prefetch record/state=] is "`ongoing`".
                 * |record| [=prefetch record/is expected to match a URL=] given |url|.
@@ -293,8 +292,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
                 * |record|'s [=prefetch record/expiry time=] is greater than the [=current high resolution time=] for the [=relevant global object=] of |document|.
                 * |cutoffTime| is null or |record|'s [=prefetch record/start time=] is less than |cutoffTime|.
         1. If |potentialRecords| [=list/is empty=], return null.
-        1. Wait until the [=prefetch record/state=] of any element of |document|'s [=Document/prefetch records=] changes.
-        1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for the [=relevant global object=] of |document|.
+        1. Wait until the [=prefetch record/state=] of any element of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=] changes.
+        1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for |sourceSnapshotParams|'s [=source snapshot params/fetch client=]'s [=environment settings object/global object=].
 
     <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
 </div>
@@ -388,6 +387,15 @@ Update all creation sites to supply an empty string, except for any in this docu
 
 <hr>
 
+Add an additional item to [=source snapshot params=] as follows:
+
+:  <dfn for="source snapshot params">prefetch records</dfn>
+:: a [=list=] of [=prefetch records=].
+
+Modify the [=snapshot source snapshot params=] algorithm to set the return value's [=source snapshot params/prefetch records=] to a [=list/clone=] of <var ignore>sourceDocument</var>'s [=Document/prefetch records=].
+
+<hr>
+
 <div algorithm>
     <div class="note">This is extracted from <a spec=HTML>create navigation params by fetching</a>.</div>
 
@@ -475,7 +483,7 @@ Update all creation sites to supply an empty string, except for any in this docu
 
             1. Let |request| be the result of [=creating a navigation request=] given <var ignore>entry</var>, <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=], <var ignore>navigable</var>'s [=navigable/container=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/has transient activation=].
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
-            1. Let |prefetchRecord| be the result of [=waiting for a matching prefetch record=] given <var ignore>navigable</var>'s [=navigable/active document=], <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
+            1. Let |prefetchRecord| be the result of [=waiting for a matching prefetch record=] given <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>targetSnapshotParams</var>'s [=target snapshot params/sandboxing flags=].
             1. If <var ignore>documentResource</var> is null and |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
