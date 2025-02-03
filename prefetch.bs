@@ -133,9 +133,15 @@ spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-h
     text: URL search variance; url: name-data-model
     text: obtain a URL search variance; url: name-obtain-a-url-search-varianc
     text: equivalent modulo search variance; url: name-comparing
+  type: http-header
+    text: No-Vary-Search; url: name-http-header-field-definitio
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
+
+<style>
+dfn var { font-style: italic; } /* override bad base.css */
+</style>
 
 <h2 id="concepts">Concepts</h2>
 
@@ -297,6 +303,27 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for |navigable|'s [=navigable/active window=].
 
     <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
+</div>
+
+<div algorithm="has a matching prefetch record">
+  A {{Document}} |document| <dfn export>has a matching prefetch record</dfn> given a [=prefetch record=] |recordUnderConsideration| and an optional boolean <dfn for="has a matching prefetch record" export>|checkPrerender|</dfn> (default false) if the following algorithm returns true:
+
+  1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+    1. If |record|'s [=prefetch record/state=] is "`canceled`", then [=iteration/continue=].
+
+    1. If |record|'s [=prefetch record/anonymization policy=] does not equal |recordUnderConsideration|'s [=prefetch record/anonymization policy=], then [=iteration/continue=].
+
+    1. If |checkPrerender| is true and |record|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+
+    1. If |record| [=prefetch record/is expected to match a URL=] given |recordUnderConsideration|'s [=prefetch record/URL=], then return true.
+
+      <p class="note">This will take into account either |record|'s [=prefetch record/response=]'s actual [:No-Vary-Search:] header, if it is present, or its [=prefetch record/No-Vary-Search hint=], if the response has not yet been received.</p>
+
+    1. If |recordUnderConsideration| [=prefetch record/is expected to match a URL=] given |record|'s [=prefetch record/URL=], then return true.
+
+      <p class="note">This will only take into account |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=], since this algorithm is never called when |recordUnderConsideration|'s [=prefetch record/response=] is popuulated.</p>
+
+  1. Return false.
 </div>
 
 <div algorithm>
@@ -666,6 +693,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 <div algorithm>
     To <dfn export>prefetch</dfn> given a {{Document}} |document| and a [=prefetch record=] |prefetchRecord|, perform the following steps.
 
+    1. If |document| [=has a matching prefetch record=] given |prefetchRecord|, then return.
     1. Let |sourceSnapshotParams| be the result of [=snapshotting source snapshot params=] given |document|.
     1. Let |targetSnapshotParams| be the result of [=snapshotting target snapshot params=] given |document|'s [=node navigable=].
     1. Set |prefetchRecord|'s [=prefetch record/source partition key=] to the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].

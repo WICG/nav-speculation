@@ -627,6 +627,28 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
   <p class="note">A user agent's heuristics for enacting non-eager candidates could incorporate a [=prefetch candidate/No-Vary-Search hint=]. For example, a user hovering over a link whose URL and a candidate's [=prefetch candidate/URL=] are [=equivalent modulo search variance=] given the candidate's [=prefetch candidate/No-Vary-Search hint=] could indicate to the user agent that enacting it would be useful.</p>
 
   Notwithstanding the above, user agents should prioritize user preferences (express and implied, such as a low-data-usage mode) over eagerness expressed by the author.
+
+  <div class="example" id="example-multiple-matching-rules">
+    <p>It's possible for multiple speculation rules to generate "the same" speculative navigation request, represented in the above algorithm by multiple similar candidates. For example, consider
+
+    <pre highlight="json">
+    {
+      "prefetch": [
+        {
+          "urls": ["next.html"]
+        },
+        {
+          "urls": ["next.html"],
+          "referrer_policy": "no-referrer"
+        }
+      ]
+    }
+    </pre>
+
+    <p>Because [=prefetching=] or [=start referrer-initiated prerendering|prerendering=] is a no-op if there is already a matching request in progress, following the above algorithm will generally result in the first rule winning. So in our example, the request will be made with the default referrer policy, not <code>[="no-referrer"=]</code>.</p>
+
+    <p>Because of the "<span class="allow-2119">may</span>" step in the algorithm, user agents could technically instead choose to let the second rule win, by skipping the first candidate for [=implementation-defined=] reasons, but this is expected to be rare. Usually, a user agent would either skip none or all of the matching rules, at least within a given [=prefetch candidate/eagerness=] level.</p>
+  </div>
 </div>
 
 <p class="issue">
