@@ -92,6 +92,8 @@ spec: nav-speculation; urlPrefix: prefetch.html
     text: supports prefetch; url: supports-prefetch
     text: list of sufficiently-strict speculative navigation referrer policies
     text: wait for a matching prefetch record; url: wait-for-a-matching-prefetch-record
+    for: prefetch record
+      text: prerendering traversable
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -222,32 +224,6 @@ The <dfn attribute for="Document">prerendering</dfn> getter steps are to return 
 
 <hr>
 
-Every {{Document}} has <dfn export for="Document">prerender records</dfn>, which is a [=list=] of [=prerender records=]. This is used to fulfill [=navigate|navigations=] to a given URL by instead [=prerendering traversable/activating=] the corresponding prerendering traversable.
-
-A <dfn export>prerender record</dfn> is a [=struct=] with the following [=struct/items=]:
-* <dfn export for="prerender record">starting URL</dfn>, a [=URL=]
-* <dfn export for="prerender record">No-Vary-Search hint</dfn>, a [=URL search variance=] (the [=default URL search variance=] by default)
-* <dfn export for="prerender record">start time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
-* <dfn export for="prerender record">prerendering traversable</dfn>, a [=prerendering traversable=]
-
-<div algorithm>
-    A [=prerender record=] |prerenderRecord| <dfn export for="prerender record">matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
-    1. If |prerenderRecord|'s [=prerender record/starting URL=] is equal to |url|, return true.
-    1. Let |searchVariance| be |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=prerendering traversable/prerender initial response search variance=].
-    1. If |searchVariance| is not null:
-      1. If |prerenderRecord|'s [=prerender record/starting URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
-    1. Return false.
-</div>
-
-<div algorithm>
-    A [=prerender record=] |prerenderRecord| <dfn export for="prerender record">is expected to match a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
-    1. If |prerenderRecord| [=prerender record/matches a URL=] given |url|, return true.
-    1. If |prerenderRecord|'s [=prerender record/prerendering traversable=]'s [=prerendering traversable/prerender initial response search variance=] is null:
-      1. Let |expectedSearchVariance| be |prerenderRecord|'s [=prerender record/No-Vary-Search hint=].
-      1. If |prerenderRecord|'s [=prerender record/starting URL=] and |url| are [=equivalent modulo search variance=] given |expectedSearchVariance|, return true.
-    1. Return false.
-</div>
-
 Every {{Document}} has a <dfn for="Document">post-prerendering activation steps list</dfn>, which is a [=list=] where each [=list/item=] is a series of algorithm steps. For convenience, we define the <dfn for="platform object">post-prerendering activation steps list</dfn> for any platform object |platformObject| as:
 
 <dl class="switch">
@@ -260,6 +236,8 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 
 Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
 
+<h3 id="prerendering-algorithms">Prerender algorithms</h3>
+
 <div algorithm="User-agent initiated prerendering">
   [=User agents=] may choose to initiate prerendering without a referrer document, for example as a result of the address bar or other browser user interactions.
 
@@ -271,13 +249,15 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
 
+  1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |startingURL|, [=prefetch record/anonymization policy=] is null, [=prefetch record/referrer policy=] is the empty string, [=prefetch record/No-Vary-Search hint=] is the [=default URL search variance=], [=prefetch record/label=] is "`browser UI`", and [=prefetch record/prerendering traversable=] is |prerenderingTraversable|.
+
+  1. [=Prefetch=] given |prerenderingTraversable|'s [=navigable/active document=] and |prefetchRecord|.
+
   1. [=Navigate=] |prerenderingTraversable| to |startingURL| using |prerenderingTraversable|'s [=navigable/active document=].
 
-     <p class="note">We treat this initial navigations as |prerenderingTraversable| navigating itself, which will ensure all relevant security checks pass.
+     <p class="note">We treat this initial navigation as |prerenderingTraversable| navigating itself, which will ensure all relevant security checks pass.
 
-  1. Let |record| be a [=prerender record=] with [=prerender record/starting URL=] |startingURL| and [=prerender record/prerendering traversable=] |prerenderingTraversable|.
-
-  1. When the user indicates they wish to commit a navigation to an |activationURL| which is a [=URL=] such that |record| [=prerender record/matches a URL=] given |activationURL|:
+  1. When the user indicates they wish to commit a navigation to an |activationURL| which is a [=URL=] such that |prefetchRecord| [=prefetch record/matches a URL=] given |activationURL|:
 
     1. If the user indicates they wish to create a new user-visible [=top-level traversable=] while doing so (e.g., by pressing <kbd><kbd>Shift</kbd>+<kbd>Enter</kbd></kbd> after typing in the address bar):
 
@@ -295,9 +275,9 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div>
-  To <dfn export>start referrer-initiated prerendering</dfn> given a [=URL=] |startingURL|, a {{Document}} |referrerDoc|, a [=referrer policy=] |referrerPolicy|, and a [=URL search variance=] |nvsHint|:
+  To <dfn export>start referrer-initiated prerendering</dfn> given a {{Document}} |referrerDoc| and a [=prefetch record=] |prefetchRecord|:
 
-  1. [=Assert=]: |startingURL|'s [=url/scheme=] is an [=HTTP(S) scheme=].
+  1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
   1. If |referrerDoc|'s [=node navigable=] is not a [=top-level traversable=], then return.
 
@@ -307,26 +287,25 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">This avoids having to deal with any potential opener relationship between the prerendering traversable and |referrerDoc|'s [=Document/browsing context=]'s [=opener browsing context=].
 
-  1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |startingURL|'s [=url/origin=], then return.
+  1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=], then return.
 
      <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
 
-  1. [=list/For each=] |record| of |referrerDoc|'s [=Document/prerender records=]:
-      1. If |record|'s [=prerender record/starting URL=] is |startingURL|, then return.
+  1. [=Assert=]: |prefetchRecord|'s [=prefetch record/prerendering traversable=] is "`to be created`".
 
   1. Let |prerenderingTraversable| be the result of [=creating a new top-level traversable=].
 
   1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
 
-  1. Let |prerenderRecord| be a [=prerender record=] with [=prerender record/starting URL=] |startingURL|, [=prerender record/No-Vary-Search hint=] |nvsHint|, [=prerender record/start time=] the [=current high resolution time=] for the [=relevant global object=] of |referrerDoc|, and [=prerender record/prerendering traversable=] |prerenderingTraversable|.
+  1. Set |prefetchRecord|'s [=prefetch record/prerendering traversable=] to |prerenderingTraversable|.
 
-  1. [=list/Append=] |prerenderRecord| to |referrerDoc|'s [=Document/prerender records=].
+  1. Set |prerenderingTraversable|'s [=prerendering traversable/remove from referrer=] to be an algorithm which sets |prefetchRecord|'s [=prefetch record/prerendering traversable=] to null.
 
-  1. Set |prerenderingTraversable|'s [=prerendering traversable/remove from referrer=] to be an algorithm which [=list/removes=] |prerenderRecord| from |referrerDoc|'s [=Document/prerender records=].
+     <p class="note">As with all [=top-level traversables=], the [=prerendering traversable=] can be [=destroy a top-level traversable|destroyed=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too many resources. In such cases, the [=prefetch record=] will remain, so it can be used to fulfill future navigations, even if the [=prerendering traversable=] has been destroyed.
 
-     <p class="note">As with all [=top-level traversables=], the [=prerendering traversable=] can be [=destroy a top-level traversable|destroyed=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too many resources.
+  1. [=Prefetch=] given |referrerDoc| and |prefetchRecord|.
 
-  1. [=Navigate=] |prerenderingTraversable| to |startingURL| using |referrerDoc|, with <i>[=navigate/referrerPolicy=]</i> set to |referrerPolicy|.
+  1. [=Navigate=] |prerenderingTraversable| to |prefetchRecord|'s [=prefetch record/URL=] using |referrerDoc|, with <i>[=navigate/referrerPolicy=]</i> set to |prefetchRecord|'s [=prefetch record/referrer policy=].
 </div>
 
 <div algorithm>
@@ -445,23 +424,24 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
 <div algorithm>
-  To <dfn>find a matching complete prerender record</dfn> given a {{Document}} |predecessorDocument| and [=URL=] |url|:
+  To <dfn>find a matching prerendered prefetch record</dfn> given a {{Document}} |predecessorDocument| and [=URL=] |url|:
 
     1. Let |recordToUse| be null.
-    1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prerender records=]:
-        1. If |record|'s [=prerender record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true, then [=iteration/continue=].
-        1. If |record|'s [=prerender record/starting URL=] is equal to |url|:
+    1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prefetch records=]:
+        1. If |record|'s [=prefetch record/prerendering traversable=] is not a [=prerendering traversable=], then [=iteration/continue=].
+        1. If |record|'s [=prefetch record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true, then [=iteration/continue=].
+        1. If |record|'s [=prefetch record/URL=] is equal to |url|:
             1. Set |recordToUse| to |record|.
             1. [=iteration/Break=].
-        1. If |recordToUse| is null and |record| [=prerender record/matches a URL=] given |url|:
+        1. If |recordToUse| is null and |record| [=prefetch record/matches a URL=] given |url|:
             1. Set |recordToUse| to |record|.
     1. If |recordToUse| is not null:
-        1. [=list/Remove=] |recordToUse| from |predecessorDocument|'s [=Document/prerender records=].
+        1. [=list/Remove=] |recordToUse| from |predecessorDocument|'s [=Document/prefetch records=].
     1. Return |recordToUse|.
 </div>
 
 <div algorithm>
-  To <dfn>wait for a matching prerendering record</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
+  To <dfn>wait for a matching prerendered prefetch record</dfn> given a [=navigable=] |navigable|, a [=URL=] |url|, a string |cspNavigationType|, and a [=POST resource=], string, or null |documentResource|:
 
   1. [=Assert=]: this is running [=in parallel=].
   1. If any of the following conditions hold:
@@ -478,20 +458,18 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
   1. Let |predecessorDocument| be |navigable|'s [=navigable/active document=].
   1. Let |cutoffTime| be null.
   1. While true:
-      1. Let |completeRecord| be the result of [=finding a matching complete prerender record=] given |predecessorDocument| and |url|.
+      1. Let |completeRecord| be the result of [=finding a matching prerendered prefetch record=] given |predecessorDocument| and |url|.
       1. If |completeRecord| is not null, return |completeRecord|.
       1. Let |potentialRecords| be an empty [=list=].
-      1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prerender records=]:
+      1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prefetch records=]:
           1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
-              * |record|'s [=prerender record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true.
-              * |record| [=prerender record/is expected to match a URL=] given |url|.
-              * |cutoffTime| is null or |record|'s [=prerender record/start time=] is less than |cutoffTime|.
+              * |record|'s [=prefetch record/prerendering traversable=] is a [=prerendering traversable=];
+              * |record|'s [=prefetch record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true;
+              * |record| [=prefetch record/is expected to match a URL=] given |url|; and
+              * |cutoffTime| is null or |record|'s [=prefetch record/start time=] is less than |cutoffTime|.
       1. If |potentialRecords| [=list/is empty=], return null.
-      1. Wait until the [=navigable/ongoing navigation=] of the [=prerender record/prerendering traversable=] of any element of |predecessorDocument|'s [=Document/prerender records=] changes.
-      1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prerender record/prerendering traversable=] whose [=navigable/active document=]'s [=Document/is initial about:blank=] is false, set |cutoffTime| to the [=current high resolution time=] for the [=relevant global object=] of |predecessorDocument|.
-
-    <p class="note">See also: [=wait for a matching prefetch record=]. The logic for blocking on ongoing prerenders is similar to the prefetch case.</p>
-
+      1. Wait until the [=navigable/ongoing navigation=] of the [=prefetch record/prerendering traversable=] of any element of |predecessorDocument|'s [=Document/prefetch records=] changes.
+      1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/prerendering traversable=] whose [=navigable/active document=]'s [=Document/is initial about:blank=] is false, set |cutoffTime| to the [=current high resolution time=] for the [=relevant global object=] of |predecessorDocument|.
 </div>
 
 Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activate|activation=] of a [=prerendering traversable=] in place of a normal navigation as follows:
@@ -499,13 +477,13 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 <div algorithm="navigate activate patch">
   In [=navigate=], insert the following steps as the first ones after we go [=in parallel=]:
 
-  1. Let |matchingPrerenderRecord| be the result of [=waiting for a matching prerendering record=] given |navigable|, <var ignore>url</var>, <var ignore>cspNavigationType</var>, and <var ignore>documentResource</var>.
+  1. Let |record| be the result of [=waiting for a matching prerendered prefetch record=] given |navigable|, <var ignore>url</var>, <var ignore>cspNavigationType</var>, and <var ignore>documentResource</var>.
 
-  1. If |matchingPrerenderRecord| is not null, then:
+  1. If |record| is not null, then:
 
-      1. Let |matchingPrerenderedNavigable| be |matchingPrerenderRecord|'s [=prerender record/prerendering traversable=].
+      1. Let |matchingPrerenderedNavigable| be |record|'s [=prefetch record/prerendering traversable=].
 
-      1. Let |startingURL| be |matchingPrerenderRecord|'s [=prerender record/starting URL=].
+      1. Let |startingURL| be |record|'s [=prefetch record/URL=].
 
       1. [=prerendering traversable/Activate=] |matchingPrerenderedNavigable| in place of |navigable| given <var ignore>historyHandling</var>, |startingURL|, <var ignore>url</var>, and <var ignore>navigationId</var>.
 

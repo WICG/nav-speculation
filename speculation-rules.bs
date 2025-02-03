@@ -75,6 +75,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
       text: No-Vary-Search hint; url: prefetch-record-no-vary-search-hint
       text: label; url: prefetch-record-label
       text: state; url: prefetch-record-state
+      text: prerendering traversable; url: prefetch-record-prerendering-traversable
       text: cancel and discard; url: prefetch-record-cancel-and-discard
       text: matches a URL; url: prefetch-record-matches-a-url
     text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
@@ -604,7 +605,10 @@ A <dfn>prerender candidate</dfn> is a [=struct=] with the following [=struct/ite
       1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prefetchCandidate|'s [=prefetch candidate/URL=], [=prefetch record/anonymization policy=] is |prefetchCandidate|'s [=prefetch candidate/anonymization policy=], [=prefetch record/referrer policy=] is |prefetchCandidate|'s [=prefetch candidate/referrer policy=], [=prefetch record/No-Vary-Search hint=] is |prefetchCandidate|'s [=prefetch candidate/No-Vary-Search hint=], and [=prefetch record/label=] is "`speculation-rules`".
       1. [=Prefetch=] given |document| and |prefetchRecord|.
   1. [=list/For each=] |prerenderCandidate| of |prerenderCandidates|:
-      1. The user agent may [=start referrer-initiated prerendering=] given |prerenderCandidate|'s [=prerender candidate/URL=], |document|, |prerenderCandidate|'s [=prerender candidate/referrer policy=], and |prerenderCandidate|'s [=prerender candidate/No-Vary-Search hint=].
+    1. The user agent may run the following steps:
+      1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |prerenderCandidate|'s [=prerender candidate/URL=], [=prefetch record/anonymization policy=] is null, [=prefetch record/referrer policy=] is |prerenderCandidate|'s [=prerender candidate/referrer policy=], [=prefetch record/No-Vary-Search hint=] is |prerenderCandidate|'s [=prerender candidate/No-Vary-Search hint=], [=prefetch record/label=] is "`speculation-rules`", and [=prefetch record/prerendering traversable=] is "`to be created`".
+
+      1. The user agent may [=start referrer-initiated prerendering=] given |document| and |prefetchRecord|.
 
          The user agent can use |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] as a hint to their implementation of the [=start referrer-initiated prerendering=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering traversable/activate|activation=] of the created [=prerendering traversable=] to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the [=rules for choosing a navigable=] given |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] and |document|'s [=node navigable=].
 
