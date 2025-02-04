@@ -150,7 +150,7 @@ We currently propose that this header is only sent for same-site speculative nav
 
 Allowing additional information to be sent with a speculative navigation request across sites provides a cross-site communications channel. This isn't really more powerful than the communications channel that already exists via speculative navigation request URLs. The specified [protections](./fetch.md), e.g. not performing prefetches if the destination has cookies, would prevent this information from being joined to a cross-site user identity.
 
-However, we don't have compelling use cases for extending this across across sites, so it seems simpler and safer to just constrain it. We can always explore expanding this in the future if a use case arises.
+However, we don't have compelling use cases for extending this across sites, so it seems simpler and safer to just constrain it. We can always explore expanding this in the future if a use case arises.
 
 ### The default / no tags case
 
