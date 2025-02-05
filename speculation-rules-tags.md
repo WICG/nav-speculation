@@ -170,7 +170,7 @@ We allow the tags to be supplied both at the top level, and on a per-rule level.
 
 Due to how the specification is currently written, the choice of where to put rules has different implications for how older browsers process the rules. Top-level keys besides `"prefetch"` and `"prerender"` are ignored by browsers implementing the previous specification, and so adding the tag there becomes a simple progressive enhancement. However, unknown fields in individual rules cause the entire rule to be thrown out in older browsers, which might or might not be desired.
 
-This divergence isn't really intentional, and we're contemplating making individual rule parsing laxer to avoid this kind of situation in the future. In the meantime, developers will need to take care during the transition period.
+This divergence isn't really intentional, and we're contemplating making individual rule parsing laxer to avoid this kind of situation in the future. (See [issue #244](https://github.com/WICG/nav-speculation/issues/244).) In the meantime, developers will need to take care during the transition period.
 
 ### Multiple applicable rules
 
@@ -212,7 +212,7 @@ The answer we give is that all three tags must be included. Intuitively, this ma
 
 (Note: the first criteria comes from [how the prefetch cache is keyed](https://wicg.github.io/nav-speculation/speculation-rules.html#prefetch-candidate-continues).)
 
-(Note: before figuring out which rules _could apply_, there's the question of which rule _will actually trigger the speculative load_. In the above example, the question is whether the `"tag2"` rule will trigger, including the normal referrer, or whether the `"tag3"` rule will trigger, including no referrer. The current specification [suggests](https://wicg.github.io/nav-speculation/speculation-rules.html#:~:text=For%20each%20prefetchCandidate%20of%20prefetchCandidates%3A) processing the rules in the order they are encountered, using "may" language to let implementations avoid processing the same URL/anonymization policy twice. We intend to tighten this up to make it clearer that the first-encountered rule is the preferred trigger, although we still need to maintain some implementation flexibility.)
+(Note: before figuring out which rules _could apply_, there's the question of which rule _will actually trigger the speculative load_. In the above example, the question is whether the `"tag2"` rule will trigger, including the normal referrer, or whether the `"tag3"` rule will trigger, including no referrer. The current specification [suggests](https://wicg.github.io/nav-speculation/speculation-rules.html#:~:text=For%20each%20prefetchCandidate%20of%20prefetchCandidates%3A) processing the rules in the order they are encountered, using "may" language to let implementations avoid processing the same URL/anonymization policy twice. We intend to tighten this up to make it clearer that the first-encountered rule is the preferred trigger: see [issue #315](https://github.com/WICG/nav-speculation/issues/315).)
 
 ## Accessibility, privacy, and security considerations
 
