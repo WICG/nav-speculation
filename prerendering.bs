@@ -644,9 +644,11 @@ This stores which client hints each origin has opted into receiving, until it ca
 
 <h3 id="interaction-with-clear-site-data-clear-cache">Interaction with Clear-Site-Data Clear Cache</h3>
 
-Modify [$clear cache for origin$] to add the following step at the end.
+<div algorithm="clear cache for origin patch">
+Modify [$clear cache for <var ignore>origin</var>$] to add the following step at the end.
 1. [=list/For each=] [=navigable/top-level traversable=] |traversable| in the user agent's [=top-level traversable set=]: 
   1. If |traversable|'s [=navigable/active document=]'s [=Document/origin=] is [=same origin=] with |origin|, and |traversable| is a [=prerendering traversable=], then [=destroy a top-level traversable|destroy=] |traversable|.
+</div>
 
 <h2 id="supports-loading-mode">The \`<dfn export http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
 
