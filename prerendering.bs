@@ -45,6 +45,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: session history entry; url: browsing-the-web.html#session-history-entry
     text: the worker's lifetime; url: workers.html#the-worker's-lifetime
     text: URL and history update steps; url: browsing-the-web.html#url-and-history-update-steps
+    text: top-level traversable set; url: document-sequences.html#top-level-traversable-set
     for: Document
       text: abort; url: document-lifecycle.html#abort-a-document
       text: destroy; url: document-lifecycle.html#destroy-a-document
@@ -639,6 +640,15 @@ This stores which client hints each origin has opted into receiving, until it ca
   1. Let |navigable| be <var ignore>settingsObject</var>’s [=environment settings object/global object=]'s [=Window/navigable=].
   1. If |navigable| is a [=prerendering navigable=], [=map/set=] |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=][|origin|] to |hintSet|.
   1. Otherwise, [=map/set=] [=Accept-CH cache=][|origin|] to |hintSet|.
+</div>
+
+<h3 id="interaction-with-clear-site-data-clear-cache">Interaction with Clear-Site-Data Clear Cache</h3>
+
+<div algorithm="clear cache for origin patch">
+  Modify [$clear cache for origin$] to add the following step at the end.
+
+  1. [=list/For each=] [=navigable/top-level traversable=] |traversable| in the user agent's [=top-level traversable set=]:
+  1. If |traversable|'s [=navigable/active document=]'s [=Document/origin=] is [=same origin=] with <var ignore>origin</var>, and |traversable| is a [=prerendering traversable=], then [=destroy a top-level traversable|destroy=] |traversable|.
 </div>
 
 <h2 id="supports-loading-mode">The \`<dfn export http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
