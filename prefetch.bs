@@ -311,19 +311,39 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
   1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
     1. If |record|'s [=prefetch record/state=] is "`canceled`", then [=iteration/continue=].
 
-    1. If |record|'s [=prefetch record/anonymization policy=] does not equal |recordUnderConsideration|'s [=prefetch record/anonymization policy=], then [=iteration/continue=].
-
     1. If |checkPrerender| is true and |record|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
 
-    1. If |record| [=prefetch record/is expected to match a URL=] given |recordUnderConsideration|'s [=prefetch record/URL=], then return true.
+    1. Let |recordNVS| be null.
 
-      <p class="note">This will take into account either |record|'s [=prefetch record/response=]'s actual [:No-Vary-Search:] header, if it is present, or its [=prefetch record/No-Vary-Search hint=], if the response has not yet been received.</p>
+    1. If |record|'s [=prefetch record/response=] is not null, then set |recordNVS| to the result of [=obtaining a URL search variance=] given |record|'s [=prefetch record/response=].
 
-    1. If |recordUnderConsideration| [=prefetch record/is expected to match a URL=] given |record|'s [=prefetch record/URL=], then return true.
+    1. Otherwise, set |recordNVS| to |record|'s [=prefetch record/No-Vary-Search hint=].
 
-      <p class="note">This will only take into account |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=], since this algorithm is never called when |recordUnderConsideration|'s [=prefetch record/response=] is popuulated.</p>
+    1. If |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=] is not equal to |recordNVS|, then [=iteration/continue=].
+
+    1. If |recordUnderConsideration| [=prefetch record/URL=] and |record|'s [=prefetch record/URL=] are [=equivalent modulo search variance=] given |recordNVS|, then return true.
 
   1. Return false.
+
+  <div class="note" id="note-require-equivalent-nvs">
+    <p>The requirement that the No-Vary-Search values be equivalent is somewhat strict. It means that some cases which could theoretically be treated as matching, are not treated as such, and thus redundant prefetches could happen.
+
+    <p>However, allowing more lenient matching makes the check no longer an equivalence relation, and thus prohibits implementation strategies based on normalized URL keys. For this reason, we require equivalent No-Vary-Search values. This is in line with the best practices for server operators demanded in [[NO-VARY-SEARCH#section-6]].
+
+    <p>In practice, we do not expect this to cause redundant prefetches, since server operators and the corresponding speculation rules-writing web developers will follow best practices and use static No-Vary-Search values.
+  </div>
+
+  <div class="example" id="example-non-matching-nvs">
+    <p>Consider three [=prefetch records=]:
+
+    * |A| has a [=prefetch record/URL=] of `https://example.com?a=1&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
+    * |B| has a [=prefetch record/URL=] of `https://example.com?a=2&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("b")`.
+    * |C| has a [=prefetch record/URL=] of `https://example.com?a=2&b=2` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
+
+    <p>With the current definition of [=has a matching prefetch record=], none of these records match each other.
+
+    <p>A definition which did not require equivalent No-Vary-Search values could consider |A| and |B| to match (using |A|'s [=prefetch record/No-Vary-Search hint=]), and |B| and |C| to match (using |B|'s [=prefetch record/No-Vary-Search hint=]). But it could not consider |A| and |C| to match, so it would not be transitive, and thus not an equivalence relation.
+  </div>
 </div>
 
 <div algorithm>
