@@ -4,7 +4,7 @@
   <title>Speculation Rules</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 97a1608be, updated Mon Feb 3 16:09:34 2025 -0800" name="generator">
+  <meta content="Bikeshed version 47d87adb7, updated Tue Feb 18 17:18:43 2025 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/speculation-rules.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -594,6 +594,127 @@ a.self-link::before            { content: "¶"; }
 .heading > a.self-link::before { content: "§"; }
 dfn > a.self-link::before      { content: "#"; }
 </style>
+<style>/* Boilerplate: style-syntax-highlighting */
+code.highlight { padding: .1em; border-radius: .3em; }
+pre.highlight, pre > code.highlight { display: block; padding: 1em; margin: .5em 0; overflow: auto; border-radius: 0; }
+
+.highlight:not(.idl) { background: rgba(0, 0, 0, .03); }
+c-[a] { color: #990055 } /* Keyword.Declaration */
+c-[b] { color: #990055 } /* Keyword.Type */
+c-[c] { color: #708090 } /* Comment */
+c-[d] { color: #708090 } /* Comment.Multiline */
+c-[e] { color: #0077aa } /* Name.Attribute */
+c-[f] { color: #669900 } /* Name.Tag */
+c-[g] { color: #222222 } /* Name.Variable */
+c-[k] { color: #990055 } /* Keyword */
+c-[l] { color: #000000 } /* Literal */
+c-[m] { color: #000000 } /* Literal.Number */
+c-[n] { color: #0077aa } /* Name */
+c-[o] { color: #999999 } /* Operator */
+c-[p] { color: #999999 } /* Punctuation */
+c-[s] { color: #a67f59 } /* Literal.String */
+c-[t] { color: #a67f59 } /* Literal.String.Single */
+c-[u] { color: #a67f59 } /* Literal.String.Double */
+c-[cp] { color: #708090 } /* Comment.Preproc */
+c-[c1] { color: #708090 } /* Comment.Single */
+c-[cs] { color: #708090 } /* Comment.Special */
+c-[kc] { color: #990055 } /* Keyword.Constant */
+c-[kn] { color: #990055 } /* Keyword.Namespace */
+c-[kp] { color: #990055 } /* Keyword.Pseudo */
+c-[kr] { color: #990055 } /* Keyword.Reserved */
+c-[ld] { color: #000000 } /* Literal.Date */
+c-[nc] { color: #0077aa } /* Name.Class */
+c-[no] { color: #0077aa } /* Name.Constant */
+c-[nd] { color: #0077aa } /* Name.Decorator */
+c-[ni] { color: #0077aa } /* Name.Entity */
+c-[ne] { color: #0077aa } /* Name.Exception */
+c-[nf] { color: #0077aa } /* Name.Function */
+c-[nl] { color: #0077aa } /* Name.Label */
+c-[nn] { color: #0077aa } /* Name.Namespace */
+c-[py] { color: #0077aa } /* Name.Property */
+c-[ow] { color: #999999 } /* Operator.Word */
+c-[mb] { color: #000000 } /* Literal.Number.Bin */
+c-[mf] { color: #000000 } /* Literal.Number.Float */
+c-[mh] { color: #000000 } /* Literal.Number.Hex */
+c-[mi] { color: #000000 } /* Literal.Number.Integer */
+c-[mo] { color: #000000 } /* Literal.Number.Oct */
+c-[sb] { color: #a67f59 } /* Literal.String.Backtick */
+c-[sc] { color: #a67f59 } /* Literal.String.Char */
+c-[sd] { color: #a67f59 } /* Literal.String.Doc */
+c-[se] { color: #a67f59 } /* Literal.String.Escape */
+c-[sh] { color: #a67f59 } /* Literal.String.Heredoc */
+c-[si] { color: #a67f59 } /* Literal.String.Interpol */
+c-[sx] { color: #a67f59 } /* Literal.String.Other */
+c-[sr] { color: #a67f59 } /* Literal.String.Regex */
+c-[ss] { color: #a67f59 } /* Literal.String.Symbol */
+c-[vc] { color: #0077aa } /* Name.Variable.Class */
+c-[vg] { color: #0077aa } /* Name.Variable.Global */
+c-[vi] { color: #0077aa } /* Name.Variable.Instance */
+c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
+
+@media (prefers-color-scheme: dark) {
+    .highlight:not(.idl) { background: rgba(255, 255, 255, .05); }
+
+    c-[a] { color: #d33682 } /* Keyword.Declaration */
+    c-[b] { color: #d33682 } /* Keyword.Type */
+    c-[c] { color: #2aa198 } /* Comment */
+    c-[d] { color: #2aa198 } /* Comment.Multiline */
+    c-[e] { color: #268bd2 } /* Name.Attribute */
+    c-[f] { color: #b58900 } /* Name.Tag */
+    c-[g] { color: #cb4b16 } /* Name.Variable */
+    c-[k] { color: #d33682 } /* Keyword */
+    c-[l] { color: #657b83 } /* Literal */
+    c-[m] { color: #657b83 } /* Literal.Number */
+    c-[n] { color: #268bd2 } /* Name */
+    c-[o] { color: #657b83 } /* Operator */
+    c-[p] { color: #657b83 } /* Punctuation */
+    c-[s] { color: #6c71c4 } /* Literal.String */
+    c-[t] { color: #6c71c4 } /* Literal.String.Single */
+    c-[u] { color: #6c71c4 } /* Literal.String.Double */
+    c-[ch] { color: #2aa198 } /* Comment.Hashbang */
+    c-[cp] { color: #2aa198 } /* Comment.Preproc */
+    c-[cpf] { color: #2aa198 } /* Comment.PreprocFile */
+    c-[c1] { color: #2aa198 } /* Comment.Single */
+    c-[cs] { color: #2aa198 } /* Comment.Special */
+    c-[kc] { color: #d33682 } /* Keyword.Constant */
+    c-[kn] { color: #d33682 } /* Keyword.Namespace */
+    c-[kp] { color: #d33682 } /* Keyword.Pseudo */
+    c-[kr] { color: #d33682 } /* Keyword.Reserved */
+    c-[ld] { color: #657b83 } /* Literal.Date */
+    c-[nc] { color: #268bd2 } /* Name.Class */
+    c-[no] { color: #268bd2 } /* Name.Constant */
+    c-[nd] { color: #268bd2 } /* Name.Decorator */
+    c-[ni] { color: #268bd2 } /* Name.Entity */
+    c-[ne] { color: #268bd2 } /* Name.Exception */
+    c-[nf] { color: #268bd2 } /* Name.Function */
+    c-[nl] { color: #268bd2 } /* Name.Label */
+    c-[nn] { color: #268bd2 } /* Name.Namespace */
+    c-[py] { color: #268bd2 } /* Name.Property */
+    c-[ow] { color: #657b83 } /* Operator.Word */
+    c-[mb] { color: #657b83 } /* Literal.Number.Bin */
+    c-[mf] { color: #657b83 } /* Literal.Number.Float */
+    c-[mh] { color: #657b83 } /* Literal.Number.Hex */
+    c-[mi] { color: #657b83 } /* Literal.Number.Integer */
+    c-[mo] { color: #657b83 } /* Literal.Number.Oct */
+    c-[sa] { color: #6c71c4 } /* Literal.String.Affix */
+    c-[sb] { color: #6c71c4 } /* Literal.String.Backtick */
+    c-[sc] { color: #6c71c4 } /* Literal.String.Char */
+    c-[dl] { color: #6c71c4 } /* Literal.String.Delimiter */
+    c-[sd] { color: #6c71c4 } /* Literal.String.Doc */
+    c-[se] { color: #6c71c4 } /* Literal.String.Escape */
+    c-[sh] { color: #6c71c4 } /* Literal.String.Heredoc */
+    c-[si] { color: #6c71c4 } /* Literal.String.Interpol */
+    c-[sx] { color: #6c71c4 } /* Literal.String.Other */
+    c-[sr] { color: #6c71c4 } /* Literal.String.Regex */
+    c-[ss] { color: #6c71c4 } /* Literal.String.Symbol */
+    c-[fm] { color: #268bd2 } /* Name.Function.Magic */
+    c-[vc] { color: #cb4b16 } /* Name.Variable.Class */
+    c-[vg] { color: #cb4b16 } /* Name.Variable.Global */
+    c-[vi] { color: #cb4b16 } /* Name.Variable.Instance */
+    c-[vm] { color: #cb4b16 } /* Name.Variable.Magic */
+    c-[il] { color: #657b83 } /* Literal.Number.Integer.Long */
+}
+</style>
 <style>/* Boilerplate: style-var-click-highlighting */
 /*
 Colors were chosen in Lab using https://nixsensor.com/free-color-converter/
@@ -641,7 +762,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-09">9 February 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-19">19 February 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1593,6 +1714,24 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </dl>
     <p class="note" role="note">A user agent’s heuristics for enacting non-eager candidates could incorporate a <a data-link-type="dfn" href="#prefetch-candidate-no-vary-search-hint" id="ref-for-prefetch-candidate-no-vary-search-hint③">No-Vary-Search hint</a>. For example, a user hovering over a link whose URL and a candidate’s <a data-link-type="dfn" href="#prefetch-candidate-url" id="ref-for-prefetch-candidate-url④">URL</a> are <a data-link-type="dfn" href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing" id="ref-for-name-comparing">equivalent modulo search variance</a> given the candidate’s <a data-link-type="dfn" href="#prefetch-candidate-no-vary-search-hint" id="ref-for-prefetch-candidate-no-vary-search-hint④">No-Vary-Search hint</a> could indicate to the user agent that enacting it would be useful.</p>
     <p>Notwithstanding the above, user agents should prioritize user preferences (express and implied, such as a low-data-usage mode) over eagerness expressed by the author.</p>
+    <div class="example" id="example-multiple-matching-rules">
+     <a class="self-link" href="#example-multiple-matching-rules"></a> 
+     <p>It’s possible for multiple speculation rules to generate "the same" speculative navigation request, represented in the above algorithm by multiple similar candidates. For example, consider </p>
+<pre class="highlight"><c- p>{</c->
+  <c- f>"prefetch"</c-><c- p>:</c-> <c- p>[</c->
+    <c- p>{</c->
+      <c- f>"urls"</c-><c- p>:</c-> <c- p>[</c-><c- u>"next.html"</c-><c- p>]</c->
+    <c- p>},</c->
+    <c- p>{</c->
+      <c- f>"urls"</c-><c- p>:</c-> <c- p>[</c-><c- u>"next.html"</c-><c- p>],</c->
+      <c- f>"referrer_policy"</c-><c- p>:</c-> <c- u>"no-referrer"</c->
+    <c- p>}</c->
+  <c- p>]</c->
+<c- p>}</c->
+</pre>
+     <p>Because <a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch①">prefetching</a> or <a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering②">prerendering</a> is a no-op if there is already a matching request in progress, following the above algorithm will generally result in the first rule winning. So in our example, the request will be made with the default referrer policy, not <code><a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer" id="ref-for-referrer-policy-no-referrer">"no-referrer"</a></code>.</p>
+     <p>Because of the "<span class="allow-2119">may</span>" step in the algorithm, user agents could technically instead choose to let the second rule win, by skipping the first candidate for <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> reasons, but this is expected to be rare. Usually, a user agent would either skip none or all of the matching rules, at least within a given <a data-link-type="dfn" href="#prefetch-candidate-eagerness" id="ref-for-prefetch-candidate-eagerness③">eagerness</a> level.</p>
+    </div>
    </div>
    <p class="issue" id="issue-1cafd308"><a class="self-link" href="#issue-1cafd308"></a> We should also cancel speculated prerenders. </p>
    <h3 class="heading settled" data-level="1.8" id="document-rule-predicate-matching"><span class="secno">1.8. </span><span class="content">Document rule predicate matching</span><a class="self-link" href="#document-rule-predicate-matching"></a></h3>
@@ -2092,6 +2231,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="f937b7b6">continue</span>
      <li><span class="dfn-paneled" id="1243a891">exist</span>
      <li><span class="dfn-paneled" id="16d07e10">for each</span>
+     <li><span class="dfn-paneled" id="860300d4">implementation-defined</span>
      <li><span class="dfn-paneled" id="7a87d819">is</span>
      <li><span class="dfn-paneled" id="c88f3887">item</span>
      <li><span class="dfn-paneled" id="d14a6f26">key</span>
@@ -2148,6 +2288,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[REFERRER-POLICY]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="bb0c2ce5">"no-referrer"</span>
      <li><span class="dfn-paneled" id="2d09a0dd">referrer policy</span>
     </ul>
    <li>
@@ -2453,7 +2594,7 @@ let dfnPanelData = {
 "1037f0b6": {"dfnID":"1037f0b6","dfnText":"src","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-script-src"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-dom-script-src\u2460"}],"title":"1.3. Prepare the script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src"},
 "1243a891": {"dfnID":"1243a891","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"},{"id":"ref-for-map-exists\u2460"},{"id":"ref-for-map-exists\u2461"},{"id":"ref-for-map-exists\u2462"},{"id":"ref-for-map-exists\u2463"},{"id":"ref-for-map-exists\u2464"},{"id":"ref-for-map-exists\u2465"},{"id":"ref-for-map-exists\u2466"},{"id":"ref-for-map-exists\u2467"},{"id":"ref-for-map-exists\u2468"},{"id":"ref-for-map-exists\u2460\u24ea"},{"id":"ref-for-map-exists\u2460\u2460"},{"id":"ref-for-map-exists\u2460\u2461"},{"id":"ref-for-map-exists\u2460\u2462"},{"id":"ref-for-map-exists\u2460\u2463"},{"id":"ref-for-map-exists\u2460\u2464"},{"id":"ref-for-map-exists\u2460\u2465"},{"id":"ref-for-map-exists\u2460\u2466"},{"id":"ref-for-map-exists\u2460\u2467"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
 "13dd6cae": {"dfnID":"13dd6cae","dfnText":"node navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-node-navigable"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable"},
-"14a6613b": {"dfnID":"14a6613b","dfnText":"prefetch","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch"},
+"14a6613b": {"dfnID":"14a6613b","dfnText":"prefetch","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch"},{"id":"ref-for-prefetch\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch"},
 "154d8845": {"dfnID":"154d8845","dfnText":"HTMLHyperlinkElementUtils","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlhyperlinkelementutils"}],"title":"1.8. Document rule predicate matching"}],"url":"https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils"},
 "167d1cb0": {"dfnID":"167d1cb0","dfnText":"replace","external":true,"refSections":[{"refs":[{"id":"ref-for-list-replace"}],"title":"1.2. The script element"}],"url":"https://infra.spec.whatwg.org/#list-replace"},
 "16d07e10": {"dfnID":"16d07e10","dfnText":"for each","external":true,"refSections":[{"refs":[{"id":"ref-for-list-iterate"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-list-iterate\u2460"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-list-iterate\u2461"},{"id":"ref-for-list-iterate\u2462"},{"id":"ref-for-list-iterate\u2463"},{"id":"ref-for-list-iterate\u2464"},{"id":"ref-for-list-iterate\u2465"},{"id":"ref-for-list-iterate\u2466"},{"id":"ref-for-list-iterate\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list-iterate\u2468"},{"id":"ref-for-list-iterate\u2460\u24ea"},{"id":"ref-for-list-iterate\u2460\u2460"},{"id":"ref-for-list-iterate\u2460\u2461"},{"id":"ref-for-list-iterate\u2460\u2462"},{"id":"ref-for-list-iterate\u2460\u2463"},{"id":"ref-for-list-iterate\u2460\u2464"},{"id":"ref-for-list-iterate\u2460\u2465"},{"id":"ref-for-list-iterate\u2460\u2466"}],"title":"1.7. Processing model"},{"refs":[{"id":"ref-for-list-iterate\u2460\u2467"},{"id":"ref-for-list-iterate\u2460\u2468"},{"id":"ref-for-list-iterate\u2461\u24ea"},{"id":"ref-for-list-iterate\u2461\u2460"}],"title":"1.8. Document rule predicate matching"},{"refs":[{"id":"ref-for-list-iterate\u2461\u2461"}],"title":"2.5. Does a source list allow all inline behavior for type?"},{"refs":[{"id":"ref-for-list-iterate\u2461\u2462"},{"id":"ref-for-list-iterate\u2461\u2463"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://infra.spec.whatwg.org/#list-iterate"},
@@ -2515,10 +2656,11 @@ let dfnPanelData = {
 "7fe03931": {"dfnID":"7fe03931","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-cross-origin-prefetch-ip-anonymization-policy-origin"}],"title":"1.7. Processing model"}],"url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin"},
 "85394472": {"dfnID":"85394472","dfnText":"Document","external":true,"refSections":[{"refs":[{"id":"ref-for-document"}],"title":"1.7. Processing model"}],"url":"https://dom.spec.whatwg.org/#document"},
 "857d5516": {"dfnID":"857d5516","dfnText":"client","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-client"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-request-client"},
+"860300d4": {"dfnID":"860300d4","dfnText":"implementation-defined","external":true,"refSections":[{"refs":[{"id":"ref-for-implementation-defined"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#implementation-defined"},
 "885e47de": {"dfnID":"885e47de","dfnText":"cancel and discard","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-cancel-and-discard"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-cancel-and-discard"},
 "8c33c575": {"dfnID":"8c33c575","dfnText":"cross-origin prefetch IP anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-cross-origin-prefetch-ip-anonymization-policy"}],"title":"1.7. Processing model"}],"url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy"},
 "902380f7": {"dfnID":"902380f7","dfnText":"credentials mode","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-credentials-mode"}],"title":"4.1. Cross-site request forgery"}],"url":"https://fetch.spec.whatwg.org/#concept-request-credentials-mode"},
-"97efccfd": {"dfnID":"97efccfd","dfnText":"start referrer-initiated prerendering","external":true,"refSections":[{"refs":[{"id":"ref-for-start-referrer-initiated-prerendering"},{"id":"ref-for-start-referrer-initiated-prerendering\u2460"}],"title":"1.7. Processing model"}],"url":"prerendering.html#start-referrer-initiated-prerendering"},
+"97efccfd": {"dfnID":"97efccfd","dfnText":"start referrer-initiated prerendering","external":true,"refSections":[{"refs":[{"id":"ref-for-start-referrer-initiated-prerendering"},{"id":"ref-for-start-referrer-initiated-prerendering\u2460"},{"id":"ref-for-start-referrer-initiated-prerendering\u2461"}],"title":"1.7. Processing model"}],"url":"prerendering.html#start-referrer-initiated-prerendering"},
 "984221ca": {"dfnID":"984221ca","dfnText":"struct","external":true,"refSections":[{"refs":[{"id":"ref-for-struct"},{"id":"ref-for-struct\u2460"},{"id":"ref-for-struct\u2461"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-struct\u2462"},{"id":"ref-for-struct\u2463"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#struct"},
 "99117fcc": {"dfnID":"99117fcc","dfnText":"No-Vary-Search hint","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-no-vary-search-hint"},{"id":"ref-for-prefetch-record-no-vary-search-hint\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-no-vary-search-hint"},
 "99c988d6": {"dfnID":"99c988d6","dfnText":"remove","external":true,"refSections":[{"refs":[{"id":"ref-for-list-remove"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-list-remove\u2460"},{"id":"ref-for-list-remove\u2461"}],"title":"1.5. External speculation rule sets"}],"url":"https://infra.spec.whatwg.org/#list-remove"},
@@ -2553,6 +2695,7 @@ let dfnPanelData = {
 "b4c5b3f7": {"dfnID":"b4c5b3f7","dfnText":"RequestDestination","external":true,"refSections":[{"refs":[{"id":"ref-for-requestdestination"}],"title":"3.1. Destination"}],"url":"https://fetch.spec.whatwg.org/#requestdestination"},
 "b6ae4501": {"dfnID":"b6ae4501","dfnText":"networking task source","external":true,"refSections":[{"refs":[{"id":"ref-for-networking-task-source"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source"},
 "ba920583": {"dfnID":"ba920583","dfnText":"style","external":true,"refSections":[{"refs":[{"id":"ref-for-the-style-element"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://html.spec.whatwg.org/multipage/semantics.html#the-style-element"},
+"bb0c2ce5": {"dfnID":"bb0c2ce5","dfnText":"\"no-referrer\"","external":true,"refSections":[{"refs":[{"id":"ref-for-referrer-policy-no-referrer"}],"title":"1.7. Processing model"}],"url":"https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer"},
 "bc1b7d17": {"dfnID":"bc1b7d17","dfnText":"prefetch IP anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-ip-anonymization-policy"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-ip-anonymization-policy"},
 "c62cd7cf": {"dfnID":"c62cd7cf","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-origin"}],"title":"1.7. Processing model"}],"url":"https://dom.spec.whatwg.org/#concept-document-origin"},
 "c7c0dde1": {"dfnID":"c7c0dde1","dfnText":"url","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-hyperlink-url"},{"id":"ref-for-concept-hyperlink-url\u2460"},{"id":"ref-for-concept-hyperlink-url\u2461"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url"},
@@ -2632,7 +2775,7 @@ let dfnPanelData = {
 "prefetch-candidate": {"dfnID":"prefetch-candidate","dfnText":"prefetch candidate","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate"},{"id":"ref-for-prefetch-candidate\u2460"},{"id":"ref-for-prefetch-candidate\u2461"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate"},
 "prefetch-candidate-anonymization-policy": {"dfnID":"prefetch-candidate-anonymization-policy","dfnText":"anonymization policy","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate-anonymization-policy"},{"id":"ref-for-prefetch-candidate-anonymization-policy\u2460"},{"id":"ref-for-prefetch-candidate-anonymization-policy\u2461"},{"id":"ref-for-prefetch-candidate-anonymization-policy\u2462"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate-anonymization-policy"},
 "prefetch-candidate-continues": {"dfnID":"prefetch-candidate-continues","dfnText":"continues","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate-continues"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate-continues"},
-"prefetch-candidate-eagerness": {"dfnID":"prefetch-candidate-eagerness","dfnText":"eagerness","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate-eagerness"},{"id":"ref-for-prefetch-candidate-eagerness\u2460"},{"id":"ref-for-prefetch-candidate-eagerness\u2461"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate-eagerness"},
+"prefetch-candidate-eagerness": {"dfnID":"prefetch-candidate-eagerness","dfnText":"eagerness","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate-eagerness"},{"id":"ref-for-prefetch-candidate-eagerness\u2460"},{"id":"ref-for-prefetch-candidate-eagerness\u2461"},{"id":"ref-for-prefetch-candidate-eagerness\u2462"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate-eagerness"},
 "prefetch-candidate-no-vary-search-hint": {"dfnID":"prefetch-candidate-no-vary-search-hint","dfnText":"No-Vary-Search hint","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate-no-vary-search-hint"},{"id":"ref-for-prefetch-candidate-no-vary-search-hint\u2460"},{"id":"ref-for-prefetch-candidate-no-vary-search-hint\u2461"},{"id":"ref-for-prefetch-candidate-no-vary-search-hint\u2462"},{"id":"ref-for-prefetch-candidate-no-vary-search-hint\u2463"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate-no-vary-search-hint"},
 "prefetch-candidate-referrer-policy": {"dfnID":"prefetch-candidate-referrer-policy","dfnText":"referrer policy","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate-referrer-policy"},{"id":"ref-for-prefetch-candidate-referrer-policy\u2460"},{"id":"ref-for-prefetch-candidate-referrer-policy\u2461"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate-referrer-policy"},
 "prefetch-candidate-url": {"dfnID":"prefetch-candidate-url","dfnText":"URL","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate-url"},{"id":"ref-for-prefetch-candidate-url\u2460"},{"id":"ref-for-prefetch-candidate-url\u2461"},{"id":"ref-for-prefetch-candidate-url\u2462"},{"id":"ref-for-prefetch-candidate-url\u2463"}],"title":"1.7. Processing model"}],"url":"#prefetch-candidate-url"},
@@ -3201,6 +3344,7 @@ let refsData = {
 "https://infra.spec.whatwg.org/#ascii-case-insensitive": {"displayText":"ASCII case-insensitive","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"ascii case-insensitive","type":"dfn","url":"https://infra.spec.whatwg.org/#ascii-case-insensitive"},
 "https://infra.spec.whatwg.org/#assert": {"displayText":"assert","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"assert","type":"dfn","url":"https://infra.spec.whatwg.org/#assert"},
 "https://infra.spec.whatwg.org/#byte-sequence": {"displayText":"byte sequence","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"byte sequence","type":"dfn","url":"https://infra.spec.whatwg.org/#byte-sequence"},
+"https://infra.spec.whatwg.org/#implementation-defined": {"displayText":"implementation-defined","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"implementation-defined","type":"dfn","url":"https://infra.spec.whatwg.org/#implementation-defined"},
 "https://infra.spec.whatwg.org/#iteration-continue": {"displayText":"continue","export":true,"for_":["iteration"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"continue","type":"dfn","url":"https://infra.spec.whatwg.org/#iteration-continue"},
 "https://infra.spec.whatwg.org/#list": {"displayText":"list","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"list","type":"dfn","url":"https://infra.spec.whatwg.org/#list"},
 "https://infra.spec.whatwg.org/#list-append": {"displayText":"append","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"append","type":"dfn","url":"https://infra.spec.whatwg.org/#list-append"},
@@ -3233,6 +3377,7 @@ let refsData = {
 "https://w3c.github.io/webappsec-mixed-content/#blockable-mixed-content": {"displayText":"blockable mixed content","export":true,"for_":[],"level":"1","normative":true,"shortname":"mixed-content","spec":"mixed-content","status":"current","text":"blockable mixed content","type":"dfn","url":"https://w3c.github.io/webappsec-mixed-content/#blockable-mixed-content"},
 "https://w3c.github.io/webappsec-mixed-content/#should-block-fetch": {"displayText":"Should fetching request be blocked as mixed content?","export":true,"for_":[],"level":"1","normative":true,"shortname":"mixed-content","spec":"mixed-content","status":"current","text":"should fetching request be blocked as mixed content?","type":"dfn","url":"https://w3c.github.io/webappsec-mixed-content/#should-block-fetch"},
 "https://w3c.github.io/webappsec-referrer-policy/#referrer-policy": {"displayText":"referrer policy","export":true,"for_":[],"level":"1","normative":true,"shortname":"referrer-policy","spec":"referrer-policy","status":"current","text":"referrer policy","type":"dfn","url":"https://w3c.github.io/webappsec-referrer-policy/#referrer-policy"},
+"https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer": {"displayText":"\"no-referrer\"","export":true,"for_":[],"level":"1","normative":true,"shortname":"referrer-policy","spec":"referrer-policy","status":"current","text":"\"no-referrer\"","type":"dfn","url":"https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer"},
 "https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url": {"displayText":"potentially trustworthy URL","export":true,"for_":[],"level":"1","normative":true,"shortname":"secure-contexts","spec":"secure-contexts","status":"current","text":"potentially trustworthy url","type":"dfn","url":"https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url"},
 "prefetch.html#cross-origin-prefetch-ip-anonymization-policy": {"displayText":"cross-origin prefetch IP anonymization policy","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"cross-origin prefetch ip anonymization policy","type":"dfn","url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy"},
 "prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin": {"displayText":"origin","export":true,"for_":["cross-origin prefetch IP anonymization policy"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"origin","type":"dfn","url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin"},
