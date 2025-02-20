@@ -137,6 +137,10 @@ spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
 
+<style>
+dfn var { font-style: italic; } /* override bad base.css */
+</style>
+
 <h2 id="concepts">Concepts</h2>
 
 In light of <a href="https://privacycg.github.io/storage-partitioning/">storage partitioning</a>, this specification defines prefetch for navigations which would occur within the same partition (for example, top-level navigations within the same site) and for navigations which would occur in a separate partition (for example, top-level navigations to a different site).
@@ -297,6 +301,47 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for |navigable|'s [=navigable/active window=].
 
     <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
+</div>
+
+<div algorithm="has a matching prefetch record">
+  A {{Document}} |document| <dfn export>has a matching prefetch record</dfn> given a [=prefetch record=] |recordUnderConsideration| and an optional boolean <dfn for="has a matching prefetch record" export>|checkPrerender|</dfn> (default false) if the following algorithm returns true:
+
+  1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+    1. If |record|'s [=prefetch record/state=] is "`canceled`", then [=iteration/continue=].
+
+    1. If |checkPrerender| is true and |record|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+
+    1. Let |recordNVS| be null.
+
+    1. If |record|'s [=prefetch record/response=] is not null, then set |recordNVS| to the result of [=obtaining a URL search variance=] given |record|'s [=prefetch record/response=].
+
+    1. Otherwise, set |recordNVS| to |record|'s [=prefetch record/No-Vary-Search hint=].
+
+    1. If |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=] is not equal to |recordNVS|, then [=iteration/continue=].
+
+    1. If |recordUnderConsideration|'s [=prefetch record/URL=] and |record|'s [=prefetch record/URL=] are [=equivalent modulo search variance=] given |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=], then return true.
+
+  1. Return false.
+
+  <div class="note" id="note-require-equivalent-nvs">
+    <p>The requirement that the No-Vary-Search values be equivalent is somewhat strict. It means that some cases which could theoretically be treated as matching, are not treated as such, and thus redundant prefetches could happen.
+
+    <p>However, allowing more lenient matching makes the check no longer an equivalence relation, and thus prohibits implementation strategies based on normalized URL keys. For this reason, we require equivalent No-Vary-Search values. This is in line with the best practices for server operators demanded in [[NO-VARY-SEARCH#section-6]].
+
+    <p>In practice, we do not expect this to cause redundant prefetches, since server operators and the corresponding speculation rules-writing web developers will follow best practices and use static No-Vary-Search values.
+  </div>
+
+  <div class="example" id="example-non-matching-nvs">
+    <p>Consider three [=prefetch records=]:
+
+    * |A| has a [=prefetch record/URL=] of `https://example.com?a=1&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
+    * |B| has a [=prefetch record/URL=] of `https://example.com?a=2&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("b")`.
+    * |C| has a [=prefetch record/URL=] of `https://example.com?a=2&b=2` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
+
+    <p>With the current definition of [=has a matching prefetch record=], none of these records match each other.
+
+    <p>A definition which did not require equivalent No-Vary-Search values could consider |A| and |B| to match (using |A|'s [=prefetch record/No-Vary-Search hint=]), and |B| and |C| to match (using |B|'s [=prefetch record/No-Vary-Search hint=]). But it could not consider |A| and |C| to match, so it would not be transitive, and thus not an equivalence relation.
+  </div>
 </div>
 
 <div algorithm>
@@ -666,6 +711,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 <div algorithm>
     To <dfn export>prefetch</dfn> given a {{Document}} |document| and a [=prefetch record=] |prefetchRecord|, perform the following steps.
 
+    1. If |document| [=has a matching prefetch record=] given |prefetchRecord|, then return.
     1. Let |sourceSnapshotParams| be the result of [=snapshotting source snapshot params=] given |document|.
     1. Let |targetSnapshotParams| be the result of [=snapshotting target snapshot params=] given |document|'s [=node navigable=].
     1. Set |prefetchRecord|'s [=prefetch record/source partition key=] to the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].

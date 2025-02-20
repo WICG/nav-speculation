@@ -93,8 +93,11 @@ spec: nav-speculation; urlPrefix: prefetch.html
     text: supports prefetch; url: supports-prefetch
     text: list of sufficiently-strict speculative navigation referrer policies
     text: wait for a matching prefetch record; url: wait-for-a-matching-prefetch-record
+    text: has a matching prefetch record
     for: prefetch record
       text: prerendering traversable
+    for: has a matching prefetch record
+      text: checkPrerender
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -291,6 +294,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
   1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=], then return.
 
      <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
+
+  1. If |referrerDoc| [=has a matching prefetch record=] given |prefetchRecord| with <i>[=has a matching prefetch record/checkPrerender=]</i> set to true, then return.
 
   1. [=Assert=]: |prefetchRecord|'s [=prefetch record/prerendering traversable=] is "`to be created`".
 
