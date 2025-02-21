@@ -4,7 +4,7 @@
   <title>Prefetch</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 47d87adb7, updated Tue Feb 18 17:18:43 2025 -0800" name="generator">
+  <meta content="Bikeshed version 60c422380, updated Thu Feb 20 19:11:22 2025 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prefetch.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -613,7 +613,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-19">19 February 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-20">20 February 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -654,7 +654,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#navigation-timing-patches"><span class="secno">3</span> <span class="content">Navigation Timing Patches</span></a>
     <li><a href="#prefetch-algorithms"><span class="secno">4</span> <span class="content">Prefetch algorithms</span></a>
     <li><a href="#cookies"><span class="secno">5</span> <span class="content">Cookies</span></a>
-    <li><a href="#sec-purpose-header"><span class="secno">6</span> <span class="content">The <code>Sec-Purpose</code> HTTP request header</span></a>
+    <li><a href="#sec-purpose-header"><span class="secno">6</span> <span class="content">The `<code><span>Sec-Purpose</span></code>` HTTP request header</span></a>
     <li><a href="#security-considerations"><span class="secno">7</span> <span class="content">Security considerations</span></a>
     <li><a href="#privacy-considerations"><span class="secno">8</span> <span class="content">Privacy considerations</span></a>
     <li>
@@ -1338,7 +1338,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p>If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-prerendering-traversable" id="ref-for-prefetch-record-prerendering-traversable①">prerendering traversable</a> is not null, then add a parameter whose key is "<a data-link-type="dfn" href="#sec-purpose-prefetch-prerender" id="ref-for-sec-purpose-prefetch-prerender"><code>prerender</code></a>" and whose value is true to the <code>prefetch</code> token in <var>purpose</var>.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-set-structured-header" id="ref-for-concept-header-list-set-structured-header">Set a structured field value</a> given (<a data-link-type="http-header" href="#http-headerdef-sec-purpose" id="ref-for-http-headerdef-sec-purpose"><code>`Sec-Purpose`</code></a>, <var>purpose</var>) in <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list①">header list</a>.</p>
+          <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-set-structured-header" id="ref-for-concept-header-list-set-structured-header">Set a structured field value</a> given (`<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-sec-purpose" id="ref-for-http-sec-purpose">Sec-Purpose</a></code>`, <var>purpose</var>) in <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list①">header list</a>.</p>
           <div class="note" role="note"> Implementations might also send vendor-specific headers, like Chromium’s <code>`Purpose`</code>/<code>`prefetch`</code>, Mozilla’s <code>`X-moz`</code>/<code>`prefetch`</code>, and WebKit’s <code>`X-Purpose`</code>/<code>`preview`</code>, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt this common header. </div>
          <li data-md>
           <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-current-url" id="ref-for-concept-request-current-url①">current URL</a> is not <a data-link-type="dfn" href="https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url" id="ref-for-potentially-trustworthy-url">potentially trustworthy</a>, then set <var>response</var> to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error③">network error</a> and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break③">break</a>.</p>
@@ -1603,7 +1603,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert①⑦">Assert</a>: <var>status</var> is not a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#redirect-status" id="ref-for-redirect-status">redirect status</a>.</p>
      <li data-md>
       <p>If <var>status</var> is not an <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#ok-status" id="ref-for-ok-status">ok status</a>, then return false.</p>
-      <div class="note" role="note">In particular, this means that error responses aren’t stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a <a data-link-type="http-header" href="#http-headerdef-sec-purpose" id="ref-for-http-headerdef-sec-purpose①"><code>`Sec-Purpose`</code></a> request header indicating prefetch.</div>
+      <div class="note" role="note">In particular, this means that error responses aren’t stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a `<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-sec-purpose" id="ref-for-http-sec-purpose①">Sec-Purpose</a></code>` request header indicating prefetch.</div>
      <li data-md>
       <p>Return true.</p>
     </ol>
@@ -1613,7 +1613,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </div>
    </div>
    <h2 class="heading settled" data-level="5" id="cookies"><span class="secno">5. </span><span class="content">Cookies</span><a class="self-link" href="#cookies"></a></h2>
-   <p><a data-link-type="biblio" href="#biblio-cookies" title="HTTP State Management Mechanism">[COOKIES]</a> defines "cookies" which can be set using the <a data-link-type="http-header" href="https://httpwg.org/specs/rfc6265.html#set-cookie" id="ref-for-set-cookie"><code>`Set-Cookie`</code></a> response header field. Because the "<code>uncredentialed</code>" partitioning scheme forces a separate <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key③">network partition key</a> to be used, it’s necessary to copy these cookies into the ordinary partition as though they had been <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model">received</a> at the time of navigation.</p>
+   <p><a data-link-type="biblio" href="#biblio-cookies" title="HTTP State Management Mechanism">[COOKIES]</a> defines "cookies" which can be set using the `<code><a data-link-type="http-header" href="https://httpwg.org/specs/rfc6265.html#set-cookie" id="ref-for-set-cookie">Set-Cookie</a></code>` response header field. Because the "<code>uncredentialed</code>" partitioning scheme forces a separate <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#network-partition-key" id="ref-for-network-partition-key③">network partition key</a> to be used, it’s necessary to copy these cookies into the ordinary partition as though they had been <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model">received</a> at the time of navigation.</p>
    <div class="issue" id="issue-4f58f5c7"><a class="self-link" href="#issue-4f58f5c7"></a>Cache, though not necessary for correctness, would be useful to copy, too.</div>
    <div class="issue" id="issue-d2dc3650"><a class="self-link" href="#issue-d2dc3650"></a>Authentication entries can be acquired while cross-site, though this seems likely to be rare. (For instance, a site might redirect to a URL which contains URL credentials.) It might be reasonable to copy these, too, though it’s unclear whether we actually want to encourage this.</div>
    <div class="algorithm" data-algorithm="copy prefetch cookies">
@@ -1623,7 +1623,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>isolatedCookieStore</var> be the cookie store associated with <var>isolatedPartitionKey</var>.</p>
      <li data-md>
-      <p>For each <a data-link-type="dfn" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model①">cookie</a> <var>cookie</var> in <var>isolatedCookieStore</var>.</p>
+      <p>For each <a data-link-type="dfn" data-refhint-key="574eb588" href="https://httpwg.org/specs/rfc6265.html#storage-model" id="ref-for-storage-model①">cookie</a> <var>cookie</var> in <var>isolatedCookieStore</var>.</p>
       <ol>
        <li data-md>
         <p>Remove <var>cookie</var> from <var>isolatedCookieStore</var>.</p>
@@ -1678,8 +1678,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       </ol>
     </ol>
    </div>
-   <h2 class="heading settled" data-level="6" id="sec-purpose-header"><span class="secno">6. </span><span class="content">The <code>Sec-Purpose</code> HTTP request header</span><a class="self-link" href="#sec-purpose-header"></a></h2>
-   <p>The <dfn class="dfn-paneled" data-dfn-type="http-header" data-export id="http-headerdef-sec-purpose"><code>`Sec-Purpose`</code></dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.</p>
+   <h2 class="heading settled" data-level="6" id="sec-purpose-header"><span class="secno">6. </span><span class="content">The `<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-sec-purpose" id="ref-for-http-sec-purpose②">Sec-Purpose</a></code>` HTTP request header</span><a class="self-link" href="#sec-purpose-header"></a></h2>
+   <p><em>This section overrides the definition of the `<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-sec-purpose" id="ref-for-http-sec-purpose③">Sec-Purpose</a></code>` HTTP request header from <a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[FETCH]</a>.</em></p>
+   <p>The `<code><a data-link-type="http-header" href="https://fetch.spec.whatwg.org/#http-sec-purpose" id="ref-for-http-sec-purpose④">Sec-Purpose</a></code>` HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.</p>
    <p>The header field is an <a data-link-type="biblio" href="#biblio-rfc9651" title="Structured Field Values for HTTP">[RFC9651]</a> Structured Header whose value must be a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651.html#name-lists" id="ref-for-name-lists①">List</a>.</p>
    <p>It may contain an <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651.html#name-items" id="ref-for-name-items">Item</a> member which is the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens" id="ref-for-name-tokens①">Token</a> <code>prefetch</code>. If so, this indicates the request’s purpose is to download a resource it is anticipated will be fetched shortly.</p>
    <p>The following parameters are defined for the <code>prefetch</code> token:</p>
@@ -1766,7 +1767,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><a href="#prefetch-record-response">dfn for prefetch record</a><span>, in § 1</span>
     </ul>
    <li><a href="#prefetch-record-sandboxing-flag-set">sandboxing flag set</a><span>, in § 1</span>
-   <li><a href="#http-headerdef-sec-purpose">`Sec-Purpose`</a><span>, in § 6</span>
    <li><a href="#prefetch-record-source-partition-key">source partition key</a><span>, in § 1</span>
    <li><a href="#prefetch-record-start-time">start time</a><span>, in § 1</span>
    <li><a href="#prefetch-record-state">state</a><span>, in § 1</span>
@@ -1844,6 +1844,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="55213b5b">request</span>
      <li><span class="dfn-paneled" id="abe352cd">reserved client</span>
      <li><span class="dfn-paneled" id="ee7bba09">response</span>
+     <li><span class="dfn-paneled" id="6ba97d5f">Sec-Purpose</span>
      <li><span class="dfn-paneled" id="d9f4dab1">set</span>
      <li><span class="dfn-paneled" id="35b98f13">set a structured field value</span>
      <li><span class="dfn-paneled" id="a1d47575">status</span>
@@ -1991,13 +1992,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="5eb733b4">union</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[NAV-SPECULATION]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="b5201fff">getting the supported loading modes</span>
-     <li><span class="dfn-paneled" id="a132d33a">prerendering traversable</span>
-     <li><span class="dfn-paneled" id="32b89fc7">uncredentialed-prefetch</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[NAVIGATION-TIMING-2]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="a15b83c5">NavigationTimingType</span>
@@ -2013,7 +2007,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li>
     <a data-link-type="biblio">[PRERENDERING-REVAMPED]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="b5201fff">getting the supported loading modes</span>
+     <li><span class="dfn-paneled" id="a132d33a">prerendering traversable</span>
      <li><span class="dfn-paneled" id="0acae8bb">Supports-Loading-Mode</span>
+     <li><span class="dfn-paneled" id="32b89fc7">uncredentialed-prefetch</span>
     </ul>
    <li>
     <a data-link-type="biblio">[REFERRER-POLICY]</a> defines the following terms:
@@ -2069,6 +2066,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Yoav Weiss; Noam Rosenthal. <a href="https://w3c.github.io/navigation-timing/"><cite>Navigation Timing Level 2</cite></a>. URL: <a href="https://w3c.github.io/navigation-timing/">https://w3c.github.io/navigation-timing/</a>
    <dt id="biblio-no-vary-search">[NO-VARY-SEARCH]
    <dd><a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-no-vary-search"><cite>No-Vary-Search</cite></a>. Editor's Draft. URL: <a href="https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-no-vary-search">https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-no-vary-search</a>
+   <dt id="biblio-prerendering-revamped">[PRERENDERING-REVAMPED]
+   <dd><a href="https://wicg.github.io/nav-speculation/prerendering.html"><cite>Prerendering Revamped</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/nav-speculation/prerendering.html">https://wicg.github.io/nav-speculation/prerendering.html</a>
    <dt id="biblio-referrer-policy">[REFERRER-POLICY]
    <dd>Jochen Eisinger; Emily Stark. <a href="https://w3c.github.io/webappsec-referrer-policy/"><cite>Referrer Policy</cite></a>. URL: <a href="https://w3c.github.io/webappsec-referrer-policy/">https://w3c.github.io/webappsec-referrer-policy/</a>
    <dt id="biblio-resource-timing">[RESOURCE-TIMING]
@@ -2086,8 +2085,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <dd>Dominic Farolino; Robert Kowalski; Terin Stock. <a href="https://console.spec.whatwg.org/"><cite>Console Standard</cite></a>. Living Standard. URL: <a href="https://console.spec.whatwg.org/">https://console.spec.whatwg.org/</a>
    <dt id="biblio-navigation-timing">[NAVIGATION-TIMING]
    <dd>Zhiheng Wang. <a href="https://www.w3.org/TR/navigation-timing/"><cite>Navigation Timing</cite></a>. 17 December 2012. REC. URL: <a href="https://www.w3.org/TR/navigation-timing/">https://www.w3.org/TR/navigation-timing/</a>
-   <dt id="biblio-prerendering-revamped">[PRERENDERING-REVAMPED]
-   <dd><a href="https://wicg.github.io/nav-speculation/prerendering.html"><cite>Prerendering Revamped</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/nav-speculation/prerendering.html">https://wicg.github.io/nav-speculation/prerendering.html</a>
   </dl>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
@@ -2364,7 +2361,7 @@ let dfnPanelData = {
 "4437edc6": {"dfnID":"4437edc6","dfnText":"navigation params","external":true,"refSections":[{"refs":[{"id":"ref-for-navigation-params"},{"id":"ref-for-navigation-params\u2460"},{"id":"ref-for-navigation-params\u2461"},{"id":"ref-for-navigation-params\u2462"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-navigation-params\u2463"},{"id":"ref-for-navigation-params\u2464"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-navigation-params\u2465"}],"title":"4. Prefetch algorithms"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params"},
 "44d0e8a7": {"dfnID":"44d0e8a7","dfnText":"use-URL-credentials flag","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-use-url-credentials-flag"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#concept-request-use-url-credentials-flag"},
 "457a6f4c": {"dfnID":"457a6f4c","dfnText":"sandboxing flag set","external":true,"refSections":[{"refs":[{"id":"ref-for-sandboxing-flag-set"},{"id":"ref-for-sandboxing-flag-set\u2460"},{"id":"ref-for-sandboxing-flag-set\u2461"},{"id":"ref-for-sandboxing-flag-set\u2462"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-sandboxing-flag-set\u2463"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#sandboxing-flag-set"},
-"45e5882e": {"dfnID":"45e5882e","dfnText":"List","external":true,"refSections":[{"refs":[{"id":"ref-for-name-lists"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-name-lists\u2460"}],"title":"6. The Sec-Purpose HTTP request header"}],"url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-lists"},
+"45e5882e": {"dfnID":"45e5882e","dfnText":"List","external":true,"refSections":[{"refs":[{"id":"ref-for-name-lists"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-name-lists\u2460"}],"title":"6. The `Sec-Purpose` HTTP request header"}],"url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-lists"},
 "45ecc010": {"dfnID":"45ecc010","dfnText":"cross-origin opener policy (for navigation params)","external":true,"refSections":[{"refs":[{"id":"ref-for-navigation-params-coop"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-navigation-params-coop\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-coop"},
 "48438eb3": {"dfnID":"48438eb3","dfnText":"queue a global task","external":true,"refSections":[{"refs":[{"id":"ref-for-queue-a-global-task"}],"title":"4. Prefetch algorithms"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task"},
 "49a5521a": {"dfnID":"49a5521a","dfnText":"abort","external":true,"refSections":[{"refs":[{"id":"ref-for-fetch-controller-abort"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-fetch-controller-abort\u2460"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#fetch-controller-abort"},
@@ -2390,6 +2387,7 @@ let dfnPanelData = {
 "697965b2": {"dfnID":"697965b2","dfnText":"connection","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-connection"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#concept-connection"},
 "6981ec14": {"dfnID":"6981ec14","dfnText":"navigation timing type","external":true,"refSections":[{"refs":[{"id":"ref-for-navigation-params-nav-timing-type"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-navigation-params-nav-timing-type\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-nav-timing-type"},
 "6b815fdd": {"dfnID":"6b815fdd","dfnText":"is empty","external":true,"refSections":[{"refs":[{"id":"ref-for-list-is-empty"},{"id":"ref-for-list-is-empty\u2460"}],"title":"1. Concepts"}],"url":"https://infra.spec.whatwg.org/#list-is-empty"},
+"6ba97d5f": {"dfnID":"6ba97d5f","dfnText":"Sec-Purpose","external":true,"refSections":[{"refs":[{"id":"ref-for-http-sec-purpose"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-http-sec-purpose\u2460"}],"title":"4. Prefetch algorithms"},{"refs":[{"id":"ref-for-http-sec-purpose\u2461"},{"id":"ref-for-http-sec-purpose\u2462"},{"id":"ref-for-http-sec-purpose\u2463"}],"title":"6. The `Sec-Purpose` HTTP request header"}],"url":"https://fetch.spec.whatwg.org/#http-sec-purpose"},
 "6bb42fbb": {"dfnID":"6bb42fbb","dfnText":"fetch controller","external":true,"refSections":[{"refs":[{"id":"ref-for-fetch-controller"},{"id":"ref-for-fetch-controller\u2460"}],"title":"1. Concepts"}],"url":"https://fetch.spec.whatwg.org/#fetch-controller"},
 "6beb16ab": {"dfnID":"6beb16ab","dfnText":"current context is navigation source","external":true,"refSections":[{"refs":[{"id":"ref-for-coop-enforcement-source"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#coop-enforcement-source"},
 "6cb66c10": {"dfnID":"6cb66c10","dfnText":"process early hint headers","external":true,"refSections":[{"refs":[{"id":"ref-for-process-early-hint-headers"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/semantics.html#process-early-hint-headers"},
@@ -2441,7 +2439,7 @@ let dfnPanelData = {
 "a6b85a00": {"dfnID":"a6b85a00","dfnText":"credentials","external":true,"refSections":[{"refs":[{"id":"ref-for-credentials"},{"id":"ref-for-credentials\u2460"}],"title":"1. Concepts"}],"url":"https://fetch.spec.whatwg.org/#credentials"},
 "a72449dd": {"dfnID":"a72449dd","dfnText":"in parallel","external":true,"refSections":[{"refs":[{"id":"ref-for-in-parallel"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-in-parallel\u2460"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-in-parallel\u2461"}],"title":"4. Prefetch algorithms"}],"url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
 "a8b25997": {"dfnID":"a8b25997","dfnText":"redirect status","external":true,"refSections":[{"refs":[{"id":"ref-for-redirect-status"}],"title":"4. Prefetch algorithms"}],"url":"https://fetch.spec.whatwg.org/#redirect-status"},
-"aafd88f4": {"dfnID":"aafd88f4","dfnText":"Item","external":true,"refSections":[{"refs":[{"id":"ref-for-name-items"}],"title":"6. The Sec-Purpose HTTP request header"}],"url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-items"},
+"aafd88f4": {"dfnID":"aafd88f4","dfnText":"Item","external":true,"refSections":[{"refs":[{"id":"ref-for-name-items"}],"title":"6. The `Sec-Purpose` HTTP request header"}],"url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-items"},
 "ab7486c3": {"dfnID":"ab7486c3","dfnText":"Set-Cookie","external":true,"refSections":[{"refs":[{"id":"ref-for-set-cookie"}],"title":"5. Cookies"}],"url":"https://httpwg.org/specs/rfc6265.html#set-cookie"},
 "abe352cd": {"dfnID":"abe352cd","dfnText":"reserved client","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-reserved-client"},{"id":"ref-for-concept-request-reserved-client\u2460"},{"id":"ref-for-concept-request-reserved-client\u2461"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-concept-request-reserved-client\u2462"},{"id":"ref-for-concept-request-reserved-client\u2463"},{"id":"ref-for-concept-request-reserved-client\u2464"},{"id":"ref-for-concept-request-reserved-client\u2465"},{"id":"ref-for-concept-request-reserved-client\u2466"},{"id":"ref-for-concept-request-reserved-client\u2467"},{"id":"ref-for-concept-request-reserved-client\u2468"},{"id":"ref-for-concept-request-reserved-client\u2460\u24ea"},{"id":"ref-for-concept-request-reserved-client\u2460\u2460"},{"id":"ref-for-concept-request-reserved-client\u2460\u2461"},{"id":"ref-for-concept-request-reserved-client\u2460\u2462"},{"id":"ref-for-concept-request-reserved-client\u2460\u2463"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#concept-request-reserved-client"},
 "ae2a6342": {"dfnID":"ae2a6342","dfnText":"top-level browsing context","external":true,"refSections":[{"refs":[{"id":"ref-for-top-level-browsing-context"},{"id":"ref-for-top-level-browsing-context\u2460"}],"title":"5. Cookies"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context"},
@@ -2458,7 +2456,7 @@ let dfnPanelData = {
 "bd2fe71e": {"dfnID":"bd2fe71e","dfnText":"processResponse","external":true,"refSections":[{"refs":[{"id":"ref-for-process-response"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#process-response"},
 "bd736ec6": {"dfnID":"bd736ec6","dfnText":"top-level traversable","external":true,"refSections":[{"refs":[{"id":"ref-for-top-level-traversable"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-top-level-traversable\u2460"},{"id":"ref-for-top-level-traversable\u2461"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-top-level-traversable\u2462"}],"title":"5. Cookies"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable"},
 "bf63a402": {"dfnID":"bf63a402","dfnText":"navigable container","external":true,"refSections":[{"refs":[{"id":"ref-for-navigable-container"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#navigable-container"},
-"c12ccfe9": {"dfnID":"c12ccfe9","dfnText":"Token","external":true,"refSections":[{"refs":[{"id":"ref-for-name-tokens"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-name-tokens\u2460"}],"title":"6. The Sec-Purpose HTTP request header"}],"url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens"},
+"c12ccfe9": {"dfnID":"c12ccfe9","dfnText":"Token","external":true,"refSections":[{"refs":[{"id":"ref-for-name-tokens"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-name-tokens\u2460"}],"title":"6. The `Sec-Purpose` HTTP request header"}],"url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens"},
 "c1ead35c": {"dfnID":"c1ead35c","dfnText":"origin (for cross-origin opener policy enforcement result)","external":true,"refSections":[{"refs":[{"id":"ref-for-coop-enforcement-origin"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#coop-enforcement-origin"},
 "c2c86ee8": {"dfnID":"c2c86ee8","dfnText":"history-navigation flag","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-history-navigation-flag"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#concept-request-history-navigation-flag"},
 "c4f03264": {"dfnID":"c4f03264","dfnText":"receive a cookie","external":true,"refSections":[{"refs":[{"id":"ref-for-storage-model"},{"id":"ref-for-storage-model\u2460"},{"id":"ref-for-storage-model\u2461"},{"id":"ref-for-storage-model\u2462"}],"title":"5. Cookies"}],"url":"https://httpwg.org/specs/rfc6265.html#storage-model"},
@@ -2517,10 +2515,9 @@ let dfnPanelData = {
 "find-a-matching-complete-prefetch-record": {"dfnID":"find-a-matching-complete-prefetch-record","dfnText":"find a matching complete prefetch record","external":false,"refSections":[{"refs":[{"id":"ref-for-find-a-matching-complete-prefetch-record"}],"title":"1. Concepts"}],"url":"#find-a-matching-complete-prefetch-record"},
 "has-a-matching-prefetch-record": {"dfnID":"has-a-matching-prefetch-record","dfnText":"has a matching prefetch record","external":false,"refSections":[{"refs":[{"id":"ref-for-has-a-matching-prefetch-record"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-has-a-matching-prefetch-record\u2460"}],"title":"4. Prefetch algorithms"}],"url":"#has-a-matching-prefetch-record"},
 "has-a-matching-prefetch-record-checkprerender": {"dfnID":"has-a-matching-prefetch-record-checkprerender","dfnText":"checkPrerender","external":false,"refSections":[],"url":"#has-a-matching-prefetch-record-checkprerender"},
-"http-headerdef-sec-purpose": {"dfnID":"http-headerdef-sec-purpose","dfnText":"`Sec-Purpose`","external":false,"refSections":[{"refs":[{"id":"ref-for-http-headerdef-sec-purpose"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-http-headerdef-sec-purpose\u2460"}],"title":"4. Prefetch algorithms"}],"url":"#http-headerdef-sec-purpose"},
 "list-of-sufficiently-strict-speculative-navigation-referrer-policies": {"dfnID":"list-of-sufficiently-strict-speculative-navigation-referrer-policies","dfnText":"list of sufficiently strict speculative navigation referrer policies","external":false,"refSections":[{"refs":[{"id":"ref-for-list-of-sufficiently-strict-speculative-navigation-referrer-policies"}],"title":"2. HTML Patches"}],"url":"#list-of-sufficiently-strict-speculative-navigation-referrer-policies"},
 "navigation-params-delivery-type": {"dfnID":"navigation-params-delivery-type","dfnText":"delivery type","external":false,"refSections":[{"refs":[{"id":"ref-for-navigation-params-delivery-type"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-navigation-params-delivery-type\u2460"}],"title":"2. HTML Patches"}],"url":"#navigation-params-delivery-type"},
-"prefetch": {"dfnID":"prefetch","dfnText":"prefetch","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch"},{"id":"ref-for-prefetch\u2460"}],"title":"6. The Sec-Purpose HTTP request header"}],"url":"#prefetch"},
+"prefetch": {"dfnID":"prefetch","dfnText":"prefetch","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch"},{"id":"ref-for-prefetch\u2460"}],"title":"6. The `Sec-Purpose` HTTP request header"}],"url":"#prefetch"},
 "prefetch-ip-anonymization-policy": {"dfnID":"prefetch-ip-anonymization-policy","dfnText":"prefetch IP anonymization policy","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-ip-anonymization-policy"},{"id":"ref-for-prefetch-ip-anonymization-policy\u2460"}],"title":"1. Concepts"}],"url":"#prefetch-ip-anonymization-policy"},
 "prefetch-ip-anonymization-policy-requires-anonymity": {"dfnID":"prefetch-ip-anonymization-policy-requires-anonymity","dfnText":"requires anonymity","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-ip-anonymization-policy-requires-anonymity"}],"title":"2. HTML Patches"}],"url":"#prefetch-ip-anonymization-policy-requires-anonymity"},
 "prefetch-record": {"dfnID":"prefetch-record","dfnText":"prefetch record","external":false,"refSections":[{"refs":[{"id":"ref-for-prefetch-record"},{"id":"ref-for-prefetch-record\u2460"},{"id":"ref-for-prefetch-record\u2461"},{"id":"ref-for-prefetch-record\u2462"},{"id":"ref-for-prefetch-record\u2463"},{"id":"ref-for-prefetch-record\u2464"},{"id":"ref-for-prefetch-record\u2465"},{"id":"ref-for-prefetch-record\u2466"},{"id":"ref-for-prefetch-record\u2467"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-prefetch-record\u2468"},{"id":"ref-for-prefetch-record\u2460\u24ea"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-prefetch-record\u2460\u2460"}],"title":"4. Prefetch algorithms"}],"url":"#prefetch-record"},
@@ -2954,7 +2951,6 @@ let refsData = {
 "#exchange-record-response": {"displayText":"response","export":true,"for_":["exchange record"],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"response","type":"dfn","url":"#exchange-record-response"},
 "#find-a-matching-complete-prefetch-record": {"displayText":"find a matching complete prefetch record","export":true,"for_":[],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"find a matching complete prefetch record","type":"dfn","url":"#find-a-matching-complete-prefetch-record"},
 "#has-a-matching-prefetch-record": {"displayText":"has a matching prefetch record","export":true,"for_":[],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"has a matching prefetch record","type":"dfn","url":"#has-a-matching-prefetch-record"},
-"#http-headerdef-sec-purpose": {"displayText":"`sec-purpose`","export":true,"for_":[],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"`sec-purpose`","type":"http-header","url":"#http-headerdef-sec-purpose"},
 "#list-of-sufficiently-strict-speculative-navigation-referrer-policies": {"displayText":"list of sufficiently strict speculative navigation referrer policies","export":true,"for_":[],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"list of sufficiently strict speculative navigation referrer policies","type":"dfn","url":"#list-of-sufficiently-strict-speculative-navigation-referrer-policies"},
 "#navigation-params-delivery-type": {"displayText":"delivery type","export":true,"for_":["navigation params"],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"delivery type","type":"dfn","url":"#navigation-params-delivery-type"},
 "#prefetch": {"displayText":"prefetch","export":true,"for_":[],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"prefetch","type":"dfn","url":"#prefetch"},
@@ -2987,6 +2983,7 @@ let refsData = {
 "#source-snapshot-params-prefetch-records": {"displayText":"prefetch records","export":true,"for_":["source snapshot params"],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"prefetch records","type":"dfn","url":"#source-snapshot-params-prefetch-records"},
 "#supports-prefetch": {"displayText":"supports prefetch","export":true,"for_":[],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"supports prefetch","type":"dfn","url":"#supports-prefetch"},
 "#wait-for-a-matching-prefetch-record": {"displayText":"wait for a matching prefetch record","export":true,"for_":[],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch-1","status":"local","text":"wait for a matching prefetch record","type":"dfn","url":"#wait-for-a-matching-prefetch-record"},
+"574eb588_https://httpwg.org/specs/rfc6265.html#storage-model": {"displayText":"cookie","export":true,"for_":[],"level":"","normative":true,"shortname":"cookies","spec":"cookies","status":"anchor-block","text":"cookie","type":"dfn","url":"https://httpwg.org/specs/rfc6265.html#storage-model"},
 "https://console.spec.whatwg.org/#report-a-warning-to-the-console": {"displayText":"report a warning to the console","export":true,"for_":[],"level":"1","normative":true,"shortname":"console","spec":"console","status":"current","text":"report a warning to the console","type":"dfn","url":"https://console.spec.whatwg.org/#report-a-warning-to-the-console"},
 "https://dom.spec.whatwg.org/#concept-document-origin": {"displayText":"origin","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"origin","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-document-origin"},
 "https://dom.spec.whatwg.org/#concept-document-url": {"displayText":"URL","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"url","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-document-url"},
@@ -3034,6 +3031,7 @@ let refsData = {
 "https://fetch.spec.whatwg.org/#fetch-scheme": {"displayText":"fetch scheme","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"fetch scheme","type":"dfn","url":"https://fetch.spec.whatwg.org/#fetch-scheme"},
 "https://fetch.spec.whatwg.org/#fetch-useparallelqueue": {"displayText":"useParallelQueue","export":true,"for_":["fetch"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"useparallelqueue","type":"dfn","url":"https://fetch.spec.whatwg.org/#fetch-useparallelqueue"},
 "https://fetch.spec.whatwg.org/#http-scheme": {"displayText":"HTTP(S) scheme","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"http(s) scheme","type":"dfn","url":"https://fetch.spec.whatwg.org/#http-scheme"},
+"https://fetch.spec.whatwg.org/#http-sec-purpose": {"displayText":"Sec-Purpose","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"sec-purpose","type":"http-header","url":"https://fetch.spec.whatwg.org/#http-sec-purpose"},
 "https://fetch.spec.whatwg.org/#network-partition-key": {"displayText":"network partition key","export":true,"for_":[],"level":"","normative":true,"shortname":"fetch","spec":"fetch","status":"anchor-block","text":"network partition key","type":"dfn","url":"https://fetch.spec.whatwg.org/#network-partition-key"},
 "https://fetch.spec.whatwg.org/#ok-status": {"displayText":"ok status","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"ok status","type":"dfn","url":"https://fetch.spec.whatwg.org/#ok-status"},
 "https://fetch.spec.whatwg.org/#process-response": {"displayText":"processResponse","export":true,"for_":["fetch"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"processresponse","type":"dfn","url":"https://fetch.spec.whatwg.org/#process-response"},
@@ -3185,9 +3183,9 @@ let refsData = {
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-items": {"displayText":"Item","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"item","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-items"},
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-lists": {"displayText":"List","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"list","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-lists"},
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens": {"displayText":"Token","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"token","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens"},
-"prerendering.html#get-the-supported-loading-modes": {"displayText":"getting the supported loading modes","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"getting the supported loading modes","type":"dfn","url":"prerendering.html#get-the-supported-loading-modes"},
-"prerendering.html#prerendering-traversable": {"displayText":"prerendering traversable","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prerendering traversable","type":"dfn","url":"prerendering.html#prerendering-traversable"},
-"prerendering.html#supports-loading-mode-uncredentialed-prefetch": {"displayText":"uncredentialed-prefetch","export":true,"for_":["Supports-Loading-Mode"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"uncredentialed-prefetch","type":"dfn","url":"prerendering.html#supports-loading-mode-uncredentialed-prefetch"},
+"prerendering.html#get-the-supported-loading-modes": {"displayText":"getting the supported loading modes","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"getting the supported loading modes","type":"dfn","url":"prerendering.html#get-the-supported-loading-modes"},
+"prerendering.html#prerendering-traversable": {"displayText":"prerendering traversable","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"prerendering traversable","type":"dfn","url":"prerendering.html#prerendering-traversable"},
+"prerendering.html#supports-loading-mode-uncredentialed-prefetch": {"displayText":"uncredentialed-prefetch","export":true,"for_":["Supports-Loading-Mode"],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"uncredentialed-prefetch","type":"dfn","url":"prerendering.html#supports-loading-mode-uncredentialed-prefetch"},
 };
 
 function mkRefHint(link, ref) {
@@ -3269,7 +3267,12 @@ function hideRefHint(refHint) {
 function showRefHint(link) {
     if(link.classList.contains("dfn-link")) return;
     const url = link.getAttribute("href");
-    const ref = refsData[url];
+    const refHintKey = link.getAttribute("data-refhint-key");
+    let key = url;
+    if(refHintKey) {
+        key = refHintKey + "_" + url;
+    }
+    const ref = refsData[key];
     if(!ref) return;
 
     hideAllRefHints(); // Only display one at this time.
