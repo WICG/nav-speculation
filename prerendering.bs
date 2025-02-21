@@ -660,7 +660,7 @@ This stores which client hints each origin has opted into receiving, until it ca
 
 <em>The following section would be added as a sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsers">Loading web pages</a> section.</em>
 
-In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header can be used. This header is a [=structured header=]; if present its value must be one or more of the [=structured header/tokens=] listed below.
+In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the [:Supports-Loading-Mode:] HTTP response header can be used. This header is a [=structured header=]; if present its value must be one or more of the [=structured header/tokens=] listed below.
 
 <p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored.
 
@@ -672,7 +672,7 @@ To <dfn export>get the supported loading modes</dfn> for a [=response=] |respons
 
 1. If |response| is a [=network error=], then return an empty list.
 
-1. Let |slmHeader| be the result of [=header list/getting a structured field value=] given \`<a http-header><code>Supports-Loading-Mode</code></a>\` and "`list`" from |response|'s [=response/header list=].
+1. Let |slmHeader| be the result of [=header list/getting a structured field value=] given [:Supports-Loading-Mode:] and "`list`" from |response|'s [=response/header list=].
 
 1. Return a [=list=] containing all elements of |slmHeader| that are [=structured header/tokens=].
 

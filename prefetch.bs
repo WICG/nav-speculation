@@ -123,7 +123,7 @@ spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: dfn; text: domain-matches; url: cookie-domain
   type: dfn; text: canonicalized host name; url: cookie-domain-canonicalize
   type: dfn; text: path-matches; url: cookie-path
-spec: nav-speculation; urlPrefix: prerendering.html
+spec: prerendering-revamped; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
@@ -584,7 +584,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
 
                     <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
             1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is not null, then add a parameter whose key is "<a for="Sec-Purpose prefetch">`prerender`</a>" and whose value is true to the `prefetch` token in |purpose|.
-            1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
+            1. [=header list/Set a structured field value=] given ([:Sec-Purpose:], |purpose|) in |request|'s [=request/header list=].
 
                 <div class="note">
                     Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt this common header.
@@ -752,7 +752,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |status| is not a [=redirect status=].
     1. If |status| is not an [=ok status=], then return false.
 
-        <div class="note">In particular, this means that error responses aren't stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a <a http-header>`` `Sec-Purpose` ``</a> request header indicating prefetch.</div>
+        <div class="note">In particular, this means that error responses aren't stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a [:Sec-Purpose:] request header indicating prefetch.</div>
     1. Return true.
 
     <div class="note">
@@ -764,7 +764,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
 <h2 id="cookies">Cookies</h2>
 
-[[COOKIES]] defines "cookies" which can be set using the <a http-header spec="COOKIES" lt="Set-Cookie">`` `Set-Cookie` ``</a> response header field. Because the "`uncredentialed`" partitioning scheme forces a separate [=network partition key=] to be used, it's necessary to copy these cookies into the ordinary partition as though they had been [=receive a cookie|received=] at the time of navigation.
+[[COOKIES]] defines "cookies" which can be set using the [:Set-Cookie:] response header field. Because the "`uncredentialed`" partitioning scheme forces a separate [=network partition key=] to be used, it's necessary to copy these cookies into the ordinary partition as though they had been [=receive a cookie|received=] at the time of navigation.
 
 <div class="issue">Cache, though not necessary for correctness, would be useful to copy, too.</div>
 
@@ -812,9 +812,11 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
           <div class="note">This remove-and-insert pattern is consistent with what happens when [=receiving a cookie=].</div>
 </div>
 
-<h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
+<h2 id="sec-purpose-header">The [:Sec-Purpose:] HTTP request header</h2>
 
-The <dfn http-header>`` `Sec-Purpose` ``</dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
+<em>This section overrides the definition of the [:Sec-Purpose:] HTTP request header from [[FETCH]].</em>
+
+The [:Sec-Purpose:] HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
 
 The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=].
 
