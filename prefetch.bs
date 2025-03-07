@@ -114,6 +114,7 @@ spec: RFC9651; urlPrefix: https://www.rfc-editor.org/rfc/rfc9651.html
     for: structured header
       text: Item; url: name-items
       text: List; url: name-lists
+      text: String; url: name-strings
       text: Token; url: name-tokens
 spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: http-header; text: Cookie; url: cookie
@@ -123,6 +124,9 @@ spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: dfn; text: domain-matches; url: cookie-domain
   type: dfn; text: canonicalized host name; url: cookie-domain-canonicalize
   type: dfn; text: path-matches; url: cookie-path
+spec: speculation-rules; urlPrefix: speculation-rules.html
+  type: dfn
+    text: speculation rules tag; url: speculation-rules-tag
 spec: prerendering-revamped; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
@@ -179,6 +183,7 @@ A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
 Each {{Document}} has <dfn export for="Document">prefetch records</dfn>, which is a [=list=] of [=prefetch records=].
 
 A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn export for="prefetch record">tags</dfn>, an [=ordered set=] of [=speculation rules tags=]
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
@@ -589,6 +594,12 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
                 <div class="note">
                     Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt this common header.
                 </div>
+            1. If |request|'s [=request/current URL=]'s [=url/origin=] is [=same site=] with |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=], then:
+
+              1. Let |tags| be a [=structured header/List=] composed by mapping each [=list/item=] in |prefetchRecord|'s [=prefetch record/tags=], sending [=strings=] to [=structured header/Strings=] and null to the [=structured header/Token=] `null`.
+
+              1. [=header list/Set a structured field value=] given ([:Sec-Speculation-Tags:], |tags|) in |request|'s [=request/header list=].
+
             1. If |request|'s [=request/current URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then set |response| to a [=network error=] and [=iteration/break=].
 
                 <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
@@ -846,6 +857,11 @@ The following parameters are defined for the `prefetch` token:
     This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
   </div>
 
+<h2 id="sec-speculation-tags-header">The `Sec-Speculation-Tags` HTTP request header</h2>
+
+The \`<code><dfn http-header>Sec-Speculation-Tags</dfn></code>\` HTTP request header specifies the web developer-provided tags associated with the speculative navigation request. It can also be used to distinguish speculative navigation requests from other speculative requests, since [:Sec-Purpose:] can be sent by both categories of request.
+
+The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=]. The list can contain either [=structured header/Token=] or [=structured header/String=] values. String values represent developer-provided tags, whereas token values represent predefined tags. As of now, the only predefined tag is `null`, which indicates a speculative navigation request with no developer-defined tag.
 
 <h2 id="security-considerations">Security considerations</h2>
 
