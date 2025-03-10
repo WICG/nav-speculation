@@ -114,6 +114,7 @@ spec: RFC9651; urlPrefix: https://www.rfc-editor.org/rfc/rfc9651.html
     for: structured header
       text: Item; url: name-items
       text: List; url: name-lists
+      text: String; url: name-strings
       text: Token; url: name-tokens
 spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: http-header; text: Cookie; url: cookie
@@ -123,7 +124,10 @@ spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
   type: dfn; text: domain-matches; url: cookie-domain
   type: dfn; text: canonicalized host name; url: cookie-domain-canonicalize
   type: dfn; text: path-matches; url: cookie-path
-spec: nav-speculation; urlPrefix: prerendering.html
+spec: speculation-rules; urlPrefix: speculation-rules.html
+  type: dfn
+    text: speculation rules tag; url: speculation-rules-tag
+spec: prerendering-revamped; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
@@ -136,6 +140,10 @@ spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-h
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
+
+<style>
+dfn var { font-style: italic; } /* override bad base.css */
+</style>
 
 <h2 id="concepts">Concepts</h2>
 
@@ -175,6 +183,7 @@ A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
 Each {{Document}} has <dfn export for="Document">prefetch records</dfn>, which is a [=list=] of [=prefetch records=].
 
 A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
+* <dfn export for="prefetch record">tags</dfn>, an [=ordered set=] of [=speculation rules tags=]
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
@@ -297,6 +306,47 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for |navigable|'s [=navigable/active window=].
 
     <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
+</div>
+
+<div algorithm="has a matching prefetch record">
+  A {{Document}} |document| <dfn export>has a matching prefetch record</dfn> given a [=prefetch record=] |recordUnderConsideration| and an optional boolean <dfn for="has a matching prefetch record" export>|checkPrerender|</dfn> (default false) if the following algorithm returns true:
+
+  1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
+    1. If |record|'s [=prefetch record/state=] is "`canceled`", then [=iteration/continue=].
+
+    1. If |checkPrerender| is true and |record|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+
+    1. Let |recordNVS| be null.
+
+    1. If |record|'s [=prefetch record/response=] is not null, then set |recordNVS| to the result of [=obtaining a URL search variance=] given |record|'s [=prefetch record/response=].
+
+    1. Otherwise, set |recordNVS| to |record|'s [=prefetch record/No-Vary-Search hint=].
+
+    1. If |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=] is not equal to |recordNVS|, then [=iteration/continue=].
+
+    1. If |recordUnderConsideration|'s [=prefetch record/URL=] and |record|'s [=prefetch record/URL=] are [=equivalent modulo search variance=] given |recordUnderConsideration|'s [=prefetch record/No-Vary-Search hint=], then return true.
+
+  1. Return false.
+
+  <div class="note" id="note-require-equivalent-nvs">
+    <p>The requirement that the No-Vary-Search values be equivalent is somewhat strict. It means that some cases which could theoretically be treated as matching, are not treated as such, and thus redundant prefetches could happen.
+
+    <p>However, allowing more lenient matching makes the check no longer an equivalence relation, and thus prohibits implementation strategies based on normalized URL keys. For this reason, we require equivalent No-Vary-Search values. This is in line with the best practices for server operators demanded in [[NO-VARY-SEARCH#section-6]].
+
+    <p>In practice, we do not expect this to cause redundant prefetches, since server operators and the corresponding speculation rules-writing web developers will follow best practices and use static No-Vary-Search values.
+  </div>
+
+  <div class="example" id="example-non-matching-nvs">
+    <p>Consider three [=prefetch records=]:
+
+    * |A| has a [=prefetch record/URL=] of `https://example.com?a=1&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
+    * |B| has a [=prefetch record/URL=] of `https://example.com?a=2&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("b")`.
+    * |C| has a [=prefetch record/URL=] of `https://example.com?a=2&b=2` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
+
+    <p>With the current definition of [=has a matching prefetch record=], none of these records match each other.
+
+    <p>A definition which did not require equivalent No-Vary-Search values could consider |A| and |B| to match (using |A|'s [=prefetch record/No-Vary-Search hint=]), and |B| and |C| to match (using |B|'s [=prefetch record/No-Vary-Search hint=]). But it could not consider |A| and |C| to match, so it would not be transitive, and thus not an equivalence relation.
+  </div>
 </div>
 
 <div algorithm>
@@ -539,11 +589,17 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
 
                     <p class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an [=implementation-defined=] manner using some kind of proxy or relay. Ideally this would be plumbed down to [=obtain a connection=], and possibly even the mechanism could be further standardized.</p>
             1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is not null, then add a parameter whose key is "<a for="Sec-Purpose prefetch">`prerender`</a>" and whose value is true to the `prefetch` token in |purpose|.
-            1. [=header list/Set a structured field value=] given (<a http-header>`` `Sec-Purpose` ``</a>, |purpose|) in |request|'s [=request/header list=].
+            1. [=header list/Set a structured field value=] given ([:Sec-Purpose:], |purpose|) in |request|'s [=request/header list=].
 
                 <div class="note">
                     Implementations might also send vendor-specific headers, like Chromium's `` `Purpose` ``/`` `prefetch` ``, Mozilla's `` `X-moz` ``/`` `prefetch` ``, and WebKit's `` `X-Purpose` ``/`` `preview` ``, for compatibility with existing server software. Over time we hope implementers and server software authors will adopt this common header.
                 </div>
+            1. If |request|'s [=request/current URL=]'s [=url/origin=] is [=same site=] with |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=], then:
+
+              1. Let |tags| be a [=structured header/List=] composed by mapping each [=list/item=] in |prefetchRecord|'s [=prefetch record/tags=], sending [=strings=] to [=structured header/Strings=] and null to the [=structured header/Token=] `null`.
+
+              1. [=header list/Set a structured field value=] given ([:Sec-Speculation-Tags:], |tags|) in |request|'s [=request/header list=].
+
             1. If |request|'s [=request/current URL=] is not [=potentially trustworthy URL|potentially trustworthy=], then set |response| to a [=network error=] and [=iteration/break=].
 
                 <div class="note">This is intended to both reduce the likelihood of prefetch traffic being visible to an on-path attacker, and to encourage the use of cryptographic schemes over public networks.</div>
@@ -666,6 +722,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 <div algorithm>
     To <dfn export>prefetch</dfn> given a {{Document}} |document| and a [=prefetch record=] |prefetchRecord|, perform the following steps.
 
+    1. If |document| [=has a matching prefetch record=] given |prefetchRecord|, then return.
     1. Let |sourceSnapshotParams| be the result of [=snapshotting source snapshot params=] given |document|.
     1. Let |targetSnapshotParams| be the result of [=snapshotting target snapshot params=] given |document|'s [=node navigable=].
     1. Set |prefetchRecord|'s [=prefetch record/source partition key=] to the result of [=determining the network partition key=] given |document|'s [=relevant settings object=].
@@ -706,7 +763,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |status| is not a [=redirect status=].
     1. If |status| is not an [=ok status=], then return false.
 
-        <div class="note">In particular, this means that error responses aren't stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a <a http-header>`` `Sec-Purpose` ``</a> request header indicating prefetch.</div>
+        <div class="note">In particular, this means that error responses aren't stored and will be retried when a navigation occurs. This increases the likelihood of navigations succeeding if the error was transient or due to the request being for prefetch. It also gives server software a simple way to refuse to handle requests which carry a [:Sec-Purpose:] request header indicating prefetch.</div>
     1. Return true.
 
     <div class="note">
@@ -718,7 +775,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 
 <h2 id="cookies">Cookies</h2>
 
-[[COOKIES]] defines "cookies" which can be set using the <a http-header spec="COOKIES" lt="Set-Cookie">`` `Set-Cookie` ``</a> response header field. Because the "`uncredentialed`" partitioning scheme forces a separate [=network partition key=] to be used, it's necessary to copy these cookies into the ordinary partition as though they had been [=receive a cookie|received=] at the time of navigation.
+[[COOKIES]] defines "cookies" which can be set using the [:Set-Cookie:] response header field. Because the "`uncredentialed`" partitioning scheme forces a separate [=network partition key=] to be used, it's necessary to copy these cookies into the ordinary partition as though they had been [=receive a cookie|received=] at the time of navigation.
 
 <div class="issue">Cache, though not necessary for correctness, would be useful to copy, too.</div>
 
@@ -766,9 +823,11 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
           <div class="note">This remove-and-insert pattern is consistent with what happens when [=receiving a cookie=].</div>
 </div>
 
-<h2 id="sec-purpose-header">The `Sec-Purpose` HTTP request header</h2>
+<h2 id="sec-purpose-header">The [:Sec-Purpose:] HTTP request header</h2>
 
-The <dfn http-header>`` `Sec-Purpose` ``</dfn> HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
+<em>This section overrides the definition of the [:Sec-Purpose:] HTTP request header from [[FETCH]].</em>
+
+The [:Sec-Purpose:] HTTP request header specifies that the request serves one or more purposes other than requesting the resource for immediate use by the user.
 
 The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=].
 
@@ -798,6 +857,11 @@ The following parameters are defined for the `prefetch` token:
     This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
   </div>
 
+<h2 id="sec-speculation-tags-header">The `Sec-Speculation-Tags` HTTP request header</h2>
+
+The \`<code><dfn http-header>Sec-Speculation-Tags</dfn></code>\` HTTP request header specifies the web developer-provided tags associated with the speculative navigation request. It can also be used to distinguish speculative navigation requests from other speculative requests, since [:Sec-Purpose:] can be sent by both categories of request.
+
+The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=]. The list can contain either [=structured header/Token=] or [=structured header/String=] values. String values represent developer-provided tags, whereas token values represent predefined tags. As of now, the only predefined tag is `null`, which indicates a speculative navigation request with no developer-defined tag.
 
 <h2 id="security-considerations">Security considerations</h2>
 
