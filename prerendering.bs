@@ -93,8 +93,11 @@ spec: nav-speculation; urlPrefix: prefetch.html
     text: supports prefetch; url: supports-prefetch
     text: list of sufficiently-strict speculative navigation referrer policies
     text: wait for a matching prefetch record; url: wait-for-a-matching-prefetch-record
+    text: has a matching prefetch record
     for: prefetch record
       text: prerendering traversable
+    for: has a matching prefetch record
+      text: checkPrerender
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -291,6 +294,8 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
   1. If |referrerDoc|'s [=Document/origin=] is not [=/same site=] with |prefetchRecord|'s [=prefetch record/URL=]'s [=url/origin=], then return.
 
      <p class="note">Currently, cross-site prerendering is not specified or implemented, although we have various ideas about how it could work in this repository's explainers.
+
+  1. If |referrerDoc| [=has a matching prefetch record=] given |prefetchRecord| with <i>[=has a matching prefetch record/checkPrerender=]</i> set to true, then return.
 
   1. [=Assert=]: |prefetchRecord|'s [=prefetch record/prerendering traversable=] is "`to be created`".
 
@@ -644,15 +649,18 @@ This stores which client hints each origin has opted into receiving, until it ca
 
 <h3 id="interaction-with-clear-site-data-clear-cache">Interaction with Clear-Site-Data Clear Cache</h3>
 
-Modify [$clear cache for origin$] to add the following step at the end.
-1. [=list/For each=] [=navigable/top-level traversable=] |traversable| in the user agent's [=top-level traversable set=]: 
-  1. If |traversable| is a [=prerendering traversable=], then [=destroy a top-level traversable|destroy=] |traversable|.
+<div algorithm="clear cache for origin patch">
+  Modify [$clear cache for origin$] to add the following step at the end.
+
+  1. [=list/For each=] [=navigable/top-level traversable=] |traversable| in the user agent's [=top-level traversable set=]:
+  1. If |traversable|'s [=navigable/active document=]'s [=Document/origin=] is [=same origin=] with <var ignore>origin</var>, and |traversable| is a [=prerendering traversable=], then [=destroy a top-level traversable|destroy=] |traversable|.
+</div>
 
 <h2 id="supports-loading-mode">The \`<dfn export http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
 
 <em>The following section would be added as a sub-section of [[HTML]]'s <a href="https://html.spec.whatwg.org/multipage/browsers.html#browsers">Loading web pages</a> section.</em>
 
-In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the \`<a http-header><code>Supports-Loading-Mode</code></a>\` HTTP response header can be used. This header is a [=structured header=]; if present its value must be one or more of the [=structured header/tokens=] listed below.
+In some cases, cross-origin web pages might not be prepared to be loaded in a novel context. To allow them to opt in to being loaded in such ways, the [:Supports-Loading-Mode:] HTTP response header can be used. This header is a [=structured header=]; if present its value must be one or more of the [=structured header/tokens=] listed below.
 
 <p class="note">The parsing is actually done as a [=structured header/list=] of [=structured header/tokens=], and unknown tokens will be ignored.
 
@@ -664,7 +672,7 @@ To <dfn export>get the supported loading modes</dfn> for a [=response=] |respons
 
 1. If |response| is a [=network error=], then return an empty list.
 
-1. Let |slmHeader| be the result of [=header list/getting a structured field value=] given \`<a http-header><code>Supports-Loading-Mode</code></a>\` and "`list`" from |response|'s [=response/header list=].
+1. Let |slmHeader| be the result of [=header list/getting a structured field value=] given [:Supports-Loading-Mode:] and "`list`" from |response|'s [=response/header list=].
 
 1. Return a [=list=] containing all elements of |slmHeader| that are [=structured header/tokens=].
 
