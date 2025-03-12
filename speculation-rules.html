@@ -4,7 +4,7 @@
   <title>Speculation Rules</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 60c422380, updated Thu Feb 20 19:11:22 2025 -0800" name="generator">
+  <meta content="Bikeshed version 4b8aed3f7, updated Thu Mar 6 12:35:01 2025 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/speculation-rules.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -768,7 +768,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-20">20 February 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-03-11">11 March 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -871,11 +871,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="speculation-rule">speculation rule</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item">items</a>:</p>
    <ul>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="speculation rule" data-dfn-type="dfn" data-noexport id="speculation-rule-urls">URLs</dfn>, an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set">ordered set</a> of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URLs</a></p>
+     <p><dfn class="dfn-paneled" data-dfn-for="speculation rule" data-dfn-type="dfn" data-noexport id="speculation-rule-tags">tags</dfn>, an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set">ordered set</a> of <a data-link-type="dfn" href="#speculation-rules-tag" id="ref-for-speculation-rules-tag">speculation rules tags</a></p>
+    <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="speculation rule" data-dfn-type="dfn" data-noexport id="speculation-rule-urls">URLs</dfn>, an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set①">ordered set</a> of <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url">URLs</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="speculation rule" data-dfn-type="dfn" data-noexport id="speculation-rule-predicate">predicate</dfn>, a <a data-link-type="dfn" href="#document-rule-predicate" id="ref-for-document-rule-predicate">document rule predicate</a> or null</p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="speculation rule" data-dfn-type="dfn" data-noexport id="speculation-rule-requirements">requirements</dfn>, an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set①">ordered set</a> of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">strings</a></p>
+     <p><dfn class="dfn-paneled" data-dfn-for="speculation rule" data-dfn-type="dfn" data-noexport id="speculation-rule-requirements">requirements</dfn>, an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set②">ordered set</a> of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">strings</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="speculation rule" data-dfn-type="dfn" data-noexport id="speculation-rule-target-navigable-name-hint">target navigable name hint</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a> or null</p>
     <li data-md>
@@ -939,6 +941,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <p><dfn class="dfn-paneled" data-dfn-for="document rule CSS selector predicate" data-dfn-type="dfn" data-noexport id="document-rule-css-selector-predicate-selectors">selectors</dfn>, a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑤">list</a> of <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#selector" id="ref-for-selector">selectors</a></p>
    </ul>
    <p>The following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">strings</a> are <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-eagerness-strings">valid eagerness strings</dfn>: "<code>immediate</code>", "<code>eager</code>", "<code>moderate</code>", "<code>conservative</code>".</p>
+   <p>A <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings①">valid eagerness string</a> <var>a</var> is <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="less-eager">less eager</dfn> than another <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings②">valid eagerness string</a> <var>b</var> if <var>a</var> follows <var>b</var> in the above list.</p>
+   <p>A <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings③">valid eagerness string</a> <var>A</var> is <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="at-least-as-eager">at least as eager</dfn> as another <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings④">valid eagerness string</a> <var>B</var> if <var>A</var> is not <a data-link-type="dfn" href="#less-eager" id="ref-for-less-eager">less eager</a> than <var>B</var>.</p>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="speculation-rules-tag">speculation rules tag</dfn> is either an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string">ASCII string</a> or null.</p>
    <h3 class="heading settled" data-level="1.2" id="speculation-rules-script"><span class="secno">1.2. </span><span class="content">The <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script" id="ref-for-script">script</a></code> element</span><a class="self-link" href="#speculation-rules-script"></a></h3>
    <p><em>Note</em>: This section contains modifications to the corresponding section of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>.</p>
    <p>To process speculation rules consistently with the existing script types, we make the following changes:</p>
@@ -1204,12 +1209,22 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>result</var> be an empty <a data-link-type="dfn" href="#speculation-rule-set" id="ref-for-speculation-rule-set④">speculation rule set</a>.</p>
      <li data-md>
-      <p>If <var>parsed</var>["<code>prefetch</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a> and is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">for each</a> <var>prefetchRule</var> of <var>parsed</var>["<code>prefetch</code>"]:</p>
+      <p>Let <var>tag</var> be null.</p>
+     <li data-md>
+      <p>If <var>parsed</var>["<code>tag</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">exists</a>, then:</p>
+      <ol>
+       <li data-md>
+        <p>If <var>parsed</var>["<code>tag</code>"] is not an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string①">ASCII string</a>, then return null.</p>
+       <li data-md>
+        <p>Set <var>tag</var> to <var>parsed</var>["<code>tag</code>"].</p>
+      </ol>
+     <li data-md>
+      <p>If <var>parsed</var>["<code>prefetch</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a> and is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑦">list</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②">for each</a> <var>prefetchRule</var> of <var>parsed</var>["<code>prefetch</code>"]:</p>
       <ol>
        <li data-md>
         <p>If <var>prefetchRule</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map①">map</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue④">continue</a>.</p>
        <li data-md>
-        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule">parsing a speculation rule</a> given <var>prefetchRule</var>, <var>document</var> and <var>baseURL</var>.</p>
+        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule">parsing a speculation rule</a> given <var>prefetchRule</var>, <var>tag</var>, <var>document</var> and <var>baseURL</var>.</p>
        <li data-md>
         <p>If <var>rule</var> is null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑤">continue</a>.</p>
        <li data-md>
@@ -1218,12 +1233,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append③">Append</a> <var>rule</var> to <var>result</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-rules" id="ref-for-speculation-rule-set-prefetch-rules">prefetch rules</a>.</p>
       </ol>
      <li data-md>
-      <p>If <var>parsed</var>["<code>prerender</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①">exists</a> and is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">for each</a> <var>prerenderRule</var> of <var>parsed</var>["<code>prerender</code>"]:</p>
+      <p>If <var>parsed</var>["<code>prerender</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exists</a> and is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list⑧">list</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate③">for each</a> <var>prerenderRule</var> of <var>parsed</var>["<code>prerender</code>"]:</p>
       <ol>
        <li data-md>
         <p>If <var>prerenderRule</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map②">map</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑦">continue</a>.</p>
        <li data-md>
-        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule①">parsing a speculation rule</a> given <var>prerenderRule</var>, <var>document</var>, and <var>baseURL</var>.</p>
+        <p>Let <var>rule</var> be the result of <a data-link-type="dfn" href="#parse-a-speculation-rule" id="ref-for-parse-a-speculation-rule①">parsing a speculation rule</a> given <var>prerenderRule</var>, <var>tag</var>, <var>document</var>, and <var>baseURL</var>.</p>
        <li data-md>
         <p>If <var>rule</var> is null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue⑧">continue</a>.</p>
        <li data-md>
@@ -1234,7 +1249,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ol>
    </div>
    <div class="algorithm" data-algorithm="parse a speculation rule">
-     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-speculation-rule">parse a speculation rule</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">map</a> <var>input</var>, a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑤">document</a> <var>document</var>, and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule②">speculation rule</a> or null. 
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="parse-a-speculation-rule">parse a speculation rule</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map③">map</a> <var>input</var>, a <a data-link-type="dfn" href="#speculation-rules-tag" id="ref-for-speculation-rules-tag①">speculation rules tag</a> <var>rulesetLevelTag</var>, a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document⑤">document</a> <var>document</var>, and a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url③">URL</a> <var>baseURL</var>, perform the following steps. They return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule②">speculation rule</a> or null. 
     <ol>
      <li data-md>
       <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key">key</a> other than "<code>source</code>", "<code>urls</code>", "<code>where</code>", "<code>requires</code>", "<code>target_hint</code>","<code>referrer_policy</code>", "<code>relative_to</code>", "<code>eagerness</code>", and "<code>expects_no_vary_search</code>" then return null.</p>
@@ -1247,13 +1262,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>Set <var>source</var> to <var>input</var>["<code>source</code>"].</p>
       </ol>
      <li data-md>
-      <p>Otherwise, if <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">exists</a> and <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exist</a>, then:</p>
+      <p>Otherwise, if <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">exists</a> and <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exist</a>, then:</p>
       <ol>
        <li data-md>
         <p>Set <var>source</var> to "<code>list</code>".</p>
       </ol>
      <li data-md>
-      <p>Otherwise, if <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">exists</a> and <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exist</a>, then:</p>
+      <p>Otherwise, if <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑤">exists</a> and <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exist</a>, then:</p>
       <ol>
        <li data-md>
         <p>Set <var>source</var> to "<code>document</code>".</p>
@@ -1268,11 +1283,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>source</var> is "<code>list</code>":</p>
       <ol>
        <li data-md>
-        <p>If <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑥">exists</a>, then return null.</p>
+        <p>If <var>input</var>["<code>where</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exists</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑦">exist</a>, is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>, or has any element which is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑧">string</a>, then return null.</p>
+        <p>If <var>input</var>["<code>urls</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exist</a>, is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①⓪">list</a>, or has any element which is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string⑧">string</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑧">exists</a>:</p>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>:</p>
         <ol>
          <li data-md>
           <p>Let <var>relativeTo</var> be <var>input</var>["<code>relative_to</code>"].</p>
@@ -1298,11 +1313,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>source</var> is "<code>document</code>":</p>
       <ol>
        <li data-md>
-        <p>If <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists⑨">exists</a>, then return null.</p>
+        <p>If <var>input</var>["<code>urls</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">exists</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⓪">exists</a>, then return null.</p>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①①">exists</a>, then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①①">exist</a>, then set <var>predicate</var> to a <a data-link-type="dfn" href="#document-rule-conjunction" id="ref-for-document-rule-conjunction①">document rule conjunction</a> whose <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses">clauses</a> is an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a>.</p>
+        <p>If <var>input</var>["<code>where</code>"] does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①②">exist</a>, then set <var>predicate</var> to a <a data-link-type="dfn" href="#document-rule-conjunction" id="ref-for-document-rule-conjunction①">document rule conjunction</a> whose <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses">clauses</a> is an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①①">list</a>.</p>
         <p class="note" role="note">Such a predicate will match all links.</p>
        <li data-md>
         <p>Otherwise, set <var>predicate</var> to the result of <a data-link-type="dfn" href="#parse-a-document-rule-predicate" id="ref-for-parse-a-document-rule-predicate">parsing a document rule predicate</a> given <var>input</var>["<code>where</code>"], <var>document</var> and <var>baseURL</var>.</p>
@@ -1310,9 +1325,9 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>If <var>predicate</var> is null, then return null.</p>
       </ol>
      <li data-md>
-      <p>Let <var>requirements</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set②">ordered set</a>.</p>
+      <p>Let <var>requirements</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set③">ordered set</a>.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①②">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>, then return null.</p>
+      <p>If <var>input</var>["<code>requires</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①③">exists</a>, but is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list①②">list</a>, then return null.</p>
      <li data-md>
       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑤">For each</a> <var>requirement</var> of <var>input</var>["<code>requires</code>"]:</p>
       <ol>
@@ -1324,7 +1339,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>targetHint</var> be null.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>target_hint</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①③">exists</a>:</p>
+      <p>If <var>input</var>["<code>target_hint</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①④">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>target_hint</code>"] is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword" id="ref-for-valid-navigable-target-name-or-keyword">valid navigable target name or keyword</a>, then return null.</p>
@@ -1334,7 +1349,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>referrerPolicy</var> be the empty string.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>referrer_policy</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①④">exists</a>:</p>
+      <p>If <var>input</var>["<code>referrer_policy</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑤">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>referrer_policy</code>"] is not a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy①">referrer policy</a>, then return null.</p>
@@ -1344,17 +1359,17 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>Let <var>eagerness</var> be "<code>immediate</code>" if <var>source</var> is "<code>list</code>", and "<code>conservative</code>" otherwise.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>eagerness</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑤">exists</a>:</p>
+      <p>If <var>input</var>["<code>eagerness</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑥">exists</a>:</p>
       <ol>
        <li data-md>
-        <p>If <var>input</var>["<code>eagerness</code>"] is not one of the <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings①">valid eagerness strings</a>, then return null.</p>
+        <p>If <var>input</var>["<code>eagerness</code>"] is not one of the <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings⑤">valid eagerness strings</a>, then return null.</p>
        <li data-md>
         <p>Set <var>eagerness</var> to <var>input</var>["<code>eagerness</code>"].</p>
       </ol>
      <li data-md>
       <p>Let <var>noVarySearchHint</var> be the <a data-link-type="dfn" href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#iref-default-url-search-variance" id="ref-for-iref-default-url-search-variance">default URL search variance</a>.</p>
      <li data-md>
-      <p>If <var>input</var>["<code>expects_no_vary_search</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑥">exists</a>:</p>
+      <p>If <var>input</var>["<code>expects_no_vary_search</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑦">exists</a>:</p>
       <ol>
        <li data-md>
         <p>If <var>input</var>["<code>expects_no_vary_search</code>"] is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①⓪">string</a>, then return null.</p>
@@ -1362,8 +1377,27 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>Set <var>noVarySearchHint</var> to the result of <a data-link-type="dfn" href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-obtain-a-url-search-varianc" id="ref-for-name-obtain-a-url-search-varianc">obtaining a URL search variance</a> given <var>input</var>["<code>expects_no_vary_search</code>"].</p>
       </ol>
      <li data-md>
+      <p>Let <var>tags</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set④">ordered set</a>.</p>
+     <li data-md>
+      <p>If <var>rulesetLevelTag</var> is not null, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append①">append</a> <var>rulesetLevelTag</var> to <var>tags</var>.</p>
+     <li data-md>
+      <p>If <var>input</var>["<code>tag</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑧">exists</a>:</p>
+      <ol>
+       <li data-md>
+        <p>If <var>input</var>["<code>tag</code>"] is not an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string②">ASCII string</a>, then return null.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append②">Append</a> <var>input</var>["<code>tag</code>"] to <var>tags</var>.</p>
+      </ol>
+     <li data-md>
+      <p>If <var>tags</var> is empty, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#set-append" id="ref-for-set-append③">append</a> null to <var>tags</var>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert④">Assert</a>: <var>tags</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is either 1 or 2.</p>
+     <li data-md>
       <p>Return a <a data-link-type="dfn" href="#speculation-rule" id="ref-for-speculation-rule③">speculation rule</a> with</p>
       <dl class="props">
+       <dt data-md><a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags">tags</a>
+       <dd data-md>
+        <p><var>tags</var></p>
        <dt data-md><a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls">URLs</a>
        <dd data-md>
         <p><var>urls</var></p>
@@ -1394,7 +1428,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>If <var>input</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map④">map</a>, then return null.</p>
      <li data-md>
-      <p>If <var>input</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑦">contain</a> exactly one of "<code>and</code>", "<code>or</code>", "<code>not</code>", "<code>href_matches</code>" and "<code>selector_matches</code>", then return null. Otherwise, let <var>predicateType</var> be that key.</p>
+      <p>If <var>input</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑨">contain</a> exactly one of "<code>and</code>", "<code>or</code>", "<code>not</code>", "<code>href_matches</code>" and "<code>selector_matches</code>", then return null. Otherwise, let <var>predicateType</var> be that key.</p>
       <p class="note" role="note">This makes sure it is unambiguous what type of predicate is being used.</p>
      <li data-md>
       <p>If <var>predicateType</var> is "<code>and</code>" or "<code>or</code>", then:</p>
@@ -1443,7 +1477,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>If <var>input</var> has any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key③">key</a> other than "<code>href_matches</code>" and "<code>relative_to</code>", then return null.</p>
        <li data-md>
-        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists①⑧">exists</a>, then:</p>
+        <p>If <var>input</var>["<code>relative_to</code>"] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②⓪">exists</a>, then:</p>
         <ol>
          <li data-md>
           <p>Let <var>relativeTo</var> be <var>input</var>["<code>relative_to</code>"].</p>
@@ -1505,11 +1539,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="speculative-load-candidate">speculative load candidate</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct③">struct</a> with the following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct-item" id="ref-for-struct-item⑧">items</a>:</p>
    <ul>
     <li data-md>
+     <p><dfn class="dfn-paneled" data-dfn-for="speculative load candidate" data-dfn-type="dfn" data-noexport id="speculative-load-candidate-tags">tags</dfn>, an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set⑤">ordered set</a> of <a data-link-type="dfn" href="#speculation-rules-tag" id="ref-for-speculation-rules-tag②">speculation rules tags</a></p>
+    <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="speculative load candidate" data-dfn-type="dfn" data-noexport id="speculative-load-candidate-url">URL</dfn>, a <a data-link-type="dfn" href="https://url.spec.whatwg.org/#concept-url" id="ref-for-concept-url⑤">URL</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="speculative load candidate" data-dfn-type="dfn" data-noexport id="speculative-load-candidate-referrer-policy">referrer policy</dfn>, a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy" id="ref-for-referrer-policy②">referrer policy</a></p>
     <li data-md>
-     <p><dfn class="dfn-paneled" data-dfn-for="speculative load candidate" data-dfn-type="dfn" data-noexport id="speculative-load-candidate-eagerness">eagerness</dfn>, one of the <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings②">valid eagerness strings</a></p>
+     <p><dfn class="dfn-paneled" data-dfn-for="speculative load candidate" data-dfn-type="dfn" data-noexport id="speculative-load-candidate-eagerness">eagerness</dfn>, one of the <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings⑥">valid eagerness strings</a></p>
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="speculative load candidate" data-dfn-type="dfn" data-noexport id="speculative-load-candidate-no-vary-search-hint">No-Vary-Search hint</dfn>, a <a data-link-type="dfn" href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-data-model" id="ref-for-name-data-model①">URL search variance</a></p>
    </ul>
@@ -1523,6 +1559,18 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p><dfn class="dfn-paneled" data-dfn-for="prerender candidate" data-dfn-type="dfn" data-noexport id="prerender-candidate-target-navigable-name-hint">target navigable name hint</dfn>, a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword" id="ref-for-valid-navigable-target-name-or-keyword①">valid navigable target name or keyword</a> or null</p>
    </ul>
+   <div class="algorithm" data-algorithm="redundant with" data-algorithm-for="speculative load candidate">
+     A <a data-link-type="dfn" href="#speculative-load-candidate" id="ref-for-speculative-load-candidate②">speculative load candidate</a> <var>A</var> is <dfn class="dfn-paneled" data-dfn-for="speculative load candidate" data-dfn-type="dfn" data-noexport id="speculative-load-candidate-redundant-with">redundant with</dfn> another <a data-link-type="dfn" href="#speculative-load-candidate" id="ref-for-speculative-load-candidate③">speculative load candidate</a> <var>B</var> if the following steps return true: 
+    <ol>
+     <li data-md>
+      <p>If <var>A</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint">No-Vary-Search hint</a> is not equal to <var>B</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint①">No-Vary-Search hint</a>, then return false.</p>
+     <li data-md>
+      <p>If <var>A</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url">URL</a> is not <a data-link-type="dfn" href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing" id="ref-for-name-comparing">equivalent modulo search variance</a> to <var>B</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url①">URL</a> given <var>A</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint②">No-Vary-Search hint</a>, then return false.</p>
+     <li data-md>
+      <p>Return true.</p>
+    </ol>
+    <p class="note" role="note">This definition is the <a data-link-type="dfn" href="#speculative-load-candidate" id="ref-for-speculative-load-candidate④">speculative load candidate</a> version of <a data-link-type="dfn" href="prefetch.html#has-a-matching-prefetch-record" id="ref-for-has-a-matching-prefetch-record">has a matching prefetch record</a>.</p>
+   </div>
    <div class="algorithm" data-algorithm="continues" data-algorithm-for="prefetch candidate">
      A <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate">prefetch candidate</a> <var>prefetchCandidate</var> <dfn class="dfn-paneled" data-dfn-for="prefetch candidate" data-dfn-type="dfn" data-noexport id="prefetch-candidate-continues">continues</dfn> a <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record">prefetch record</a> <var>prefetchRecord</var> if the following are all true: 
     <ul>
@@ -1531,7 +1579,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p><var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state">state</a> is not "<code>canceled</code>"</p>
      <li data-md>
-      <p><var>prefetchRecord</var> <a data-link-type="dfn" href="prefetch.html#prefetch-record-matches-a-url" id="ref-for-prefetch-record-matches-a-url">matches a URL</a> given <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url">URL</a></p>
+      <p><var>prefetchRecord</var> <a data-link-type="dfn" href="prefetch.html#prefetch-record-matches-a-url" id="ref-for-prefetch-record-matches-a-url">matches a URL</a> given <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url②">URL</a></p>
      <li data-md>
       <p><var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy">anonymization policy</a> equals <var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy">anonymization policy</a></p>
     </ul>
@@ -1605,7 +1653,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
            <li data-md>
             <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①⓪">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate①">prefetch candidate</a> with</p>
             <dl class="props">
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url①">URL</a>
+             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags">tags</a>
+             <dd data-md>
+              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags①">tags</a></p>
+             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url③">URL</a>
              <dd data-md>
               <p><var>url</var></p>
              <dt data-md><a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy①">anonymization policy</a>
@@ -1617,7 +1668,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
              <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness">eagerness</a>
              <dd data-md>
               <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness①">eagerness</a></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint">No-Vary-Search hint</a>
+             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint③">No-Vary-Search hint</a>
              <dd data-md>
               <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint①">No-Vary-Search hint</a></p>
             </dl>
@@ -1638,7 +1689,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
              <li data-md>
               <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①①">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate②">prefetch candidate</a> with</p>
               <dl class="props">
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url②">URL</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags①">tags</a>
+               <dd data-md>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags②">tags</a></p>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url④">URL</a>
                <dd data-md>
                 <p><var>url</var></p>
                <dt data-md><a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy②">anonymization policy</a>
@@ -1650,7 +1704,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
                <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness①">eagerness</a>
                <dd data-md>
                 <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness②">eagerness</a></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint①">No-Vary-Search hint</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint④">No-Vary-Search hint</a>
                <dd data-md>
                 <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint②">No-Vary-Search hint</a></p>
               </dl>
@@ -1669,7 +1723,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
            <li data-md>
             <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①②">Append</a> a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate">prerender candidate</a> with</p>
             <dl class="props">
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url③">URL</a>
+             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags②">tags</a>
+             <dd data-md>
+              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags③">tags</a></p>
+             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑤">URL</a>
              <dd data-md>
               <p><var>url</var></p>
              <dt data-md><a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint">target navigable name hint</a>
@@ -1681,7 +1738,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
              <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness②">eagerness</a>
              <dd data-md>
               <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness③">eagerness</a></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint②">No-Vary-Search hint</a>
+             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑤">No-Vary-Search hint</a>
              <dd data-md>
               <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint③">No-Vary-Search hint</a></p>
             </dl>
@@ -1706,7 +1763,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
              <li data-md>
               <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①③">Append</a> a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate①">prerender candidate</a> with</p>
               <dl class="props">
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url④">URL</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags③">tags</a>
+               <dd data-md>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags④">tags</a></p>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑥">URL</a>
                <dd data-md>
                 <p><var>url</var></p>
                <dt data-md><a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint①">target navigable name hint</a>
@@ -1718,7 +1778,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
                <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness③">eagerness</a>
                <dd data-md>
                 <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness④">eagerness</a></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint③">No-Vary-Search hint</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑥">No-Vary-Search hint</a>
                <dd data-md>
                 <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint④">No-Vary-Search hint</a></p>
               </dl>
@@ -1733,7 +1793,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>⌛ If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label①">label</a> is not "<code>speculation-rules</code>", then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①④">continue</a>.</p>
        <li data-md>
-        <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert④">Assert</a>: <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state①">state</a> is not "<code>canceled</code>".</p>
+        <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑤">Assert</a>: <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state①">state</a> is not "<code>canceled</code>".</p>
        <li data-md>
         <p>⌛ If no element of <var>prefetchCandidates</var> <a data-link-type="dfn" href="#prefetch-candidate-continues" id="ref-for-prefetch-candidate-continues">continues</a> <var>prefetchRecord</var>, then <a data-link-type="dfn" href="prefetch.html#prefetch-record-cancel-and-discard" id="ref-for-prefetch-record-cancel-and-discard">cancel and discard</a> <var>prefetchRecord</var> given <var>document</var>.</p>
       </ol>
@@ -1746,11 +1806,22 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>The user agent may run the following steps:</p>
         <ol>
          <li data-md>
+          <p>Let <var>prefetchAndPrerenderCandidates</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②④">list</a>.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend">Extend</a> <var>prefetchAndPrerenderCandidates</var> with <var>prefetchCandidates</var>.</p>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend①">Extend</a> <var>prefetchAndPrerenderCandidates</var> with <var>prerenderCandidates</var>.</p>
+         <li data-md>
+          <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="#collect-tags-for-matching-speculative-load-candidates" id="ref-for-collect-tags-for-matching-speculative-load-candidates">collecting tags for matching speculative load candidates</a> given <var>prefetchCandidate</var> and <var>prefetchAndPrerenderCandidates</var>.</p>
+         <li data-md>
           <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a> with</p>
           <dl class="props">
+           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-tags" id="ref-for-prefetch-record-tags">tags</a>
+           <dd data-md>
+            <p><var>tagsToSend</var></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url">URL</a>
            <dd data-md>
-            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑤">URL</a></p>
+            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑦">URL</a></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy①">anonymization policy</a>
            <dd data-md>
             <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy③">anonymization policy</a></p>
@@ -1759,7 +1830,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
             <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy④">referrer policy</a></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-no-vary-search-hint" id="ref-for-prefetch-record-no-vary-search-hint">No-Vary-Search hint</a>
            <dd data-md>
-            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint④">No-Vary-Search hint</a></p>
+            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑦">No-Vary-Search hint</a></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label②">label</a>
            <dd data-md>
             <p>"<code>speculation-rules</code>"</p>
@@ -1775,11 +1846,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>The user agent may run the following steps:</p>
         <ol>
          <li data-md>
+          <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="#collect-tags-for-matching-speculative-load-candidates" id="ref-for-collect-tags-for-matching-speculative-load-candidates①">collecting tags for matching speculative load candidates</a> given <var>prerenderCandidate</var> and <var>prerenderCandidates</var>.</p>
+         <li data-md>
           <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record②">prefetch record</a> with</p>
           <dl class="props">
+           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-tags" id="ref-for-prefetch-record-tags①">tags</a>
+           <dd data-md>
+            <p><var>tagsToSend</var></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a>
            <dd data-md>
-            <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑥">URL</a></p>
+            <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑧">URL</a></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy②">anonymization policy</a>
            <dd data-md>
             <p>null</p>
@@ -1788,7 +1864,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
             <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy⑤">referrer policy</a></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-no-vary-search-hint" id="ref-for-prefetch-record-no-vary-search-hint①">No-Vary-Search hint</a>
            <dd data-md>
-            <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑤">No-Vary-Search hint</a></p>
+            <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑧">No-Vary-Search hint</a></p>
            <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label③">label</a>
            <dd data-md>
             <p>"<code>speculation-rules</code>"</p>
@@ -1797,13 +1873,13 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
             <p>"<code>to be created</code>"</p>
           </dl>
          <li data-md>
-          <p>The user agent may <a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering">start referrer-initiated prerendering</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
+          <p><a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering">Start referrer-initiated prerendering</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
           <p>The user agent can use <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint②">target navigable name hint</a> as a hint to their implementation of the <a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering①">start referrer-initiated prerendering</a> algorithm. This hint indicates that the web developer expects the eventual <a data-link-type="dfn" href="prerendering.html#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate">activation</a> of the created <a data-link-type="dfn" href="prerendering.html#prerendering-traversable" id="ref-for-prerendering-traversable">prerendering traversable</a> to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#the-rules-for-choosing-a-navigable" id="ref-for-the-rules-for-choosing-a-navigable">rules for choosing a navigable</a> given <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint③">target navigable name hint</a> and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a>.</p>
           <p class="note" role="note">This is just a hint. The <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint④">target navigable name hint</a> actually has no normative implications, after being parsed. It is still perfectly fine to <a data-link-type="dfn" href="prerendering.html#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate①">activate</a> in place of a different predecessor traversable that was not hinted at. </p>
         </ol>
       </ol>
     </ol>
-    <p>When selecting among <var>prefetchCandidates</var> and <var>prerenderCandidates</var>, user agents should consider their <a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness④">eagerness</a>, in accordance with the following:</p>
+    <p>When deciding whether to execute the "may" steps above that enact from among <var>prefetchCandidates</var> and <var>prerenderCandidates</var>, user agents should consider their <a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness④">eagerness</a>, in accordance with the following:</p>
     <dl>
      <dt data-md>"<code>immediate</code>"
      <dd data-md>
@@ -1818,28 +1894,53 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <dd data-md>
       <p>User agents should enact the candidate only when the user is very likely to navigate to this URL at any moment. For instance, the user might have begun to interact with a link. The author is seeking to capture some of the benefits of speculative loading with a fairly small tradeoff of resources.</p>
     </dl>
-    <p class="note" role="note">A user agent’s heuristics for enacting non-eager candidates could incorporate a <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑥">No-Vary-Search hint</a>. For example, a user hovering over a link whose URL and a candidate’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑦">URL</a> are <a data-link-type="dfn" href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing" id="ref-for-name-comparing">equivalent modulo search variance</a> given the candidate’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑦">No-Vary-Search hint</a> could indicate to the user agent that enacting it would be useful.</p>
-    <p>Notwithstanding the above, user agents should prioritize user preferences (express and implied, such as a low-data-usage mode) over eagerness expressed by the author.</p>
+    <p>If a user agent chooses to enact a candidate <var>A</var>, then the user agent should also enact other candidates which are <a data-link-type="dfn" href="#speculative-load-candidate-redundant-with" id="ref-for-speculative-load-candidate-redundant-with">redundant with</a> <var>A</var> and whose <a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness⑤">eagerness</a> is <a data-link-type="dfn" href="#at-least-as-eager" id="ref-for-at-least-as-eager">at least as eager</a> as <var>A</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness⑥">eagerness</a>. The first-encountered candidate will win, and the others will be ignored by the <a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch①">prefetch</a> or <a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering②">prerender</a> algorithms. This gives deterministic behavior for authors.</p>
     <div class="example" id="example-multiple-matching-rules">
      <a class="self-link" href="#example-multiple-matching-rules"></a> 
-     <p>It’s possible for multiple speculation rules to generate "the same" speculative navigation request, represented in the above algorithm by multiple similar candidates. For example, consider </p>
+     <p>The following speculation rules generate two <a data-link-type="dfn" href="#speculative-load-candidate-redundant-with" id="ref-for-speculative-load-candidate-redundant-with①">redundant</a> candidates: </p>
 <pre class="highlight"><c- p>{</c->
   <c- f>"prefetch"</c-><c- p>:</c-> <c- p>[</c->
     <c- p>{</c->
+      <c- f>"tag"</c-><c- p>:</c-> <c- u>"a"</c-><c- p>,</c->
       <c- f>"urls"</c-><c- p>:</c-> <c- p>[</c-><c- u>"next.html"</c-><c- p>]</c->
     <c- p>},</c->
     <c- p>{</c->
+      <c- f>"tag"</c-><c- p>:</c-> <c- u>"b"</c-><c- p>,</c->
       <c- f>"urls"</c-><c- p>:</c-> <c- p>[</c-><c- u>"next.html"</c-><c- p>],</c->
       <c- f>"referrer_policy"</c-><c- p>:</c-> <c- u>"no-referrer"</c->
     <c- p>}</c->
   <c- p>]</c->
 <c- p>}</c->
 </pre>
-     <p>Because <a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch①">prefetching</a> or <a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering②">prerendering</a> is a no-op if there is already a matching request in progress, following the above algorithm will generally result in the first rule winning. So in our example, the request will be made with the default referrer policy, not <code><a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer" id="ref-for-referrer-policy-no-referrer">"no-referrer"</a></code>.</p>
-     <p>Because of the "<span class="allow-2119">may</span>" step in the algorithm, user agents could technically instead choose to let the second rule win, by skipping the first candidate for <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined">implementation-defined</a> reasons, but this is expected to be rare. Usually, a user agent would either skip none or all of the matching rules, at least within a given <a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness⑤">eagerness</a> level.</p>
+     <p>A user agent which follows the above algorithm will enact both candidates. The second call to the <a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch②">prefetch</a> algorithm will end up doing nothing, and so the request will be made with the default referrer policy, instead of using <code><a data-link-type="dfn" href="https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer" id="ref-for-referrer-policy-no-referrer">"no-referrer"</a></code>. </p>
+     <p>However, the <a data-link-type="dfn" href="#collect-tags-for-matching-speculative-load-candidates" id="ref-for-collect-tags-for-matching-speculative-load-candidates②">collect tags for matching speculative load candidates</a> algorithm will collect tags from both candidates, so the `<code><a data-link-type="http-header" href="prefetch.html#sec-speculation-tags-header" id="ref-for-sec-speculation-tags-header">Sec-Speculation-Tags</a></code>` header will be set to <code>"a", "b"</code>. This indicates to server operators that either rule could have caused the speculative load. </p>
     </div>
+    <p>Notwithstanding the above, user agents should prioritize user preferences (express and implied, such as a low-data-usage mode) over eagerness expressed by the author.</p>
+    <p class="note" role="note">A user agent’s heuristics for enacting non-eager candidates could incorporate a <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑨">No-Vary-Search hint</a>. For example, a user hovering over a link whose URL and a candidate’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑨">URL</a> are <a data-link-type="dfn" href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing" id="ref-for-name-comparing①">equivalent modulo search variance</a> given the candidate’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint①⓪">No-Vary-Search hint</a> could indicate to the user agent that enacting it would be useful.</p>
    </div>
    <p class="issue" id="issue-1cafd308"><a class="self-link" href="#issue-1cafd308"></a> We should also cancel speculated prerenders. </p>
+   <div class="algorithm" data-algorithm="collect tags for matching speculative load candidates">
+     To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="collect-tags-for-matching-speculative-load-candidates">collect tags for matching speculative load candidates</dfn>, given a <a data-link-type="dfn" href="#speculative-load-candidate" id="ref-for-speculative-load-candidate⑤">speculative load candidate</a> <var>candidateUnderConsideration</var> and a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②⑤">list</a> of <a data-link-type="dfn" href="#speculative-load-candidate" id="ref-for-speculative-load-candidate⑥">speculative load candidates</a> <var>allCandidates</var>: 
+    <ol>
+     <li data-md>
+      <p>Let <var>tags</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set⑥">ordered set</a>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑧">For each</a> <var>candidate</var> of <var>allCandidates</var>:</p>
+      <ol>
+       <li data-md>
+        <p>If <var>candidate</var> is not <a data-link-type="dfn" href="#speculative-load-candidate-redundant-with" id="ref-for-speculative-load-candidate-redundant-with②">redundant with</a> <var>candidateUnderConsideration</var>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①⑤">continue</a>.</p>
+       <li data-md>
+        <p>If <var>candidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness⑦">eagerness</a> is <a data-link-type="dfn" href="#less-eager" id="ref-for-less-eager①">less eager</a> than <var>candidateUnderConsideration</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness⑧">eagerness</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①⑥">continue</a>.</p>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①④">Append</a> <var>candidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags④">tags</a> to <var>tags</var>.</p>
+      </ol>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-sort-in-ascending-order" id="ref-for-list-sort-in-ascending-order">Sort in ascending order</a> <var>tags</var>, with <var>tagA</var> being less than <var>tagB</var> if <var>tagA</var> is null, or if <var>tagA</var> is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#code-unit-less-than" id="ref-for-code-unit-less-than">code unit less than</a> <var>tagB</var>.</p>
+     <li data-md>
+      <p>Return <var>tags</var>.</p>
+    </ol>
+    <p class="note" role="note">The intuition here is that the tag for candidate <var>B</var> will be included in a speculative load triggered by candidate <var>A</var>, if and only if, were candidate <var>A</var> no longer present, <var>B</var> would trigger a speculative load that would be used in the same circumstances as <var>A</var>. </p>
+   </div>
    <h3 class="heading settled" data-level="1.8" id="document-rule-predicate-matching"><span class="secno">1.8. </span><span class="content">Document rule predicate matching</span><a class="self-link" href="#document-rule-predicate-matching"></a></h3>
    <div class="algorithm" data-algorithm="matches" data-algorithm-for="document rule predicate">
      A <a data-link-type="dfn" href="#document-rule-predicate" id="ref-for-document-rule-predicate⑤">document rule predicate</a> <var>predicate</var> <dfn class="dfn-paneled" data-dfn-for="document rule predicate" data-dfn-type="dfn" data-noexport id="document-rule-predicate-matches">matches</dfn> an <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#element" id="ref-for-element">Element</a></code> <var>el</var> implementing the <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils" id="ref-for-htmlhyperlinkelementutils">HTMLHyperlinkElementUtils</a></code> mixin if the following steps return true: 
@@ -1848,7 +1949,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>predicate</var> is a <a data-link-type="dfn" href="#document-rule-conjunction" id="ref-for-document-rule-conjunction③">document rule conjunction</a>, then:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑧">For each</a> <var>clause</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses②">clauses</a>:</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑨">For each</a> <var>clause</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-conjunction-clauses" id="ref-for-document-rule-conjunction-clauses②">clauses</a>:</p>
         <ol>
          <li data-md>
           <p>If <var>clause</var> does not <a data-link-type="dfn" href="#document-rule-predicate-matches" id="ref-for-document-rule-predicate-matches①">match</a> <var>el</var>, return false.</p>
@@ -1860,7 +1961,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>predicate</var> is a <a data-link-type="dfn" href="#document-rule-disjunction" id="ref-for-document-rule-disjunction②">document rule disjunction</a>, then:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑨">For each</a> <var>clause</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-disjunction-clauses" id="ref-for-document-rule-disjunction-clauses①">clauses</a>:</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②⓪">For each</a> <var>clause</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-disjunction-clauses" id="ref-for-document-rule-disjunction-clauses①">clauses</a>:</p>
         <ol>
          <li data-md>
           <p>If <var>clause</var> <a data-link-type="dfn" href="#document-rule-predicate-matches" id="ref-for-document-rule-predicate-matches②">matches</a> <var>el</var>, return true.</p>
@@ -1882,7 +1983,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
        <li data-md>
         <p>Let <var>href</var> be the result of running <var>el</var>’s <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href" id="ref-for-dom-hyperlink-href">href</a></code> getter steps.</p>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②⓪">For each</a> <var>pattern</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-url-pattern-predicate-patterns" id="ref-for-document-rule-url-pattern-predicate-patterns①">patterns</a>:</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②①">For each</a> <var>pattern</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-url-pattern-predicate-patterns" id="ref-for-document-rule-url-pattern-predicate-patterns①">patterns</a>:</p>
         <ol>
          <li data-md>
           <p>Perform a <a data-link-type="dfn" href="https://urlpattern.spec.whatwg.org/#url-pattern-match" id="ref-for-url-pattern-match">match</a> given <var>pattern</var> and <var>href</var>. If the result is not null, return true.</p>
@@ -1894,7 +1995,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>If <var>predicate</var> is a <a data-link-type="dfn" href="#document-rule-css-selector-predicate" id="ref-for-document-rule-css-selector-predicate②">document rule CSS selector predicate</a>, then:</p>
       <ol>
        <li data-md>
-        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②①">For each</a> <var>selector</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-css-selector-predicate-selectors" id="ref-for-document-rule-css-selector-predicate-selectors①">selectors</a>:</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②②">For each</a> <var>selector</var> of <var>predicate</var>’s <a data-link-type="dfn" href="#document-rule-css-selector-predicate-selectors" id="ref-for-document-rule-css-selector-predicate-selectors①">selectors</a>:</p>
         <ol>
          <li data-md>
           <p><a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#match-a-selector-against-an-element" id="ref-for-match-a-selector-against-an-element">Match</a> <var>selector</var> against <var>el</var> with the <a data-link-type="dfn" href="https://drafts.csswg.org/selectors-4/#scoping-root" id="ref-for-scoping-root">scoping root</a> set to <var>el</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-tree-root" id="ref-for-concept-tree-root">root</a>. If the result is true, return true.</p>
@@ -1905,7 +2006,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
         <p>Return false.</p>
       </ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑤">Assert</a>: This step is not reached.</p>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑥">Assert</a>: This step is not reached.</p>
     </ol>
    </div>
    <h2 class="heading settled" data-level="2" id="content-security-policy"><span class="secno">2. </span><span class="content">Content Security Policy</span><a class="self-link" href="#content-security-policy"></a></h2>
@@ -1952,7 +2053,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     The algorithm needs a patch to handle the "<code>script speculationrules</code>" type. 
    <ol start="2">
     <li data-md>
-     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②②">For each</a> <var>expression</var> of list:</p>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②③">For each</a> <var>expression</var> of list:</p>
      <ol>
       <li data-md>
        <p>If <var>expression</var> matches the <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-nonce-source" id="ref-for-grammardef-nonce-source①"><code>nonce-source</code></a> or <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-hash-source" id="ref-for-grammardef-hash-source①"><code>hash-source</code></a> grammar, return "<code>Does Not Allow</code>".</p>
@@ -1980,7 +2081,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      </p>
      <ol>
       <li data-md>
-       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②③">For each</a> <var>expression</var> of <var>list</var>:</p>
+       <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②④">For each</a> <var>expression</var> of <var>list</var>:</p>
        <ol>
         <li data-md>
          <p>If <var>expression</var> matches the <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-nonce-source" id="ref-for-grammardef-nonce-source②"><code>nonce-source</code></a> grammar,
@@ -1993,7 +2094,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li data-md>
      <p>Let <var>unsafe-hashes flag</var> be <code>false</code>.</p>
     <li data-md>
-     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②④">For each</a> <var>expression</var> of <var>list</var>:</p>
+     <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate②⑤">For each</a> <var>expression</var> of <var>list</var>:</p>
      <ol>
       <li data-md>
        <p>If <var>expression</var> is an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-case-insensitive" id="ref-for-ascii-case-insensitive③">ASCII case-insensitive</a> match for the <a data-link-type="grammar" href="#grammardef-keyword-source" id="ref-for-grammardef-keyword-source③"><code>keyword-source</code></a> "<a data-link-type="grammar" href="#grammardef-unsafe-hashes" id="ref-for-grammardef-unsafe-hashes"><code>'unsafe-hashes'</code></a>",
@@ -2114,6 +2215,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#prefetch-candidate-anonymization-policy">anonymization policy</a><span>, in § 1.7</span>
+   <li><a href="#at-least-as-eager">at least as eager</a><span>, in § 1.1</span>
    <li><a href="#pending-external-speculation-rule-resource-cancel-and-discard">cancel and discard</a><span>, in § 1.5</span>
    <li><a href="#document-rule-negation-clause">clause</a><span>, in § 1.1</span>
    <li>
@@ -2122,6 +2224,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><a href="#document-rule-conjunction-clauses">dfn for document rule conjunction</a><span>, in § 1.1</span>
      <li><a href="#document-rule-disjunction-clauses">dfn for document rule disjunction</a><span>, in § 1.1</span>
     </ul>
+   <li><a href="#collect-tags-for-matching-speculative-load-candidates">collect tags for matching speculative load candidates</a><span>, in § 1.7</span>
    <li><a href="#compute-a-speculative-action-referrer-policy">compute a speculative action referrer policy</a><span>, in § 1.7</span>
    <li><a href="#consider-speculation">consider speculation</a><span>, in § 1.7</span>
    <li><a href="#prefetch-candidate-continues">continues</a><span>, in § 1.7</span>
@@ -2148,6 +2251,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     </ul>
    <li><a href="#grammardef-inline-speculation-rules">'inline-speculation-rules'</a><span>, in § 2.2</span>
    <li><a href="#grammardef-keyword-source">keyword-source</a><span>, in § 2.2</span>
+   <li><a href="#less-eager">less eager</a><span>, in § 1.1</span>
    <li><a href="#document-list-of-pending-external-speculation-rule-resources">list of pending external speculation rule resources</a><span>, in § 1.7</span>
    <li><a href="#document-list-of-speculation-rule-sets">list of speculation rule sets</a><span>, in § 1.7</span>
    <li><a href="#document-rule-predicate-matches">matches</a><span>, in § 1.8</span>
@@ -2169,6 +2273,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#speculation-rule-set-prerender-rules">prerender rules</a><span>, in § 1.1</span>
    <li><a href="#process-pending-external-speculation-rule-resources">process pending external speculation rule resources</a><span>, in § 1.5</span>
    <li><a href="#process-the-speculation-rules-header">process the Speculation-Rules header</a><span>, in § 1.4</span>
+   <li><a href="#speculative-load-candidate-redundant-with">redundant with</a><span>, in § 1.7</span>
    <li>
     referrer policy
     <ul>
@@ -2185,8 +2290,15 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <li><a href="#speculation-rule">speculation rule</a><span>, in § 1.1</span>
    <li><a href="#http-headerdef-speculation-rules">Speculation-Rules</a><span>, in § 1.4</span>
    <li><a href="#speculation-rule-set">speculation rule set</a><span>, in § 1.1</span>
+   <li><a href="#speculation-rules-tag">speculation rules tag</a><span>, in § 1.1</span>
    <li><a href="#speculative-load-candidate">speculative load candidate</a><span>, in § 1.7</span>
    <li><a href="#grammardef-strict-dynamic">'strict-dynamic'</a><span>, in § 2.2</span>
+   <li>
+    tags
+    <ul>
+     <li><a href="#speculation-rule-tags">dfn for speculation rule</a><span>, in § 1.1</span>
+     <li><a href="#speculative-load-candidate-tags">dfn for speculative load candidate</a><span>, in § 1.7</span>
+    </ul>
    <li>
     target navigable name hint
     <ul>
@@ -2327,14 +2439,16 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="53275e46">append <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="a3b18719">append <small>(for set)</small></span>
      <li><span class="dfn-paneled" id="7f9469b5">ASCII case-insensitive</span>
+     <li><span class="dfn-paneled" id="2d5a2765">ASCII string</span>
      <li><span class="dfn-paneled" id="77b4c09a">assert</span>
      <li><span class="dfn-paneled" id="3de9e659">byte sequence</span>
+     <li><span class="dfn-paneled" id="4135591f">code unit less than</span>
      <li><span class="dfn-paneled" id="ae8def21">contain <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="a326add7">contain <small>(for map)</small></span>
      <li><span class="dfn-paneled" id="f937b7b6">continue</span>
      <li><span class="dfn-paneled" id="1243a891">exist</span>
+     <li><span class="dfn-paneled" id="d8f8bd6e">extend</span>
      <li><span class="dfn-paneled" id="16d07e10">for each</span>
-     <li><span class="dfn-paneled" id="860300d4">implementation-defined</span>
      <li><span class="dfn-paneled" id="7a87d819">is</span>
      <li><span class="dfn-paneled" id="c88f3887">item</span>
      <li><span class="dfn-paneled" id="d14a6f26">key</span>
@@ -2344,6 +2458,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="5ff3a316">parse a JSON string to an Infra value</span>
      <li><span class="dfn-paneled" id="99c988d6">remove</span>
      <li><span class="dfn-paneled" id="167d1cb0">replace</span>
+     <li><span class="dfn-paneled" id="0204d188">size</span>
+     <li><span class="dfn-paneled" id="5ecc2082">sort in ascending order</span>
      <li><span class="dfn-paneled" id="0698d556">string</span>
      <li><span class="dfn-paneled" id="984221ca">struct</span>
     </ul>
@@ -2365,6 +2481,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="4d493a0f">anonymization policy</span>
      <li><span class="dfn-paneled" id="885e47de">cancel and discard</span>
      <li><span class="dfn-paneled" id="8c33c575">cross-origin prefetch IP anonymization policy</span>
+     <li><span class="dfn-paneled" id="3173f811">has a matching prefetch record</span>
      <li><span class="dfn-paneled" id="a48cb9c0">label</span>
      <li><span class="dfn-paneled" id="fd3baafe">matches a URL</span>
      <li><span class="dfn-paneled" id="99117fcc">No-Vary-Search hint</span>
@@ -2376,8 +2493,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="a132d33a">prerendering traversable</span>
      <li><span class="dfn-paneled" id="9c66063f">prerendering traversable <small>(for prefetch record)</small></span>
      <li><span class="dfn-paneled" id="430e99f3">referrer policy</span>
+     <li><span class="dfn-paneled" id="93ccea52">Sec-Speculation-Tags</span>
      <li><span class="dfn-paneled" id="97efccfd">start referrer-initiated prerendering</span>
      <li><span class="dfn-paneled" id="dafa539d">state</span>
+     <li><span class="dfn-paneled" id="a001637b">tags</span>
      <li><span class="dfn-paneled" id="1e6dbcc5">URL</span>
     </ul>
    <li>
@@ -2684,23 +2803,24 @@ function parseHTML(markup) {
 "use strict";
 {
 let dfnPanelData = {
+"0204d188": {"dfnID":"0204d188","dfnText":"size","external":true,"refSections":[{"refs":[{"id":"ref-for-list-size"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#list-size"},
 "037b46da": {"dfnID":"037b46da","dfnText":"prepare the script element","external":true,"refSections":[{"refs":[{"id":"ref-for-prepare-the-script-element"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-prepare-the-script-element\u2460"}],"title":"1.3. Prepare the script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#prepare-the-script-element"},
 "05064bc7": {"dfnID":"05064bc7","dfnText":"supports(type)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-script-supports"}],"title":"1.2. The script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#dom-script-supports"},
 "0525c77b": {"dfnID":"0525c77b","dfnText":"activate","external":true,"refSections":[{"refs":[{"id":"ref-for-prerendering-traversable-activate"},{"id":"ref-for-prerendering-traversable-activate\u2460"}],"title":"1.7. Processing model"}],"url":"prerendering.html#prerendering-traversable-activate"},
 "05af0c3f": {"dfnID":"05af0c3f","dfnText":"valid URL string","external":true,"refSections":[{"refs":[{"id":"ref-for-valid-url-string"}],"title":"1.4. The `Speculation-Rules` header"}],"url":"https://url.spec.whatwg.org/#valid-url-string"},
 "0698d556": {"dfnID":"0698d556","dfnText":"string","external":true,"refSections":[{"refs":[{"id":"ref-for-string"},{"id":"ref-for-string\u2460"},{"id":"ref-for-string\u2461"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-string\u2463"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-string\u2464"},{"id":"ref-for-string\u2465"},{"id":"ref-for-string\u2466"},{"id":"ref-for-string\u2467"},{"id":"ref-for-string\u2468"},{"id":"ref-for-string\u2460\u24ea"},{"id":"ref-for-string\u2460\u2460"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#string"},
-"0875e72b": {"dfnID":"0875e72b","dfnText":"equivalent modulo search variance","external":true,"refSections":[{"refs":[{"id":"ref-for-name-comparing"}],"title":"1.7. Processing model"}],"url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing"},
+"0875e72b": {"dfnID":"0875e72b","dfnText":"equivalent modulo search variance","external":true,"refSections":[{"refs":[{"id":"ref-for-name-comparing"},{"id":"ref-for-name-comparing\u2460"}],"title":"1.7. Processing model"}],"url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing"},
 "08b51e40": {"dfnID":"08b51e40","dfnText":"processResponseConsumeBody","external":true,"refSections":[{"refs":[{"id":"ref-for-process-response-end-of-body"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#process-response-end-of-body"},
 "0cf3964f": {"dfnID":"0cf3964f","dfnText":"script","external":true,"refSections":[{"refs":[{"id":"ref-for-script"},{"id":"ref-for-script\u2460"},{"id":"ref-for-script\u2461"},{"id":"ref-for-script\u2462"},{"id":"ref-for-script\u2463"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-script\u2464"}],"title":"2.4. script-src"},{"refs":[{"id":"ref-for-script\u2465"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#script"},
 "0e3ba9f8": {"dfnID":"0e3ba9f8","dfnText":"fully active","external":true,"refSections":[{"refs":[{"id":"ref-for-fully-active"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active"},
 "0fa1ecd0": {"dfnID":"0fa1ecd0","dfnText":":visited","external":true,"refSections":[{"refs":[{"id":"ref-for-visited-pseudo"}],"title":"1.8. Document rule predicate matching"},{"refs":[{"id":"ref-for-visited-pseudo\u2460"}],"title":"5.5. Visited links"}],"url":"https://drafts.csswg.org/selectors-4/#visited-pseudo"},
 "1037f0b6": {"dfnID":"1037f0b6","dfnText":"src","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-script-src"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-dom-script-src\u2460"}],"title":"1.3. Prepare the script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src"},
-"1243a891": {"dfnID":"1243a891","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"},{"id":"ref-for-map-exists\u2460"},{"id":"ref-for-map-exists\u2461"},{"id":"ref-for-map-exists\u2462"},{"id":"ref-for-map-exists\u2463"},{"id":"ref-for-map-exists\u2464"},{"id":"ref-for-map-exists\u2465"},{"id":"ref-for-map-exists\u2466"},{"id":"ref-for-map-exists\u2467"},{"id":"ref-for-map-exists\u2468"},{"id":"ref-for-map-exists\u2460\u24ea"},{"id":"ref-for-map-exists\u2460\u2460"},{"id":"ref-for-map-exists\u2460\u2461"},{"id":"ref-for-map-exists\u2460\u2462"},{"id":"ref-for-map-exists\u2460\u2463"},{"id":"ref-for-map-exists\u2460\u2464"},{"id":"ref-for-map-exists\u2460\u2465"},{"id":"ref-for-map-exists\u2460\u2466"},{"id":"ref-for-map-exists\u2460\u2467"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
+"1243a891": {"dfnID":"1243a891","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"},{"id":"ref-for-map-exists\u2460"},{"id":"ref-for-map-exists\u2461"},{"id":"ref-for-map-exists\u2462"},{"id":"ref-for-map-exists\u2463"},{"id":"ref-for-map-exists\u2464"},{"id":"ref-for-map-exists\u2465"},{"id":"ref-for-map-exists\u2466"},{"id":"ref-for-map-exists\u2467"},{"id":"ref-for-map-exists\u2468"},{"id":"ref-for-map-exists\u2460\u24ea"},{"id":"ref-for-map-exists\u2460\u2460"},{"id":"ref-for-map-exists\u2460\u2461"},{"id":"ref-for-map-exists\u2460\u2462"},{"id":"ref-for-map-exists\u2460\u2463"},{"id":"ref-for-map-exists\u2460\u2464"},{"id":"ref-for-map-exists\u2460\u2465"},{"id":"ref-for-map-exists\u2460\u2466"},{"id":"ref-for-map-exists\u2460\u2467"},{"id":"ref-for-map-exists\u2460\u2468"},{"id":"ref-for-map-exists\u2461\u24ea"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
 "13dd6cae": {"dfnID":"13dd6cae","dfnText":"node navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-node-navigable"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable"},
-"14a6613b": {"dfnID":"14a6613b","dfnText":"prefetch","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch"},{"id":"ref-for-prefetch\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch"},
+"14a6613b": {"dfnID":"14a6613b","dfnText":"prefetch","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch"},{"id":"ref-for-prefetch\u2460"},{"id":"ref-for-prefetch\u2461"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch"},
 "154d8845": {"dfnID":"154d8845","dfnText":"HTMLHyperlinkElementUtils","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlhyperlinkelementutils"}],"title":"1.8. Document rule predicate matching"}],"url":"https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils"},
 "167d1cb0": {"dfnID":"167d1cb0","dfnText":"replace","external":true,"refSections":[{"refs":[{"id":"ref-for-list-replace"}],"title":"1.2. The script element"}],"url":"https://infra.spec.whatwg.org/#list-replace"},
-"16d07e10": {"dfnID":"16d07e10","dfnText":"for each","external":true,"refSections":[{"refs":[{"id":"ref-for-list-iterate"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-list-iterate\u2460"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-list-iterate\u2461"},{"id":"ref-for-list-iterate\u2462"},{"id":"ref-for-list-iterate\u2463"},{"id":"ref-for-list-iterate\u2464"},{"id":"ref-for-list-iterate\u2465"},{"id":"ref-for-list-iterate\u2466"},{"id":"ref-for-list-iterate\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list-iterate\u2468"},{"id":"ref-for-list-iterate\u2460\u24ea"},{"id":"ref-for-list-iterate\u2460\u2460"},{"id":"ref-for-list-iterate\u2460\u2461"},{"id":"ref-for-list-iterate\u2460\u2462"},{"id":"ref-for-list-iterate\u2460\u2463"},{"id":"ref-for-list-iterate\u2460\u2464"},{"id":"ref-for-list-iterate\u2460\u2465"},{"id":"ref-for-list-iterate\u2460\u2466"}],"title":"1.7. Processing model"},{"refs":[{"id":"ref-for-list-iterate\u2460\u2467"},{"id":"ref-for-list-iterate\u2460\u2468"},{"id":"ref-for-list-iterate\u2461\u24ea"},{"id":"ref-for-list-iterate\u2461\u2460"}],"title":"1.8. Document rule predicate matching"},{"refs":[{"id":"ref-for-list-iterate\u2461\u2461"}],"title":"2.5. Does a source list allow all inline behavior for type?"},{"refs":[{"id":"ref-for-list-iterate\u2461\u2462"},{"id":"ref-for-list-iterate\u2461\u2463"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://infra.spec.whatwg.org/#list-iterate"},
+"16d07e10": {"dfnID":"16d07e10","dfnText":"for each","external":true,"refSections":[{"refs":[{"id":"ref-for-list-iterate"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-list-iterate\u2460"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-list-iterate\u2461"},{"id":"ref-for-list-iterate\u2462"},{"id":"ref-for-list-iterate\u2463"},{"id":"ref-for-list-iterate\u2464"},{"id":"ref-for-list-iterate\u2465"},{"id":"ref-for-list-iterate\u2466"},{"id":"ref-for-list-iterate\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list-iterate\u2468"},{"id":"ref-for-list-iterate\u2460\u24ea"},{"id":"ref-for-list-iterate\u2460\u2460"},{"id":"ref-for-list-iterate\u2460\u2461"},{"id":"ref-for-list-iterate\u2460\u2462"},{"id":"ref-for-list-iterate\u2460\u2463"},{"id":"ref-for-list-iterate\u2460\u2464"},{"id":"ref-for-list-iterate\u2460\u2465"},{"id":"ref-for-list-iterate\u2460\u2466"},{"id":"ref-for-list-iterate\u2460\u2467"}],"title":"1.7. Processing model"},{"refs":[{"id":"ref-for-list-iterate\u2460\u2468"},{"id":"ref-for-list-iterate\u2461\u24ea"},{"id":"ref-for-list-iterate\u2461\u2460"},{"id":"ref-for-list-iterate\u2461\u2461"}],"title":"1.8. Document rule predicate matching"},{"refs":[{"id":"ref-for-list-iterate\u2461\u2462"}],"title":"2.5. Does a source list allow all inline behavior for type?"},{"refs":[{"id":"ref-for-list-iterate\u2461\u2463"},{"id":"ref-for-list-iterate\u2461\u2464"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://infra.spec.whatwg.org/#list-iterate"},
 "18e7dde9": {"dfnID":"18e7dde9","dfnText":"load","external":true,"refSections":[{"refs":[{"id":"ref-for-event-load"}],"title":"1.2. The script element"}],"url":"https://html.spec.whatwg.org/multipage/indices.html#event-load"},
 "1e542ed3": {"dfnID":"1e542ed3","dfnText":"obtain a URL search variance","external":true,"refSections":[{"refs":[{"id":"ref-for-name-obtain-a-url-search-varianc"}],"title":"1.6. Parsing"}],"url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-obtain-a-url-search-varianc"},
 "1e6dbcc5": {"dfnID":"1e6dbcc5","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-url"},{"id":"ref-for-prefetch-record-url\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-url"},
@@ -2710,6 +2830,8 @@ let dfnPanelData = {
 "2b07d94d": {"dfnID":"2b07d94d","dfnText":"mark as ready","external":true,"refSections":[{"refs":[{"id":"ref-for-mark-as-ready"}],"title":"1.3. Prepare the script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#mark-as-ready"},
 "2d09a0dd": {"dfnID":"2d09a0dd","dfnText":"referrer policy","external":true,"refSections":[{"refs":[{"id":"ref-for-referrer-policy"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-referrer-policy\u2460"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-referrer-policy\u2461"},{"id":"ref-for-referrer-policy\u2462"}],"title":"1.7. Processing model"}],"url":"https://w3c.github.io/webappsec-referrer-policy/#referrer-policy"},
 "2d1d761a": {"dfnID":"2d1d761a","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list\u2465"}],"title":"1.4. The `Speculation-Rules` header"}],"url":"https://httpwg.org/specs/rfc8941.html#list"},
+"2d5a2765": {"dfnID":"2d5a2765","dfnText":"ASCII string","external":true,"refSections":[{"refs":[{"id":"ref-for-ascii-string"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-ascii-string\u2460"},{"id":"ref-for-ascii-string\u2461"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#ascii-string"},
+"3173f811": {"dfnID":"3173f811","dfnText":"has a matching prefetch record","external":true,"refSections":[{"refs":[{"id":"ref-for-has-a-matching-prefetch-record"}],"title":"1.7. Processing model"}],"url":"prefetch.html#has-a-matching-prefetch-record"},
 "31e1cce6": {"dfnID":"31e1cce6","dfnText":"querySelector(selectors)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-parentnode-queryselector"}],"title":"1.8. Document rule predicate matching"}],"url":"https://dom.spec.whatwg.org/#dom-parentnode-queryselector"},
 "3268a8eb": {"dfnID":"3268a8eb","dfnText":"URL (for response)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-url"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-response-url"},
 "3327afdd": {"dfnID":"3327afdd","dfnText":"execute the script element","external":true,"refSections":[{"refs":[{"id":"ref-for-execute-the-script-element"}],"title":"1.2. The script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#execute-the-script-element"},
@@ -2723,6 +2845,7 @@ let dfnPanelData = {
 "3d877348": {"dfnID":"3d877348","dfnText":"Should fetching request be blocked as mixed content?","external":true,"refSections":[{"refs":[{"id":"ref-for-should-block-fetch"}],"title":"4.5. Mixed content"}],"url":"https://w3c.github.io/webappsec-mixed-content/#should-block-fetch"},
 "3de9e659": {"dfnID":"3de9e659","dfnText":"byte sequence","external":true,"refSections":[{"refs":[{"id":"ref-for-byte-sequence"}],"title":"1.5. External speculation rule sets"}],"url":"https://infra.spec.whatwg.org/#byte-sequence"},
 "3fca5a9e": {"dfnID":"3fca5a9e","dfnText":"map","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-map"},{"id":"ref-for-ordered-map\u2460"},{"id":"ref-for-ordered-map\u2461"},{"id":"ref-for-ordered-map\u2462"},{"id":"ref-for-ordered-map\u2463"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#ordered-map"},
+"4135591f": {"dfnID":"4135591f","dfnText":"code unit less than","external":true,"refSections":[{"refs":[{"id":"ref-for-code-unit-less-than"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#code-unit-less-than"},
 "41c9dc51": {"dfnID":"41c9dc51","dfnText":"result","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-script-result"},{"id":"ref-for-concept-script-result\u2460"},{"id":"ref-for-concept-script-result\u2461"},{"id":"ref-for-concept-script-result\u2462"},{"id":"ref-for-concept-script-result\u2463"},{"id":"ref-for-concept-script-result\u2464"}],"title":"1.2. The script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#concept-script-result"},
 "430e99f3": {"dfnID":"430e99f3","dfnText":"referrer policy","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-referrer-policy"},{"id":"ref-for-prefetch-record-referrer-policy\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-referrer-policy"},
 "48438eb3": {"dfnID":"48438eb3","dfnText":"queue a global task","external":true,"refSections":[{"refs":[{"id":"ref-for-queue-a-global-task"},{"id":"ref-for-queue-a-global-task\u2460"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task"},
@@ -2731,7 +2854,7 @@ let dfnPanelData = {
 "4d493a0f": {"dfnID":"4d493a0f","dfnText":"anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-anonymization-policy"},{"id":"ref-for-prefetch-record-anonymization-policy\u2460"},{"id":"ref-for-prefetch-record-anonymization-policy\u2461"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-anonymization-policy"},
 "4fd2d05e": {"dfnID":"4fd2d05e","dfnText":"get an element's target","external":true,"refSections":[{"refs":[{"id":"ref-for-get-an-element's-target"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/semantics.html#get-an-element's-target"},
 "5216e1a0": {"dfnID":"5216e1a0","dfnText":"node document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-node-document"},{"id":"ref-for-concept-node-document\u2460"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-concept-node-document\u2461"}],"title":"1.3. Prepare the script element"}],"url":"https://dom.spec.whatwg.org/#concept-node-document"},
-"53275e46": {"dfnID":"53275e46","dfnText":"append (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-append"}],"title":"1.3. Prepare the script element"},{"refs":[{"id":"ref-for-list-append\u2460"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-list-append\u2461"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-list-append\u2462"},{"id":"ref-for-list-append\u2463"},{"id":"ref-for-list-append\u2464"},{"id":"ref-for-list-append\u2465"},{"id":"ref-for-list-append\u2466"},{"id":"ref-for-list-append\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list-append\u2468"},{"id":"ref-for-list-append\u2460\u24ea"},{"id":"ref-for-list-append\u2460\u2460"},{"id":"ref-for-list-append\u2460\u2461"},{"id":"ref-for-list-append\u2460\u2462"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list-append"},
+"53275e46": {"dfnID":"53275e46","dfnText":"append (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-append"}],"title":"1.3. Prepare the script element"},{"refs":[{"id":"ref-for-list-append\u2460"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-list-append\u2461"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-list-append\u2462"},{"id":"ref-for-list-append\u2463"},{"id":"ref-for-list-append\u2464"},{"id":"ref-for-list-append\u2465"},{"id":"ref-for-list-append\u2466"},{"id":"ref-for-list-append\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list-append\u2468"},{"id":"ref-for-list-append\u2460\u24ea"},{"id":"ref-for-list-append\u2460\u2460"},{"id":"ref-for-list-append\u2460\u2461"},{"id":"ref-for-list-append\u2460\u2462"},{"id":"ref-for-list-append\u2460\u2463"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list-append"},
 "544fc7df": {"dfnID":"544fc7df","dfnText":"error","external":true,"refSections":[{"refs":[{"id":"ref-for-event-error"}],"title":"1.2. The script element"}],"url":"https://html.spec.whatwg.org/multipage/indices.html#event-error"},
 "550c8676": {"dfnID":"550c8676","dfnText":"hash-source","external":true,"refSections":[{"refs":[{"id":"ref-for-grammardef-hash-source"}],"title":"2.4. script-src"},{"refs":[{"id":"ref-for-grammardef-hash-source\u2460"}],"title":"2.5. Does a source list allow all inline behavior for type?"}],"url":"https://w3c.github.io/webappsec-csp/#grammardef-hash-source"},
 "55213b5b": {"dfnID":"55213b5b","dfnText":"request","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-request"},
@@ -2739,30 +2862,31 @@ let dfnPanelData = {
 "5c66de35": {"dfnID":"5c66de35","dfnText":"get a structured field value","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-header-list-get-structured-header"}],"title":"1.4. The `Speculation-Rules` header"}],"url":"https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header"},
 "5cc50ead": {"dfnID":"5cc50ead","dfnText":"href (for HTMLHyperlinkElementUtils)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-hyperlink-href"}],"title":"1.8. Document rule predicate matching"}],"url":"https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href"},
 "5e0d3b02": {"dfnID":"5e0d3b02","dfnText":"match a selector against an element","external":true,"refSections":[{"refs":[{"id":"ref-for-match-a-selector-against-an-element"}],"title":"1.8. Document rule predicate matching"}],"url":"https://drafts.csswg.org/selectors-4/#match-a-selector-against-an-element"},
+"5ecc2082": {"dfnID":"5ecc2082","dfnText":"sort in ascending order","external":true,"refSections":[{"refs":[{"id":"ref-for-list-sort-in-ascending-order"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list-sort-in-ascending-order"},
 "5ff3a316": {"dfnID":"5ff3a316","dfnText":"parse a JSON string to an Infra value","external":true,"refSections":[{"refs":[{"id":"ref-for-parse-a-json-string-to-an-infra-value"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#parse-a-json-string-to-an-infra-value"},
 "60393e82": {"dfnID":"60393e82","dfnText":"URL pattern","external":true,"refSections":[{"refs":[{"id":"ref-for-url-pattern"}],"title":"1.1. Definitions"}],"url":"https://urlpattern.spec.whatwg.org/#url-pattern"},
 "628c6566": {"dfnID":"628c6566","dfnText":"pseudo-class","external":true,"refSections":[{"refs":[{"id":"ref-for-pseudo-class"}],"title":"1.7. Processing model"}],"url":"https://drafts.csswg.org/selectors-4/#pseudo-class"},
 "631f76db": {"dfnID":"631f76db","dfnText":"child text content","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-child-text-content"}],"title":"1.2. The script element"}],"url":"https://dom.spec.whatwg.org/#concept-child-text-content"},
-"649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"},{"id":"ref-for-list\u2460"},{"id":"ref-for-list\u2461"},{"id":"ref-for-list\u2462"},{"id":"ref-for-list\u2463"},{"id":"ref-for-list\u2464"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-list\u2466"},{"id":"ref-for-list\u2467"},{"id":"ref-for-list\u2468"},{"id":"ref-for-list\u2460\u24ea"},{"id":"ref-for-list\u2460\u2460"},{"id":"ref-for-list\u2460\u2461"},{"id":"ref-for-list\u2460\u2462"},{"id":"ref-for-list\u2460\u2463"},{"id":"ref-for-list\u2460\u2464"},{"id":"ref-for-list\u2460\u2465"},{"id":"ref-for-list\u2460\u2466"},{"id":"ref-for-list\u2460\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list\u2460\u2468"},{"id":"ref-for-list\u2461\u24ea"},{"id":"ref-for-list\u2461\u2460"},{"id":"ref-for-list\u2461\u2461"},{"id":"ref-for-list\u2461\u2462"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list"},
+"649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"},{"id":"ref-for-list\u2460"},{"id":"ref-for-list\u2461"},{"id":"ref-for-list\u2462"},{"id":"ref-for-list\u2463"},{"id":"ref-for-list\u2464"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-list\u2466"},{"id":"ref-for-list\u2467"},{"id":"ref-for-list\u2468"},{"id":"ref-for-list\u2460\u24ea"},{"id":"ref-for-list\u2460\u2460"},{"id":"ref-for-list\u2460\u2461"},{"id":"ref-for-list\u2460\u2462"},{"id":"ref-for-list\u2460\u2463"},{"id":"ref-for-list\u2460\u2464"},{"id":"ref-for-list\u2460\u2465"},{"id":"ref-for-list\u2460\u2466"},{"id":"ref-for-list\u2460\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list\u2460\u2468"},{"id":"ref-for-list\u2461\u24ea"},{"id":"ref-for-list\u2461\u2460"},{"id":"ref-for-list\u2461\u2461"},{"id":"ref-for-list\u2461\u2462"},{"id":"ref-for-list\u2461\u2463"},{"id":"ref-for-list\u2461\u2464"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list"},
 "65181da8": {"dfnID":"65181da8","dfnText":"secure context","external":true,"refSections":[{"refs":[{"id":"ref-for-secure-context"}],"title":"4.5. Mixed content"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
 "6696b114": {"dfnID":"6696b114","dfnText":"await a stable state","external":true,"refSections":[{"refs":[{"id":"ref-for-await-a-stable-state"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#await-a-stable-state"},
 "68bf3d31": {"dfnID":"68bf3d31","dfnText":"a","external":true,"refSections":[{"refs":[{"id":"ref-for-the-a-element"},{"id":"ref-for-the-a-element\u2460"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element"},
-"692595fe": {"dfnID":"692595fe","dfnText":"ordered set","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-set"},{"id":"ref-for-ordered-set\u2460"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-ordered-set\u2461"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#ordered-set"},
+"692595fe": {"dfnID":"692595fe","dfnText":"ordered set","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-set"},{"id":"ref-for-ordered-set\u2460"},{"id":"ref-for-ordered-set\u2461"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-ordered-set\u2462"},{"id":"ref-for-ordered-set\u2463"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-ordered-set\u2464"},{"id":"ref-for-ordered-set\u2465"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#ordered-set"},
 "6bb42fbb": {"dfnID":"6bb42fbb","dfnText":"fetch controller","external":true,"refSections":[{"refs":[{"id":"ref-for-fetch-controller"}],"title":"1.1. Definitions"}],"url":"https://fetch.spec.whatwg.org/#fetch-controller"},
 "6db2a1f0": {"dfnID":"6db2a1f0","dfnText":"links","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-document-links"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/dom.html#dom-document-links"},
 "6eb8a5d8": {"dfnID":"6eb8a5d8","dfnText":"document base URL","external":true,"refSections":[{"refs":[{"id":"ref-for-document-base-url"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-document-base-url\u2460"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-document-base-url\u2461"},{"id":"ref-for-document-base-url\u2462"}],"title":"1.6. Parsing"}],"url":"https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url"},
 "7393da89": {"dfnID":"7393da89","dfnText":"same origin","external":true,"refSections":[{"refs":[{"id":"ref-for-same-origin"}],"title":"4.1. Cross-site request forgery"},{"refs":[{"id":"ref-for-same-origin\u2460"}],"title":"5.4. Identity joining"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#same-origin"},
-"77b4c09a": {"dfnID":"77b4c09a","dfnText":"assert","external":true,"refSections":[{"refs":[{"id":"ref-for-assert"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-assert\u2460"},{"id":"ref-for-assert\u2461"},{"id":"ref-for-assert\u2462"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-assert\u2463"}],"title":"1.7. Processing model"},{"refs":[{"id":"ref-for-assert\u2464"}],"title":"1.8. Document rule predicate matching"}],"url":"https://infra.spec.whatwg.org/#assert"},
+"77b4c09a": {"dfnID":"77b4c09a","dfnText":"assert","external":true,"refSections":[{"refs":[{"id":"ref-for-assert"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-assert\u2460"},{"id":"ref-for-assert\u2461"},{"id":"ref-for-assert\u2462"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-assert\u2463"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-assert\u2464"}],"title":"1.7. Processing model"},{"refs":[{"id":"ref-for-assert\u2465"}],"title":"1.8. Document rule predicate matching"}],"url":"https://infra.spec.whatwg.org/#assert"},
 "7a87d819": {"dfnID":"7a87d819","dfnText":"is","external":true,"refSections":[{"refs":[{"id":"ref-for-string-is"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://infra.spec.whatwg.org/#string-is"},
 "7c195f8b": {"dfnID":"7c195f8b","dfnText":"essence","external":true,"refSections":[{"refs":[{"id":"ref-for-mime-type-essence"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-mime-type-essence\u2460"}],"title":"4.3. Type confusion"}],"url":"https://mimesniff.spec.whatwg.org/#mime-type-essence"},
 "7f9469b5": {"dfnID":"7f9469b5","dfnText":"ASCII case-insensitive","external":true,"refSections":[{"refs":[{"id":"ref-for-ascii-case-insensitive"},{"id":"ref-for-ascii-case-insensitive\u2460"}],"title":"1.3. Prepare the script element"},{"refs":[{"id":"ref-for-ascii-case-insensitive\u2461"}],"title":"2.5. Does a source list allow all inline behavior for type?"},{"refs":[{"id":"ref-for-ascii-case-insensitive\u2462"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://infra.spec.whatwg.org/#ascii-case-insensitive"},
 "7fe03931": {"dfnID":"7fe03931","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-cross-origin-prefetch-ip-anonymization-policy-origin"}],"title":"1.7. Processing model"}],"url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin"},
 "85394472": {"dfnID":"85394472","dfnText":"Document","external":true,"refSections":[{"refs":[{"id":"ref-for-document"}],"title":"1.7. Processing model"}],"url":"https://dom.spec.whatwg.org/#document"},
 "857d5516": {"dfnID":"857d5516","dfnText":"client","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-client"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-request-client"},
-"860300d4": {"dfnID":"860300d4","dfnText":"implementation-defined","external":true,"refSections":[{"refs":[{"id":"ref-for-implementation-defined"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#implementation-defined"},
 "885e47de": {"dfnID":"885e47de","dfnText":"cancel and discard","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-cancel-and-discard"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-cancel-and-discard"},
 "8c33c575": {"dfnID":"8c33c575","dfnText":"cross-origin prefetch IP anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-cross-origin-prefetch-ip-anonymization-policy"}],"title":"1.7. Processing model"}],"url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy"},
 "902380f7": {"dfnID":"902380f7","dfnText":"credentials mode","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-credentials-mode"}],"title":"4.1. Cross-site request forgery"}],"url":"https://fetch.spec.whatwg.org/#concept-request-credentials-mode"},
+"93ccea52": {"dfnID":"93ccea52","dfnText":"Sec-Speculation-Tags","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-speculation-tags-header"}],"title":"1.7. Processing model"}],"url":"prefetch.html#sec-speculation-tags-header"},
 "97efccfd": {"dfnID":"97efccfd","dfnText":"start referrer-initiated prerendering","external":true,"refSections":[{"refs":[{"id":"ref-for-start-referrer-initiated-prerendering"},{"id":"ref-for-start-referrer-initiated-prerendering\u2460"},{"id":"ref-for-start-referrer-initiated-prerendering\u2461"}],"title":"1.7. Processing model"}],"url":"prerendering.html#start-referrer-initiated-prerendering"},
 "984221ca": {"dfnID":"984221ca","dfnText":"struct","external":true,"refSections":[{"refs":[{"id":"ref-for-struct"},{"id":"ref-for-struct\u2460"},{"id":"ref-for-struct\u2461"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-struct\u2462"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#struct"},
 "99117fcc": {"dfnID":"99117fcc","dfnText":"No-Vary-Search hint","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-no-vary-search-hint"},{"id":"ref-for-prefetch-record-no-vary-search-hint\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-no-vary-search-hint"},
@@ -2775,13 +2899,14 @@ let dfnPanelData = {
 "9e0a18e8": {"dfnID":"9e0a18e8","dfnText":"type","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-script-type"}],"title":"2.1. Directives"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#dom-script-type"},
 "9e5e3305": {"dfnID":"9e5e3305","dfnText":"skipped contents","external":true,"refSections":[{"refs":[{"id":"ref-for-skips-its-contents"}],"title":"1.7. Processing model"}],"url":"https://drafts.csswg.org/css-contain-2/#skips-its-contents"},
 "9ed8b710": {"dfnID":"9ed8b710","dfnText":"basic URL parser","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-basic-url-parser"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-concept-basic-url-parser\u2460"}],"title":"1.6. Parsing"}],"url":"https://url.spec.whatwg.org/#concept-basic-url-parser"},
+"a001637b": {"dfnID":"a001637b","dfnText":"tags","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-tags"},{"id":"ref-for-prefetch-record-tags\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-tags"},
 "a132d33a": {"dfnID":"a132d33a","dfnText":"prerendering traversable","external":true,"refSections":[{"refs":[{"id":"ref-for-prerendering-traversable"}],"title":"1.7. Processing model"}],"url":"prerendering.html#prerendering-traversable"},
 "a1a807e5": {"dfnID":"a1a807e5","dfnText":"area","external":true,"refSections":[{"refs":[{"id":"ref-for-the-area-element"},{"id":"ref-for-the-area-element\u2460"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element"},
 "a1d47575": {"dfnID":"a1d47575","dfnText":"status","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-status"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-response-status"},
 "a27468c5": {"dfnID":"a27468c5","dfnText":"ok status","external":true,"refSections":[{"refs":[{"id":"ref-for-ok-status"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#ok-status"},
-"a326add7": {"dfnID":"a326add7","dfnText":"contain (for map)","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"},{"id":"ref-for-map-exists\u2460"},{"id":"ref-for-map-exists\u2461"},{"id":"ref-for-map-exists\u2462"},{"id":"ref-for-map-exists\u2463"},{"id":"ref-for-map-exists\u2464"},{"id":"ref-for-map-exists\u2465"},{"id":"ref-for-map-exists\u2466"},{"id":"ref-for-map-exists\u2467"},{"id":"ref-for-map-exists\u2468"},{"id":"ref-for-map-exists\u2460\u24ea"},{"id":"ref-for-map-exists\u2460\u2460"},{"id":"ref-for-map-exists\u2460\u2461"},{"id":"ref-for-map-exists\u2460\u2462"},{"id":"ref-for-map-exists\u2460\u2463"},{"id":"ref-for-map-exists\u2460\u2464"},{"id":"ref-for-map-exists\u2460\u2465"},{"id":"ref-for-map-exists\u2460\u2466"},{"id":"ref-for-map-exists\u2460\u2467"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
+"a326add7": {"dfnID":"a326add7","dfnText":"contain (for map)","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"},{"id":"ref-for-map-exists\u2460"},{"id":"ref-for-map-exists\u2461"},{"id":"ref-for-map-exists\u2462"},{"id":"ref-for-map-exists\u2463"},{"id":"ref-for-map-exists\u2464"},{"id":"ref-for-map-exists\u2465"},{"id":"ref-for-map-exists\u2466"},{"id":"ref-for-map-exists\u2467"},{"id":"ref-for-map-exists\u2468"},{"id":"ref-for-map-exists\u2460\u24ea"},{"id":"ref-for-map-exists\u2460\u2460"},{"id":"ref-for-map-exists\u2460\u2461"},{"id":"ref-for-map-exists\u2460\u2462"},{"id":"ref-for-map-exists\u2460\u2463"},{"id":"ref-for-map-exists\u2460\u2464"},{"id":"ref-for-map-exists\u2460\u2465"},{"id":"ref-for-map-exists\u2460\u2466"},{"id":"ref-for-map-exists\u2460\u2467"},{"id":"ref-for-map-exists\u2460\u2468"},{"id":"ref-for-map-exists\u2461\u24ea"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
 "a33db89a": {"dfnID":"a33db89a","dfnText":"fetch","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-fetch"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-fetch"},
-"a3b18719": {"dfnID":"a3b18719","dfnText":"append (for set)","external":true,"refSections":[{"refs":[{"id":"ref-for-set-append"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#set-append"},
+"a3b18719": {"dfnID":"a3b18719","dfnText":"append (for set)","external":true,"refSections":[{"refs":[{"id":"ref-for-set-append"},{"id":"ref-for-set-append\u2460"},{"id":"ref-for-set-append\u2461"},{"id":"ref-for-set-append\u2462"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#set-append"},
 "a48cb9c0": {"dfnID":"a48cb9c0","dfnText":"label","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-label"},{"id":"ref-for-prefetch-record-label\u2460"},{"id":"ref-for-prefetch-record-label\u2461"},{"id":"ref-for-prefetch-record-label\u2462"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-label"},
 "a4f8c442": {"dfnID":"a4f8c442","dfnText":"Sec-Fetch-Dest","external":true,"refSections":[{"refs":[{"id":"ref-for-http-headerdef-sec-fetch-dest"}],"title":"4.1. Cross-site request forgery"}],"url":"https://w3c.github.io/webappsec-fetch-metadata/#http-headerdef-sec-fetch-dest"},
 "a6b85a00": {"dfnID":"a6b85a00","dfnText":"credentials","external":true,"refSections":[{"refs":[{"id":"ref-for-credentials"}],"title":"4.1. Cross-site request forgery"},{"refs":[{"id":"ref-for-credentials\u2460"}],"title":"5.4. Identity joining"}],"url":"https://fetch.spec.whatwg.org/#credentials"},
@@ -2793,6 +2918,7 @@ let dfnPanelData = {
 "a973e0fe": {"dfnID":"a973e0fe","dfnText":"document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-concept-document\u2460"},{"id":"ref-for-concept-document\u2461"},{"id":"ref-for-concept-document\u2462"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-concept-document\u2463"},{"id":"ref-for-concept-document\u2464"},{"id":"ref-for-concept-document\u2465"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-concept-document\u2466"},{"id":"ref-for-concept-document\u2467"},{"id":"ref-for-concept-document\u2468"},{"id":"ref-for-concept-document\u2460\u24ea"}],"title":"1.7. Processing model"}],"url":"https://dom.spec.whatwg.org/#concept-document"},
 "aa9871ba": {"dfnID":"aa9871ba","dfnText":"base64-value","external":true,"refSections":[{"refs":[{"id":"ref-for-grammardef-base64-value"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://w3c.github.io/webappsec-csp/#grammardef-base64-value"},
 "ae8def21": {"dfnID":"ae8def21","dfnText":"contain (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"},{"id":"ref-for-list-contain\u2460"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-list-contain\u2461"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
+"at-least-as-eager": {"dfnID":"at-least-as-eager","dfnText":"at least as eager","external":false,"refSections":[{"refs":[{"id":"ref-for-at-least-as-eager"}],"title":"1.7. Processing model"}],"url":"#at-least-as-eager"},
 "b0fcb8d7": {"dfnID":"b0fcb8d7","dfnText":"UTF-8 decode","external":true,"refSections":[{"refs":[{"id":"ref-for-utf-8-decode"}],"title":"1.5. External speculation rule sets"}],"url":"https://encoding.spec.whatwg.org/#utf-8-decode"},
 "b1e9fc19": {"dfnID":"b1e9fc19","dfnText":"nonce","external":true,"refSections":[{"refs":[{"id":"ref-for-attr-nonce"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-nonce"},
 "b4c5b3f7": {"dfnID":"b4c5b3f7","dfnText":"RequestDestination","external":true,"refSections":[{"refs":[{"id":"ref-for-requestdestination"}],"title":"3.1. Destination"}],"url":"https://fetch.spec.whatwg.org/#requestdestination"},
@@ -2808,9 +2934,11 @@ let dfnPanelData = {
 "cb98f71f": {"dfnID":"cb98f71f","dfnText":"mode","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-mode"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-concept-request-mode\u2460"}],"title":"4.1. Cross-site request forgery"}],"url":"https://fetch.spec.whatwg.org/#concept-request-mode"},
 "cdede25f": {"dfnID":"cdede25f","dfnText":"create and initialize a Document object","external":true,"refSections":[{"refs":[{"id":"ref-for-initialise-the-document-object"}],"title":"1.4. The `Speculation-Rules` header"}],"url":"https://html.spec.whatwg.org/multipage/document-lifecycle.html#initialise-the-document-object"},
 "ce7beab0": {"dfnID":"ce7beab0","dfnText":"synchronous section","external":true,"refSections":[{"refs":[{"id":"ref-for-synchronous-section"},{"id":"ref-for-synchronous-section\u2460"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section"},
+"collect-tags-for-matching-speculative-load-candidates": {"dfnID":"collect-tags-for-matching-speculative-load-candidates","dfnText":"collect tags for matching speculative load candidates","external":false,"refSections":[{"refs":[{"id":"ref-for-collect-tags-for-matching-speculative-load-candidates"},{"id":"ref-for-collect-tags-for-matching-speculative-load-candidates\u2460"},{"id":"ref-for-collect-tags-for-matching-speculative-load-candidates\u2461"}],"title":"1.7. Processing model"}],"url":"#collect-tags-for-matching-speculative-load-candidates"},
 "compute-a-speculative-action-referrer-policy": {"dfnID":"compute-a-speculative-action-referrer-policy","dfnText":"compute a speculative action referrer policy","external":false,"refSections":[{"refs":[{"id":"ref-for-compute-a-speculative-action-referrer-policy"},{"id":"ref-for-compute-a-speculative-action-referrer-policy\u2460"},{"id":"ref-for-compute-a-speculative-action-referrer-policy\u2461"},{"id":"ref-for-compute-a-speculative-action-referrer-policy\u2462"}],"title":"1.7. Processing model"}],"url":"#compute-a-speculative-action-referrer-policy"},
 "consider-speculation": {"dfnID":"consider-speculation","dfnText":"consider speculation","external":false,"refSections":[{"refs":[{"id":"ref-for-consider-speculation"},{"id":"ref-for-consider-speculation\u2460"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-consider-speculation\u2461"}],"title":"1.3. Prepare the script element"},{"refs":[{"id":"ref-for-consider-speculation\u2462"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-consider-speculation\u2463"},{"id":"ref-for-consider-speculation\u2464"}],"title":"1.7. Processing model"}],"url":"#consider-speculation"},
 "d14a6f26": {"dfnID":"d14a6f26","dfnText":"key","external":true,"refSections":[{"refs":[{"id":"ref-for-map-key"},{"id":"ref-for-map-key\u2460"},{"id":"ref-for-map-key\u2461"},{"id":"ref-for-map-key\u2462"},{"id":"ref-for-map-key\u2463"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#map-key"},
+"d8f8bd6e": {"dfnID":"d8f8bd6e","dfnText":"extend","external":true,"refSections":[{"refs":[{"id":"ref-for-list-extend"},{"id":"ref-for-list-extend\u2460"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list-extend"},
 "da66facb": {"dfnID":"da66facb","dfnText":"already started","external":true,"refSections":[{"refs":[{"id":"ref-for-already-started"}],"title":"1.2. The script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#already-started"},
 "dafa539d": {"dfnID":"dafa539d","dfnText":"state","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-state"},{"id":"ref-for-prefetch-record-state\u2460"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-state"},
 "dc1cd39b": {"dfnID":"dc1cd39b","dfnText":"URL (for request)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-url"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-request-url"},
@@ -2844,7 +2972,7 @@ let dfnPanelData = {
 "f7960529": {"dfnID":"f7960529","dfnText":"root","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-tree-root"}],"title":"1.8. Document rule predicate matching"}],"url":"https://dom.spec.whatwg.org/#concept-tree-root"},
 "f7b00a8b": {"dfnID":"f7b00a8b","dfnText":"header list","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-header-list"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-concept-response-header-list\u2460"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-response-header-list"},
 "f8434dee": {"dfnID":"f8434dee","dfnText":"being rendered","external":true,"refSections":[{"refs":[{"id":"ref-for-being-rendered"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/rendering.html#being-rendered"},
-"f937b7b6": {"dfnID":"f937b7b6","dfnText":"continue","external":true,"refSections":[{"refs":[{"id":"ref-for-iteration-continue"},{"id":"ref-for-iteration-continue\u2460"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-iteration-continue\u2461"},{"id":"ref-for-iteration-continue\u2462"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-iteration-continue\u2463"},{"id":"ref-for-iteration-continue\u2464"},{"id":"ref-for-iteration-continue\u2465"},{"id":"ref-for-iteration-continue\u2466"},{"id":"ref-for-iteration-continue\u2467"},{"id":"ref-for-iteration-continue\u2468"},{"id":"ref-for-iteration-continue\u2460\u24ea"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-iteration-continue\u2460\u2460"},{"id":"ref-for-iteration-continue\u2460\u2461"},{"id":"ref-for-iteration-continue\u2460\u2462"},{"id":"ref-for-iteration-continue\u2460\u2463"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#iteration-continue"},
+"f937b7b6": {"dfnID":"f937b7b6","dfnText":"continue","external":true,"refSections":[{"refs":[{"id":"ref-for-iteration-continue"},{"id":"ref-for-iteration-continue\u2460"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-iteration-continue\u2461"},{"id":"ref-for-iteration-continue\u2462"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-iteration-continue\u2463"},{"id":"ref-for-iteration-continue\u2464"},{"id":"ref-for-iteration-continue\u2465"},{"id":"ref-for-iteration-continue\u2466"},{"id":"ref-for-iteration-continue\u2467"},{"id":"ref-for-iteration-continue\u2468"},{"id":"ref-for-iteration-continue\u2460\u24ea"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-iteration-continue\u2460\u2460"},{"id":"ref-for-iteration-continue\u2460\u2461"},{"id":"ref-for-iteration-continue\u2460\u2462"},{"id":"ref-for-iteration-continue\u2460\u2463"},{"id":"ref-for-iteration-continue\u2460\u2464"},{"id":"ref-for-iteration-continue\u2460\u2465"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#iteration-continue"},
 "f9933a9c": {"dfnID":"f9933a9c","dfnText":"build a URL pattern from an Infra value","external":true,"refSections":[{"refs":[{"id":"ref-for-build-a-url-pattern-from-an-infra-value"}],"title":"1.6. Parsing"}],"url":"https://urlpattern.spec.whatwg.org/#build-a-url-pattern-from-an-infra-value"},
 "fa4ea124": {"dfnID":"fa4ea124","dfnText":"initiator","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-initiator"}],"title":"2.7. Get the effective directive for request"}],"url":"https://fetch.spec.whatwg.org/#concept-request-initiator"},
 "fba1e812": {"dfnID":"fba1e812","dfnText":"prefetch record","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record"},{"id":"ref-for-prefetch-record\u2460"},{"id":"ref-for-prefetch-record\u2461"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record"},
@@ -2867,6 +2995,7 @@ let dfnPanelData = {
 "grammardef-unsafe-inline": {"dfnID":"grammardef-unsafe-inline","dfnText":"'unsafe-inline'","external":false,"refSections":[{"refs":[{"id":"ref-for-grammardef-unsafe-inline"}],"title":"2.5. Does a source list allow all inline behavior for type?"}],"url":"#grammardef-unsafe-inline"},
 "grammardef-wasm-unsafe-eval": {"dfnID":"grammardef-wasm-unsafe-eval","dfnText":"'wasm-unsafe-eval'","external":false,"refSections":[],"url":"#grammardef-wasm-unsafe-eval"},
 "http-headerdef-speculation-rules": {"dfnID":"http-headerdef-speculation-rules","dfnText":"Speculation-Rules","external":false,"refSections":[{"refs":[{"id":"ref-for-http-headerdef-speculation-rules"},{"id":"ref-for-http-headerdef-speculation-rules\u2460"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-http-headerdef-speculation-rules\u2461"}],"title":"2.7. Get the effective directive for request"},{"refs":[{"id":"ref-for-http-headerdef-speculation-rules\u2462"}],"title":"4.1. Cross-site request forgery"},{"refs":[{"id":"ref-for-http-headerdef-speculation-rules\u2463"}],"title":"4.2. Cross-site scripting"},{"refs":[{"id":"ref-for-http-headerdef-speculation-rules\u2464"}],"title":"4.5. Mixed content"}],"url":"#http-headerdef-speculation-rules"},
+"less-eager": {"dfnID":"less-eager","dfnText":"less eager","external":false,"refSections":[{"refs":[{"id":"ref-for-less-eager"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-less-eager\u2460"}],"title":"1.7. Processing model"}],"url":"#less-eager"},
 "parse-a-document-rule-predicate": {"dfnID":"parse-a-document-rule-predicate","dfnText":"parse a document rule predicate","external":false,"refSections":[{"refs":[{"id":"ref-for-parse-a-document-rule-predicate"},{"id":"ref-for-parse-a-document-rule-predicate\u2460"},{"id":"ref-for-parse-a-document-rule-predicate\u2461"}],"title":"1.6. Parsing"}],"url":"#parse-a-document-rule-predicate"},
 "parse-a-speculation-rule": {"dfnID":"parse-a-speculation-rule","dfnText":"parse a speculation rule","external":false,"refSections":[{"refs":[{"id":"ref-for-parse-a-speculation-rule"},{"id":"ref-for-parse-a-speculation-rule\u2460"}],"title":"1.6. Parsing"}],"url":"#parse-a-speculation-rule"},
 "parse-speculation-rules": {"dfnID":"parse-speculation-rules","dfnText":"parse speculation rules","external":false,"refSections":[{"refs":[{"id":"ref-for-parse-speculation-rules"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-parse-speculation-rules\u2460"}],"title":"1.3. Prepare the script element"},{"refs":[{"id":"ref-for-parse-speculation-rules\u2461"}],"title":"1.5. External speculation rule sets"}],"url":"#parse-speculation-rules"},
@@ -2891,15 +3020,19 @@ let dfnPanelData = {
 "speculation-rule-set": {"dfnID":"speculation-rule-set","dfnText":"speculation rule set","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-set"},{"id":"ref-for-speculation-rule-set\u2460"},{"id":"ref-for-speculation-rule-set\u2461"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-speculation-rule-set\u2462"},{"id":"ref-for-speculation-rule-set\u2463"}],"title":"1.6. Parsing"}],"url":"#speculation-rule-set"},
 "speculation-rule-set-prefetch-rules": {"dfnID":"speculation-rule-set-prefetch-rules","dfnText":"prefetch rules","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-set-prefetch-rules"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-speculation-rule-set-prefetch-rules\u2460"}],"title":"1.7. Processing model"}],"url":"#speculation-rule-set-prefetch-rules"},
 "speculation-rule-set-prerender-rules": {"dfnID":"speculation-rule-set-prerender-rules","dfnText":"prerender rules","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-set-prerender-rules"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-speculation-rule-set-prerender-rules\u2460"}],"title":"1.7. Processing model"}],"url":"#speculation-rule-set-prerender-rules"},
+"speculation-rule-tags": {"dfnID":"speculation-rule-tags","dfnText":"tags","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-tags"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-speculation-rule-tags\u2460"},{"id":"ref-for-speculation-rule-tags\u2461"},{"id":"ref-for-speculation-rule-tags\u2462"},{"id":"ref-for-speculation-rule-tags\u2463"}],"title":"1.7. Processing model"}],"url":"#speculation-rule-tags"},
 "speculation-rule-target-navigable-name-hint": {"dfnID":"speculation-rule-target-navigable-name-hint","dfnText":"target navigable name hint","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-target-navigable-name-hint"},{"id":"ref-for-speculation-rule-target-navigable-name-hint\u2460"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-speculation-rule-target-navigable-name-hint\u2461"},{"id":"ref-for-speculation-rule-target-navigable-name-hint\u2462"},{"id":"ref-for-speculation-rule-target-navigable-name-hint\u2463"}],"title":"1.7. Processing model"}],"url":"#speculation-rule-target-navigable-name-hint"},
 "speculation-rule-urls": {"dfnID":"speculation-rule-urls","dfnText":"URLs","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-urls"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-speculation-rule-urls\u2460"},{"id":"ref-for-speculation-rule-urls\u2461"}],"title":"1.7. Processing model"}],"url":"#speculation-rule-urls"},
-"speculative-load-candidate": {"dfnID":"speculative-load-candidate","dfnText":"speculative load candidate","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate"},{"id":"ref-for-speculative-load-candidate\u2460"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate"},
-"speculative-load-candidate-eagerness": {"dfnID":"speculative-load-candidate-eagerness","dfnText":"eagerness","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-eagerness"},{"id":"ref-for-speculative-load-candidate-eagerness\u2460"},{"id":"ref-for-speculative-load-candidate-eagerness\u2461"},{"id":"ref-for-speculative-load-candidate-eagerness\u2462"},{"id":"ref-for-speculative-load-candidate-eagerness\u2463"},{"id":"ref-for-speculative-load-candidate-eagerness\u2464"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-eagerness"},
-"speculative-load-candidate-no-vary-search-hint": {"dfnID":"speculative-load-candidate-no-vary-search-hint","dfnText":"No-Vary-Search hint","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-no-vary-search-hint"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2460"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2461"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2462"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2463"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2464"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2465"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2466"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-no-vary-search-hint"},
+"speculation-rules-tag": {"dfnID":"speculation-rules-tag","dfnText":"speculation rules tag","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rules-tag"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-speculation-rules-tag\u2460"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-speculation-rules-tag\u2461"}],"title":"1.7. Processing model"}],"url":"#speculation-rules-tag"},
+"speculative-load-candidate": {"dfnID":"speculative-load-candidate","dfnText":"speculative load candidate","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate"},{"id":"ref-for-speculative-load-candidate\u2460"},{"id":"ref-for-speculative-load-candidate\u2461"},{"id":"ref-for-speculative-load-candidate\u2462"},{"id":"ref-for-speculative-load-candidate\u2463"},{"id":"ref-for-speculative-load-candidate\u2464"},{"id":"ref-for-speculative-load-candidate\u2465"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate"},
+"speculative-load-candidate-eagerness": {"dfnID":"speculative-load-candidate-eagerness","dfnText":"eagerness","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-eagerness"},{"id":"ref-for-speculative-load-candidate-eagerness\u2460"},{"id":"ref-for-speculative-load-candidate-eagerness\u2461"},{"id":"ref-for-speculative-load-candidate-eagerness\u2462"},{"id":"ref-for-speculative-load-candidate-eagerness\u2463"},{"id":"ref-for-speculative-load-candidate-eagerness\u2464"},{"id":"ref-for-speculative-load-candidate-eagerness\u2465"},{"id":"ref-for-speculative-load-candidate-eagerness\u2466"},{"id":"ref-for-speculative-load-candidate-eagerness\u2467"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-eagerness"},
+"speculative-load-candidate-no-vary-search-hint": {"dfnID":"speculative-load-candidate-no-vary-search-hint","dfnText":"No-Vary-Search hint","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-no-vary-search-hint"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2460"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2461"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2462"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2463"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2464"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2465"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2466"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2467"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2468"},{"id":"ref-for-speculative-load-candidate-no-vary-search-hint\u2460\u24ea"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-no-vary-search-hint"},
+"speculative-load-candidate-redundant-with": {"dfnID":"speculative-load-candidate-redundant-with","dfnText":"redundant with","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-redundant-with"},{"id":"ref-for-speculative-load-candidate-redundant-with\u2460"},{"id":"ref-for-speculative-load-candidate-redundant-with\u2461"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-redundant-with"},
 "speculative-load-candidate-referrer-policy": {"dfnID":"speculative-load-candidate-referrer-policy","dfnText":"referrer policy","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-referrer-policy"},{"id":"ref-for-speculative-load-candidate-referrer-policy\u2460"},{"id":"ref-for-speculative-load-candidate-referrer-policy\u2461"},{"id":"ref-for-speculative-load-candidate-referrer-policy\u2462"},{"id":"ref-for-speculative-load-candidate-referrer-policy\u2463"},{"id":"ref-for-speculative-load-candidate-referrer-policy\u2464"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-referrer-policy"},
-"speculative-load-candidate-url": {"dfnID":"speculative-load-candidate-url","dfnText":"URL","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-url"},{"id":"ref-for-speculative-load-candidate-url\u2460"},{"id":"ref-for-speculative-load-candidate-url\u2461"},{"id":"ref-for-speculative-load-candidate-url\u2462"},{"id":"ref-for-speculative-load-candidate-url\u2463"},{"id":"ref-for-speculative-load-candidate-url\u2464"},{"id":"ref-for-speculative-load-candidate-url\u2465"},{"id":"ref-for-speculative-load-candidate-url\u2466"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-url"},
+"speculative-load-candidate-tags": {"dfnID":"speculative-load-candidate-tags","dfnText":"tags","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-tags"},{"id":"ref-for-speculative-load-candidate-tags\u2460"},{"id":"ref-for-speculative-load-candidate-tags\u2461"},{"id":"ref-for-speculative-load-candidate-tags\u2462"},{"id":"ref-for-speculative-load-candidate-tags\u2463"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-tags"},
+"speculative-load-candidate-url": {"dfnID":"speculative-load-candidate-url","dfnText":"URL","external":false,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate-url"},{"id":"ref-for-speculative-load-candidate-url\u2460"},{"id":"ref-for-speculative-load-candidate-url\u2461"},{"id":"ref-for-speculative-load-candidate-url\u2462"},{"id":"ref-for-speculative-load-candidate-url\u2463"},{"id":"ref-for-speculative-load-candidate-url\u2464"},{"id":"ref-for-speculative-load-candidate-url\u2465"},{"id":"ref-for-speculative-load-candidate-url\u2466"},{"id":"ref-for-speculative-load-candidate-url\u2467"},{"id":"ref-for-speculative-load-candidate-url\u2468"}],"title":"1.7. Processing model"}],"url":"#speculative-load-candidate-url"},
 "type": {"dfnID":"type","dfnText":"type","external":false,"refSections":[{"refs":[{"id":"ref-for-type"}],"title":"2.1. Directives"},{"refs":[{"id":"ref-for-type\u2460"}],"title":"2.3. Should element\u2019s inline type behavior be blocked by Content Security Policy?"},{"refs":[{"id":"ref-for-type\u2461"},{"id":"ref-for-type\u2462"}],"title":"2.5. Does a source list allow all inline behavior for type?"},{"refs":[{"id":"ref-for-type\u2463"},{"id":"ref-for-type\u2464"}],"title":"2.6. Does element match source list for type and source?"}],"url":"#type"},
-"valid-eagerness-strings": {"dfnID":"valid-eagerness-strings","dfnText":"valid eagerness strings","external":false,"refSections":[{"refs":[{"id":"ref-for-valid-eagerness-strings"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-valid-eagerness-strings\u2460"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-valid-eagerness-strings\u2461"}],"title":"1.7. Processing model"}],"url":"#valid-eagerness-strings"},
+"valid-eagerness-strings": {"dfnID":"valid-eagerness-strings","dfnText":"valid eagerness strings","external":false,"refSections":[{"refs":[{"id":"ref-for-valid-eagerness-strings"},{"id":"ref-for-valid-eagerness-strings\u2460"},{"id":"ref-for-valid-eagerness-strings\u2461"},{"id":"ref-for-valid-eagerness-strings\u2462"},{"id":"ref-for-valid-eagerness-strings\u2463"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-valid-eagerness-strings\u2464"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-valid-eagerness-strings\u2465"}],"title":"1.7. Processing model"}],"url":"#valid-eagerness-strings"},
 };
 
 document.addEventListener("DOMContentLoaded", ()=>{
@@ -3288,6 +3421,8 @@ function genLinkingSyntaxes(dfn) {
 "use strict";
 {
 let refsData = {
+"#at-least-as-eager": {"displayText":"at least as eager","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"at least as eager","type":"dfn","url":"#at-least-as-eager"},
+"#collect-tags-for-matching-speculative-load-candidates": {"displayText":"collect tags for matching speculative load candidates","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"collect tags for matching speculative load candidates","type":"dfn","url":"#collect-tags-for-matching-speculative-load-candidates"},
 "#compute-a-speculative-action-referrer-policy": {"displayText":"compute a speculative action referrer policy","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"compute a speculative action referrer policy","type":"dfn","url":"#compute-a-speculative-action-referrer-policy"},
 "#consider-speculation": {"displayText":"consider speculation","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"consider speculation","type":"dfn","url":"#consider-speculation"},
 "#document-list-of-pending-external-speculation-rule-resources": {"displayText":"list of pending external speculation rule resources","export":true,"for_":["document"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"list of pending external speculation rule resources","type":"dfn","url":"#document-list-of-pending-external-speculation-rule-resources"},
@@ -3311,6 +3446,7 @@ let refsData = {
 "#grammardef-unsafe-hashes": {"displayText":"'unsafe-hashes'","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"'unsafe-hashes'","type":"grammar","url":"#grammardef-unsafe-hashes"},
 "#grammardef-unsafe-inline": {"displayText":"'unsafe-inline'","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"'unsafe-inline'","type":"grammar","url":"#grammardef-unsafe-inline"},
 "#http-headerdef-speculation-rules": {"displayText":"speculation-rules","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"speculation-rules","type":"http-header","url":"#http-headerdef-speculation-rules"},
+"#less-eager": {"displayText":"less eager","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"less eager","type":"dfn","url":"#less-eager"},
 "#parse-a-document-rule-predicate": {"displayText":"parse a document rule predicate","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"parse a document rule predicate","type":"dfn","url":"#parse-a-document-rule-predicate"},
 "#parse-a-speculation-rule": {"displayText":"parse a speculation rule","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"parse a speculation rule","type":"dfn","url":"#parse-a-speculation-rule"},
 "#parse-speculation-rules": {"displayText":"parse speculation rules","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"parse speculation rules","type":"dfn","url":"#parse-speculation-rules"},
@@ -3335,12 +3471,16 @@ let refsData = {
 "#speculation-rule-set": {"displayText":"speculation rule set","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"speculation rule set","type":"dfn","url":"#speculation-rule-set"},
 "#speculation-rule-set-prefetch-rules": {"displayText":"prefetch rules","export":true,"for_":["speculation rule set"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"prefetch rules","type":"dfn","url":"#speculation-rule-set-prefetch-rules"},
 "#speculation-rule-set-prerender-rules": {"displayText":"prerender rules","export":true,"for_":["speculation rule set"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"prerender rules","type":"dfn","url":"#speculation-rule-set-prerender-rules"},
+"#speculation-rule-tags": {"displayText":"tags","export":true,"for_":["speculation rule"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"tags","type":"dfn","url":"#speculation-rule-tags"},
 "#speculation-rule-target-navigable-name-hint": {"displayText":"target navigable name hint","export":true,"for_":["speculation rule"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"target navigable name hint","type":"dfn","url":"#speculation-rule-target-navigable-name-hint"},
 "#speculation-rule-urls": {"displayText":"urls","export":true,"for_":["speculation rule"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"urls","type":"dfn","url":"#speculation-rule-urls"},
+"#speculation-rules-tag": {"displayText":"speculation rules tag","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"speculation rules tag","type":"dfn","url":"#speculation-rules-tag"},
 "#speculative-load-candidate": {"displayText":"speculative load candidate","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"speculative load candidate","type":"dfn","url":"#speculative-load-candidate"},
 "#speculative-load-candidate-eagerness": {"displayText":"eagerness","export":true,"for_":["speculative load candidate"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"eagerness","type":"dfn","url":"#speculative-load-candidate-eagerness"},
 "#speculative-load-candidate-no-vary-search-hint": {"displayText":"no-vary-search hint","export":true,"for_":["speculative load candidate"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"no-vary-search hint","type":"dfn","url":"#speculative-load-candidate-no-vary-search-hint"},
+"#speculative-load-candidate-redundant-with": {"displayText":"redundant with","export":true,"for_":["speculative load candidate"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"redundant with","type":"dfn","url":"#speculative-load-candidate-redundant-with"},
 "#speculative-load-candidate-referrer-policy": {"displayText":"referrer policy","export":true,"for_":["speculative load candidate"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"referrer policy","type":"dfn","url":"#speculative-load-candidate-referrer-policy"},
+"#speculative-load-candidate-tags": {"displayText":"tags","export":true,"for_":["speculative load candidate"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"tags","type":"dfn","url":"#speculative-load-candidate-tags"},
 "#speculative-load-candidate-url": {"displayText":"url","export":true,"for_":["speculative load candidate"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"url","type":"dfn","url":"#speculative-load-candidate-url"},
 "#type": {"displayText":"type","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"type","type":"dfn","url":"#type"},
 "#valid-eagerness-strings": {"displayText":"valid eagerness strings","export":true,"for_":[],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"valid eagerness strings","type":"dfn","url":"#valid-eagerness-strings"},
@@ -3439,16 +3579,20 @@ let refsData = {
 "https://httpwg.org/specs/rfc8941.html#string": {"displayText":"string","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"string","type":"dfn","url":"https://httpwg.org/specs/rfc8941.html#string"},
 "https://httpwg.org/specs/rfc8941.html#top": {"displayText":"structured header","export":true,"for_":[],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"structured header","type":"dfn","url":"https://httpwg.org/specs/rfc8941.html#top"},
 "https://infra.spec.whatwg.org/#ascii-case-insensitive": {"displayText":"ASCII case-insensitive","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"ascii case-insensitive","type":"dfn","url":"https://infra.spec.whatwg.org/#ascii-case-insensitive"},
+"https://infra.spec.whatwg.org/#ascii-string": {"displayText":"ASCII string","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"ascii string","type":"dfn","url":"https://infra.spec.whatwg.org/#ascii-string"},
 "https://infra.spec.whatwg.org/#assert": {"displayText":"assert","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"assert","type":"dfn","url":"https://infra.spec.whatwg.org/#assert"},
 "https://infra.spec.whatwg.org/#byte-sequence": {"displayText":"byte sequence","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"byte sequence","type":"dfn","url":"https://infra.spec.whatwg.org/#byte-sequence"},
-"https://infra.spec.whatwg.org/#implementation-defined": {"displayText":"implementation-defined","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"implementation-defined","type":"dfn","url":"https://infra.spec.whatwg.org/#implementation-defined"},
+"https://infra.spec.whatwg.org/#code-unit-less-than": {"displayText":"code unit less than","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"code unit less than","type":"dfn","url":"https://infra.spec.whatwg.org/#code-unit-less-than"},
 "https://infra.spec.whatwg.org/#iteration-continue": {"displayText":"continue","export":true,"for_":["iteration"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"continue","type":"dfn","url":"https://infra.spec.whatwg.org/#iteration-continue"},
 "https://infra.spec.whatwg.org/#list": {"displayText":"list","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"list","type":"dfn","url":"https://infra.spec.whatwg.org/#list"},
 "https://infra.spec.whatwg.org/#list-append": {"displayText":"append","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"append","type":"dfn","url":"https://infra.spec.whatwg.org/#list-append"},
 "https://infra.spec.whatwg.org/#list-contain": {"displayText":"contain","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"contain","type":"dfn","url":"https://infra.spec.whatwg.org/#list-contain"},
+"https://infra.spec.whatwg.org/#list-extend": {"displayText":"extend","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"extend","type":"dfn","url":"https://infra.spec.whatwg.org/#list-extend"},
 "https://infra.spec.whatwg.org/#list-iterate": {"displayText":"for each","export":true,"for_":["list","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"for each","type":"dfn","url":"https://infra.spec.whatwg.org/#list-iterate"},
 "https://infra.spec.whatwg.org/#list-remove": {"displayText":"remove","export":true,"for_":["list","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"remove","type":"dfn","url":"https://infra.spec.whatwg.org/#list-remove"},
 "https://infra.spec.whatwg.org/#list-replace": {"displayText":"replace","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"replace","type":"dfn","url":"https://infra.spec.whatwg.org/#list-replace"},
+"https://infra.spec.whatwg.org/#list-size": {"displayText":"size","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"size","type":"dfn","url":"https://infra.spec.whatwg.org/#list-size"},
+"https://infra.spec.whatwg.org/#list-sort-in-ascending-order": {"displayText":"sort in ascending order","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"sort in ascending order","type":"dfn","url":"https://infra.spec.whatwg.org/#list-sort-in-ascending-order"},
 "https://infra.spec.whatwg.org/#map-exists": {"displayText":"exist","export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"exist","type":"dfn","url":"https://infra.spec.whatwg.org/#map-exists"},
 "https://infra.spec.whatwg.org/#map-key": {"displayText":"key","export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"key","type":"dfn","url":"https://infra.spec.whatwg.org/#map-key"},
 "https://infra.spec.whatwg.org/#ordered-map": {"displayText":"map","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"map","type":"dfn","url":"https://infra.spec.whatwg.org/#ordered-map"},
@@ -3479,6 +3623,7 @@ let refsData = {
 "prefetch.html#cross-origin-prefetch-ip-anonymization-policy": {"displayText":"cross-origin prefetch IP anonymization policy","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"cross-origin prefetch ip anonymization policy","type":"dfn","url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy"},
 "prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin": {"displayText":"origin","export":true,"for_":["cross-origin prefetch IP anonymization policy"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"origin","type":"dfn","url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin"},
 "prefetch.html#document-prefetch-records": {"displayText":"prefetch records","export":true,"for_":["Document"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prefetch records","type":"dfn","url":"prefetch.html#document-prefetch-records"},
+"prefetch.html#has-a-matching-prefetch-record": {"displayText":"has a matching prefetch record","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"has a matching prefetch record","type":"dfn","url":"prefetch.html#has-a-matching-prefetch-record"},
 "prefetch.html#prefetch": {"displayText":"prefetch","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prefetch","type":"dfn","url":"prefetch.html#prefetch"},
 "prefetch.html#prefetch-ip-anonymization-policy": {"displayText":"prefetch IP anonymization policy","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prefetch ip anonymization policy","type":"dfn","url":"prefetch.html#prefetch-ip-anonymization-policy"},
 "prefetch.html#prefetch-record": {"displayText":"prefetch record","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prefetch record","type":"dfn","url":"prefetch.html#prefetch-record"},
@@ -3490,7 +3635,9 @@ let refsData = {
 "prefetch.html#prefetch-record-prerendering-traversable": {"displayText":"prerendering traversable","export":true,"for_":["prefetch record"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prerendering traversable","type":"dfn","url":"prefetch.html#prefetch-record-prerendering-traversable"},
 "prefetch.html#prefetch-record-referrer-policy": {"displayText":"referrer policy","export":true,"for_":["prefetch record"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"referrer policy","type":"dfn","url":"prefetch.html#prefetch-record-referrer-policy"},
 "prefetch.html#prefetch-record-state": {"displayText":"state","export":true,"for_":["prefetch record"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"state","type":"dfn","url":"prefetch.html#prefetch-record-state"},
+"prefetch.html#prefetch-record-tags": {"displayText":"tags","export":true,"for_":["prefetch record"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"tags","type":"dfn","url":"prefetch.html#prefetch-record-tags"},
 "prefetch.html#prefetch-record-url": {"displayText":"URL","export":true,"for_":["prefetch record"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"url","type":"dfn","url":"prefetch.html#prefetch-record-url"},
+"prefetch.html#sec-speculation-tags-header": {"displayText":"Sec-Speculation-Tags","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"sec-speculation-tags","type":"http-header","url":"prefetch.html#sec-speculation-tags-header"},
 "prerendering.html#prerendering-traversable": {"displayText":"prerendering traversable","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prerendering traversable","type":"dfn","url":"prerendering.html#prerendering-traversable"},
 "prerendering.html#prerendering-traversable-activate": {"displayText":"activate","export":true,"for_":["prerendering traversable"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"activate","type":"dfn","url":"prerendering.html#prerendering-traversable-activate"},
 "prerendering.html#start-referrer-initiated-prerendering": {"displayText":"start referrer-initiated prerendering","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"start referrer-initiated prerendering","type":"dfn","url":"prerendering.html#start-referrer-initiated-prerendering"},
