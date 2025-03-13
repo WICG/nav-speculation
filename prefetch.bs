@@ -100,6 +100,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: determine the origin; url: determining-the-origin
       text: navigable container; url: navigable-container
       text: parent; url: nav-parent
+      text: top-level traversable set; url: top-level-traversable-set
     urlPrefix: dom.html
       text: cross-origin opener policy; for: Document; url: concept-document-coop
     urlPrefix: semantics.html
@@ -713,6 +714,17 @@ This section contains patches to [[NAVIGATION-TIMING]].
     Add an additional parameter to [=create the navigation timing entry=], which is a [=string=] <var ignore>deliveryType</var>, and pass it as an additional argument to [=setup the resource timing entry=].
 </div>
 
+<h2 id="interaction-with-other-specs">Interaction with other specifications and concepts</h2>
+
+<div algorithm="clear prefetch cache for origin patch">
+  Modify [$clear cache for origin$] to add the following step at the end.
+
+  1. [=list/For each=] [=navigable/top-level traversable=] |traversable| in the user agent's [=top-level traversable set=]:
+    1. Let |navigables| be the [=list=] of [=Document/inclusive descendant navigables=] from |traversable|'s [=navigable/active document=].
+    2. [=list/For each=] [=navigable/active document=] |activeDocument| in |navigables|:
+      1. [=prefetch record/cancel and discard=] |activeDocument|'s [=Document/prefetch records=].
+</div>
+
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
 
 <p class="issue">Check Service Worker integration</p>
@@ -862,16 +874,6 @@ The following parameters are defined for the `prefetch` token:
 The \`<code><dfn http-header>Sec-Speculation-Tags</dfn></code>\` HTTP request header specifies the web developer-provided tags associated with the speculative navigation request. It can also be used to distinguish speculative navigation requests from other speculative requests, since [:Sec-Purpose:] can be sent by both categories of request.
 
 The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=]. The list can contain either [=structured header/Token=] or [=structured header/String=] values. String values represent developer-provided tags, whereas token values represent predefined tags. As of now, the only predefined tag is `null`, which indicates a speculative navigation request with no developer-defined tag.
-
-<h2 id="interaction-with-other-specs">Interaction with other specifications and concepts</h2>
-
-<div algorithm="clear prefetch cache for origin patch">
-  Modify [$clear cache for origin$] to add the following step at the end.
-
-  1. [=list/For each=] [=prefetch record=] |prefetchRecord| in the user agent's |activeDocument|'s [=Document/prefetch records=]:
-  1. If |prefetchRecord|'s [=document state/initiator origin=] is [=same origin=] with |activeDocument|'s [=Document/origin=], then [=prefetch record/cancel and discard=] |prefetchRecord| given <var ignore>origin</var>.
-</div>
-
 
 <h2 id="security-considerations">Security considerations</h2>
 
