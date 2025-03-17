@@ -100,7 +100,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: determine the origin; url: determining-the-origin
       text: navigable container; url: navigable-container
       text: parent; url: nav-parent
-      text: top-level traversable set; url: top-level-traversable-set
     urlPrefix: dom.html
       text: cross-origin opener policy; for: Document; url: concept-document-coop
     urlPrefix: semantics.html
@@ -719,11 +718,12 @@ This section contains patches to [[NAVIGATION-TIMING]].
 <div algorithm="clear prefetch cache for origin patch">
   Modify [$clear cache for origin$] to add the following step at the end.
 
-  1. [=list/For each=] [=navigable/top-level traversable=] |traversable| in the user agent's [=top-level traversable set=]:
-    1. Let |navigables| be the [=list=] of [=Document/inclusive descendant navigables=] from |traversable|'s [=navigable/active document=].
-    2. Let |documents| be the [=list=] of |navigables|' [=navigable/active document=]s.
-    3. [=list/For each=] [=navigable/active document=] |activeDocument| in |documents|:
-      1. [=prefetch record/cancel and discard=] |activeDocument|'s [=Document/prefetch records=].
+  1. [=list/For each=] [=navigable/top-level traversable=] |traversable| of the user agent's [[=user agent/top-level traversable set=]]:
+    1. Let |navigables| be the [=Document/inclusive descendant navigables=] of |traversable|'s [=navigable/active document=].
+    2. [=list/For each=] |navigable| in |navigables|:
+      1. Let |activeDocument| be the |navigable|'s [=navigable/active document=].
+      2. [=list/For each=] |prefetchRecord| in |activeDocument|'s [=Document/prefetch records=]:
+        1. [=prefetch record/cancel and discard=] the |prefetchRecord|.
 </div>
 
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
