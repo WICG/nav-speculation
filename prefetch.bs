@@ -713,6 +713,19 @@ This section contains patches to [[NAVIGATION-TIMING]].
     Add an additional parameter to [=create the navigation timing entry=], which is a [=string=] <var ignore>deliveryType</var>, and pass it as an additional argument to [=setup the resource timing entry=].
 </div>
 
+<h2 id="interaction-with-other-specs">Interaction with other specifications and concepts</h2>
+
+<div algorithm="clear prefetch cache for origin patch">
+  Modify [$clear cache for origin$] to add the following step at the end.
+
+  1. [=list/For each=] [=navigable/top-level traversable=] |traversable| of the user agent's [=user agent/top-level traversable set=]:
+    1. Let |navigables| be the [=Document/inclusive descendant navigables=] of |traversable|'s [=navigable/active document=].
+    2. [=list/For each=] |navigable| in |navigables|:
+      1. Let |activeDocument| be the |navigable|'s [=navigable/active document=].
+      2. [=list/For each=] |prefetchRecord| in |activeDocument|'s [=Document/prefetch records=]:
+        1. [=prefetch record/Cancel and discard=] |prefetchRecord| given |activeDocument|.
+</div>
+
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
 
 <p class="issue">Check Service Worker integration</p>
