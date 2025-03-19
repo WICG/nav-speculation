@@ -375,7 +375,7 @@ add the following step
   1. Let |tag| be null.
   1. If |parsed|["`tag`"] [=map/exists=], then:
     1. If |parsed|["`tag`"] is not an [=ASCII string=], then return null.
-    1. If |parsed|["`tag`"] contains any [=C0 control=] [=code points=], then return null.
+    1. If |parsed|["`tag`"] contains any [=code points=] that are not in the range U+0020 to U+007E inclusive, then return null.
     1. Set |tag| to |parsed|["`tag`"].
   1. If |parsed|["`prefetch`"] [=map/exists=] and is a [=list=], then [=list/for each=] |prefetchRule| of |parsed|["`prefetch`"]:
     1. If |prefetchRule| is not a [=map=], then [=iteration/continue=].
