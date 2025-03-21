@@ -187,7 +187,7 @@ A [=valid eagerness string=] |a| is <dfn>less eager</dfn> than another [=valid e
 
 A [=valid eagerness string=] |A| is <dfn>at least as eager</dfn> as another [=valid eagerness string=] |B| if |A| is not [=less eager=] than |B|.
 
-A <dfn export>speculation rules tag</dfn> is either an [=ASCII string=] or null.
+A <dfn export>speculation rules tag</dfn> is either an [=ASCII string=] whose [=code points=] are all in the range U+0020 to U+007E inclusive, or null.
 
 <h3 id="speculation-rules-script">The <{script}> element</h3>
 
@@ -375,6 +375,7 @@ add the following step
   1. Let |tag| be null.
   1. If |parsed|["`tag`"] [=map/exists=], then:
     1. If |parsed|["`tag`"] is not an [=ASCII string=], then return null.
+    1. If |parsed|["`tag`"] contains any [=code points=] that are not in the range U+0020 to U+007E inclusive, then return null.
     1. Set |tag| to |parsed|["`tag`"].
   1. If |parsed|["`prefetch`"] [=map/exists=] and is a [=list=], then [=list/for each=] |prefetchRule| of |parsed|["`prefetch`"]:
     1. If |prefetchRule| is not a [=map=], then [=iteration/continue=].
