@@ -768,7 +768,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-03-17">17 March 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-03-20">20 March 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -943,7 +943,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>The following <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">strings</a> are <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-eagerness-strings">valid eagerness strings</dfn>: "<code>immediate</code>", "<code>eager</code>", "<code>moderate</code>", "<code>conservative</code>".</p>
    <p>A <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings①">valid eagerness string</a> <var>a</var> is <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="less-eager">less eager</dfn> than another <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings②">valid eagerness string</a> <var>b</var> if <var>a</var> follows <var>b</var> in the above list.</p>
    <p>A <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings③">valid eagerness string</a> <var>A</var> is <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="at-least-as-eager">at least as eager</dfn> as another <a data-link-type="dfn" href="#valid-eagerness-strings" id="ref-for-valid-eagerness-strings④">valid eagerness string</a> <var>B</var> if <var>A</var> is not <a data-link-type="dfn" href="#less-eager" id="ref-for-less-eager">less eager</a> than <var>B</var>.</p>
-   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="speculation-rules-tag">speculation rules tag</dfn> is either an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string">ASCII string</a> or null.</p>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="speculation-rules-tag">speculation rules tag</dfn> is either an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string">ASCII string</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#code-point" id="ref-for-code-point">code points</a> are all in the range U+0020 to U+007E inclusive, or null.</p>
    <h3 class="heading settled" data-level="1.2" id="speculation-rules-script"><span class="secno">1.2. </span><span class="content">The <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script" id="ref-for-script">script</a></code> element</span><a class="self-link" href="#speculation-rules-script"></a></h3>
    <p><em>Note</em>: This section contains modifications to the corresponding section of <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>.</p>
    <p>To process speculation rules consistently with the existing script types, we make the following changes:</p>
@@ -1215,6 +1215,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <ol>
        <li data-md>
         <p>If <var>parsed</var>["<code>tag</code>"] is not an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-string" id="ref-for-ascii-string①">ASCII string</a>, then return null.</p>
+       <li data-md>
+        <p>If <var>parsed</var>["<code>tag</code>"] contains any <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#code-point" id="ref-for-code-point①">code points</a> that are not in the range U+0020 to U+007E inclusive, then return null.</p>
        <li data-md>
         <p>Set <var>tag</var> to <var>parsed</var>["<code>tag</code>"].</p>
       </ol>
@@ -2442,6 +2444,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="2d5a2765">ASCII string</span>
      <li><span class="dfn-paneled" id="77b4c09a">assert</span>
      <li><span class="dfn-paneled" id="3de9e659">byte sequence</span>
+     <li><span class="dfn-paneled" id="915aff5e">code point</span>
      <li><span class="dfn-paneled" id="4135591f">code unit less than</span>
      <li><span class="dfn-paneled" id="ae8def21">contain <small>(for list)</small></span>
      <li><span class="dfn-paneled" id="a326add7">contain <small>(for map)</small></span>
@@ -2886,6 +2889,7 @@ let dfnPanelData = {
 "885e47de": {"dfnID":"885e47de","dfnText":"cancel and discard","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-cancel-and-discard"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-cancel-and-discard"},
 "8c33c575": {"dfnID":"8c33c575","dfnText":"cross-origin prefetch IP anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-cross-origin-prefetch-ip-anonymization-policy"}],"title":"1.7. Processing model"}],"url":"prefetch.html#cross-origin-prefetch-ip-anonymization-policy"},
 "902380f7": {"dfnID":"902380f7","dfnText":"credentials mode","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-credentials-mode"}],"title":"4.1. Cross-site request forgery"}],"url":"https://fetch.spec.whatwg.org/#concept-request-credentials-mode"},
+"915aff5e": {"dfnID":"915aff5e","dfnText":"code point","external":true,"refSections":[{"refs":[{"id":"ref-for-code-point"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-code-point\u2460"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#code-point"},
 "93ccea52": {"dfnID":"93ccea52","dfnText":"Sec-Speculation-Tags","external":true,"refSections":[{"refs":[{"id":"ref-for-sec-speculation-tags-header"}],"title":"1.7. Processing model"}],"url":"prefetch.html#sec-speculation-tags-header"},
 "97efccfd": {"dfnID":"97efccfd","dfnText":"start referrer-initiated prerendering","external":true,"refSections":[{"refs":[{"id":"ref-for-start-referrer-initiated-prerendering"},{"id":"ref-for-start-referrer-initiated-prerendering\u2460"},{"id":"ref-for-start-referrer-initiated-prerendering\u2461"}],"title":"1.7. Processing model"}],"url":"prerendering.html#start-referrer-initiated-prerendering"},
 "984221ca": {"dfnID":"984221ca","dfnText":"struct","external":true,"refSections":[{"refs":[{"id":"ref-for-struct"},{"id":"ref-for-struct\u2460"},{"id":"ref-for-struct\u2461"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-struct\u2462"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#struct"},
@@ -3582,6 +3586,7 @@ let refsData = {
 "https://infra.spec.whatwg.org/#ascii-string": {"displayText":"ASCII string","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"ascii string","type":"dfn","url":"https://infra.spec.whatwg.org/#ascii-string"},
 "https://infra.spec.whatwg.org/#assert": {"displayText":"assert","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"assert","type":"dfn","url":"https://infra.spec.whatwg.org/#assert"},
 "https://infra.spec.whatwg.org/#byte-sequence": {"displayText":"byte sequence","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"byte sequence","type":"dfn","url":"https://infra.spec.whatwg.org/#byte-sequence"},
+"https://infra.spec.whatwg.org/#code-point": {"displayText":"code point","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"code point","type":"dfn","url":"https://infra.spec.whatwg.org/#code-point"},
 "https://infra.spec.whatwg.org/#code-unit-less-than": {"displayText":"code unit less than","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"code unit less than","type":"dfn","url":"https://infra.spec.whatwg.org/#code-unit-less-than"},
 "https://infra.spec.whatwg.org/#iteration-continue": {"displayText":"continue","export":true,"for_":["iteration"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"continue","type":"dfn","url":"https://infra.spec.whatwg.org/#iteration-continue"},
 "https://infra.spec.whatwg.org/#list": {"displayText":"list","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"list","type":"dfn","url":"https://infra.spec.whatwg.org/#list"},
