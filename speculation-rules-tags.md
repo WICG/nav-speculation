@@ -207,12 +207,12 @@ If the user hovers over and then clicks on `<a href="next.html">click me</a>`, w
 
 The answer we give is that all three tags must be included. Intuitively, this makes sense, since if we removed any two of them, the remaining one would still have triggered a relevant prefetch. The way this intuition is concretely specified is that we include the tags for any rule which:
 
-* would cause the same URL and anonymization policy to be fetched; and
+* would cause the same URL to be fetched; and
 * has the an eagerness equal to or more eager than than the eagerness of the rule that actually triggered the prefetch.
 
-(Note: the first criteria comes from [how the prefetch cache is keyed](https://wicg.github.io/nav-speculation/speculation-rules.html#prefetch-candidate-continues).)
+(Note: the first criteria is a bit complicated due to the interaction with `No-Vary-Search`. See [the spec](https://wicg.github.io/nav-speculation/speculation-rules.html#collect-tags-for-matching-speculative-load-candidates) for full details.)
 
-(Note: before figuring out which rules _could apply_, there's the question of which rule _will actually trigger the speculative load_. In the above example, the question is whether the `"tag2"` rule will trigger, including the normal referrer, or whether the `"tag3"` rule will trigger, including no referrer. The current specification [suggests](https://wicg.github.io/nav-speculation/speculation-rules.html#:~:text=For%20each%20prefetchCandidate%20of%20prefetchCandidates%3A) processing the rules in the order they are encountered, using "may" language to let implementations avoid processing the same URL/anonymization policy twice. We intend to tighten this up to make it clearer that the first-encountered rule is the preferred trigger: see [issue #315](https://github.com/WICG/nav-speculation/issues/315).)
+(Side note: before figuring out which rules _could apply_, there's the question of which rule _will actually trigger the speculative load_. In the above example, the question is whether the `"tag2"` rule will trigger, including the normal referrer, or whether the `"tag3"` rule will trigger, including no referrer. The specification processes rules in the order they are encountered, and ignores redundant ones, so in this case the `"tag2"` rule will trigger and the `"tag3"` rule will be ignored.)
 
 ## Accessibility, privacy, and security considerations
 
@@ -225,4 +225,5 @@ This feature does not have any security considerations, on top of the existing o
 ## Stakeholder feedback
 
 * Support from Cloudflare and Speed Kit platforms in [#336](https://github.com/WICG/nav-speculation/issues/336) and [#337](https://github.com/WICG/nav-speculation/issues/337)
-* Standards positions and W3C TAG feedback pending
+* [Gecko standards-positions request](https://github.com/mozilla/standards-positions/issues/1172)
+* [WebKit standards-positions request](https://github.com/WebKit/standards-positions/issues/54#issuecomment-2635730709)
