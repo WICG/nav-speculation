@@ -126,7 +126,7 @@ The CDN server code needs to take special care here: although `"awesome-cdn"` is
 
 ### Handling no `Sec-Speculation-Tags` header
 
-When no `Sec-Speculation-Tags` header is included, but the `Sec-Purpose: prefetch` header is included (or `Sec-Purpose: prefetch;prerender` for prerenders) then the CDN server code could still reject when not edge-cached under the assumption that the request was possibly made by an older browser which does not support Speculation Rules Tags. Note, such requests may also be a non-Speculation Rules prefetch—as described in the next section—but until the Speculation Tags support becomes widely supported it may be safer to reject such speculations under the assumption that they might be from the CDN's speculation rules.
+When no `Sec-Speculation-Tags` header is included, but the `Sec-Purpose: prefetch` header is included (or `Sec-Purpose: prefetch;prerender` for prerenders) then the CDN server code could still reject when not edge-cached under the assumption that the request was possibly made by an older browser which does not support speculation rules tags. Note, such requests may also be a non-speculation rules prefetch—as described in the next section—but until tags are widely supported, it may be safer to reject such speculations under the assumption that they might be from the CDN's speculation rules.
 
 ## Additional benefits
 
