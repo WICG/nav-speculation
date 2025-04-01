@@ -124,6 +124,10 @@ Sec-Speculation-Tags: null, "awesome-cdn"
 
 The CDN server code needs to take special care here: although `"awesome-cdn"` is present, _so is another tag_, so it needs to let the request pass through instead of rejecting it.
 
+### Handling no `Sec-Speculation-Tags` header
+
+When no `Sec-Speculation-Tags` header is included, but the `Sec-Purpose: prefetch` header is included (or `Sec-Purpose: prefetch;prerender` for prerenders) then the CDN server code could still reject when not edge-cached under the assumption that the request was possibly made by an older browser which does not support speculation rules tags. Note, such requests may also be a non-speculation rules prefetch—as described in the next section—but until tags are widely supported, it may be safer to reject such speculations under the assumption that they might be from the CDN's speculation rules.
+
 ## Additional benefits
 
 Today, speculative navigation requests are mostly indistinguishable from speculative subresource requests. For similar reasons to our original use case, it can be useful for different parts of the server stack to distinguish between these. By adding a tag header that is sent along with speculative navigation requests, they can now distinguish. See [#337](https://github.com/WICG/nav-speculation/issues/337) for a request from a CDN for this ability.
