@@ -50,7 +50,7 @@ or at the overall level for all speculation rules in a ruleset:
 
 or both.
 
-These tags are sent to the server with every speculative navigation request, via the new `Sec-Speculation-Tags` header. Examples:
+These tags are sent to the server with every same-site speculative navigation request, via the new `Sec-Speculation-Tags` header. Examples:
 
 ```http
 Sec-Speculation-Tags: null
