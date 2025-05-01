@@ -713,16 +713,34 @@ This section contains patches to [[NAVIGATION-TIMING]].
     Add an additional parameter to [=create the navigation timing entry=], which is a [=string=] <var ignore>deliveryType</var>, and pass it as an additional argument to [=setup the resource timing entry=].
 </div>
 
-<h2 id="interaction-with-other-specs">Interaction with other specifications and concepts</h2>
+<h2 id="clear-site-data-patches">Clear Site Data patches</h2>
 
-<div algorithm="clear prefetch cache for origin patch">
-  Modify [$clear cache for origin$] to add the following step at the end.
+Add an additional header value description in [[CLEAR-SITE-DATA#header]]:
+
+: "<dfn><code>prefetchCache</code></dfn>"
+::
+  <p>The "`prefetchCache`" type indicates that the server wishes to remove any prefetches initiated by the [=url/origin=] of a particular [=/response=]'s [=response/URL=].
+
+  <p>This type is a subset of the "`cache`" type.
+
+  <p>Implementation details are below.
+
+Modify <a abstract-op spec="CLEAR-SITE-DATA">parse response's Clear-Site-Data header</a>'s parsing step such that:
+
+* encountering <code>\`"cache"\`</code> or <code>\`"*"\`</code> appends "<code>[=prefetchCache=]</code>" to <var ignore>types</var> (in addition to the values already appended in those branches); and
+* encountering <code>\`"prefetchCache"\`</code> appends "<code>[=prefetchCache=]</code>" to <var ignore>types</var>.
+
+Modify <a abstract-op spec="CLEAR-SITE-DATA">clear site data for response</a>'s switch to add a case that handles "<code>[=prefetchCache=]</code>" and calls [=clear prefetch cache=] for <var ignore>origin</var>.
+
+<div>
+  To <dfn>clear prefetch cache</dfn> given an [=origin=] |origin|:
 
   1. [=list/For each=] [=navigable/top-level traversable=] |traversable| of the user agent's [=user agent/top-level traversable set=]:
     1. Let |navigables| be the [=Document/inclusive descendant navigables=] of |traversable|'s [=navigable/active document=].
-    2. [=list/For each=] |navigable| in |navigables|:
+    1. [=list/For each=] |navigable| in |navigables|:
       1. Let |activeDocument| be the |navigable|'s [=navigable/active document=].
-      2. [=list/For each=] |prefetchRecord| in |activeDocument|'s [=Document/prefetch records=]:
+      1. If |activeDocument|'s [=Document/origin=] is not [=same origin=] with |origin|, then [=iteration/continue=].
+      1. [=list/For each=] |prefetchRecord| in |activeDocument|'s [=Document/prefetch records=]:
         1. [=prefetch record/Cancel and discard=] |prefetchRecord| given |activeDocument|.
 </div>
 

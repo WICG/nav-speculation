@@ -647,13 +647,30 @@ This stores which client hints each origin has opted into receiving, until it ca
   1. Otherwise, [=map/set=] [=Accept-CH cache=][|origin|] to |hintSet|.
 </div>
 
-<h3 id="interaction-with-clear-site-data-clear-cache">Interaction with Clear-Site-Data Clear Cache</h3>
+<h3 id="interaction-with-clear-site-data">Interaction with Clear Site Data</h3>
 
-<div algorithm="clear cache for origin patch">
-  Modify [$clear cache for origin$] to add the following step at the end.
+Add an additional header value description in [[CLEAR-SITE-DATA#header]]:
+
+: "<dfn><code>prerenderCache</code></dfn>"
+::
+  <p>The "`prerenderCache`" type indicates that the server wishes to remove any prerenders initiated by the [=url/origin=] of a particular [=/response=]'s [=response/URL=].
+
+  <p>This type is a subset of the "`cache`" type.
+
+  <p>Implementation details are below.
+
+Modify <a abstract-op spec="CLEAR-SITE-DATA">parse response's Clear-Site-Data header</a>'s parsing step such that:
+
+* encountering <code>\`"cache"\`</code> or <code>\`"*"\`</code> appends "<code>[=prerenderCache=]</code>" to <var ignore>types</var> (in addition to the values already appended in those branches); and
+* encountering <code>\`"prerenderCache"\`</code> appends "<code>[=prerenderCache=]</code>" to <var ignore>types</var>.
+
+Modify <a abstract-op spec="CLEAR-SITE-DATA">clear site data for response</a>'s switch to add a case that handles "<code>[=prerenderCache=]</code>" and calls [=clear prerender cache=] for <var ignore>origin</var>.
+
+<div>
+  To <dfn>clear prerender cache</dfn> given an [=origin=] |origin|:
 
   1. [=list/For each=] [=navigable/top-level traversable=] |traversable| of the user agent's [=user agent/top-level traversable set=]:
-    1. If |traversable|'s [=navigable/active document=]'s [=Document/origin=] is [=same origin=] with <var ignore>origin</var>, and |traversable| is a [=prerendering traversable=], then [=destroy a top-level traversable|destroy=] |traversable|.
+    1. If |traversable|'s [=navigable/active document=]'s [=Document/origin=] is [=same origin=] with |origin|, and |traversable| is a [=prerendering traversable=], then [=destroy a top-level traversable|destroy=] |traversable|.
 </div>
 
 <h2 id="supports-loading-mode">The \`<dfn export http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
