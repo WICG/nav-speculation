@@ -378,8 +378,23 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 
        <p class="note">An implementation might wish to do this if it believes that the prefetch will be consumed more than once. For example, if in the future the response is consumed by a prerender, that [=prerendering traversable=] might be [=destroy a top-level traversable|destroyed=] through various means. Normally that would mean the response is discarded, but if the implementation performs this step, then the prefetched response will still be available to serve a future navigation. [[PRERENDERING-REVAMPED]]
     1. If the user agent did not perform the previous optional step, then it must [=list/remove=] |record| from |navigable|'s [=navigable/active document=]'s [=Document/prefetch records=].
+    1. <span id="prefetch-activation-client-creation"></span>Let |reservedEnvironment| be a new [=environment=] with:
+        : [=environment/id=]
+        :: a unique opaque string
+        : [=environment/creation URL=]
+        :: |request|'s [=request/reserved client=]'s [=environment/creation URL=]
+        : [=environment/top-level creation URL=]
+        :: |request|'s [=request/reserved client=]'s [=environment/top-level creation URL=]
+        : [=environment/top-level origin=]
+        :: |request|'s [=request/reserved client=]'s [=environment/top-level origin=]
+        : [=environment/target browsing context=]
+        :: |request|'s [=request/reserved client=]'s [=environment/target browsing context=]
+        : [=environment/active service worker=]
+        :: |request|'s [=request/reserved client=]'s [=environment/active service worker=]
+        : [=environment/execution ready flag=]
+        :: |request|'s [=request/reserved client=]'s [=environment/execution ready flag=]
 
-
+        <p class="note">We need a separate [=environment=] for each time a [=prefetch record=] is consumed, instead of using |request|'s [=request/reserved client=], because otherwise reusing the same prefetch record for multiple [=navigation params=] (i.e., multiple navigations) would cause the created [=environment settings objects=] to share an [=environment/id=]. This would then be visible, e.g., through the {{Clients/get()|clients.get()}} API, in a very confusing way.
     1. Return a new [=navigation params=], with:
         :  [=navigation params/id=]
         :: |navigationId|
@@ -398,7 +413,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         :  [=navigation params/COOP enforcement result=]
         :: |coopEnforcementResult|
         :  [=navigation params/reserved environment=]
-        :: |request|'s [=request/reserved client=]
+        :: |reservedEnvironment|
         :  [=navigation params/navigable=]
         :: |navigable|
         :  [=navigation params/navigation timing type=]
@@ -539,6 +554,8 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. If <var ignore>documentResource</var> is null:
               1. Let |prefetchRecord| be the result of [=finding a matching complete prefetch record=] given <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/sandboxing flags=].
               1. If |prefetchRecord| is not null:
+                1. Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given <var ignore>navigable</var>, |request|'s [=request/current URL=], and null.
+                  <p class="note">This [=environment=] is never actually exposed as a client; instead, it is used to hold some data and then cloned into an actual client <a href="#prefetch-activation-client-creation">shortly</a>.
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
@@ -717,6 +734,20 @@ This section contains patches to [[NAVIGATION-TIMING]].
 
 <div algorithm="create the navigation timing entry">
     Add an additional parameter to [=create the navigation timing entry=], which is a [=string=] <var ignore>deliveryType</var>, and pass it as an additional argument to [=setup the resource timing entry=].
+</div>
+
+<h2 id="service-workers-patches">Service Workers Patches</h2>
+
+This section contains patches to [[SERVICE-WORKERS]].
+
+<div algorithm="Create Fetch Event and Dispatch">
+  Modify <a spec="SERVICE-WORKERS">Create Fetch Event and Dispatch</a>'s step which sets {{FetchEvent/resultingClientId}} as follows:
+
+  <blockquote>
+    If |request| is a [=non-subresource request=] and |request|'s [=request/destination=] is not "{{RequestDestination/report}}"<ins> and |request|'s [=request/header list=] does not contain a [=header=] whose [=header/name=] is [:Sec-Purpose:]</ins>, initialize <var ignore>e</var>'s {{FetchEvent/resultingClientId}} attribute to <var ignore>reservedClient</var>'s [=environment/id=], and to the empty string otherwise.
+  </blockquote>
+
+  <p class="note">Although |request|'s has a [=request/reserved client=] at this time, it is just a specification fiction to help the request go through. It does not represent an actual client, of the sort that can be seen in e.g. {{Clients/matchAll()|clients.matchAll()}}. Actual client creation happens <a href="#prefetch-activation-client-creation">at activation time</a>, which will be after the {{FetchEvent}} is done firing.
 </div>
 
 <h2 id="clear-site-data-patches">Clear Site Data patches</h2>
