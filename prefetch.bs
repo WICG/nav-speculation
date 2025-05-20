@@ -446,6 +446,11 @@ A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn ex
 
 This section contains patches to [[HTML]].
 
+Add an additional item to [=environment=] as follows:
+
+: <dfn for="environment">is navigational prefetch client</dfn>
+:: a [=boolean=] (default false)
+
 Add an additional item to [=navigation params=] as follows:
 :  <dfn for="navigation params">delivery type</dfn>
 :: a [=string=] (corresponding to {{PerformanceResourceTiming}} [=PerformanceResourceTiming/delivery type=])
@@ -556,6 +561,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
               1. If |prefetchRecord| is not null:
                 1. Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given <var ignore>navigable</var>, |request|'s [=request/current URL=], and null.
                   <p class="note">This [=environment=] is never actually exposed as a client; instead, it is used to hold some data and then cloned into an actual client <a href="#prefetch-activation-client-creation">shortly</a>.
+                1. Set |request|'s [=request/reserved client=]'s [=environment/is navigational prefetch client=] to true.
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
@@ -602,7 +608,9 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. Run the [=environment discarding steps=] for |request|'s [=request/reserved client=].
             1. Set |request|'s [=request/reserved client=] to null.
             1. Set |commitEarlyHints| to null.
-        1. If |request|'s [=request/reserved client=] is null, then set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable|, |currentURL| and |isolationOrigin|.
+        1. If |request|'s [=request/reserved client=] is null, then:
+          1. Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable|, |currentURL| and |isolationOrigin|.
+          1. If |prefetchRecord| was given, then set |request|'s [=request/reserved client=]'s [=environment/is navigational prefetch client=] to true.
         1. If the result of [=should navigation request of type be blocked by Content Security Policy?=] given |request| and |cspNavigationType| is "`Blocked`", then set |response| to a [=network error=] and [=iteration/break=]. [[CSP]]
         1. If |prefetchRecord| was given, then:
             1. Let |purpose| be a [=structured header/List=] containing the [=structured header/Token=] `prefetch`.
@@ -744,10 +752,10 @@ This section contains patches to [[SERVICE-WORKERS]].
   Modify <a spec="SERVICE-WORKERS">Create Fetch Event and Dispatch</a>'s step which sets {{FetchEvent/resultingClientId}} as follows:
 
   <blockquote>
-    If |request| is a [=non-subresource request=] and |request|'s [=request/destination=] is not "{{RequestDestination/report}}"<ins> and |request|'s [=request/header list=] does not contain a [=header=] whose [=header/name=] is [:Sec-Purpose:]</ins>, initialize <var ignore>e</var>'s {{FetchEvent/resultingClientId}} attribute to <var ignore>reservedClient</var>'s [=environment/id=], and to the empty string otherwise.
+    If |request| is a [=non-subresource request=] and |request|'s [=request/destination=] is not "{{RequestDestination/report}}"<ins> and |reservedClient|'s [=environment/is navigational prefetch client=] is false</ins>, initialize <var ignore>e</var>'s {{FetchEvent/resultingClientId}} attribute to |reservedClient|'s [=environment/id=], and to the empty string otherwise.
   </blockquote>
 
-  <p class="note">Although |request|'s has a [=request/reserved client=] at this time, it is just a specification fiction to help the request go through. It does not represent an actual client, of the sort that can be seen in e.g. {{Clients/matchAll()|clients.matchAll()}}. Actual client creation happens <a href="#prefetch-activation-client-creation">at activation time</a>, which will be after the {{FetchEvent}} is done firing.
+  <p class="note">In the prefetch case, although |request| has a [=request/reserved client=] at this time, it is just a specification fiction to help the request go through. It does not represent an actual client, of the sort that can be seen in e.g. {{Clients/matchAll()|clients.matchAll()}}. Actual client creation happens <a href="#prefetch-activation-client-creation">at activation time</a>, which will be after the {{FetchEvent}} is done firing.
 </div>
 
 <h2 id="clear-site-data-patches">Clear Site Data patches</h2>
@@ -782,8 +790,6 @@ Modify <a abstract-op spec="CLEAR-SITE-DATA">clear site data for response</a>'s 
 </div>
 
 <h2 id="prefetch-algorithms">Prefetch algorithms</h2>
-
-<p class="issue">Check Service Worker integration</p>
 
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
