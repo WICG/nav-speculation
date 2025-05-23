@@ -97,6 +97,8 @@ spec: nav-speculation; urlPrefix: prefetch.html
       text: prerendering traversable
     for: has a matching prefetch record
       text: checkPrerender
+    for: Sec-Purpose prefetch
+      text: prerender
 spec: RFC8941; urlPrefix: https://www.rfc-editor.org/rfc/rfc8941.html
   type: dfn
     text: structured header; url: #section-1
@@ -677,6 +679,18 @@ Modify <a abstract-op spec="CLEAR-SITE-DATA">clear site data for response</a>'s 
       1. [=list/For each=] |prefetchRecord| in |activeDocument|'s [=Document/prefetch records=]:
         1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
         1. [=prefetch record/Cancel and discard=] |prefetchRecord| given |activeDocument|.
+</div>
+
+<h3 id="interaction-with-fetch">Interaction with Fetch</h3>
+
+<div algorithm="HTTP-network-or-cache fetch patch">
+  Modify <a spec=FETCH>HTTP-network-or-cache fetch</a> by adding the following step after the existing step that sets [:Sec-Purpose:]:
+
+  1. Otherwise, if |httpRequest|'s [=request/client=] is an [=environment settings object=] whose [=environment settings object/global object=] is a {{Window}}, and that {{Window}}'s [=Window/navigable=] is a [=prerendering navigable=]:
+    1. Let |purpose| be a [=structured header/List=] containing the [=structured header/Token=] `prefetch`.
+    1. Add a parameter whose key is "<a for="Sec-Purpose prefetch">`prerender`</a>" and whose value is true to the `prefetch` token in |purpose|.
+    1. [=header list/Set a structured field value=] given ([:Sec-Purpose:], |purpose|) in |httpRequest|'s [=request/header list=].
+
 </div>
 
 <h2 id="supports-loading-mode">The \`<dfn export http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>
