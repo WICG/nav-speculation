@@ -237,9 +237,10 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
     1. Set |prefetchRecord|'s [=prefetch record/state=] to "`canceled`".
     1. [=fetch controller/Abort=] |prefetchRecord|'s [=prefetch record/fetch controller=]. <span class="note">This will cause any ongoing fetch to be canceled and yield a [=network error=].</span>
+    1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is a [=traversable navigable=], then [=destroy a top-level traversable|destroy=] it.
     1. [=list/Remove=] |prefetchRecord| from |document|'s [=Document/prefetch records=].
 
-    <div class="note">This means that even a completed prefetch will not be served from the prefetch buffer. However, if it was part of the same partition as the document which requested it, it might still be stored in the ordinary HTTP cache.</div>
+    <p class="note">This means that even a completed prefetch or prerender will not be activated. However, the process of prefetching or prerendering might have modified the HTTP cache, making subsequent navigations faster anyway.</p>
 </div>
 
 <div algorithm>
@@ -747,6 +748,7 @@ Modify <a abstract-op spec="CLEAR-SITE-DATA">clear site data for response</a>'s 
       1. Let |activeDocument| be the |navigable|'s [=navigable/active document=].
       1. If |activeDocument|'s [=Document/origin=] is not [=same origin=] with |origin|, then [=iteration/continue=].
       1. [=list/For each=] |prefetchRecord| in |activeDocument|'s [=Document/prefetch records=]:
+        1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is not null, then [=iteration/continue=].
         1. [=prefetch record/Cancel and discard=] |prefetchRecord| given |activeDocument|.
 </div>
 

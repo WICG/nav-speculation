@@ -670,7 +670,13 @@ Modify <a abstract-op spec="CLEAR-SITE-DATA">clear site data for response</a>'s 
   To <dfn>clear prerender cache</dfn> given an [=origin=] |origin|:
 
   1. [=list/For each=] [=navigable/top-level traversable=] |traversable| of the user agent's [=user agent/top-level traversable set=]:
-    1. If |traversable|'s [=navigable/active document=]'s [=Document/origin=] is [=same origin=] with |origin|, and |traversable| is a [=prerendering traversable=], then [=destroy a top-level traversable|destroy=] |traversable|.
+    1. Let |navigables| be the [=Document/inclusive descendant navigables=] of |traversable|'s [=navigable/active document=].
+    1. [=list/For each=] |navigable| in |navigables|:
+      1. Let |activeDocument| be the |navigable|'s [=navigable/active document=].
+      1. If |activeDocument|'s [=Document/origin=] is not [=same origin=] with |origin|, then [=iteration/continue=].
+      1. [=list/For each=] |prefetchRecord| in |activeDocument|'s [=Document/prefetch records=]:
+        1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+        1. [=prefetch record/Cancel and discard=] |prefetchRecord| given |activeDocument|.
 </div>
 
 <h2 id="supports-loading-mode">The \`<dfn export http-header><code>Supports-Loading-Mode</code></dfn>\` HTTP response header</h2>

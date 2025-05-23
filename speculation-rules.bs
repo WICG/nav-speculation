@@ -573,12 +573,14 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 </div>
 
 <div algorithm>
-  A [=prefetch candidate=] |prefetchCandidate| <dfn for="prefetch candidate">continues</dfn> a [=prefetch record=] |prefetchRecord| if the following are all true:
-  * |prefetchRecord|'s [=prefetch record/label=] is "`speculation-rules`"
-  * |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`"
-  * |prefetchRecord| [=prefetch record/matches a URL=] given |prefetchCandidate|'s [=speculative load candidate/URL=]
-  * |prefetchRecord|'s [=prefetch record/anonymization policy=] equals |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
+  A [=prefetch record=] |prefetchRecord| is <dfn for="prefetch record">still being speculated</dfn>, given a list of [=speculative load candidates=] |candidates|, if the following steps return true:
 
+  1. [=list/For each=] |candidate| of |candidates|:
+    1. If |prefetchRecord| does not [=prefetch record/match a URL=] given |candidate|'s [=speculative load candidate/URL=], then [=iteration/continue=].
+    1. If |candidate| is a [=prefetch candidate=] and |prefetchRecord|'s [=prefetch record/anonymization policy=] does not equal |candidate|'s [=prefetch candidate/anonymization policy=], then [=iteration/continue=].
+    1. If |candidate| is a [=prerender candidate=] and |prefetchRecord|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+    1. Return true.
+  1. Return false.
 </div>
 
 <div algorithm>
@@ -730,10 +732,11 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
               </dl>
 
               to |prerenderCandidates|.
+    1. Let |speculativeLoadCandidates| be the union of |prefetchCandidates| and |prerenderCandidates|.
     1. [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
       1. If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
       1. [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
-      1. If no element of |prefetchCandidates| [=prefetch candidate/continues=] |prefetchRecord|, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|.
+      1. If |prefetchRecord| is not [=prefetch record/still being speculated=] given |speculativeLoadCandidates|, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|.
     1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
       1. The user agent may run the following steps:
         1. Let |prefetchAndPrerenderCandidates| be an empty [=list=].
