@@ -42,9 +42,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
         text: type; url: concept-script-type
         text: result; url: concept-script-result
     urlPrefix: webappapis.html
-      text: await a stable state; url: await-a-stable-state
       text: script; url: concept-script
-      text: synchronous section; url: synchronous-section
     urlPrefix: document-sequences.html
       text: valid navigable target name or keyword; url: valid-navigable-target-name-or-keyword
       text: rules for choosing a navigable; url: the-rules-for-choosing-a-navigable
@@ -614,102 +612,72 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
 
-  1. [=Await a stable state=]. Steps in the [=synchronous section=] are marked with &#x231B;.
-  1. &#x231B; If |document| is not [=Document/fully active=], then return.
-     <p class="issue">It's likely that we should also handle prerendered and back-forward cached documents.
-  1. &#x231B; Let |prefetchCandidates| be an empty [=list=].
-  1. &#x231B; Let |prerenderCandidates| be an empty [=list=].
-  1. &#x231B; For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
-    1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
-      1. &#x231B; Let |anonymizationPolicy| be null.
-      1. &#x231B; If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
-      1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
-        1. &#x231B; [=list/Append=] a [=prefetch candidate=] with
+  1. [=Queue a microtask=] that runs the following steps given |document|:
+    1. If |document| is not [=Document/fully active=], then return.
+      <p class="issue">It's likely that we should also handle prerendered documents.
+    1. Let |prefetchCandidates| be an empty [=list=].
+    1. Let |prerenderCandidates| be an empty [=list=].
+    1. For each |ruleSet| of |document|'s [=document/list of speculation rule sets=]:
+      1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prefetch rules=]:
+        1. Let |anonymizationPolicy| be null.
+        1. If |rule|'s [=speculation rule/requirements=] [=set/contains=] "`anonymous-client-ip-when-cross-origin`", set |anonymizationPolicy| to a [=cross-origin prefetch IP anonymization policy=] whose [=cross-origin prefetch IP anonymization policy/origin=] is |document|'s [=Document/origin=].
+        1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+          1. Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
+          1. [=list/Append=] a [=prefetch candidate=] with
 
-            <dl class="props">
-              : [=speculative load candidate/tags=]
-              :: |rule|'s [=speculation rule/tags=]
+              <dl class="props">
+                : [=speculative load candidate/tags=]
+                :: |rule|'s [=speculation rule/tags=]
 
-              : [=speculative load candidate/URL=]
-              :: |url|
+                : [=speculative load candidate/URL=]
+                :: |url|
 
-              : [=prefetch candidate/anonymization policy=]
-              :: |anonymizationPolicy|
+                : [=prefetch candidate/anonymization policy=]
+                :: |anonymizationPolicy|
 
-              : [=speculative load candidate/referrer policy=]
-              :: |referrerPolicy|
+                : [=speculative load candidate/referrer policy=]
+                :: |referrerPolicy|
 
-              : [=speculative load candidate/eagerness=]
-              :: |rule|'s [=speculation rule/eagerness=]
+                : [=speculative load candidate/eagerness=]
+                :: |rule|'s [=speculation rule/eagerness=]
 
-              : [=speculative load candidate/No-Vary-Search hint=]
-              :: |rule|'s [=speculation rule/No-Vary-Search hint=]
-            </dl>
+                : [=speculative load candidate/No-Vary-Search hint=]
+                :: |rule|'s [=speculation rule/No-Vary-Search hint=]
+              </dl>
 
-            to |prefetchCandidates|.
-      1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
-        1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
-        1. &#x231B; [=list/For each=] |link| of |links|:
-          1. &#x231B; Let |url| be |link|'s [=HTMLHyperlinkElementUtils/url=].
-          1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
-          1. &#x231B; [=list/Append=] a [=prefetch candidate=] with
+              to |prefetchCandidates|.
+        1. If |rule|'s [=speculation rule/predicate=] is not null, then:
+          1. Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+          1. [=list/For each=] |link| of |links|:
+            1. Let |url| be |link|'s [=HTMLHyperlinkElementUtils/url=].
+            1. Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
+            1. [=list/Append=] a [=prefetch candidate=] with
 
-            <dl class="props">
-              : [=speculative load candidate/tags=]
-              :: |rule|'s [=speculation rule/tags=]
+              <dl class="props">
+                : [=speculative load candidate/tags=]
+                :: |rule|'s [=speculation rule/tags=]
 
-              : [=speculative load candidate/URL=]
-              :: |url|
+                : [=speculative load candidate/URL=]
+                :: |url|
 
-              : [=prefetch candidate/anonymization policy=]
-              :: |anonymizationPolicy|
+                : [=prefetch candidate/anonymization policy=]
+                :: |anonymizationPolicy|
 
-              : [=speculative load candidate/referrer policy=]
-              :: |referrerPolicy|
+                : [=speculative load candidate/referrer policy=]
+                :: |referrerPolicy|
 
-              : [=speculative load candidate/eagerness=]
-              :: |rule|'s [=speculation rule/eagerness=]
+                : [=speculative load candidate/eagerness=]
+                :: |rule|'s [=speculation rule/eagerness=]
 
-              : [=speculative load candidate/No-Vary-Search hint=]
-              :: |rule|'s [=speculation rule/No-Vary-Search hint=]
-            </dl>
+                : [=speculative load candidate/No-Vary-Search hint=]
+                :: |rule|'s [=speculation rule/No-Vary-Search hint=]
+              </dl>
 
-            to |prefetchCandidates|.
-    1. &#x231B; [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
-      1. &#x231B; [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-        1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
-        1. &#x231B; [=list/Append=] a [=prerender candidate=] with
-
-          <dl class="props">
-            : [=speculative load candidate/tags=]
-            :: |rule|'s [=speculation rule/tags=]
-
-            : [=speculative load candidate/URL=]
-            :: |url|
-
-            : [=prerender candidate/target navigable name hint=]
-            :: |rule|'s [=speculation rule/target navigable name hint=]
-
-            : [=speculative load candidate/referrer policy=]
-            :: |referrerPolicy|
-
-            : [=speculative load candidate/eagerness=]
-            :: |rule|'s [=speculation rule/eagerness=]
-
-            : [=speculative load candidate/No-Vary-Search hint=]
-            :: |rule|'s [=speculation rule/No-Vary-Search hint=]
-          </dl>
-
-          to |prerenderCandidates|.
-      1. &#x231B; If |rule|'s [=speculation rule/predicate=] is not null, then:
-        1. &#x231B; Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
-        1. &#x231B; [=list/For each=] |link| of |links|:
-          1. &#x231B; Let |url| be the |link|'s [=HTMLHyperlinkElementUtils/url=].
-          1. &#x231B; Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
-          1. &#x231B; If |target| is null, set it to the result of [=getting an element's target=] given |link|.
-          1. &#x231B; Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
-          1. &#x231B; [=list/Append=] a [=prerender candidate=] with
+              to |prefetchCandidates|.
+      1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
+        1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+          1. Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and null.
+          1. [=list/Append=] a [=prerender candidate=] with
 
             <dl class="props">
               : [=speculative load candidate/tags=]
@@ -719,7 +687,7 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
               :: |url|
 
               : [=prerender candidate/target navigable name hint=]
-              :: |target|
+              :: |rule|'s [=speculation rule/target navigable name hint=]
 
               : [=speculative load candidate/referrer policy=]
               :: |referrerPolicy|
@@ -732,72 +700,101 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
             </dl>
 
             to |prerenderCandidates|.
-  1. &#x231B; [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
-    1. &#x231B; If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
-    1. &#x231B; [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
-    1. &#x231B; If no element of |prefetchCandidates| [=prefetch candidate/continues=] |prefetchRecord|, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|.
-  1. End the [=synchronous section=], continuing the remaining steps [=in parallel=].
-  1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
-    1. The user agent may run the following steps:
-      1. Let |prefetchAndPrerenderCandidates| be an empty [=list=].
-      1. [=list/Extend=] |prefetchAndPrerenderCandidates| with |prefetchCandidates|.
-      1. [=list/Extend=] |prefetchAndPrerenderCandidates| with |prerenderCandidates|.
-      1. Let |tagsToSend| be the result of [=collecting tags for matching speculative load candidates=] given |prefetchCandidate| and |prefetchAndPrerenderCandidates|.
-      1. Let |prefetchRecord| be a new [=prefetch record=] with
+        1. If |rule|'s [=speculation rule/predicate=] is not null, then:
+          1. Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+          1. [=list/For each=] |link| of |links|:
+            1. Let |url| be the |link|'s [=HTMLHyperlinkElementUtils/url=].
+            1. Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
+            1. If |target| is null, set it to the result of [=getting an element's target=] given |link|.
+            1. Let |referrerPolicy| be the result of [=computing a speculative action referrer policy=] given |rule| and |link|.
+            1. [=list/Append=] a [=prerender candidate=] with
 
-        <dl class="props">
-          : [=prefetch record/tags=]
-          :: |tagsToSend|
+              <dl class="props">
+                : [=speculative load candidate/tags=]
+                :: |rule|'s [=speculation rule/tags=]
 
-          : [=prefetch record/URL=]
-          :: |prefetchCandidate|'s [=speculative load candidate/URL=]
+                : [=speculative load candidate/URL=]
+                :: |url|
 
-          : [=prefetch record/anonymization policy=]
-          :: |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
+                : [=prerender candidate/target navigable name hint=]
+                :: |target|
 
-          : [=prefetch record/referrer policy=]
-          :: |prefetchCandidate|'s [=speculative load candidate/referrer policy=]
+                : [=speculative load candidate/referrer policy=]
+                :: |referrerPolicy|
 
-          : [=prefetch record/No-Vary-Search hint=]
-          :: |prefetchCandidate|'s [=speculative load candidate/No-Vary-Search hint=]
+                : [=speculative load candidate/eagerness=]
+                :: |rule|'s [=speculation rule/eagerness=]
 
-          : [=prefetch record/label=]
-          :: "`speculation-rules`"
-        </dl>
-      1. [=Prefetch=] given |document| and |prefetchRecord|.
-  1. [=list/For each=] |prerenderCandidate| of |prerenderCandidates|:
-    1. The user agent may run the following steps:
-      1. Let |tagsToSend| be the result of [=collecting tags for matching speculative load candidates=] given |prerenderCandidate| and |prerenderCandidates|.
-      1. Let |prefetchRecord| be a new [=prefetch record=] with
+                : [=speculative load candidate/No-Vary-Search hint=]
+                :: |rule|'s [=speculation rule/No-Vary-Search hint=]
+              </dl>
 
-        <dl class="props">
-          : [=prefetch record/tags=]
-          :: |tagsToSend|
+              to |prerenderCandidates|.
+    1. [=list/For each=] |prefetchRecord| of |document|'s [=Document/prefetch records=]:
+      1. If |prefetchRecord|'s [=prefetch record/label=] is not "`speculation-rules`", then [=iteration/continue=].
+      1. [=Assert=]: |prefetchRecord|'s [=prefetch record/state=] is not "`canceled`".
+      1. If no element of |prefetchCandidates| [=prefetch candidate/continues=] |prefetchRecord|, then [=prefetch record/cancel and discard=] |prefetchRecord| given |document|.
+    1. [=list/For each=] |prefetchCandidate| of |prefetchCandidates|:
+      1. The user agent may run the following steps:
+        1. Let |prefetchAndPrerenderCandidates| be an empty [=list=].
+        1. [=list/Extend=] |prefetchAndPrerenderCandidates| with |prefetchCandidates|.
+        1. [=list/Extend=] |prefetchAndPrerenderCandidates| with |prerenderCandidates|.
+        1. Let |tagsToSend| be the result of [=collecting tags for matching speculative load candidates=] given |prefetchCandidate| and |prefetchAndPrerenderCandidates|.
+        1. Let |prefetchRecord| be a new [=prefetch record=] with
 
-          : [=prefetch record/URL=]
-          :: |prerenderCandidate|'s [=speculative load candidate/URL=]
+          <dl class="props">
+            : [=prefetch record/tags=]
+            :: |tagsToSend|
 
-          : [=prefetch record/anonymization policy=]
-          :: null
+            : [=prefetch record/URL=]
+            :: |prefetchCandidate|'s [=speculative load candidate/URL=]
 
-          : [=prefetch record/referrer policy=]
-          :: |prerenderCandidate|'s [=speculative load candidate/referrer policy=]
+            : [=prefetch record/anonymization policy=]
+            :: |prefetchCandidate|'s [=prefetch candidate/anonymization policy=]
 
-          : [=prefetch record/No-Vary-Search hint=]
-          :: |prerenderCandidate|'s [=speculative load candidate/No-Vary-Search hint=]
+            : [=prefetch record/referrer policy=]
+            :: |prefetchCandidate|'s [=speculative load candidate/referrer policy=]
 
-          : [=prefetch record/label=]
-          :: "`speculation-rules`"
+            : [=prefetch record/No-Vary-Search hint=]
+            :: |prefetchCandidate|'s [=speculative load candidate/No-Vary-Search hint=]
 
-          : [=prefetch record/prerendering traversable=]
-          :: "`to be created`"
-        </dl>
+            : [=prefetch record/label=]
+            :: "`speculation-rules`"
+          </dl>
+        1. [=Prefetch=] given |document| and |prefetchRecord|.
+    1. [=list/For each=] |prerenderCandidate| of |prerenderCandidates|:
+      1. The user agent may run the following steps:
+        1. Let |tagsToSend| be the result of [=collecting tags for matching speculative load candidates=] given |prerenderCandidate| and |prerenderCandidates|.
+        1. Let |prefetchRecord| be a new [=prefetch record=] with
 
-      1. [=Start referrer-initiated prerendering=] given |document| and |prefetchRecord|.
+          <dl class="props">
+            : [=prefetch record/tags=]
+            :: |tagsToSend|
 
-         The user agent can use |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] as a hint to their implementation of the [=start referrer-initiated prerendering=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering traversable/activate|activation=] of the created [=prerendering traversable=] to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the [=rules for choosing a navigable=] given |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] and |document|'s [=node navigable=].
+            : [=prefetch record/URL=]
+            :: |prerenderCandidate|'s [=speculative load candidate/URL=]
 
-         <p class="note">This is just a hint. The [=speculation rule/target navigable name hint=] actually has no normative implications, after being parsed. It is still perfectly fine to [=prerendering traversable/activate=] in place of a different predecessor traversable that was not hinted at.
+            : [=prefetch record/anonymization policy=]
+            :: null
+
+            : [=prefetch record/referrer policy=]
+            :: |prerenderCandidate|'s [=speculative load candidate/referrer policy=]
+
+            : [=prefetch record/No-Vary-Search hint=]
+            :: |prerenderCandidate|'s [=speculative load candidate/No-Vary-Search hint=]
+
+            : [=prefetch record/label=]
+            :: "`speculation-rules`"
+
+            : [=prefetch record/prerendering traversable=]
+            :: "`to be created`"
+          </dl>
+
+        1. [=Start referrer-initiated prerendering=] given |document| and |prefetchRecord|.
+
+          The user agent can use |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] as a hint to their implementation of the [=start referrer-initiated prerendering=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering traversable/activate|activation=] of the created [=prerendering traversable=] to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the [=rules for choosing a navigable=] given |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] and |document|'s [=node navigable=].
+
+          <p class="note">This is just a hint. The [=speculation rule/target navigable name hint=] actually has no normative implications, after being parsed. It is still perfectly fine to [=prerendering traversable/activate=] in place of a different predecessor traversable that was not hinted at.
 
   When deciding whether to execute the "may" steps above that enact from among |prefetchCandidates| and |prerenderCandidates|, user agents should consider their [=speculative load candidate/eagerness=], in accordance with the following:
 
