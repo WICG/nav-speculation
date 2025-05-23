@@ -1628,255 +1628,255 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="consider-speculation">consider speculation</dfn> for a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document①⓪">document</a> <var>document</var>: 
     <ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#await-a-stable-state" id="ref-for-await-a-stable-state">Await a stable state</a>. Steps in the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section" id="ref-for-synchronous-section">synchronous section</a> are marked with ⌛.</p>
-     <li data-md>
-      <p>⌛ If <var>document</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active">fully active</a>, then return.</p>
-      <p class="issue" id="issue-30bcda38"><a class="self-link" href="#issue-30bcda38"></a>It’s likely that we should also handle prerendered and back-forward cached documents. </p>
-     <li data-md>
-      <p>⌛ Let <var>prefetchCandidates</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②②">list</a>.</p>
-     <li data-md>
-      <p>⌛ Let <var>prerenderCandidates</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②③">list</a>.</p>
-     <li data-md>
-      <p>⌛ For each <var>ruleSet</var> of <var>document</var>’s <a data-link-type="dfn" href="#document-list-of-speculation-rule-sets" id="ref-for-document-list-of-speculation-rule-sets④">list of speculation rule sets</a>:</p>
+      <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask" id="ref-for-queue-a-microtask">Queue a microtask</a> that runs the following steps given <var>document</var>:</p>
       <ol>
        <li data-md>
-        <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑨">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-rules" id="ref-for-speculation-rule-set-prefetch-rules①">prefetch rules</a>:</p>
+        <p>If <var>document</var> is not <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active" id="ref-for-fully-active">fully active</a>, then return.</p>
+        <p class="issue" id="issue-4110be7b"><a class="self-link" href="#issue-4110be7b"></a>It’s likely that we should also handle prerendered documents. </p>
+       <li data-md>
+        <p>Let <var>prefetchCandidates</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②②">list</a>.</p>
+       <li data-md>
+        <p>Let <var>prerenderCandidates</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②③">list</a>.</p>
+       <li data-md>
+        <p>For each <var>ruleSet</var> of <var>document</var>’s <a data-link-type="dfn" href="#document-list-of-speculation-rule-sets" id="ref-for-document-list-of-speculation-rule-sets④">list of speculation rule sets</a>:</p>
         <ol>
          <li data-md>
-          <p>⌛ Let <var>anonymizationPolicy</var> be null.</p>
-         <li data-md>
-          <p>⌛ If <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements②">requirements</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain②">contains</a> "<code>anonymous-client-ip-when-cross-origin</code>", set <var>anonymizationPolicy</var> to a <a data-link-type="dfn" href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy" id="ref-for-cross-origin-prefetch-ip-anonymization-policy">cross-origin prefetch IP anonymization policy</a> whose <a data-link-type="dfn" href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin" id="ref-for-cross-origin-prefetch-ip-anonymization-policy-origin">origin</a> is <var>document</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a>.</p>
-         <li data-md>
-          <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⓪">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls①">URLs</a>:</p>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate⑨">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prefetch-rules" id="ref-for-speculation-rule-set-prefetch-rules①">prefetch rules</a>:</p>
           <ol>
            <li data-md>
-            <p>⌛ Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy">computing a speculative action referrer policy</a> given <var>rule</var> and null.</p>
+            <p>Let <var>anonymizationPolicy</var> be null.</p>
            <li data-md>
-            <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①⓪">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate①">prefetch candidate</a> with</p>
-            <dl class="props">
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags">tags</a>
-             <dd data-md>
-              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags①">tags</a></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url③">URL</a>
-             <dd data-md>
-              <p><var>url</var></p>
-             <dt data-md><a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy①">anonymization policy</a>
-             <dd data-md>
-              <p><var>anonymizationPolicy</var></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy">referrer policy</a>
-             <dd data-md>
-              <p><var>referrerPolicy</var></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness">eagerness</a>
-             <dd data-md>
-              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness①">eagerness</a></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint③">No-Vary-Search hint</a>
-             <dd data-md>
-              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint①">No-Vary-Search hint</a></p>
-            </dl>
-            <p>to <var>prefetchCandidates</var>.</p>
-          </ol>
-         <li data-md>
-          <p>⌛ If <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate①">predicate</a> is not null, then:</p>
-          <ol>
+            <p>If <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-requirements" id="ref-for-speculation-rule-requirements②">requirements</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain②">contains</a> "<code>anonymous-client-ip-when-cross-origin</code>", set <var>anonymizationPolicy</var> to a <a data-link-type="dfn" href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy" id="ref-for-cross-origin-prefetch-ip-anonymization-policy">cross-origin prefetch IP anonymization policy</a> whose <a data-link-type="dfn" href="prefetch.html#cross-origin-prefetch-ip-anonymization-policy-origin" id="ref-for-cross-origin-prefetch-ip-anonymization-policy-origin">origin</a> is <var>document</var>’s <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document-origin" id="ref-for-concept-document-origin">origin</a>.</p>
            <li data-md>
-            <p>⌛ Let <var>links</var> be the result of <a data-link-type="dfn" href="#find-matching-links" id="ref-for-find-matching-links">finding matching links</a> given <var>document</var> and <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate②">predicate</a>.</p>
-           <li data-md>
-            <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①①">For each</a> <var>link</var> of <var>links</var>:</p>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⓪">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls①">URLs</a>:</p>
             <ol>
              <li data-md>
-              <p>⌛ Let <var>url</var> be <var>link</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url" id="ref-for-concept-hyperlink-url①">url</a>.</p>
+              <p>Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy">computing a speculative action referrer policy</a> given <var>rule</var> and null.</p>
              <li data-md>
-              <p>⌛ Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy①">computing a speculative action referrer policy</a> given <var>rule</var> and <var>link</var>.</p>
-             <li data-md>
-              <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①①">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate②">prefetch candidate</a> with</p>
+              <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①⓪">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate①">prefetch candidate</a> with</p>
               <dl class="props">
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags①">tags</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags">tags</a>
                <dd data-md>
-                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags②">tags</a></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url④">URL</a>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags①">tags</a></p>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url③">URL</a>
                <dd data-md>
                 <p><var>url</var></p>
-               <dt data-md><a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy②">anonymization policy</a>
+               <dt data-md><a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy①">anonymization policy</a>
                <dd data-md>
                 <p><var>anonymizationPolicy</var></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy①">referrer policy</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy">referrer policy</a>
                <dd data-md>
                 <p><var>referrerPolicy</var></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness①">eagerness</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness">eagerness</a>
                <dd data-md>
-                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness②">eagerness</a></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint④">No-Vary-Search hint</a>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness①">eagerness</a></p>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint③">No-Vary-Search hint</a>
                <dd data-md>
-                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint②">No-Vary-Search hint</a></p>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint①">No-Vary-Search hint</a></p>
               </dl>
               <p>to <var>prefetchCandidates</var>.</p>
             </ol>
-          </ol>
-        </ol>
-       <li data-md>
-        <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①②">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prerender-rules" id="ref-for-speculation-rule-set-prerender-rules①">prerender rules</a>:</p>
-        <ol>
-         <li data-md>
-          <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①③">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls②">URLs</a>:</p>
-          <ol>
            <li data-md>
-            <p>⌛ Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy②">computing a speculative action referrer policy</a> given <var>rule</var> and null.</p>
-           <li data-md>
-            <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①②">Append</a> a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate">prerender candidate</a> with</p>
-            <dl class="props">
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags②">tags</a>
-             <dd data-md>
-              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags③">tags</a></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑤">URL</a>
-             <dd data-md>
-              <p><var>url</var></p>
-             <dt data-md><a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint">target navigable name hint</a>
-             <dd data-md>
-              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint②">target navigable name hint</a></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy②">referrer policy</a>
-             <dd data-md>
-              <p><var>referrerPolicy</var></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness②">eagerness</a>
-             <dd data-md>
-              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness③">eagerness</a></p>
-             <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑤">No-Vary-Search hint</a>
-             <dd data-md>
-              <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint③">No-Vary-Search hint</a></p>
-            </dl>
-            <p>to <var>prerenderCandidates</var>.</p>
-          </ol>
-         <li data-md>
-          <p>⌛ If <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate③">predicate</a> is not null, then:</p>
-          <ol>
-           <li data-md>
-            <p>⌛ Let <var>links</var> be the result of <a data-link-type="dfn" href="#find-matching-links" id="ref-for-find-matching-links①">finding matching links</a> given <var>document</var> and <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate④">predicate</a>.</p>
-           <li data-md>
-            <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①④">For each</a> <var>link</var> of <var>links</var>:</p>
+            <p>If <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate①">predicate</a> is not null, then:</p>
             <ol>
              <li data-md>
-              <p>⌛ Let <var>url</var> be the <var>link</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url" id="ref-for-concept-hyperlink-url②">url</a>.</p>
+              <p>Let <var>links</var> be the result of <a data-link-type="dfn" href="#find-matching-links" id="ref-for-find-matching-links">finding matching links</a> given <var>document</var> and <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate②">predicate</a>.</p>
              <li data-md>
-              <p>⌛ Let <var>target</var> be <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint③">target navigable name hint</a>.</p>
+              <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①①">For each</a> <var>link</var> of <var>links</var>:</p>
+              <ol>
+               <li data-md>
+                <p>Let <var>url</var> be <var>link</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url" id="ref-for-concept-hyperlink-url①">url</a>.</p>
+               <li data-md>
+                <p>Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy①">computing a speculative action referrer policy</a> given <var>rule</var> and <var>link</var>.</p>
+               <li data-md>
+                <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①①">Append</a> a <a data-link-type="dfn" href="#prefetch-candidate" id="ref-for-prefetch-candidate②">prefetch candidate</a> with</p>
+                <dl class="props">
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags①">tags</a>
+                 <dd data-md>
+                  <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags②">tags</a></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url④">URL</a>
+                 <dd data-md>
+                  <p><var>url</var></p>
+                 <dt data-md><a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy②">anonymization policy</a>
+                 <dd data-md>
+                  <p><var>anonymizationPolicy</var></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy①">referrer policy</a>
+                 <dd data-md>
+                  <p><var>referrerPolicy</var></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness①">eagerness</a>
+                 <dd data-md>
+                  <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness②">eagerness</a></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint④">No-Vary-Search hint</a>
+                 <dd data-md>
+                  <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint②">No-Vary-Search hint</a></p>
+                </dl>
+                <p>to <var>prefetchCandidates</var>.</p>
+              </ol>
+            </ol>
+          </ol>
+         <li data-md>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①②">For each</a> <var>rule</var> of <var>ruleSet</var>’s <a data-link-type="dfn" href="#speculation-rule-set-prerender-rules" id="ref-for-speculation-rule-set-prerender-rules①">prerender rules</a>:</p>
+          <ol>
+           <li data-md>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①③">For each</a> <var>url</var> of <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-urls" id="ref-for-speculation-rule-urls②">URLs</a>:</p>
+            <ol>
              <li data-md>
-              <p>⌛ If <var>target</var> is null, set it to the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/semantics.html#get-an-element&apos;s-target" id="ref-for-get-an-element&apos;s-target">getting an element’s target</a> given <var>link</var>.</p>
+              <p>Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy②">computing a speculative action referrer policy</a> given <var>rule</var> and null.</p>
              <li data-md>
-              <p>⌛ Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy③">computing a speculative action referrer policy</a> given <var>rule</var> and <var>link</var>.</p>
-             <li data-md>
-              <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①③">Append</a> a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate①">prerender candidate</a> with</p>
+              <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①②">Append</a> a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate">prerender candidate</a> with</p>
               <dl class="props">
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags③">tags</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags②">tags</a>
                <dd data-md>
-                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags④">tags</a></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑥">URL</a>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags③">tags</a></p>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑤">URL</a>
                <dd data-md>
                 <p><var>url</var></p>
-               <dt data-md><a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint①">target navigable name hint</a>
+               <dt data-md><a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint">target navigable name hint</a>
                <dd data-md>
-                <p><var>target</var></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy③">referrer policy</a>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint②">target navigable name hint</a></p>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy②">referrer policy</a>
                <dd data-md>
                 <p><var>referrerPolicy</var></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness③">eagerness</a>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness②">eagerness</a>
                <dd data-md>
-                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness④">eagerness</a></p>
-               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑥">No-Vary-Search hint</a>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness③">eagerness</a></p>
+               <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑤">No-Vary-Search hint</a>
                <dd data-md>
-                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint④">No-Vary-Search hint</a></p>
+                <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint③">No-Vary-Search hint</a></p>
               </dl>
               <p>to <var>prerenderCandidates</var>.</p>
             </ol>
+           <li data-md>
+            <p>If <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate③">predicate</a> is not null, then:</p>
+            <ol>
+             <li data-md>
+              <p>Let <var>links</var> be the result of <a data-link-type="dfn" href="#find-matching-links" id="ref-for-find-matching-links①">finding matching links</a> given <var>document</var> and <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-predicate" id="ref-for-speculation-rule-predicate④">predicate</a>.</p>
+             <li data-md>
+              <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①④">For each</a> <var>link</var> of <var>links</var>:</p>
+              <ol>
+               <li data-md>
+                <p>Let <var>url</var> be the <var>link</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url" id="ref-for-concept-hyperlink-url②">url</a>.</p>
+               <li data-md>
+                <p>Let <var>target</var> be <var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint③">target navigable name hint</a>.</p>
+               <li data-md>
+                <p>If <var>target</var> is null, set it to the result of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/semantics.html#get-an-element&apos;s-target" id="ref-for-get-an-element&apos;s-target">getting an element’s target</a> given <var>link</var>.</p>
+               <li data-md>
+                <p>Let <var>referrerPolicy</var> be the result of <a data-link-type="dfn" href="#compute-a-speculative-action-referrer-policy" id="ref-for-compute-a-speculative-action-referrer-policy③">computing a speculative action referrer policy</a> given <var>rule</var> and <var>link</var>.</p>
+               <li data-md>
+                <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append①③">Append</a> a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate①">prerender candidate</a> with</p>
+                <dl class="props">
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-tags" id="ref-for-speculative-load-candidate-tags③">tags</a>
+                 <dd data-md>
+                  <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-tags" id="ref-for-speculation-rule-tags④">tags</a></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑥">URL</a>
+                 <dd data-md>
+                  <p><var>url</var></p>
+                 <dt data-md><a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint①">target navigable name hint</a>
+                 <dd data-md>
+                  <p><var>target</var></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy③">referrer policy</a>
+                 <dd data-md>
+                  <p><var>referrerPolicy</var></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-eagerness" id="ref-for-speculative-load-candidate-eagerness③">eagerness</a>
+                 <dd data-md>
+                  <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-eagerness" id="ref-for-speculation-rule-eagerness④">eagerness</a></p>
+                 <dt data-md><a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑥">No-Vary-Search hint</a>
+                 <dd data-md>
+                  <p><var>rule</var>’s <a data-link-type="dfn" href="#speculation-rule-no-vary-search-hint" id="ref-for-speculation-rule-no-vary-search-hint④">No-Vary-Search hint</a></p>
+                </dl>
+                <p>to <var>prerenderCandidates</var>.</p>
+              </ol>
+            </ol>
           </ol>
         </ol>
-      </ol>
-     <li data-md>
-      <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑤">For each</a> <var>prefetchRecord</var> of <var>document</var>’s <a data-link-type="dfn" href="prefetch.html#document-prefetch-records" id="ref-for-document-prefetch-records">prefetch records</a>:</p>
-      <ol>
        <li data-md>
-        <p>⌛ If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label①">label</a> is not "<code>speculation-rules</code>", then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①④">continue</a>.</p>
-       <li data-md>
-        <p>⌛ <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑤">Assert</a>: <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state①">state</a> is not "<code>canceled</code>".</p>
-       <li data-md>
-        <p>⌛ If no element of <var>prefetchCandidates</var> <a data-link-type="dfn" href="#prefetch-candidate-continues" id="ref-for-prefetch-candidate-continues">continues</a> <var>prefetchRecord</var>, then <a data-link-type="dfn" href="prefetch.html#prefetch-record-cancel-and-discard" id="ref-for-prefetch-record-cancel-and-discard">cancel and discard</a> <var>prefetchRecord</var> given <var>document</var>.</p>
-      </ol>
-     <li data-md>
-      <p>End the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section" id="ref-for-synchronous-section①">synchronous section</a>, continuing the remaining steps <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel" id="ref-for-in-parallel">in parallel</a>.</p>
-     <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑥">For each</a> <var>prefetchCandidate</var> of <var>prefetchCandidates</var>:</p>
-      <ol>
-       <li data-md>
-        <p>The user agent may run the following steps:</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑤">For each</a> <var>prefetchRecord</var> of <var>document</var>’s <a data-link-type="dfn" href="prefetch.html#document-prefetch-records" id="ref-for-document-prefetch-records">prefetch records</a>:</p>
         <ol>
          <li data-md>
-          <p>Let <var>prefetchAndPrerenderCandidates</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②④">list</a>.</p>
+          <p>If <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label①">label</a> is not "<code>speculation-rules</code>", then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①④">continue</a>.</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend">Extend</a> <var>prefetchAndPrerenderCandidates</var> with <var>prefetchCandidates</var>.</p>
+          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#assert" id="ref-for-assert⑤">Assert</a>: <var>prefetchRecord</var>’s <a data-link-type="dfn" href="prefetch.html#prefetch-record-state" id="ref-for-prefetch-record-state①">state</a> is not "<code>canceled</code>".</p>
          <li data-md>
-          <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend①">Extend</a> <var>prefetchAndPrerenderCandidates</var> with <var>prerenderCandidates</var>.</p>
-         <li data-md>
-          <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="#collect-tags-for-matching-speculative-load-candidates" id="ref-for-collect-tags-for-matching-speculative-load-candidates">collecting tags for matching speculative load candidates</a> given <var>prefetchCandidate</var> and <var>prefetchAndPrerenderCandidates</var>.</p>
-         <li data-md>
-          <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a> with</p>
-          <dl class="props">
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-tags" id="ref-for-prefetch-record-tags">tags</a>
-           <dd data-md>
-            <p><var>tagsToSend</var></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url">URL</a>
-           <dd data-md>
-            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑦">URL</a></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy①">anonymization policy</a>
-           <dd data-md>
-            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy③">anonymization policy</a></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy">referrer policy</a>
-           <dd data-md>
-            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy④">referrer policy</a></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-no-vary-search-hint" id="ref-for-prefetch-record-no-vary-search-hint">No-Vary-Search hint</a>
-           <dd data-md>
-            <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑦">No-Vary-Search hint</a></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label②">label</a>
-           <dd data-md>
-            <p>"<code>speculation-rules</code>"</p>
-          </dl>
-         <li data-md>
-          <p><a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch">Prefetch</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
+          <p>If no element of <var>prefetchCandidates</var> <a data-link-type="dfn" href="#prefetch-candidate-continues" id="ref-for-prefetch-candidate-continues">continues</a> <var>prefetchRecord</var>, then <a data-link-type="dfn" href="prefetch.html#prefetch-record-cancel-and-discard" id="ref-for-prefetch-record-cancel-and-discard">cancel and discard</a> <var>prefetchRecord</var> given <var>document</var>.</p>
         </ol>
-      </ol>
-     <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑦">For each</a> <var>prerenderCandidate</var> of <var>prerenderCandidates</var>:</p>
-      <ol>
        <li data-md>
-        <p>The user agent may run the following steps:</p>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑥">For each</a> <var>prefetchCandidate</var> of <var>prefetchCandidates</var>:</p>
         <ol>
          <li data-md>
-          <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="#collect-tags-for-matching-speculative-load-candidates" id="ref-for-collect-tags-for-matching-speculative-load-candidates①">collecting tags for matching speculative load candidates</a> given <var>prerenderCandidate</var> and <var>prerenderCandidates</var>.</p>
+          <p>The user agent may run the following steps:</p>
+          <ol>
+           <li data-md>
+            <p>Let <var>prefetchAndPrerenderCandidates</var> be an empty <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list②④">list</a>.</p>
+           <li data-md>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend">Extend</a> <var>prefetchAndPrerenderCandidates</var> with <var>prefetchCandidates</var>.</p>
+           <li data-md>
+            <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-extend" id="ref-for-list-extend①">Extend</a> <var>prefetchAndPrerenderCandidates</var> with <var>prerenderCandidates</var>.</p>
+           <li data-md>
+            <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="#collect-tags-for-matching-speculative-load-candidates" id="ref-for-collect-tags-for-matching-speculative-load-candidates">collecting tags for matching speculative load candidates</a> given <var>prefetchCandidate</var> and <var>prefetchAndPrerenderCandidates</var>.</p>
+           <li data-md>
+            <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a> with</p>
+            <dl class="props">
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-tags" id="ref-for-prefetch-record-tags">tags</a>
+             <dd data-md>
+              <p><var>tagsToSend</var></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url">URL</a>
+             <dd data-md>
+              <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑦">URL</a></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy①">anonymization policy</a>
+             <dd data-md>
+              <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#prefetch-candidate-anonymization-policy" id="ref-for-prefetch-candidate-anonymization-policy③">anonymization policy</a></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy">referrer policy</a>
+             <dd data-md>
+              <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy④">referrer policy</a></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-no-vary-search-hint" id="ref-for-prefetch-record-no-vary-search-hint">No-Vary-Search hint</a>
+             <dd data-md>
+              <p><var>prefetchCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑦">No-Vary-Search hint</a></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label②">label</a>
+             <dd data-md>
+              <p>"<code>speculation-rules</code>"</p>
+            </dl>
+           <li data-md>
+            <p><a data-link-type="dfn" href="prefetch.html#prefetch" id="ref-for-prefetch">Prefetch</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
+          </ol>
+        </ol>
+       <li data-md>
+        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate①⑦">For each</a> <var>prerenderCandidate</var> of <var>prerenderCandidates</var>:</p>
+        <ol>
          <li data-md>
-          <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record②">prefetch record</a> with</p>
-          <dl class="props">
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-tags" id="ref-for-prefetch-record-tags①">tags</a>
-           <dd data-md>
-            <p><var>tagsToSend</var></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a>
-           <dd data-md>
-            <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑧">URL</a></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy②">anonymization policy</a>
-           <dd data-md>
-            <p>null</p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy①">referrer policy</a>
-           <dd data-md>
-            <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy⑤">referrer policy</a></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-no-vary-search-hint" id="ref-for-prefetch-record-no-vary-search-hint①">No-Vary-Search hint</a>
-           <dd data-md>
-            <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑧">No-Vary-Search hint</a></p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label③">label</a>
-           <dd data-md>
-            <p>"<code>speculation-rules</code>"</p>
-           <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-prerendering-traversable" id="ref-for-prefetch-record-prerendering-traversable">prerendering traversable</a>
-           <dd data-md>
-            <p>"<code>to be created</code>"</p>
-          </dl>
-         <li data-md>
-          <p><a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering">Start referrer-initiated prerendering</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
-          <p>The user agent can use <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint②">target navigable name hint</a> as a hint to their implementation of the <a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering①">start referrer-initiated prerendering</a> algorithm. This hint indicates that the web developer expects the eventual <a data-link-type="dfn" href="prerendering.html#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate">activation</a> of the created <a data-link-type="dfn" href="prerendering.html#prerendering-traversable" id="ref-for-prerendering-traversable">prerendering traversable</a> to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#the-rules-for-choosing-a-navigable" id="ref-for-the-rules-for-choosing-a-navigable">rules for choosing a navigable</a> given <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint③">target navigable name hint</a> and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a>.</p>
-          <p class="note" role="note">This is just a hint. The <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint④">target navigable name hint</a> actually has no normative implications, after being parsed. It is still perfectly fine to <a data-link-type="dfn" href="prerendering.html#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate①">activate</a> in place of a different predecessor traversable that was not hinted at. </p>
+          <p>The user agent may run the following steps:</p>
+          <ol>
+           <li data-md>
+            <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="#collect-tags-for-matching-speculative-load-candidates" id="ref-for-collect-tags-for-matching-speculative-load-candidates①">collecting tags for matching speculative load candidates</a> given <var>prerenderCandidate</var> and <var>prerenderCandidates</var>.</p>
+           <li data-md>
+            <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="prefetch.html#prefetch-record" id="ref-for-prefetch-record②">prefetch record</a> with</p>
+            <dl class="props">
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-tags" id="ref-for-prefetch-record-tags①">tags</a>
+             <dd data-md>
+              <p><var>tagsToSend</var></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-url" id="ref-for-prefetch-record-url①">URL</a>
+             <dd data-md>
+              <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-url" id="ref-for-speculative-load-candidate-url⑧">URL</a></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy②">anonymization policy</a>
+             <dd data-md>
+              <p>null</p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-referrer-policy" id="ref-for-prefetch-record-referrer-policy①">referrer policy</a>
+             <dd data-md>
+              <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-referrer-policy" id="ref-for-speculative-load-candidate-referrer-policy⑤">referrer policy</a></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-no-vary-search-hint" id="ref-for-prefetch-record-no-vary-search-hint①">No-Vary-Search hint</a>
+             <dd data-md>
+              <p><var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#speculative-load-candidate-no-vary-search-hint" id="ref-for-speculative-load-candidate-no-vary-search-hint⑧">No-Vary-Search hint</a></p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-label" id="ref-for-prefetch-record-label③">label</a>
+             <dd data-md>
+              <p>"<code>speculation-rules</code>"</p>
+             <dt data-md><a data-link-type="dfn" href="prefetch.html#prefetch-record-prerendering-traversable" id="ref-for-prefetch-record-prerendering-traversable">prerendering traversable</a>
+             <dd data-md>
+              <p>"<code>to be created</code>"</p>
+            </dl>
+           <li data-md>
+            <p><a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering">Start referrer-initiated prerendering</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
+            <p>The user agent can use <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint②">target navigable name hint</a> as a hint to their implementation of the <a data-link-type="dfn" href="prerendering.html#start-referrer-initiated-prerendering" id="ref-for-start-referrer-initiated-prerendering①">start referrer-initiated prerendering</a> algorithm. This hint indicates that the web developer expects the eventual <a data-link-type="dfn" href="prerendering.html#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate">activation</a> of the created <a data-link-type="dfn" href="prerendering.html#prerendering-traversable" id="ref-for-prerendering-traversable">prerendering traversable</a> to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#the-rules-for-choosing-a-navigable" id="ref-for-the-rules-for-choosing-a-navigable">rules for choosing a navigable</a> given <var>prerenderCandidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint③">target navigable name hint</a> and <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a>.</p>
+            <p class="note" role="note">This is just a hint. The <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint④">target navigable name hint</a> actually has no normative implications, after being parsed. It is still perfectly fine to <a data-link-type="dfn" href="prerendering.html#prerendering-traversable-activate" id="ref-for-prerendering-traversable-activate①">activate</a> in place of a different predecessor traversable that was not hinted at. </p>
+          </ol>
         </ol>
       </ol>
     </ol>
@@ -2394,7 +2394,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="68bf3d31">a</span>
      <li><span class="dfn-paneled" id="da66facb">already started</span>
      <li><span class="dfn-paneled" id="a1a807e5">area</span>
-     <li><span class="dfn-paneled" id="6696b114">await a stable state</span>
      <li><span class="dfn-paneled" id="f8434dee">being rendered</span>
      <li><span class="dfn-paneled" id="cdede25f">create and initialize a Document object</span>
      <li><span class="dfn-paneled" id="6eb8a5d8">document base URL</span>
@@ -2407,7 +2406,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="5cc50ead">href <small>(for HTMLHyperlinkElementUtils)</small></span>
      <li><span class="dfn-paneled" id="ca0c892d">href <small>(for a)</small></span>
      <li><span class="dfn-paneled" id="37d0f4ab">HTML element removing steps</span>
-     <li><span class="dfn-paneled" id="a72449dd">in parallel</span>
      <li><span class="dfn-paneled" id="6db2a1f0">links</span>
      <li><span class="dfn-paneled" id="18e7dde9">load</span>
      <li><span class="dfn-paneled" id="2b07d94d">mark as ready</span>
@@ -2417,6 +2415,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="e29d133b">noreferrer</span>
      <li><span class="dfn-paneled" id="037b46da">prepare the script element</span>
      <li><span class="dfn-paneled" id="48438eb3">queue a global task</span>
+     <li><span class="dfn-paneled" id="53079ce3">queue a microtask</span>
      <li><span class="dfn-paneled" id="a94363e9">referrerpolicy</span>
      <li><span class="dfn-paneled" id="2037b271">rel</span>
      <li><span class="dfn-paneled" id="e99bd18e">relevant global object</span>
@@ -2429,7 +2428,6 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="1037f0b6">src</span>
      <li><span class="dfn-paneled" id="ba920583">style</span>
      <li><span class="dfn-paneled" id="05064bc7">supports(type)</span>
-     <li><span class="dfn-paneled" id="ce7beab0">synchronous section</span>
      <li><span class="dfn-paneled" id="9e0a18e8">type</span>
      <li><span class="dfn-paneled" id="c7c0dde1">url</span>
      <li><span class="dfn-paneled" id="36706746">valid navigable target name or keyword</span>
@@ -2602,7 +2600,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <div class="issue">We should consider whether we also want to make this execute even if scripting is disabled. <a class="issue-return" href="#issue-c2e21e13" title="Jump to section">↵</a></div>
    <div class="issue">We should also incorporate the case where a <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src">src</a></code> attribute is set. <a class="issue-return" href="#issue-bb120c28" title="Jump to section">↵</a></div>
    <div class="issue">We could fire <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-error">error</a></code> and <code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/indices.html#event-load">load</a></code> events if we wanted to. <a class="issue-return" href="#issue-9cd39e70" title="Jump to section">↵</a></div>
-   <div class="issue">It’s likely that we should also handle prerendered and back-forward cached documents. <a class="issue-return" href="#issue-30bcda38" title="Jump to section">↵</a></div>
+   <div class="issue">It’s likely that we should also handle prerendered documents. <a class="issue-return" href="#issue-4110be7b" title="Jump to section">↵</a></div>
    <div class="issue"> We should also cancel speculated prerenders. <a class="issue-return" href="#issue-1cafd308" title="Jump to section">↵</a></div>
   </div>
 <script>/* Boilerplate: script-dom-helper */
@@ -2856,6 +2854,7 @@ let dfnPanelData = {
 "4d493a0f": {"dfnID":"4d493a0f","dfnText":"anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-anonymization-policy"},{"id":"ref-for-prefetch-record-anonymization-policy\u2460"},{"id":"ref-for-prefetch-record-anonymization-policy\u2461"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-anonymization-policy"},
 "4fd2d05e": {"dfnID":"4fd2d05e","dfnText":"get an element's target","external":true,"refSections":[{"refs":[{"id":"ref-for-get-an-element's-target"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/semantics.html#get-an-element's-target"},
 "5216e1a0": {"dfnID":"5216e1a0","dfnText":"node document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-node-document"},{"id":"ref-for-concept-node-document\u2460"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-concept-node-document\u2461"}],"title":"1.3. Prepare the script element"}],"url":"https://dom.spec.whatwg.org/#concept-node-document"},
+"53079ce3": {"dfnID":"53079ce3","dfnText":"queue a microtask","external":true,"refSections":[{"refs":[{"id":"ref-for-queue-a-microtask"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask"},
 "53275e46": {"dfnID":"53275e46","dfnText":"append (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-append"}],"title":"1.3. Prepare the script element"},{"refs":[{"id":"ref-for-list-append\u2460"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-list-append\u2461"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-list-append\u2462"},{"id":"ref-for-list-append\u2463"},{"id":"ref-for-list-append\u2464"},{"id":"ref-for-list-append\u2465"},{"id":"ref-for-list-append\u2466"},{"id":"ref-for-list-append\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list-append\u2468"},{"id":"ref-for-list-append\u2460\u24ea"},{"id":"ref-for-list-append\u2460\u2460"},{"id":"ref-for-list-append\u2460\u2461"},{"id":"ref-for-list-append\u2460\u2462"},{"id":"ref-for-list-append\u2460\u2463"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list-append"},
 "544fc7df": {"dfnID":"544fc7df","dfnText":"error","external":true,"refSections":[{"refs":[{"id":"ref-for-event-error"}],"title":"1.2. The script element"}],"url":"https://html.spec.whatwg.org/multipage/indices.html#event-error"},
 "550c8676": {"dfnID":"550c8676","dfnText":"hash-source","external":true,"refSections":[{"refs":[{"id":"ref-for-grammardef-hash-source"}],"title":"2.4. script-src"},{"refs":[{"id":"ref-for-grammardef-hash-source\u2460"}],"title":"2.5. Does a source list allow all inline behavior for type?"}],"url":"https://w3c.github.io/webappsec-csp/#grammardef-hash-source"},
@@ -2871,7 +2870,6 @@ let dfnPanelData = {
 "631f76db": {"dfnID":"631f76db","dfnText":"child text content","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-child-text-content"}],"title":"1.2. The script element"}],"url":"https://dom.spec.whatwg.org/#concept-child-text-content"},
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"},{"id":"ref-for-list\u2460"},{"id":"ref-for-list\u2461"},{"id":"ref-for-list\u2462"},{"id":"ref-for-list\u2463"},{"id":"ref-for-list\u2464"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-list\u2466"},{"id":"ref-for-list\u2467"},{"id":"ref-for-list\u2468"},{"id":"ref-for-list\u2460\u24ea"},{"id":"ref-for-list\u2460\u2460"},{"id":"ref-for-list\u2460\u2461"},{"id":"ref-for-list\u2460\u2462"},{"id":"ref-for-list\u2460\u2463"},{"id":"ref-for-list\u2460\u2464"},{"id":"ref-for-list\u2460\u2465"},{"id":"ref-for-list\u2460\u2466"},{"id":"ref-for-list\u2460\u2467"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-list\u2460\u2468"},{"id":"ref-for-list\u2461\u24ea"},{"id":"ref-for-list\u2461\u2460"},{"id":"ref-for-list\u2461\u2461"},{"id":"ref-for-list\u2461\u2462"},{"id":"ref-for-list\u2461\u2463"},{"id":"ref-for-list\u2461\u2464"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list"},
 "65181da8": {"dfnID":"65181da8","dfnText":"secure context","external":true,"refSections":[{"refs":[{"id":"ref-for-secure-context"}],"title":"4.5. Mixed content"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
-"6696b114": {"dfnID":"6696b114","dfnText":"await a stable state","external":true,"refSections":[{"refs":[{"id":"ref-for-await-a-stable-state"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#await-a-stable-state"},
 "68bf3d31": {"dfnID":"68bf3d31","dfnText":"a","external":true,"refSections":[{"refs":[{"id":"ref-for-the-a-element"},{"id":"ref-for-the-a-element\u2460"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element"},
 "692595fe": {"dfnID":"692595fe","dfnText":"ordered set","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-set"},{"id":"ref-for-ordered-set\u2460"},{"id":"ref-for-ordered-set\u2461"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-ordered-set\u2462"},{"id":"ref-for-ordered-set\u2463"}],"title":"1.6. Parsing"},{"refs":[{"id":"ref-for-ordered-set\u2464"},{"id":"ref-for-ordered-set\u2465"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#ordered-set"},
 "6bb42fbb": {"dfnID":"6bb42fbb","dfnText":"fetch controller","external":true,"refSections":[{"refs":[{"id":"ref-for-fetch-controller"}],"title":"1.1. Definitions"}],"url":"https://fetch.spec.whatwg.org/#fetch-controller"},
@@ -2914,7 +2912,6 @@ let dfnPanelData = {
 "a4f8c442": {"dfnID":"a4f8c442","dfnText":"Sec-Fetch-Dest","external":true,"refSections":[{"refs":[{"id":"ref-for-http-headerdef-sec-fetch-dest"}],"title":"4.1. Cross-site request forgery"}],"url":"https://w3c.github.io/webappsec-fetch-metadata/#http-headerdef-sec-fetch-dest"},
 "a6b85a00": {"dfnID":"a6b85a00","dfnText":"credentials","external":true,"refSections":[{"refs":[{"id":"ref-for-credentials"}],"title":"4.1. Cross-site request forgery"},{"refs":[{"id":"ref-for-credentials\u2460"}],"title":"5.4. Identity joining"}],"url":"https://fetch.spec.whatwg.org/#credentials"},
 "a6d5d47b": {"dfnID":"a6d5d47b","dfnText":":any-link","external":true,"refSections":[{"refs":[{"id":"ref-for-any-link-pseudo"}],"title":"1.7. Processing model"}],"url":"https://drafts.csswg.org/selectors-4/#any-link-pseudo"},
-"a72449dd": {"dfnID":"a72449dd","dfnText":"in parallel","external":true,"refSections":[{"refs":[{"id":"ref-for-in-parallel"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
 "a72583a7": {"dfnID":"a72583a7","dfnText":"rules for choosing a navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-the-rules-for-choosing-a-navigable"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#the-rules-for-choosing-a-navigable"},
 "a72806b1": {"dfnID":"a72806b1","dfnText":"following a hyperlink","external":true,"refSections":[{"refs":[{"id":"ref-for-following-hyperlinks-2"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/links.html#following-hyperlinks-2"},
 "a94363e9": {"dfnID":"a94363e9","dfnText":"referrerpolicy","external":true,"refSections":[{"refs":[{"id":"ref-for-attr-hyperlink-referrerpolicy"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-referrerpolicy"},
@@ -2936,7 +2933,6 @@ let dfnPanelData = {
 "cb1e75b1": {"dfnID":"cb1e75b1","dfnText":"string","external":true,"refSections":[{"refs":[{"id":"ref-for-string\u2462"}],"title":"1.4. The `Speculation-Rules` header"}],"url":"https://httpwg.org/specs/rfc8941.html#string"},
 "cb98f71f": {"dfnID":"cb98f71f","dfnText":"mode","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-mode"}],"title":"1.5. External speculation rule sets"},{"refs":[{"id":"ref-for-concept-request-mode\u2460"}],"title":"4.1. Cross-site request forgery"}],"url":"https://fetch.spec.whatwg.org/#concept-request-mode"},
 "cdede25f": {"dfnID":"cdede25f","dfnText":"create and initialize a Document object","external":true,"refSections":[{"refs":[{"id":"ref-for-initialise-the-document-object"}],"title":"1.4. The `Speculation-Rules` header"}],"url":"https://html.spec.whatwg.org/multipage/document-lifecycle.html#initialise-the-document-object"},
-"ce7beab0": {"dfnID":"ce7beab0","dfnText":"synchronous section","external":true,"refSections":[{"refs":[{"id":"ref-for-synchronous-section"},{"id":"ref-for-synchronous-section\u2460"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section"},
 "collect-tags-for-matching-speculative-load-candidates": {"dfnID":"collect-tags-for-matching-speculative-load-candidates","dfnText":"collect tags for matching speculative load candidates","external":false,"refSections":[{"refs":[{"id":"ref-for-collect-tags-for-matching-speculative-load-candidates"},{"id":"ref-for-collect-tags-for-matching-speculative-load-candidates\u2460"},{"id":"ref-for-collect-tags-for-matching-speculative-load-candidates\u2461"}],"title":"1.7. Processing model"}],"url":"#collect-tags-for-matching-speculative-load-candidates"},
 "compute-a-speculative-action-referrer-policy": {"dfnID":"compute-a-speculative-action-referrer-policy","dfnText":"compute a speculative action referrer policy","external":false,"refSections":[{"refs":[{"id":"ref-for-compute-a-speculative-action-referrer-policy"},{"id":"ref-for-compute-a-speculative-action-referrer-policy\u2460"},{"id":"ref-for-compute-a-speculative-action-referrer-policy\u2461"},{"id":"ref-for-compute-a-speculative-action-referrer-policy\u2462"}],"title":"1.7. Processing model"}],"url":"#compute-a-speculative-action-referrer-policy"},
 "consider-speculation": {"dfnID":"consider-speculation","dfnText":"consider speculation","external":false,"refSections":[{"refs":[{"id":"ref-for-consider-speculation"},{"id":"ref-for-consider-speculation\u2460"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-consider-speculation\u2461"}],"title":"1.3. Prepare the script element"},{"refs":[{"id":"ref-for-consider-speculation\u2462"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-consider-speculation\u2463"},{"id":"ref-for-consider-speculation\u2464"}],"title":"1.7. Processing model"}],"url":"#consider-speculation"},
@@ -3540,7 +3536,6 @@ let refsData = {
 "https://html.spec.whatwg.org/multipage/indices.html#event-error": {"displayText":"error","export":true,"for_":["Window","WorkerGlobalScope","HTMLElement","EventSource","Worker","SharedWorker","AbstractWorker"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"error","type":"event","url":"https://html.spec.whatwg.org/multipage/indices.html#event-error"},
 "https://html.spec.whatwg.org/multipage/indices.html#event-load": {"displayText":"load","export":true,"for_":["Window","HTMLElement"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"load","type":"event","url":"https://html.spec.whatwg.org/multipage/indices.html#event-load"},
 "https://html.spec.whatwg.org/multipage/infrastructure.html#html-element-removing-steps": {"displayText":"HTML element removing steps","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"html element removing steps","type":"dfn","url":"https://html.spec.whatwg.org/multipage/infrastructure.html#html-element-removing-steps"},
-"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel": {"displayText":"in parallel","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"in parallel","type":"dfn","url":"https://html.spec.whatwg.org/multipage/infrastructure.html#in-parallel"},
 "https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href": {"displayText":"href","export":true,"for_":["a","area"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"href","type":"element-attr","url":"https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href"},
 "https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-referrerpolicy": {"displayText":"referrerpolicy","export":true,"for_":["a","area"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"referrerpolicy","type":"element-attr","url":"https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-referrerpolicy"},
 "https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-rel": {"displayText":"rel","export":true,"for_":["a","area"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"rel","type":"element-attr","url":"https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-rel"},
@@ -3566,14 +3561,13 @@ let refsData = {
 "https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element": {"displayText":"a","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"a","type":"element","url":"https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element"},
 "https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-nonce": {"displayText":"nonce","export":true,"for_":["htmlsvg-global"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"nonce","type":"element-attr","url":"https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-nonce"},
 "https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url": {"displayText":"document base URL","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"document base url","type":"dfn","url":"https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url"},
-"https://html.spec.whatwg.org/multipage/webappapis.html#await-a-stable-state": {"displayText":"await a stable state","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"await a stable state","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#await-a-stable-state"},
 "https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global": {"displayText":"relevant global object","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant global object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global"},
 "https://html.spec.whatwg.org/multipage/webappapis.html#dom-manipulation-task-source": {"displayText":"DOM manipulation task source","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"dom manipulation task source","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#dom-manipulation-task-source"},
 "https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source": {"displayText":"networking task source","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"networking task source","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source"},
 "https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task": {"displayText":"queue a global task","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"queue a global task","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-global-task"},
+"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask": {"displayText":"queue a microtask","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"queue a microtask","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask"},
 "https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object": {"displayText":"relevant settings object","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"relevant settings object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
 "https://html.spec.whatwg.org/multipage/webappapis.html#secure-context": {"displayText":"secure context","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"secure context","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
-"https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section": {"displayText":"synchronous section","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"synchronous section","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#synchronous-section"},
 "https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#iref-default-url-search-variance": {"displayText":"default URL search variance","export":true,"for_":[],"level":"","normative":true,"shortname":"no-vary-search","spec":"no-vary-search","status":"anchor-block","text":"default url search variance","type":"dfn","url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#iref-default-url-search-variance"},
 "https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing": {"displayText":"equivalent modulo search variance","export":true,"for_":[],"level":"","normative":true,"shortname":"no-vary-search","spec":"no-vary-search","status":"anchor-block","text":"equivalent modulo search variance","type":"dfn","url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-comparing"},
 "https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-data-model": {"displayText":"URL search variance","export":true,"for_":[],"level":"","normative":true,"shortname":"no-vary-search","spec":"no-vary-search","status":"anchor-block","text":"url search variance","type":"dfn","url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-data-model"},
