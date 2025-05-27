@@ -612,7 +612,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
  <body class="h-entry">
   <div class="head">
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-05-23">23 May 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-05-27">27 May 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1761,7 +1761,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      </div>
     <li data-md>
      <p>A parameter whose key is "<dfn class="dfn-paneled" data-dfn-for="Sec-Purpose prefetch" data-dfn-type="dfn" data-noexport id="sec-purpose-prefetch-prerender"><code>prerender</code></dfn>".</p>
-     <p>If present with a value other than boolean false (<code>`?0`</code> in the field value), this parameter indicates that the prefetch request is being made in anticipation of a prerender.</p>
+     <p>If present with a value other than boolean false (<code>`?0`</code> in the field value), this parameter indicates that the prefetch request is being made in anticipation of a prerender. Note that this value is also set for resources made from within a <a data-link-type="dfn" href="prerendering.html#prerendering-navigable" id="ref-for-prerendering-navigable">prerendering navigable</a>, before activation.</p>
      <div class="note" role="note">
        A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values. 
       <p>This specification conforms to this advice; the <a data-link-type="dfn" href="#prefetch" id="ref-for-prefetch①">prefetch</a> algorithm does not emit non-boolean values.</p>
@@ -2095,6 +2095,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[PRERENDERING-REVAMPED]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="b5201fff">getting the supported loading modes</span>
+     <li><span class="dfn-paneled" id="5fc63580">prerendering navigable</span>
      <li><span class="dfn-paneled" id="a132d33a">prerendering traversable</span>
      <li><span class="dfn-paneled" id="0acae8bb">Supports-Loading-Mode</span>
      <li><span class="dfn-paneled" id="32b89fc7">uncredentialed-prefetch</span>
@@ -2474,6 +2475,7 @@ let dfnPanelData = {
 "5afbefcd": {"dfnID":"5afbefcd","dfnText":"item (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-item"}],"title":"2. HTML Patches"}],"url":"https://infra.spec.whatwg.org/#list-item"},
 "5ea2b73e": {"dfnID":"5ea2b73e","dfnText":"history policy container","external":true,"refSections":[{"refs":[{"id":"ref-for-document-state-history-policy-container"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-document-state-history-policy-container\u2460"},{"id":"ref-for-document-state-history-policy-container\u2461"},{"id":"ref-for-document-state-history-policy-container\u2462"},{"id":"ref-for-document-state-history-policy-container\u2463"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-history-policy-container"},
 "5eb733b4": {"dfnID":"5eb733b4","dfnText":"union","external":true,"refSections":[{"refs":[{"id":"ref-for-set-union"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-set-union\u2460"}],"title":"2. HTML Patches"}],"url":"https://infra.spec.whatwg.org/#set-union"},
+"5fc63580": {"dfnID":"5fc63580","dfnText":"prerendering navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-prerendering-navigable"}],"title":"7. The `Sec-Purpose` HTTP request header"}],"url":"prerendering.html#prerendering-navigable"},
 "602b1a68": {"dfnID":"602b1a68","dfnText":"obtain a site","external":true,"refSections":[{"refs":[{"id":"ref-for-obtain-a-site"},{"id":"ref-for-obtain-a-site\u2460"}],"title":"6. Cookies"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#obtain-a-site"},
 "62e9fa4b": {"dfnID":"62e9fa4b","dfnText":"policy container (for navigation params)","external":true,"refSections":[{"refs":[{"id":"ref-for-navigation-params-policy-container"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-navigation-params-policy-container\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-policy-container"},
 "6454d3fd": {"dfnID":"6454d3fd","dfnText":"navigation id","external":true,"refSections":[{"refs":[{"id":"ref-for-navigation-id"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-navigation-id\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-id"},
@@ -3312,6 +3314,7 @@ let refsData = {
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-strings": {"displayText":"String","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"string","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-strings"},
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens": {"displayText":"Token","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"token","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens"},
 "prerendering.html#get-the-supported-loading-modes": {"displayText":"getting the supported loading modes","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"getting the supported loading modes","type":"dfn","url":"prerendering.html#get-the-supported-loading-modes"},
+"prerendering.html#prerendering-navigable": {"displayText":"prerendering navigable","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"prerendering navigable","type":"dfn","url":"prerendering.html#prerendering-navigable"},
 "prerendering.html#prerendering-traversable": {"displayText":"prerendering traversable","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"prerendering traversable","type":"dfn","url":"prerendering.html#prerendering-traversable"},
 "prerendering.html#supports-loading-mode-uncredentialed-prefetch": {"displayText":"uncredentialed-prefetch","export":true,"for_":["Supports-Loading-Mode"],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"uncredentialed-prefetch","type":"dfn","url":"prerendering.html#supports-loading-mode-uncredentialed-prefetch"},
 "speculation-rules.html#speculation-rules-tag": {"displayText":"speculation rules tag","export":true,"for_":[],"level":"","normative":true,"shortname":"speculation-rules","spec":"speculation-rules","status":"anchor-block","text":"speculation rules tag","type":"dfn","url":"speculation-rules.html#speculation-rules-tag"},
