@@ -132,6 +132,7 @@ spec: prerendering-revamped; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
     text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
+    text: prerendering navigable; url: prerendering-navigable
     text: prerendering traversable; url: prerendering-traversable
 spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html
   type: dfn
@@ -888,7 +889,7 @@ The following parameters are defined for the `prefetch` token:
 
 * A parameter whose key is "<dfn for="Sec-Purpose prefetch">`prerender`</dfn>".
 
-  If present with a value other than boolean false (`` `?0` `` in the field value), this parameter indicates that the prefetch request is being made in anticipation of a prerender.
+  If present with a value other than boolean false (`` `?0` `` in the field value), this parameter indicates that the prefetch request is being made in anticipation of a prerender. Note that this value is also set for resources made from within a [=prerendering navigable=], before activation.
 
   <div class="note">
     A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values.
