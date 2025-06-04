@@ -358,43 +358,33 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |navigable|'s [=navigable/active document=] and |documentState|'s [=document state/initiator origin=].
     1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
     1. Let |responsePolicyContainer| be null.
+    1. Let |activeServiceWorker| be null.
     1. Let |urlList| be an empty [=list=].
     1. [=list/For each=] |exchangeRecord| in |record|'s [=prefetch record/redirect chain=]:
-        1. Let |response| be |exchangeRecord|'s [=exchange record/response=].
-        1. [=list/Append=] |response|'s [=response/URL=] to |urlList|.
-        1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
+        1. Let |redirectChainRequest| be |exchangeRecord|'s [=exchange record/request=].
+        1. Let |redirectChainResponse| be |exchangeRecord|'s [=exchange record/response=].
+        1. [=list/Append=] |redirectChainResponse|'s [=response/URL=] to |urlList|.
+        1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
-        1. Set |responseOrigin| to the result of [=determining the origin=] given |response|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
+        1. Set |responseOrigin| to the result of [=determining the origin=] given |redirectChainResponse|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
+        1. Set |activeServiceWorker| to |redirectChainRequest|'s [=request/reserved client=]'s [=environment/active service worker=].
         1. If |navigable| is a [=top-level traversable=], then:
-            1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
+            1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
             1. [=Assert=]: If |finalSandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
 
                 <p class="note">This is guaranteed since the sandboxing flags of the document cannot change to become non-empty since this was prefetched, and the check was not done for a different window. If this changes, this will need to be able to handle failure of this check.</p>
-            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |response|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |exchangeRecord|'s [=exchange record/request=]'s [=request/referrer=].
+            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |exchangeRecord|'s [=exchange record/request=]'s [=request/referrer=].
     1. Set |request|'s [=request/URL list=] to |urlList|.
+    1. <span id="prefetch-activation-client-creation"></span>Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable| and |request|'s [=request/URL=].
+
+        <p class="note">This will be the [=environment=] used for constructing the resulting {{Document}} and [=environment settings object=]. We need a separate [=environment=] for each time a [=prefetch record=] is consumed, instead of using |record|'s [=prefetch record/redirect chain=]'s last item's [=exchange record/request=]'s [=request/reserved client=], because otherwise reusing the same prefetch record for multiple [=navigation params=] (i.e., multiple navigations) would cause the created [=environment settings objects=] to share an [=environment/id=]. This would then be visible, e.g., through the {{Clients/get()|clients.get()}} API, in a very confusing way.
+    1. Set |request|'s [=request/reserved client=]'s [=environment/active service worker=] to |activeServiceWorker|.
     1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |record|'s [=prefetch record/response=]'s [=response/URL=], |documentState|'s [=document state/history policy container=], |sourceSnapshotParams|'s [=source snapshot params/source policy container=], null, and |responsePolicyContainer|.
     1. Let |response| be |record|'s [=prefetch record/response=].
     1. Optionally, set |response| to a [=response/clone=] of |response|.
 
        <p class="note">An implementation might wish to do this if it believes that the prefetch will be consumed more than once. For example, if in the future the response is consumed by a prerender, that [=prerendering traversable=] might be [=destroy a top-level traversable|destroyed=] through various means. Normally that would mean the response is discarded, but if the implementation performs this step, then the prefetched response will still be available to serve a future navigation. [[PRERENDERING-REVAMPED]]
     1. If the user agent did not perform the previous optional step, then it must [=list/remove=] |record| from |navigable|'s [=navigable/active document=]'s [=Document/prefetch records=].
-    1. <span id="prefetch-activation-client-creation"></span>Let |reservedEnvironment| be a new [=environment=] with:
-        : [=environment/id=]
-        :: a unique opaque string
-        : [=environment/creation URL=]
-        :: |request|'s [=request/reserved client=]'s [=environment/creation URL=]
-        : [=environment/top-level creation URL=]
-        :: |request|'s [=request/reserved client=]'s [=environment/top-level creation URL=]
-        : [=environment/top-level origin=]
-        :: |request|'s [=request/reserved client=]'s [=environment/top-level origin=]
-        : [=environment/target browsing context=]
-        :: |request|'s [=request/reserved client=]'s [=environment/target browsing context=]
-        : [=environment/active service worker=]
-        :: |record|'s [=prefetch record/redirect chain=]'s last item's [=exchange record/request=]'s [=request/reserved client=]'s [=environment/active service worker=]
-        : [=environment/execution ready flag=]
-        :: |request|'s [=request/reserved client=]'s [=environment/execution ready flag=]
-
-        <p class="note">We need a separate [=environment=] for each time a [=prefetch record=] is consumed, instead of using |request|'s [=request/reserved client=], because otherwise reusing the same prefetch record for multiple [=navigation params=] (i.e., multiple navigations) would cause the created [=environment settings objects=] to share an [=environment/id=]. This would then be visible, e.g., through the {{Clients/get()|clients.get()}} API, in a very confusing way.
     1. Return a new [=navigation params=], with:
         :  [=navigation params/id=]
         :: |navigationId|
@@ -413,7 +403,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         :  [=navigation params/COOP enforcement result=]
         :: |coopEnforcementResult|
         :  [=navigation params/reserved environment=]
-        :: |reservedEnvironment|
+        :: |request|'s [=request/reserved client=]
         :  [=navigation params/navigable=]
         :: |navigable|
         :  [=navigation params/navigation timing type=]
@@ -559,9 +549,6 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. If <var ignore>documentResource</var> is null:
               1. Let |prefetchRecord| be the result of [=finding a matching complete prefetch record=] given <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/sandboxing flags=].
               1. If |prefetchRecord| is not null:
-                1. Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given <var ignore>navigable</var>, |request|'s [=request/current URL=], and null.
-                  <p class="note">This [=environment=] is never actually exposed as a client; instead, it is used to hold some data and then cloned into an actual client <a href="#prefetch-activation-client-creation">shortly</a>.
-                1. Set |request|'s [=request/reserved client=]'s [=environment/is navigational prefetch client=] to true.
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
