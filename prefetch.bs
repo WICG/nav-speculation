@@ -363,7 +363,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. [=list/For each=] |exchangeRecord| in |record|'s [=prefetch record/redirect chain=]:
         1. Let |redirectChainRequest| be |exchangeRecord|'s [=exchange record/request=].
         1. Let |redirectChainResponse| be |exchangeRecord|'s [=exchange record/response=].
-        1. [=list/Append=] |redirectChainResponse|'s [=response/URL=] to |urlList|.
+        1. [=list/Append=] |redirectChainRequest|'s [=request/URL=] to |urlList|.
         1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |redirectChainResponse|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
