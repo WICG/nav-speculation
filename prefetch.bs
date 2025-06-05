@@ -375,7 +375,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
             1. [=Assert=]: If |finalSandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
 
                 <p class="note">This is guaranteed since the sandboxing flags of the document cannot change to become non-empty since this was prefetched, and the check was not done for a different window. If this changes, this will need to be able to handle failure of this check.</p>
-            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |exchangeRecord|'s [=exchange record/request=]'s [=request/referrer=].
+            1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
     1. Set |request|'s [=request/URL list=] to |urlList|.
     1. <span id="prefetch-activation-client-creation"></span>Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable| and |request|'s [=request/URL=].
 
