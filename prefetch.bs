@@ -140,6 +140,8 @@ spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-h
     text: URL search variance; url: name-data-model
     text: obtain a URL search variance; url: name-obtain-a-url-search-varianc
     text: equivalent modulo search variance; url: name-comparing
+  type: http-header
+    text: No-Vary-Search; url: name-http-header-field-definitio
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
@@ -368,7 +370,6 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |navigable|'s [=navigable/active document=] and |documentState|'s [=document state/initiator origin=].
     1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
     1. Let |responsePolicyContainer| be null.
-    1. Let |activeServiceWorker| be null.
     1. Let |urlList| be an empty [=list=].
     1. [=list/For each=] |exchangeRecord| in |record|'s [=prefetch record/redirect chain=]:
         1. Let |redirectChainRequest| be |exchangeRecord|'s [=exchange record/request=].
@@ -377,18 +378,24 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |redirectChainResponse|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
-        1. Set |activeServiceWorker| to |redirectChainRequest|'s [=request/reserved client=]'s [=environment/active service worker=].
         1. If |navigable| is a [=top-level traversable=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
             1. [=Assert=]: If |finalSandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
 
                 <p class="note">This is guaranteed since the sandboxing flags of the document cannot change to become non-empty since this was prefetched, and the check was not done for a different window. If this changes, this will need to be able to handle failure of this check.</p>
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
+    1. If |request|'s  [=request/URL=] is not equal to |urlList|'s last item, but they are [=equivalent modulo search variance=] given |record|'s [=prefetch record/No-Vary-Search hint=], then [=list/append=] |request|'s [=request/URL=] to |urlList|.
+
+        <p class="note" id="note-no-vary-search-final-url-impact">In this case, we are navigating to |request|'s  [=request/URL=], but fulfilling it with a prefetch that came from a [=response=] whose URL is that of |urlList|'s last item. We want the resulting {{Document}} to use the navigated-to URL, so we append to |urlList| so that the rest of the process treats this as a sort of redirect.
     1. Set |request|'s [=request/URL list=] to |urlList|.
     1. <span id="prefetch-activation-client-creation"></span>Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable| and |request|'s [=request/URL=].
 
         <p class="note">This will be the [=environment=] used for constructing the resulting {{Document}} and [=environment settings object=]. We need a separate [=environment=] for each time a [=prefetch record=] is consumed, instead of using |record|'s [=prefetch record/redirect chain=]'s last item's [=exchange record/request=]'s [=request/reserved client=], because otherwise reusing the same prefetch record for multiple [=navigation params=] (i.e., multiple navigations) would cause the created [=environment settings objects=] to share an [=environment/id=]. This would then be visible, e.g., through the {{Clients/get()|clients.get()}} API, in a very confusing way.
-    1. Set |request|'s [=request/reserved client=]'s [=environment/active service worker=] to |activeServiceWorker|.
+    1. Let |storageKey| be the result of [=obtaining a storage key=] given |request|'s [=request/reserved client=].
+    1. Let |registration| be the result of running [=Match Service Worker Registration=] given |storageKey| and |request|'s [=request/URL=].
+    1. If |registration| is not null, then set |request|'s [=request/reserved client=]'s [=environment/active service worker=] to |registration|'s [=service worker registration/active worker=].
+
+        <p class="note">We cannot just use |record|'s [=prefetch record/redirect chain=]'s last item's [=exchange record/request=]'s [=request/reserved client=]'s [=environment/active service worker=] here, because <a href="#note-no-vary-search-final-url-impact">as noted above</a>, the [:No-Vary-Search:] header might cause the final URL to differ.
     1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |record|'s [=prefetch record/response=]'s [=response/URL=], |documentState|'s [=document state/history policy container=], |sourceSnapshotParams|'s [=source snapshot params/source policy container=], null, and |responsePolicyContainer|.
     1. Let |response| be |record|'s [=prefetch record/response=].
     1. Optionally, set |response| to a [=response/clone=] of |response|.
