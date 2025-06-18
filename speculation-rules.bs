@@ -45,7 +45,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: script; url: concept-script
     urlPrefix: document-sequences.html
       text: valid navigable target name or keyword; url: valid-navigable-target-name-or-keyword
-      text: rules for choosing a navigable; url: the-rules-for-choosing-a-navigable
     urlPrefix: semantics.html
       text: get an element's target; url: get-an-element's-target
     urlPrefix: links.html
@@ -78,6 +77,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
       text: label; url: prefetch-record-label
       text: state; url: prefetch-record-state
       text: prerendering traversable; url: prefetch-record-prerendering-traversable
+      text: prerendering target navigable name hint; url: prefetch-record-prerendering-target-navigable-name-hint
       text: cancel and discard; url: prefetch-record-cancel-and-discard
       text: matches a URL; url: prefetch-record-matches-a-url
     text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
@@ -791,13 +791,12 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
             : [=prefetch record/prerendering traversable=]
             :: "`to be created`"
+
+            : [=prefetch record/prerendering target navigable name hint=]
+            :: |prerenderCandidate|'s [=prerender candidate/target navigable name hint=]
           </dl>
 
         1. [=Start referrer-initiated prerendering=] given |document| and |prefetchRecord|.
-
-          The user agent can use |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] as a hint to their implementation of the [=start referrer-initiated prerendering=] algorithm. This hint indicates that the web developer expects the eventual [=prerendering traversable/activate|activation=] of the created [=prerendering traversable=] to be in place of a particular predecessor traversable: the one that would be chosen by the invoking the [=rules for choosing a navigable=] given |prerenderCandidate|'s [=prerender candidate/target navigable name hint=] and |document|'s [=node navigable=].
-
-          <p class="note">This is just a hint. The [=speculation rule/target navigable name hint=] actually has no normative implications, after being parsed. It is still perfectly fine to [=prerendering traversable/activate=] in place of a different predecessor traversable that was not hinted at.
 
   When deciding whether to execute the "may" steps above that enact from among |prefetchCandidates| and |prerenderCandidates|, user agents should consider their [=speculative load candidate/eagerness=], in accordance with the following:
 

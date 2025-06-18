@@ -101,6 +101,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: determine the origin; url: determining-the-origin
       text: navigable container; url: navigable-container
       text: parent; url: nav-parent
+      text: valid navigable target name or keyword; url: valid-navigable-target-name-or-keyword
     urlPrefix: dom.html
       text: cross-origin opener policy; for: Document; url: concept-document-coop
     urlPrefix: semantics.html
@@ -194,6 +195,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
 * <dfn export for="prefetch record">prerendering traversable</dfn>, a [=prerendering traversable=], "`to be created`", or null (null by default)
+* <dfn export for="prefetch record">prerendering target navigable name hint</dfn>, a [=valid navigable target name or keyword=] or null (null by default)
 * <dfn export for="prefetch record">state</dfn>, which is "`ongoing`" (the default), "`completed`", or "`canceled`"
   <div class="note">"`canceled`" indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
 * <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
@@ -317,7 +319,13 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
   1. [=list/For each=] |record| of |document|'s [=Document/prefetch records=]:
     1. If |record|'s [=prefetch record/state=] is "`canceled`", then [=iteration/continue=].
 
-    1. If |checkPrerender| is true and |record|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+    1. If |checkPrerender| is true:
+
+      1. If |record|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+
+      1. If |record|'s [=prefetch record/prerendering target navigable name hint=] is not equal to |recordUnderConsideration|'s [=prefetch record/prerendering target navigable name hint=], then the user agent may [=iteration/continue=].
+
+         <p class="note">User agents which create separate [=prerendering traversables=] depending on the [=prefetch record/prerendering target navigable name hint=] will continue here, since they consider such records to be distinct. Whereas, user agents which are able to activate an existing [=prerendering traversable=] regardless of the [=prefetch record/prerendering target navigable name hint=] will consider such records equivalent.</p>
 
     1. Let |recordNVS| be null.
 

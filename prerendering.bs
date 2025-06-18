@@ -95,6 +95,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
     text: has a matching prefetch record
     for: prefetch record
       text: prerendering traversable
+      text: prerendering target navigable name hint
     for: has a matching prefetch record
       text: checkPrerender
     for: Sec-Purpose prefetch
@@ -301,6 +302,10 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
   1. [=Assert=]: |prefetchRecord|'s [=prefetch record/prerendering traversable=] is "`to be created`".
 
   1. Let |prerenderingTraversable| be the result of [=creating a new top-level traversable=].
+
+     The user agent can use |prefetchRecord|'s [=prefetch record/prerendering target navigable name hint=] as a hint to their implementation of [=create a new top-level traversable=]. This hint indicates that the web developer expects the eventual [=prerendering traversable/activate|activation=] of the created [=prerendering traversable=] to be in place of a particular predecessor traversable: the one that would be chosen by the invoking <a spec="HTML">the rules for choosing a navigable</a> given |prefetchRecord|'s [=prefetch record/prerendering target navigable name hint=] and |referrerDoc|'s [=node navigable=].
+
+     <p class="note">This is just a hint. The value has no normative implications. It would still be perfectly fine in the future to [=prerendering traversable/activate=] in place of a different predecessor traversable that was not hinted at.
 
   1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
 
