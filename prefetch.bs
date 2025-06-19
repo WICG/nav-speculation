@@ -821,6 +821,18 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |global| be |document|'s [=relevant global object=].
     1. [=In parallel=]:
         1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
+
+            <div class="note" id="note-create-navingation-params-navigable">
+              The [=navigable=] used here, i.e. |document|'s [=node navigable=], could potentially be different from the one that might be used when calling [=create navigation params by fetching=] for a non-prefetched navigation. The latter case would use the target navigable passed the [=navigate=] algorithm, whereas prefetch records are looked up on the initiator document of the navigation.
+
+              This is, actually, fine. During the [=navigate|navigation=] that results in prefetch activation, the target navigable will still be used for most of the important checks, which are performed earlier in the process before <a spec=HTML>attempt to populate the history entry's document</a> is called, and thus before [=create navigation params by fetching=] would be called. Of the checks that are perform during [=create navigation params by fetching=]:
+
+              * Some, such as those for [:Cross-Origin-Resource-Policy:], are not applicable, since <a href="#note-prefetch-top-level">prefetches are only supported in top-level navigables</a>.
+              * Checks related to [:Cross-Origin-Opener-Policy:] are re-performed during activation.
+
+              Also note that within this algorithm, |navigationParams| is not stored, so the value of |navigationParams|'s [=navigation params/navigable=] does not leak to the rest of the system. In particular, during activation a new [=navigation params=] is created by the [=create navigation params from a prefetch record=] algorithm, which contains the correct target navigable.
+            </div>
+
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
