@@ -557,7 +557,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
             1. Let |prefetched| be false.
             1. If <var ignore>documentResource</var> is null:
-              1. Let |prefetchRecord| be the result of [=finding a matching complete prefetch record=] given <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/sandboxing flags=].
+              1. Let |prefetchRecord| be the result of [=waiting for a matching prefetch record=] given <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/sandboxing flags=].
               1. If |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
                 1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
