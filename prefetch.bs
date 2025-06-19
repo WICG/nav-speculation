@@ -221,7 +221,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     A [=prefetch record=] |prefetchRecord| <dfn export for="prefetch record">matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
     1. If |prefetchRecord|'s [=prefetch record/URL=] is equal to |url|, return true.
     1. If |prefetchRecord|'s [=prefetch record/response=] is not null:
-      1. Let |searchVariance| be the result of [=obtaining a URL search variance=] given |prefetchRecord|'s [=prefetch record/response=].
+      1. Let |searchVariance| be the result of [=obtaining a URL search variance=] given |prefetchRecord|'s [=prefetch record/redirect chain=][0]'s [=exchange record/response=].
+         <p class="advisement">It is important that we check the 0th response, not the last response (i.e. not |prefetchRecord|'s [=prefetch record/response=]), because the prefetch record's [=prefetch record/URL=] is that of the first request/response pair, and so it is only that first response's [:No-Vary-Search:] header that should impact matching.
       1. If |prefetchRecord|'s [=prefetch record/URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
     1. Otherwise, return false.
 </div>
@@ -384,9 +385,21 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 
                 <p class="note">This is guaranteed since the sandboxing flags of the document cannot change to become non-empty since this was prefetched, and the check was not done for a different window. If this changes, this will need to be able to handle failure of this check.</p>
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
-    1. If |request|'s  [=request/URL=] is not equal to |urlList|'s last item, but they are [=equivalent modulo search variance=] given |record|'s [=prefetch record/No-Vary-Search hint=], then [=list/append=] |request|'s [=request/URL=] to |urlList|.
+    1. If |request|'s  [=request/URL=] is not equal to |urlList|[0], then insert |request|'s [=request/URL=] into |urlList| after the 0th [=list/item=].
+        <p class="note" id="note-no-vary-search-final-url-impact">In this case, we are navigating to |request|'s [=request/URL=], but fulfilling it with a prefetch that came from a [=response=] whose URL is |urlList|[0], due to [:No-Vary-Search:]. We treat this as if there was a redirect from the 0th response to [=request/URL=]. If, after this insertion, |urlList|'s [=list/size=] is 2, then the resulting {{Document}} will use the navigated-to URL. Otherwise, if the size is greater, then this will have no effect.
 
-        <p class="note" id="note-no-vary-search-final-url-impact">In this case, we are navigating to |request|'s  [=request/URL=], but fulfilling it with a prefetch that came from a [=response=] whose URL is that of |urlList|'s last item. We want the resulting {{Document}} to use the navigated-to URL, so we append to |urlList| so that the rest of the process treats this as a sort of redirect.
+        <div class="example" id="example-simple-nvs">
+          Consider the case where we prefetch `/page?param=1`, and the server responds with `No-Vary-Search: params=("param")` and a 200 response code.
+
+          Later, if we navigate to `/page?param=2`, the prefetch will be used. This step will cause |urlList| to become « `/page?param=1`, `/page?param=2` », so the resulting {{Document}} will have `/page?param=2` as its [=Document/URL=].
+        </div>
+
+        <div class="example" id="example-nvs-redirect">
+          Consider the case where we prefetch `/page?param=1`, and the server responds with `No-Vary-Search: params=("param")`, as well as a 301 response code and `Location: https://other.example/`.
+
+          Later, if we navigate to `/page?param=2`, the prefetch will be used. This step will cause |urlList| to become « `/page?param=1`, `/page?param=2`, `https://other.example/` », so the resulting {{Document}} will have `https://other.example/` as its [=Document/URL=].
+        </div>
+
     1. Set |request|'s [=request/URL list=] to |urlList|.
     1. <span id="prefetch-activation-client-creation"></span>Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable| and |request|'s [=request/URL=].
 
