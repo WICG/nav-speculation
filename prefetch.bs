@@ -556,7 +556,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. Let |request| be the result of [=creating a navigation request=] given <var ignore>entry</var>, <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/fetch client=], <var ignore>navigable</var>'s [=navigable/container=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/has transient activation=].
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
             1. Let |prefetched| be false.
-            1. If <var ignore>documentResource</var> is null:
+            1. If <var ignore>documentResource</var> is null and <var ignore>navigable</var> is a [=top-level traversable=]:
               1. Let |prefetchRecord| be the result of [=waiting for a matching prefetch record=] given <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/sandboxing flags=].
               1. If |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
@@ -565,7 +565,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
                     <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies. If the prefetch never reached a cross-site URL, there will be no cookies to copy.</div>
                 1. Set |prefetched| to true.
 
-                <p class="note">This means that prefetches are only ever used to fulfill \``GET`\` requests.</p>
+                <p class="note">This means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
             1. If |prefetched| is false:
                 1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given <var ignore>navigable</var>'s [=navigable/active document=] and <var ignore>entry</var>'s [=session history entry/document state=]'s [=document state/initiator origin=].
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, |coopEnforcementResult|, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
@@ -794,6 +794,9 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
 <div algorithm>
     To <dfn export>prefetch</dfn> given a {{Document}} |document| and a [=prefetch record=] |prefetchRecord|, perform the following steps.
 
+    1. [=Assert=]: |document|'s [=node navigable=] is a [=top-level traversable=].
+
+       <p class="note" id="note-prefetch-top-level">Supporting prefetches in [=child navigables=] has some complexities and is not currently defined. It might be possible to define in the future.</p>
     1. If |document| [=has a matching prefetch record=] given |prefetchRecord|, then return.
     1. Let |sourceSnapshotParams| be the result of [=snapshotting source snapshot params=] given |document|.
     1. Let |targetSnapshotParams| be the result of [=snapshotting target snapshot params=] given |document|'s [=node navigable=].

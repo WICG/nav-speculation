@@ -86,6 +86,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
 spec: nav-speculation; urlPrefix: prerendering.html
   type: dfn
     text: start referrer-initiated prerendering; url: start-referrer-initiated-prerendering
+    text: prerendering navigable; url: prerendering-navigable
     text: prerendering traversable; url: prerendering-traversable
     text: activate; for: prerendering traversable; url: prerendering-traversable-activate
 spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html
@@ -613,6 +614,14 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
 <div algorithm="consider speculation">
   To <dfn>consider speculation</dfn> for a [=document=] |document|:
+
+  1. If |document|'s [=node navigable=] is not a [=top-level traversable=], then return.
+
+     <p class="note" id="note-speculation-top-level">Supporting speculative loads in [=child navigables=] has some complexities and is not currently defined. It might be possible to define in the future.</p>
+
+  1. If |document|'s [=node navigable=] is a [=prerendering navigable=], then return.
+
+     <p class="note" id="note-speculation-prerendering">Speculative loads in prerendering navigables would be too potentially wasteful.</p>
 
   1. [=Queue a microtask=] that runs the following steps given |document|:
     1. If |document| is not [=Document/fully active=], then return.
