@@ -729,8 +729,20 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
         :: |commitEarlyHints|
 </div>
 
+<hr>
+
 <div algorithm="create and initialize a Document object">
     Update the steps to [=create and initialize a Document object=] to add an additional argument to [=create the navigation timing entry=], as follows: <var ignore>navigationParams</var>'s [=navigation params/delivery type=].
+</div>
+
+<hr>
+
+<div algorithm=" obtain a browsing context to use for a navigation response">
+  Modify <a spec=HTML>obtain a browsing context to use for a navigation response</a>'s step which checks if <var ignore>sourceOrigin</var> is not [=same site=] with <var ignore>destinationOrigin</var> by inserting the following substep:
+
+  1. If <var ignore>navigationParams</var>'s [=navigation params/delivery type=] is "`prefetch`", then optionally set <var ignore>swapGroup</var> to true.
+
+     <p class="note">This makes it more difficult for the referring site to tell whether the prefetch was used or not by measuring load timing. This helps prevent information about the destination site from leaking to the referring site.</p>
 </div>
 
 <h2 id="navigation-timing-patches">Navigation Timing Patches</h2>
