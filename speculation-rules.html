@@ -767,7 +767,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
  <body class="h-entry">
   <div class="head">
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-06-19">19 June 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-06-22">22 June 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1634,6 +1634,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="consider-speculation">consider speculation</dfn> for a <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-document" id="ref-for-concept-document①⓪">document</a> <var>document</var>: 
     <ol>
      <li data-md>
+      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable">node navigable</a> is not a <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable" id="ref-for-top-level-traversable">top-level traversable</a>, then return.</p>
+      <p class="note" id="note-speculation-top-level" role="note"><a class="self-link" href="#note-speculation-top-level"></a>Supporting speculative loads in <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable" id="ref-for-child-navigable">child navigables</a> has some complexities and is not currently defined. It might be possible to define in the future.</p>
+     <li data-md>
+      <p>If <var>document</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable" id="ref-for-node-navigable①">node navigable</a> is a <a data-link-type="dfn" href="prerendering.html#prerendering-navigable" id="ref-for-prerendering-navigable">prerendering navigable</a>, then return.</p>
+      <p class="note" id="note-speculation-prerendering" role="note"><a class="self-link" href="#note-speculation-prerendering"></a>Speculative loads in prerendering navigables would be too potentially wasteful.</p>
+     <li data-md>
       <p><a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-microtask" id="ref-for-queue-a-microtask">Queue a microtask</a> that runs the following steps given <var>document</var>:</p>
       <ol>
        <li data-md>
@@ -2404,6 +2410,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="da66facb">already started</span>
      <li><span class="dfn-paneled" id="a1a807e5">area</span>
      <li><span class="dfn-paneled" id="f8434dee">being rendered</span>
+     <li><span class="dfn-paneled" id="f23dc013">child navigable</span>
      <li><span class="dfn-paneled" id="cdede25f">create and initialize a Document object</span>
      <li><span class="dfn-paneled" id="6eb8a5d8">document base URL</span>
      <li><span class="dfn-paneled" id="e10e7eb7">DOM manipulation task source</span>
@@ -2419,6 +2426,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="18e7dde9">load</span>
      <li><span class="dfn-paneled" id="2b07d94d">mark as ready</span>
      <li><span class="dfn-paneled" id="b6ae4501">networking task source</span>
+     <li><span class="dfn-paneled" id="13dd6cae">node navigable</span>
      <li><span class="dfn-paneled" id="b1e9fc19">nonce</span>
      <li><span class="dfn-paneled" id="e29d133b">noreferrer</span>
      <li><span class="dfn-paneled" id="037b46da">prepare the script element</span>
@@ -2435,6 +2443,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="1037f0b6">src</span>
      <li><span class="dfn-paneled" id="ba920583">style</span>
      <li><span class="dfn-paneled" id="05064bc7">supports(type)</span>
+     <li><span class="dfn-paneled" id="bd736ec6">top-level traversable</span>
      <li><span class="dfn-paneled" id="9e0a18e8">type</span>
      <li><span class="dfn-paneled" id="c7c0dde1">url</span>
      <li><span class="dfn-paneled" id="36706746">valid navigable target name or keyword</span>
@@ -2496,6 +2505,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="bc1b7d17">prefetch IP anonymization policy</span>
      <li><span class="dfn-paneled" id="fba1e812">prefetch record</span>
      <li><span class="dfn-paneled" id="ec2d76e2">prefetch records</span>
+     <li><span class="dfn-paneled" id="5fc63580">prerendering navigable</span>
      <li><span class="dfn-paneled" id="60ac619e">prerendering target navigable name hint</span>
      <li><span class="dfn-paneled" id="9c66063f">prerendering traversable</span>
      <li><span class="dfn-paneled" id="430e99f3">referrer policy</span>
@@ -2821,6 +2831,7 @@ let dfnPanelData = {
 "0fa1ecd0": {"dfnID":"0fa1ecd0","dfnText":":visited","external":true,"refSections":[{"refs":[{"id":"ref-for-visited-pseudo"}],"title":"1.8. Document rule predicate matching"},{"refs":[{"id":"ref-for-visited-pseudo\u2460"}],"title":"5.5. Visited links"}],"url":"https://drafts.csswg.org/selectors-4/#visited-pseudo"},
 "1037f0b6": {"dfnID":"1037f0b6","dfnText":"src","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-script-src"}],"title":"1.2. The script element"},{"refs":[{"id":"ref-for-dom-script-src\u2460"}],"title":"1.3. Prepare the script element"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#dom-script-src"},
 "1243a891": {"dfnID":"1243a891","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"},{"id":"ref-for-map-exists\u2460"},{"id":"ref-for-map-exists\u2461"},{"id":"ref-for-map-exists\u2462"},{"id":"ref-for-map-exists\u2463"},{"id":"ref-for-map-exists\u2464"},{"id":"ref-for-map-exists\u2465"},{"id":"ref-for-map-exists\u2466"},{"id":"ref-for-map-exists\u2467"},{"id":"ref-for-map-exists\u2468"},{"id":"ref-for-map-exists\u2460\u24ea"},{"id":"ref-for-map-exists\u2460\u2460"},{"id":"ref-for-map-exists\u2460\u2461"},{"id":"ref-for-map-exists\u2460\u2462"},{"id":"ref-for-map-exists\u2460\u2463"},{"id":"ref-for-map-exists\u2460\u2464"},{"id":"ref-for-map-exists\u2460\u2465"},{"id":"ref-for-map-exists\u2460\u2466"},{"id":"ref-for-map-exists\u2460\u2467"},{"id":"ref-for-map-exists\u2460\u2468"},{"id":"ref-for-map-exists\u2461\u24ea"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
+"13dd6cae": {"dfnID":"13dd6cae","dfnText":"node navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-node-navigable"},{"id":"ref-for-node-navigable\u2460"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable"},
 "14a6613b": {"dfnID":"14a6613b","dfnText":"prefetch","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch"},{"id":"ref-for-prefetch\u2460"},{"id":"ref-for-prefetch\u2461"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch"},
 "154d8845": {"dfnID":"154d8845","dfnText":"HTMLHyperlinkElementUtils","external":true,"refSections":[{"refs":[{"id":"ref-for-htmlhyperlinkelementutils"}],"title":"1.8. Document rule predicate matching"}],"url":"https://html.spec.whatwg.org/multipage/links.html#htmlhyperlinkelementutils"},
 "167d1cb0": {"dfnID":"167d1cb0","dfnText":"replace","external":true,"refSections":[{"refs":[{"id":"ref-for-list-replace"}],"title":"1.2. The script element"}],"url":"https://infra.spec.whatwg.org/#list-replace"},
@@ -2868,6 +2879,7 @@ let dfnPanelData = {
 "5cc50ead": {"dfnID":"5cc50ead","dfnText":"href (for HTMLHyperlinkElementUtils)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-hyperlink-href"}],"title":"1.8. Document rule predicate matching"}],"url":"https://html.spec.whatwg.org/multipage/links.html#dom-hyperlink-href"},
 "5e0d3b02": {"dfnID":"5e0d3b02","dfnText":"match a selector against an element","external":true,"refSections":[{"refs":[{"id":"ref-for-match-a-selector-against-an-element"}],"title":"1.8. Document rule predicate matching"}],"url":"https://drafts.csswg.org/selectors-4/#match-a-selector-against-an-element"},
 "5ecc2082": {"dfnID":"5ecc2082","dfnText":"sort in ascending order","external":true,"refSections":[{"refs":[{"id":"ref-for-list-sort-in-ascending-order"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#list-sort-in-ascending-order"},
+"5fc63580": {"dfnID":"5fc63580","dfnText":"prerendering navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-prerendering-navigable"}],"title":"1.7. Processing model"}],"url":"prerendering.html#prerendering-navigable"},
 "5ff3a316": {"dfnID":"5ff3a316","dfnText":"parse a JSON string to an Infra value","external":true,"refSections":[{"refs":[{"id":"ref-for-parse-a-json-string-to-an-infra-value"}],"title":"1.6. Parsing"}],"url":"https://infra.spec.whatwg.org/#parse-a-json-string-to-an-infra-value"},
 "60393e82": {"dfnID":"60393e82","dfnText":"URL pattern","external":true,"refSections":[{"refs":[{"id":"ref-for-url-pattern"}],"title":"1.1. Definitions"}],"url":"https://urlpattern.spec.whatwg.org/#url-pattern"},
 "60ac619e": {"dfnID":"60ac619e","dfnText":"prerendering target navigable name hint","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-prerendering-target-navigable-name-hint"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-record-prerendering-target-navigable-name-hint"},
@@ -2929,6 +2941,7 @@ let dfnPanelData = {
 "ba920583": {"dfnID":"ba920583","dfnText":"style","external":true,"refSections":[{"refs":[{"id":"ref-for-the-style-element"}],"title":"2.6. Does element match source list for type and source?"}],"url":"https://html.spec.whatwg.org/multipage/semantics.html#the-style-element"},
 "bb0c2ce5": {"dfnID":"bb0c2ce5","dfnText":"\"no-referrer\"","external":true,"refSections":[{"refs":[{"id":"ref-for-referrer-policy-no-referrer"}],"title":"1.7. Processing model"}],"url":"https://w3c.github.io/webappsec-referrer-policy/#referrer-policy-no-referrer"},
 "bc1b7d17": {"dfnID":"bc1b7d17","dfnText":"prefetch IP anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-ip-anonymization-policy"}],"title":"1.7. Processing model"}],"url":"prefetch.html#prefetch-ip-anonymization-policy"},
+"bd736ec6": {"dfnID":"bd736ec6","dfnText":"top-level traversable","external":true,"refSections":[{"refs":[{"id":"ref-for-top-level-traversable"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable"},
 "c62cd7cf": {"dfnID":"c62cd7cf","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-origin"}],"title":"1.7. Processing model"}],"url":"https://dom.spec.whatwg.org/#concept-document-origin"},
 "c7c0dde1": {"dfnID":"c7c0dde1","dfnText":"url","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-hyperlink-url"},{"id":"ref-for-concept-hyperlink-url\u2460"},{"id":"ref-for-concept-hyperlink-url\u2461"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url"},
 "c88f3887": {"dfnID":"c88f3887","dfnText":"item","external":true,"refSections":[{"refs":[{"id":"ref-for-struct-item"},{"id":"ref-for-struct-item\u2460"},{"id":"ref-for-struct-item\u2461"},{"id":"ref-for-struct-item\u2462"},{"id":"ref-for-struct-item\u2463"},{"id":"ref-for-struct-item\u2464"},{"id":"ref-for-struct-item\u2465"},{"id":"ref-for-struct-item\u2466"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-struct-item\u2467"},{"id":"ref-for-struct-item\u2468"},{"id":"ref-for-struct-item\u2460\u24ea"}],"title":"1.7. Processing model"}],"url":"https://infra.spec.whatwg.org/#struct-item"},
@@ -2971,6 +2984,7 @@ let dfnPanelData = {
 "eed8e0e4": {"dfnID":"eed8e0e4","dfnText":"Access-Control-Allow-Origin","external":true,"refSections":[{"refs":[{"id":"ref-for-http-access-control-allow-origin"}],"title":"4.1. Cross-site request forgery"}],"url":"https://fetch.spec.whatwg.org/#http-access-control-allow-origin"},
 "f08e1f8e": {"dfnID":"f08e1f8e","dfnText":"URL search variance","external":true,"refSections":[{"refs":[{"id":"ref-for-name-data-model"}],"title":"1.1. Definitions"},{"refs":[{"id":"ref-for-name-data-model\u2460"}],"title":"1.7. Processing model"}],"url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-data-model"},
 "f2116e87": {"dfnID":"f2116e87","dfnText":"blockable mixed content","external":true,"refSections":[{"refs":[{"id":"ref-for-blockable-mixed-content"}],"title":"4.5. Mixed content"}],"url":"https://w3c.github.io/webappsec-mixed-content/#blockable-mixed-content"},
+"f23dc013": {"dfnID":"f23dc013","dfnText":"child navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-child-navigable"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable"},
 "f7960529": {"dfnID":"f7960529","dfnText":"root","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-tree-root"}],"title":"1.8. Document rule predicate matching"}],"url":"https://dom.spec.whatwg.org/#concept-tree-root"},
 "f7b00a8b": {"dfnID":"f7b00a8b","dfnText":"header list","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-header-list"}],"title":"1.4. The `Speculation-Rules` header"},{"refs":[{"id":"ref-for-concept-response-header-list\u2460"}],"title":"1.5. External speculation rule sets"}],"url":"https://fetch.spec.whatwg.org/#concept-response-header-list"},
 "f8434dee": {"dfnID":"f8434dee","dfnText":"being rendered","external":true,"refSections":[{"refs":[{"id":"ref-for-being-rendered"}],"title":"1.7. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/rendering.html#being-rendered"},
@@ -3530,7 +3544,10 @@ let refsData = {
 "https://fetch.spec.whatwg.org/#requestdestination": {"displayText":"RequestDestination","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"RequestDestination","type":"enum","url":"https://fetch.spec.whatwg.org/#requestdestination"},
 "https://html.spec.whatwg.org/multipage/browsers.html#same-origin": {"displayText":"same origin","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"same origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#same-origin"},
 "https://html.spec.whatwg.org/multipage/document-lifecycle.html#initialise-the-document-object": {"displayText":"create and initialize a Document object","export":false,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"create and initialize a document object","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-lifecycle.html#initialise-the-document-object"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable": {"displayText":"child navigable","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"child navigable","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#child-navigable"},
 "https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active": {"displayText":"fully active","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"fully active","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable": {"displayText":"node navigable","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"node navigable","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable"},
+"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable": {"displayText":"top-level traversable","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"top-level traversable","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-traversable"},
 "https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword": {"displayText":"valid navigable target name or keyword","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"valid navigable target name or keyword","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword"},
 "https://html.spec.whatwg.org/multipage/dom.html#dom-document-links": {"displayText":"links","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"links","type":"attribute","url":"https://html.spec.whatwg.org/multipage/dom.html#dom-document-links"},
 "https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element": {"displayText":"area","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"area","type":"element","url":"https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element"},
@@ -3638,6 +3655,7 @@ let refsData = {
 "prefetch.html#prefetch-record-tags": {"displayText":"tags","export":true,"for_":["prefetch record"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"tags","type":"dfn","url":"prefetch.html#prefetch-record-tags"},
 "prefetch.html#prefetch-record-url": {"displayText":"URL","export":true,"for_":["prefetch record"],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"url","type":"dfn","url":"prefetch.html#prefetch-record-url"},
 "prefetch.html#sec-speculation-tags-header": {"displayText":"Sec-Speculation-Tags","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"sec-speculation-tags","type":"http-header","url":"prefetch.html#sec-speculation-tags-header"},
+"prerendering.html#prerendering-navigable": {"displayText":"prerendering navigable","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"prerendering navigable","type":"dfn","url":"prerendering.html#prerendering-navigable"},
 "prerendering.html#start-referrer-initiated-prerendering": {"displayText":"start referrer-initiated prerendering","export":true,"for_":[],"level":"","normative":true,"shortname":"nav-speculation","spec":"nav-speculation","status":"anchor-block","text":"start referrer-initiated prerendering","type":"dfn","url":"prerendering.html#start-referrer-initiated-prerendering"},
 };
 
