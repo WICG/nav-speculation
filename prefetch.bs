@@ -140,6 +140,8 @@ spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-h
     text: URL search variance; url: name-data-model
     text: obtain a URL search variance; url: name-obtain-a-url-search-varianc
     text: equivalent modulo search variance; url: name-comparing
+  type: http-header
+    text: No-Vary-Search; url: name-http-header-field-definitio
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
 </pre>
@@ -219,7 +221,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     A [=prefetch record=] |prefetchRecord| <dfn export for="prefetch record">matches a URL</dfn> given a [=URL=] |url| if the following algorithm returns true:
     1. If |prefetchRecord|'s [=prefetch record/URL=] is equal to |url|, return true.
     1. If |prefetchRecord|'s [=prefetch record/response=] is not null:
-      1. Let |searchVariance| be the result of [=obtaining a URL search variance=] given |prefetchRecord|'s [=prefetch record/response=].
+      1. Let |searchVariance| be the result of [=obtaining a URL search variance=] given |prefetchRecord|'s [=prefetch record/redirect chain=][0]'s [=exchange record/response=].
+         <p class="advisement">It is important that we check the 0th response, not the last response (i.e. not |prefetchRecord|'s [=prefetch record/response=]), because the prefetch record's [=prefetch record/URL=] is that of the first request/response pair, and so it is only that first response's [:No-Vary-Search:] header that should impact matching.
       1. If |prefetchRecord|'s [=prefetch record/URL=] and |url| are [=equivalent modulo search variance=] given |searchVariance|, return true.
     1. Otherwise, return false.
 </div>
@@ -368,7 +371,6 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |navigable|'s [=navigable/active document=] and |documentState|'s [=document state/initiator origin=].
     1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
     1. Let |responsePolicyContainer| be null.
-    1. Let |activeServiceWorker| be null.
     1. Let |urlList| be an empty [=list=].
     1. [=list/For each=] |exchangeRecord| in |record|'s [=prefetch record/redirect chain=]:
         1. Let |redirectChainRequest| be |exchangeRecord|'s [=exchange record/request=].
@@ -377,18 +379,38 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |redirectChainResponse|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
-        1. Set |activeServiceWorker| to |redirectChainRequest|'s [=request/reserved client=]'s [=environment/active service worker=].
         1. If |navigable| is a [=top-level traversable=], then:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
             1. [=Assert=]: If |finalSandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
 
                 <p class="note">This is guaranteed since the sandboxing flags of the document cannot change to become non-empty since this was prefetched, and the check was not done for a different window. If this changes, this will need to be able to handle failure of this check.</p>
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
+    1. If |request|'s  [=request/URL=] is not equal to |urlList|[0], then insert |request|'s [=request/URL=] into |urlList| after the 0th [=list/item=].
+        <p class="note" id="note-no-vary-search-final-url-impact">In this case, we are navigating to |request|'s [=request/URL=], but fulfilling it with a prefetch that came from a [=response=] whose URL is |urlList|[0], due to [:No-Vary-Search:]. We treat this as if there was a redirect from the 0th response to [=request/URL=]. If, after this insertion, |urlList|'s [=list/size=] is 2, then the resulting {{Document}} will use the navigated-to URL. Otherwise, if the size is greater, then this will have no effect.
+
+        <div class="example" id="example-simple-nvs">
+          Consider the case where we prefetch `/page?param=1`, and the server responds with `No-Vary-Search: params=("param")` and a 200 response code.
+
+          Later, if we navigate to `/page?param=2`, the prefetch will be used. This step will cause |urlList| to become « `/page?param=1`, `/page?param=2` », so the resulting {{Document}} will have `/page?param=2` as its [=Document/URL=].
+        </div>
+
+        <div class="example" id="example-nvs-redirect">
+          Consider the case where we prefetch `/page?param=1`, and the server responds with `No-Vary-Search: params=("param")`, as well as a 301 response code and `Location: https://other.example/`.
+
+          Later, if we navigate to `/page?param=2`, the prefetch will be used. This step will cause |urlList| to become « `/page?param=1`, `/page?param=2`, `https://other.example/` », so the resulting {{Document}} will have `https://other.example/` as its [=Document/URL=].
+        </div>
+
     1. Set |request|'s [=request/URL list=] to |urlList|.
     1. <span id="prefetch-activation-client-creation"></span>Set |request|'s [=request/reserved client=] to the result of [=creating a reserved client=] given |navigable| and |request|'s [=request/URL=].
 
         <p class="note">This will be the [=environment=] used for constructing the resulting {{Document}} and [=environment settings object=]. We need a separate [=environment=] for each time a [=prefetch record=] is consumed, instead of using |record|'s [=prefetch record/redirect chain=]'s last item's [=exchange record/request=]'s [=request/reserved client=], because otherwise reusing the same prefetch record for multiple [=navigation params=] (i.e., multiple navigations) would cause the created [=environment settings objects=] to share an [=environment/id=]. This would then be visible, e.g., through the {{Clients/get()|clients.get()}} API, in a very confusing way.
-    1. Set |request|'s [=request/reserved client=]'s [=environment/active service worker=] to |activeServiceWorker|.
+    1. Set |request|'s [=request/reserved client=]'s [=environment/active service worker=] to |record|'s [=prefetch record/redirect chain=]'s last item's [=exchange record/request=]'s [=request/reserved client=]'s [=environment/active service worker=].
+
+        <div class="note" id="note-no-vary-search-final-service-worker-impact">
+          At this point there are potentially two different service workers that are reasonable choices to control the resulting {{Document}}: the one that intercepted the final response during the prefetch process, and the one whose registration [=Match Service Worker Registration|matches=] the navigated-to URL (i.e. |request|'s [=request/URL=]). These will almost always be the same, but in edge cases involving [:No-Vary-Search:] plus web developers who are, for some reason, creating different service workers for `/page?param=1` vs. `/page?param=2`, they could differ.
+
+          We choose to use the service worker that intercepted the final response during the prefetch process. This is slightly simpler (requiring no additional service worker lookups), and it matches the behavior for prerendering, where the <a spec="PRERENDERING-REVAMPED" for="prerendering traversable" lt="update the successor for activation">URL update during activation</a> does not cause a service worker switch.
+        </div>
     1. Let |resultPolicyContainer| be the result of [=determining navigation params policy container=] given |record|'s [=prefetch record/response=]'s [=response/URL=], |documentState|'s [=document state/history policy container=], |sourceSnapshotParams|'s [=source snapshot params/source policy container=], null, and |responsePolicyContainer|.
     1. Let |response| be |record|'s [=prefetch record/response=].
     1. Optionally, set |response| to a [=response/clone=] of |response|.
