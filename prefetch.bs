@@ -201,7 +201,6 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 * <dfn export for="prefetch record">state</dfn>, which is "`ongoing`" (the default), "`completed`", or "`canceled`"
   <div class="note">"`canceled`" indicates that the prefetch was aborted by the author or user, or terminated by the user agent.</div>
 * <dfn export for="prefetch record">fetch controller</dfn>, a [=fetch controller=] (a new [=fetch controller=] by default)
-* <dfn export for="prefetch record">sandboxing flag set</dfn>, a [=sandboxing flag set=]
 * <dfn export for="prefetch record">redirect chain</dfn>, a [=redirect chain=] (empty by default)
 * <dfn export for="prefetch record">start time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
 * <dfn export for="prefetch record">expiry time</dfn>, a {{DOMHighResTimeStamp}} (0.0 by default)
@@ -260,17 +259,12 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 </div>
 
 <div algorithm>
-    To <dfn export>find a matching complete prefetch record</dfn> given a [=top-level traversable=] |navigable|, [=source snapshot params=] |sourceSnapshotParams|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+    To <dfn export>find a matching complete prefetch record</dfn> given a [=top-level traversable=] |navigable|, [=source snapshot params=] |sourceSnapshotParams|, and [=URL=] |url|:
 
     1. Let |exactRecord| be null.
     1. Let |inexactRecord| be null.
     1. [=list/For each=] |record| of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=]:
         1. If |record|'s [=prefetch record/state=] is not "`completed`", then [=iteration/continue=].
-        1. If |record|'s [=prefetch record/sandboxing flag set=] is empty and |sandboxFlags| is not empty, then [=iteration/continue=].
-
-            <div class="note">
-              Strictly speaking, it would still be possible for this to be valid if sandbox flags have been added to the container since prefetch but those flags would not cause an error due to cross origin opener policy. This is expected to be rare and so isn't handled.
-            </div>
         1. If |record|'s [=prefetch record/URL=] is equal to |url|:
             1. Set |exactRecord| to |record|.
             1. [=iteration/Break=].
@@ -294,19 +288,18 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 </div>
 
 <div algorithm>
-    To <dfn export>wait for a matching prefetch record</dfn> given a [=top-level traversable=] |navigable|, [=source snapshot params=] |sourceSnapshotParams|, [=URL=] |url|, and [=sandboxing flag set=] |sandboxFlags|, perform the following steps.
+    To <dfn export>wait for a matching prefetch record</dfn> given a [=top-level traversable=] |navigable|, [=source snapshot params=] |sourceSnapshotParams|, and [=URL=] |url|:
 
     1. [=Assert=]: this is running [=in parallel=].
     1. Let |cutoffTime| be null.
     1. While true:
-        1. Let |completeRecord| be the result of [=finding a matching complete prefetch record=] given |navigable|, |sourceSnapshotParams|, |url|, and |sandboxFlags|.
+        1. Let |completeRecord| be the result of [=finding a matching complete prefetch record=] given |navigable|, |sourceSnapshotParams|, and |url|.
         1. If |completeRecord| is not null, return |completeRecord|.
         1. Let |potentialRecords| be an empty [=list=].
         1. [=list/For each=] |record| of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=]:
             1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
                 * |record|'s [=prefetch record/state=] is "`ongoing`".
                 * |record| [=prefetch record/is expected to match a URL=] given |url|.
-                * |record|'s [=prefetch record/sandboxing flag set=] is not empty or |sandboxFlags| is empty.
                 * |record|'s [=prefetch record/expiry time=] is greater than the [=current high resolution time=] for |navigable|'s [=navigable/active window=].
                 * |cutoffTime| is null or |record|'s [=prefetch record/start time=] is less than |cutoffTime|.
         1. If |potentialRecords| [=list/is empty=], return null.
@@ -380,10 +373,8 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |redirectChainResponse|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
         1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
-        1. [=Assert=]: If |finalSandboxFlags| is not empty, then |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`".
-
-            <p class="note">This is guaranteed since the sandboxing flags of the document cannot change to become non-empty since this was prefetched, and the check was not done for a different window. If this changes, this will need to be able to handle failure of this check.</p>
         1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
+        1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`", then return null.
     1. If |request|'s  [=request/URL=] is not equal to |urlList|[0], then insert |request|'s [=request/URL=] into |urlList| after the 0th [=list/item=].
         <p class="note" id="note-no-vary-search-final-url-impact">In this case, we are navigating to |request|'s [=request/URL=], but fulfilling it with a prefetch that came from a [=response=] whose URL is |urlList|[0], due to [:No-Vary-Search:]. We treat this as if there was a redirect from the 0th response to [=request/URL=]. If, after this insertion, |urlList|'s [=list/size=] is 2, then the resulting {{Document}} will use the navigated-to URL. Otherwise, if the size is greater, then this will have no effect.
 
@@ -578,18 +569,17 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. Set |request|'s [=request/replaces client id=] to <var ignore>navigable</var>'s [=navigable/active document=]'s [=relevant settings object=]'s [=environment/id=].
             1. Let |prefetched| be false.
             1. If <var ignore>documentResource</var> is null and <var ignore>navigable</var> is a [=top-level traversable=]:
-              1. Let |prefetchRecord| be the result of [=waiting for a matching prefetch record=] given <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>entry</var>'s [=session history entry/URL=], and <var ignore>sourceSnapshotParams</var>'s [=source snapshot params/sandboxing flags=].
+              1. Let |prefetchRecord| be the result of [=waiting for a matching prefetch record=] given <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, and <var ignore>entry</var>'s [=session history entry/URL=].
               1. If |prefetchRecord| is not null:
                 1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params from a prefetch record=] given <var ignore>navigable</var>, <var ignore>entry</var>'s [=session history entry/document state=], <var ignore>navigationId</var>, <var ignore>navTimingType</var>, <var ignore>request</var>, |prefetchRecord|, <var ignore>targetSnapshotParams</var>, and <var ignore>sourceSnapshotParams</var>.
-                1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
+                1. If <var ignore>navigationParams</var> is not null, then:
+                  1. [=Copy prefetch cookies=] given |prefetchRecord|'s [=prefetch record/isolated partition key=] and <var ignore>navigationParams</var>'s [=navigation params/reserved environment=].
 
-                    <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies. If the prefetch never reached a cross-site URL, there will be no cookies to copy.</div>
-                1. Set |prefetched| to true.
+                      <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies. If the prefetch never reached a cross-site URL, there will be no cookies to copy.</div>
+                  1. Set |prefetched| to true.
 
-                <p class="note">This means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
-            1. If |prefetched| is false:
-                1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given <var ignore>navigable</var>'s [=navigable/active document=] and <var ignore>entry</var>'s [=session history entry/document state=]'s [=document state/initiator origin=].
-                1. Set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, |coopEnforcementResult|, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
+                <p class="note">The guard on these steps means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
+            1. If |prefetched| is false, then set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
 
 </div>
 
@@ -598,7 +588,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
 <div algorithm="create navigation params by fetching">
     <div class="note">This is an update of the existing <a spec=HTML>create navigation params by fetching</a> algorithm.</div>
 
-    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a [=cross-origin opener policy enforcement result=] |coopEnforcementResult|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, and an optional [=prefetch record=] <dfn id="create-navigation-params-by-fetching-prefetchRecord">|prefetchRecord|</dfn>, perform the following steps.
+    To <dfn>create navigation params by fetching</dfn> given a [=request=] |request|, a [=session history entry=] |entry|, a navigable |navigable|, a [=source snapshot params=] |sourceSnapshotParams|, a [=target snapshot params=] |targetSnapshotParams|, a string |cspNavigationType|, a [=navigation ID=] or null |navigationId|, a {{NavigationTimingType}} |navTimingType|, and an optional [=prefetch record=] <dfn id="create-navigation-params-by-fetching-prefetchRecord">|prefetchRecord|</dfn>, perform the following steps.
 
     1. [=Assert=]: this is running [=in parallel=].
     1. [=Assert=]: |request|'s [=request/URL=] is |entry|'s [=session history entry/URL=].
@@ -609,7 +599,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
     1. Let |response| be null.
     1. Let |responseOrigin| be null.
     1. Let |fetchController| be null.
-    <!-- here "create navigation params by fetching" constructs |coopEnforcementResult|, which we're taking as an argument -->
+    1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given <var ignore>navigable</var>'s [=navigable/active document=] and <var ignore>entry</var>'s [=session history entry/document state=]'s [=document state/initiator origin=].
     1. Let |finalSandboxFlags| be an empty [=sandboxing flag set=].
     1. Let |responsePolicyContainer| be null.
     1. Let |responseCOOP| be a new [=cross-origin opener policy=].
@@ -676,11 +666,12 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
         1. Set |responsePolicyContainer| to the result of [=creating a policy container from a fetch response=] given |response| and |request|'s [=request/reserved client=].
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |response|'s [=response/URL=], |finalSandboxFlags|, |entry|'s [=session history entry/document state=]'s [=document state/initiator origin=], and null.
-        1. If |navigable| is a [=top-level traversable=], then:
+        1. If |navigable| is a [=top-level traversable=], and |prefetchRecord| was not given:
             1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |response| and |request|'s [=request/reserved client=].
-            1. If |prefetchRecord| was given, then set |responseCOOP|'s [=cross-origin opener policy/reporting endpoint=] and [=cross-origin opener policy/report-only reporting endpoint=] to null. <span class="note">This allows COOP violation reports to be suppressed until the prefetch is used.</span>
             1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |request|'s [=request/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |request|'s [=request/referrer=].
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
+
+            <p class="note" id="note-prefetch-coop-delay">COOP checks for prefetches are performed at activation time, when we know the target browsing context.
         1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
         1. If |prefetchRecord| was given, then:
             1. [=redirect chain/Update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
@@ -837,7 +828,6 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
     1. Set |prefetchRecord|'s [=prefetch record/start time=] to the [=current high resolution time=] for the [=relevant global object=] of |document|.
-    1. Set |prefetchRecord|'s [=prefetch record/sandboxing flag set=] to the result of [=determining the creation sandboxing flags=] for |document|'s [=Document/browsing context=] given |document|'s [=node navigable=]'s [=navigable/container=].
     1. Let |referrerPolicy| be |prefetchRecord|'s [=prefetch record/referrer policy=] if |prefetchRecord|'s [=prefetch record/referrer policy=] is not the empty string, and |document|'s [=Document/policy container=]'s [=policy container/referrer policy=] otherwise.
     1. Let |documentState| be a new [=document state=] with
         :  [=document state/request referrer policy=]
@@ -850,10 +840,9 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         :  [=session history entry/document state=]
         :: |documentState|
     1. Let |request| be the result of [=creating a navigation request=] given |entry|, |document|'s [=relevant settings object=], |document|'s [=node navigable=]'s [=navigable/container=], and false.
-    1. Let |coopEnforcementResult| be the result of [=creating a cross-origin opener policy enforcement result for navigation=] given |document| and |document|'s [=Document/origin=].
     1. Let |global| be |document|'s [=relevant global object=].
     1. [=In parallel=]:
-        1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |coopEnforcementResult|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
+        1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
