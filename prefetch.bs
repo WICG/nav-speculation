@@ -7,7 +7,8 @@ Repository: WICG/nav-speculation
 URL: https://wicg.github.io/nav-speculation/prefetch.html
 Level: 1
 Editor: Jeremy Roman, Google https://www.google.com/, jbroman@chromium.org
-Abstract: Extensions to WHATWG Fetch for prefetching with partitioning in mind.
+Editor: Domenic Denicola, Google https://www.google.com/, d@domenic.me
+Abstract: A specification for navigational prefetching
 Markup Shorthands: css no, markdown yes
 Assume Explicit For: yes
 Complain About: accidental-2119 yes, missing-example-ids yes
@@ -108,6 +109,22 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: process early hint headers; url: process-early-hint-headers
     urlPrefix: structured-data.html
       text: StructuredSerializeForStorage; url: structuredserializeforstorage
+spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
+  type: dfn
+    text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
+    text: prefetch candidate; url: prefetch-candidate
+    text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
+    text: prerender candidate; url: prerender-candidate
+    text: speculation rule tag; url: speculation-rule-tag
+    text: speculative load candidate; url: speculative-load-candidate
+    for: cross-origin prefetch IP anonymization policy
+      text: origin; url: copiap-origin
+    for: prefetch candidate
+      text: anonymization policy; url: sl-candidate-anonymization-policy
+    for: speculative load candidate
+      text: URL; url: sl-candidate-url
+  type: http-header
+    text: Sec-Speculation-Tags; url: sec-speculation-tags
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: network partition key; url: network-partition-key
@@ -188,12 +205,12 @@ A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
 Each {{Document}} has <dfn export for="Document">prefetch records</dfn>, which is a [=list=] of [=prefetch records=].
 
 A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/items=]:
-* <dfn export for="prefetch record">tags</dfn>, an [=ordered set=] of [=speculation rules tags=]
+* <dfn export for="prefetch record">tags</dfn>, an [=ordered set=] of [=speculation rule tags=]
 * <dfn export for="prefetch record">URL</dfn>, a [=URL=]
 * <dfn export for="prefetch record">anonymization policy</dfn>, a [=prefetch IP anonymization policy=]
 * <dfn export for="prefetch record">referrer policy</dfn>, a [=referrer policy=]
 * <dfn export for="prefetch record">No-Vary-Search hint</dfn>, a [=URL search variance=]
-* <dfn export for="prefetch record">label</dfn>, a [=string=]
+* <dfn export for="prefetch record">source</dfn>, a [=string=]
 
   <div class="note">This is intended for use by a specification or [=implementation-defined=] feature to identify which prefetches it created. It might also associate other data with this struct.</div>
 * <dfn export for="prefetch record">prerendering traversable</dfn>, a [=prerendering traversable=], "`to be created`", or null (null by default)
@@ -309,6 +326,17 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
 </div>
 
+<div algorithm>
+  A [=prefetch record=] |prefetchRecord| is <dfn export for="prefetch record">still being speculated</dfn>, given a list of [=speculative load candidates=] |candidates|, if the following steps return true:
+
+  1. [=list/For each=] |candidate| of |candidates|:
+    1. If |prefetchRecord| does not [=prefetch record/match a URL=] given |candidate|'s [=speculative load candidate/URL=], then [=iteration/continue=].
+    1. If |candidate| is a [=prefetch candidate=] and |prefetchRecord|'s [=prefetch record/anonymization policy=] does not equal |candidate|'s [=prefetch candidate/anonymization policy=], then [=iteration/continue=].
+    1. If |candidate| is a [=prerender candidate=] and |prefetchRecord|'s [=prefetch record/prerendering traversable=] is null, then [=iteration/continue=].
+    1. Return true.
+  1. Return false.
+</div>
+
 <div algorithm="has a matching prefetch record">
   A {{Document}} |document| <dfn export>has a matching prefetch record</dfn> given a [=prefetch record=] |recordUnderConsideration| and an optional boolean <dfn for="has a matching prefetch record" export>|checkPrerender|</dfn> (default false) if the following algorithm returns true:
 
@@ -335,25 +363,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 
   1. Return false.
 
-  <div class="note" id="note-require-equivalent-nvs">
-    <p>The requirement that the No-Vary-Search values be equivalent is somewhat strict. It means that some cases which could theoretically be treated as matching, are not treated as such, and thus redundant prefetches could happen.
-
-    <p>However, allowing more lenient matching makes the check no longer an equivalence relation, and thus prohibits implementation strategies based on normalized URL keys. For this reason, we require equivalent No-Vary-Search values. This is in line with the best practices for server operators demanded in [[NO-VARY-SEARCH#section-6]].
-
-    <p>In practice, we do not expect this to cause redundant prefetches, since server operators and the corresponding speculation rules-writing web developers will follow best practices and use static No-Vary-Search values.
-  </div>
-
-  <div class="example" id="example-non-matching-nvs">
-    <p>Consider three [=prefetch records=]:
-
-    * |A| has a [=prefetch record/URL=] of `https://example.com?a=1&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
-    * |B| has a [=prefetch record/URL=] of `https://example.com?a=2&b=1` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("b")`.
-    * |C| has a [=prefetch record/URL=] of `https://example.com?a=2&b=2` and a [=prefetch record/No-Vary-Search hint=] parsed from `params=("a")`.
-
-    <p>With the current definition of [=has a matching prefetch record=], none of these records match each other.
-
-    <p>A definition which did not require equivalent No-Vary-Search values could consider |A| and |B| to match (using |A|'s [=prefetch record/No-Vary-Search hint=]), and |B| and |C| to match (using |B|'s [=prefetch record/No-Vary-Search hint=]). But it could not consider |A| and |C| to match, so it would not be transitive, and thus not an equivalence relation.
-  </div>
+  <p class="note">See the discussion [:No-Vary-Search:] comparison <a href="https://whatpr.org/html/11426/document-lifecycle.html#note-sl-candidate-redundant-with-nvs-strictness">in the HTML Standard</a>.</p>
 </div>
 
 <div algorithm>
@@ -443,10 +453,6 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         :  [=navigation params/delivery type=]
         :: "`navigational-prefetch`"
 </div>
-
-A <dfn export>prefetch IP anonymization policy</dfn> is either null or a [=cross-origin prefetch IP anonymization policy=].
-
-A <dfn export>cross-origin prefetch IP anonymization policy</dfn> has an <dfn export for="cross-origin prefetch IP anonymization policy">origin</dfn>, which is an [=origin=].
 
 <div algorithm>
   A [=prefetch IP anonymization policy=] |policy| <dfn for="prefetch IP anonymization policy">requires anonymity</dfn> for [=request=] |request| if the following steps return true:
@@ -819,7 +825,7 @@ Modify <a abstract-op spec="CLEAR-SITE-DATA">clear site data for response</a>'s 
 The <dfn>list of sufficiently strict speculative navigation referrer policies</dfn> is a list containing the following: "", "`strict-origin-when-cross-origin`", "`strict-origin`", "`same-origin`", "`no-referrer`".
 
 <div algorithm>
-    To <dfn export>prefetch</dfn> given a {{Document}} |document| and a [=prefetch record=] |prefetchRecord|, perform the following steps.
+    To <dfn export>start a referrer-initiated navigational prefetch</dfn> given a {{Document}} |document| and a [=prefetch record=] |prefetchRecord|, perform the following steps.
 
     1. [=Assert=]: |document|'s [=node navigable=] is a [=top-level traversable=].
 
@@ -944,7 +950,7 @@ The following parameters are defined for the `prefetch` token:
   <div class="note">
     A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values.
 
-    This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
+    This specification conforms to this advice; the [=start a referrer-initiated navigational prefetch=] algorithm does not emit non-boolean values.
   </div>
 
 * A parameter whose key is "<dfn for="Sec-Purpose prefetch">`prerender`</dfn>".
@@ -954,23 +960,13 @@ The following parameters are defined for the `prefetch` token:
   <div class="note">
     A future specification might define assign more specific meaning to non-boolean values. For now, they are treated the same as true. Implementations are advised not to emit such values.
 
-    This specification conforms to this advice; the [=prefetch=] algorithm does not emit non-boolean values.
+    This specification conforms to this advice; the [=start a referrer-initiated navigational prefetch=] algorithm does not emit non-boolean values.
   </div>
-
-<h2 id="sec-speculation-tags-header">The `Sec-Speculation-Tags` HTTP request header</h2>
-
-The \`<code><dfn http-header>Sec-Speculation-Tags</dfn></code>\` HTTP request header specifies the web developer-provided tags associated with the speculative navigation request. It can also be used to distinguish speculative navigation requests from other speculative requests, since [:Sec-Purpose:] can be sent by both categories of request.
-
-The header field is an [[RFC9651]] Structured Header whose value must be a [=structured header/List=]. The list can contain either [=structured header/Token=] or [=structured header/String=] values. String values represent developer-provided tags, whereas token values represent predefined tags. As of now, the only predefined tag is `null`, which indicates a speculative navigation request with no developer-defined tag.
 
 <h2 id="security-considerations">Security considerations</h2>
 
-See <a href="speculation-rules.html#security-considerations">Security considerations (Speculation Rules)</a>.
-
-For the integration of this spec with No-Vary-Search, see <a href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-security-considerations">No-Vary-Search Security considerations</a>.
+See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-security">the HTML Standard</a>.
 
 <h2 id="privacy-considerations">Privacy considerations</h2>
 
-See <a href="speculation-rules.html#privacy-considerations">Privacy considerations (Speculation Rules)</a>.
-
-For the integration of this spec with No-Vary-Search, see <a href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-privacy-considerations">No-Vary-Search Privacy considerations</a>.
+See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-privacy">the HTML Standard</a>.
