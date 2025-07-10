@@ -94,6 +94,7 @@ spec: nav-speculation; urlPrefix: prefetch.html
     text: wait for a matching prefetch record; url: wait-for-a-matching-prefetch-record
     text: has a matching prefetch record
     for: prefetch record
+      text: source
       text: prerendering traversable
       text: prerendering target navigable name hint
     for: has a matching prefetch record
@@ -255,7 +256,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
 
-  1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |startingURL|, [=prefetch record/anonymization policy=] is null, [=prefetch record/referrer policy=] is the empty string, [=prefetch record/No-Vary-Search hint=] is the [=default URL search variance=], [=prefetch record/label=] is "`browser UI`", and [=prefetch record/prerendering traversable=] is |prerenderingTraversable|.
+  1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |startingURL|, [=prefetch record/anonymization policy=] is null, [=prefetch record/referrer policy=] is the empty string, [=prefetch record/No-Vary-Search hint=] is the [=default URL search variance=], [=prefetch record/source=] is "`browser UI`", and [=prefetch record/prerendering traversable=] is |prerenderingTraversable|.
 
   1. [=Prefetch=] given |prerenderingTraversable|'s [=navigable/active document=] and |prefetchRecord|.
 
@@ -281,7 +282,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 </div>
 
 <div>
-  To <dfn export>start referrer-initiated prerendering</dfn> given a {{Document}} |referrerDoc| and a [=prefetch record=] |prefetchRecord|:
+  To <dfn export>start a referrer-initiated navigational prerender</dfn> given a {{Document}} |referrerDoc| and a [=prefetch record=] |prefetchRecord|:
 
   1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
@@ -1064,7 +1065,7 @@ More complicated cases:
 
 <h2 id="security-considerations">Security considerations</h2>
 
-See <a href="speculation-rules.html#security-considerations">Security considerations (Speculation Rules)</a>.
+See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-security">the HTML Standard</a>.
 
 For the integration of this spec with No-Vary-Search, see <a href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-security-considerations">No-Vary-Search Security considerations</a>.
 
@@ -1072,7 +1073,7 @@ For the integration of this spec with No-Vary-Search, see <a href="https://httpw
 
 <h2 id="privacy-considerations">Privacy considerations</h2>
 
-See <a href="speculation-rules.html#privacy-considerations">Privacy considerations (Speculation Rules)</a>.
+See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-privacy">the HTML Standard</a>.
 
 For the integration of this spec with No-Vary-Search, see <a href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-privacy-considerations">No-Vary-Search Privacy considerations</a>.
 
