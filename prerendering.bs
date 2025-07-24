@@ -258,7 +258,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
   1. Let |prefetchRecord| be a new [=prefetch record=] whose [=prefetch record/URL=] is |startingURL|, [=prefetch record/anonymization policy=] is null, [=prefetch record/referrer policy=] is the empty string, [=prefetch record/No-Vary-Search hint=] is the [=default URL search variance=], [=prefetch record/source=] is "`browser UI`", and [=prefetch record/prerendering traversable=] is |prerenderingTraversable|.
 
-  1. [=Prefetch=] given |prerenderingTraversable|'s [=navigable/active document=] and |prefetchRecord|.
+  1. [=Start a referrer-initiated navigational prefetch=] given |prerenderingTraversable|'s [=navigable/active document=] and |prefetchRecord|.
 
   1. [=Navigate=] |prerenderingTraversable| to |startingURL| using |prerenderingTraversable|'s [=navigable/active document=].
 
@@ -316,7 +316,7 @@ Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which
 
      <p class="note">As with all [=top-level traversables=], the [=prerendering traversable=] can be [=destroy a top-level traversable|destroyed=] for any reason, for example if it becomes unresponsive, performs a restricted operation, or if the user agent believes prerendering takes too many resources. In such cases, the [=prefetch record=] will remain, so it can be used to fulfill future navigations, even if the [=prerendering traversable=] has been destroyed.
 
-  1. [=Prefetch=] given |referrerDoc| and |prefetchRecord|.
+  1. [=Start a referrer-initiated navigational prefetch=] given |referrerDoc| and |prefetchRecord|.
 
   1. [=Navigate=] |prerenderingTraversable| to |prefetchRecord|'s [=prefetch record/URL=] using |referrerDoc|, with <i>[=navigate/referrerPolicy=]</i> set to |prefetchRecord|'s [=prefetch record/referrer policy=].
 </div>
