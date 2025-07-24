@@ -22,10 +22,10 @@ It is important to be clear on which page supplies the header. In a setup like t
 
 ```mermaid
 graph LR
-    A[Page A] -->|prerenders| B[Page B]
+    A["Page A (example.com)"] -->|prerenders| B["Page B (sub.example.com)"]
 
-    subgraph B [Page B]
-        C[Page C<br/>iframe]
+    subgraph B ["Page B (sub.example.com)"]
+        C["Page C (other.example)<br>iframe"]
     end
 ```
 
@@ -48,7 +48,7 @@ This proposal leans on the [existing `Supports-Loading-Mode` header](./opt-in.md
 Supports-Loading-Mode: credentialed-prerender, prerender-cross-origin-frames
 ```
 
-This would be useful if, e.g., page B were same-site cross-origin from page A, and page B also wanted the page C iframe to be prerendered.
+This would be useful if, e.g., page B were same-site cross-origin from page A, and page B also wanted the page C iframe to be prerendered. (Our example setup in the diagram, which uses `example.com` for page A and `sub.example.com` for page B, is one such case.)
 
 ### Effect on the prerendered iframes
 
