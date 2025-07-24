@@ -60,7 +60,7 @@ With this header, cross-origin iframes experience the prerendering state in the 
 
 Although most of our discussion here is in terms of "iframes", in reality we want to treat all "nested navigables" the same way. So, the opt-in here also affects `<embed>`, `<object>`, and even `<frame>`s in a `<frameset>`.
 
-`<iframe>`s using the `sandbox=""` attribute, or frames whose URL is a `data:` URL, are cross-origin by default. Thus, putting this opt-in on the hosting page will cause those iframes to load, whereas they would not before.
+`<iframe>`s using the `sandbox=""` attribute, or frames whose URLs are `data:` URLs, are cross-origin by default. Thus, putting this opt-in on the hosting page will cause those iframes to load, whereas they would not before.
 
 `<iframe>`s using the `srcdoc=""` attribute are not, by default, cross-origin, and so will be loaded even without this opt-in. (Unless they are using the `sandbox=""` attribute!)
 
