@@ -34,6 +34,7 @@ This is an [HTTP structured header][http-structured-header] which lists tokens i
 * `uncredentialed-prefetch`
 * `uncredentialed-prerender`
 * `credentialed-prerender`
+* `prerender-cross-origin-iframes`
 
 ## Use cases
 
@@ -67,6 +68,10 @@ _Note: as indicated previously, the first case here is not yet implemented in Ch
 
 With this framework in place, by default, Bob's Star Wars Fan Site's attempt to prerender the List of Best Star Wars Movies document will fail and have no effect. And eventually, `https://docs.example.com/` might update their code to be prerendering aware, by not modifying the user's list of recently-viewed documents while prerendering. Once they've made such updates, `https://docs.example.com/` can add the `Supports-Loading-Mode: credentialed-prerender` header, and now the prerendering will work—giving a fast navigation from Bob's Star Wars Fan Site, with no unintended side effects.
 
+### Prerendering cross-origin iframes
+
+See [the dedicated explainer](./prerendering-cross-origin-iframes.md).
+
 ### Non-preloading cases
 
 There are other contexts on the web platform where novel loading modes are introduced. One of these is [fenced frames](https://github.com/WICG/fenced-frame), which also will use the `Supports-Loading-Mode` opt-in.
@@ -85,14 +90,6 @@ We believe it would also be possible to have a `<meta>` version of this opt-in, 
 This would be processed only if it appears within the `<head>` element and no `<script>`, `<noscript>` or `<template>` tag appears before it. This means that the supported loading modes, if not declared in a response header, can be statically computed with use of an HTML parser without rendering or script execution. See [the meta processing model](./meta-processing.md) for details.
 
 The main advantage here is that this may be easier to adopt. In order to make as much content as possible available for uncredentialed preloading, we would like to make it as easy as possible for authors to mark eligible content. We have heard from developers that many of them find it much easier to deploy changes that only affect content than changes which also require server behavior changes, even relatively straightforward ones. For example, these may be managed by different teams or not be possible at all. One example here is that GitHub Pages doesn't allow users to set response headers.
-
-### Application to subframes while prerendering
-
-Currently while prerendering, the loading of all cross-origin subframes are delayed. This prevents attacks similar to those described [above](#cross-origin-same-site-prerender). But of course, it has the cost that some of the benefits of prerendering are absent for such pages.
-
-We could use `Supports-Loading-Mode` to allow subframes to indicate they are OK with being prerendered, using either the `credentialed-prerender` or `uncredentialed-prerender` variants.
-
-It's not 100% clear this is necessary, because after [storage partitioning](https://github.com/privacycg/storage-partitioning/), the "attacks" on these cross-origin subframes would actually be on the subframe origin's partition within the top-level prerendered origin. Arguably, the top-level prerendered origin could be the one making decisions on behalf of its sub-partitions. If we want to start un-delaying cross-origin subframes in the future, we'll need to consider this question more carefully, and discuss it with the storage partitioning community.
 
 ## Redirect handling
 
