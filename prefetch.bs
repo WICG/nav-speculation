@@ -161,6 +161,10 @@ spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-h
     text: No-Vary-Search; url: name-http-header-field-definitio
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
+spec: WEBDRIVER; urlPrefix: https://w3c.github.io/webdriver/
+  type: dfn
+    text: error; url: dfn-errors
+    text: local end; url: dfn-local-ends
 </pre>
 
 <style>
@@ -962,6 +966,81 @@ The following parameters are defined for the `prefetch` token:
 
     This specification conforms to this advice; the [=start a referrer-initiated navigational prefetch=] algorithm does not emit non-boolean values.
   </div>
+
+<h2 id="automated-testing">Automated testing</h2>
+
+For the purposes of user-agent automation and application testing, this document defines extensions to the [[WebDriver-BiDi]] specification.
+
+<div class="issue">CDDL snippets use the "text" type instead of "browsingContext.BrowsingContext" to allow indepedent programmatic processing of CDDL snippets. Currently, other modules cannot be referenced.</div>
+
+<h3 id="speculation-module">The speculation module</h3>
+
+The speculation module contains commands for managing the remote end behavior for prefetches, prerenders, and speculation rules.
+
+<h3 id="speculation-module-definitions">Definitions</h3>
+
+{^Remote end definition^} and {^local end definition^}
+
+<pre class="cddl" data-cddl-module="remote-cddl,local-cddl">
+speculation.PreloadingStatus = "Pending" / "Running" / "Ready" / "Success" /
+                   "Failure" / "NotSupported"
+</pre>
+
+The <code>speculation.PreloadingStatus</code> type represents the different types of preloading statuses. This status is shared by prefetches and prerenders.
+
+"`Pending`" status is defined when preloading is triggered. Mainly used for prerenders.
+
+"`Running`" status is defined when a [=prefetch record=] |prefetchRecord| begins to [=start a referrer-initiated navigational prefetch=].
+
+"`Ready`" status is defined when a [=prefetch record=] |prefetchRecord| is [=prefetch record/complete=].
+
+"`Success`" status is defined when a [=prefetch record=] |prefetchRecord| is activated, such as from the user agent's navigation.
+
+"`Failure`" status is defined when a [=prefetch record=] |prefetchRecord| has failed, such as when the |prefetchRecord| expires.
+
+"`NotSupported`" status is defined when a [=prefetch record=] |prefetchRecord| is ineligble to [=start a referrer-initiated navigational prefetch=].
+
+<h3 id="speculation-module-events">Events</h3>
+
+<pre highlight="cddl" class="cddl" data-cddl-module="remote-cddl,local-cddl">
+SpeculationEvent = (
+  speculation.PrefetchStatusUpdated
+)
+</pre>
+
+<h4 id="speculation-prefetchstatusupdated-event">The speculation.prefetchStatusUpdated Event</h4>
+
+<pre highlight="cddl" class="cddl" data-cddl-module="local-cddl">
+speculation.PrefetchStatusUpdated = (
+   method: "speculation.prefetchStatusUpdated",
+   params: speculation.PrefetchStatusUpdatedParameters
+)
+
+speculation.PrefetchStatusUpdatedParameters = {
+   initiatingFrameId: text,  
+   url: text,
+   status: speculation.PreloadingStatus
+}
+</pre>
+
+<div algorithm="remote end event trigger for speculation.prefetchStatusUpdated">
+To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, a string |url|, and a |prefetchRecord|:
+
+1. Let <var ignore>initiatingFrameId</var> be the [=top-level traversable=] |navigable|'s [=navigable id=].
+1. Let |url| be the |prefetchRecord|'s [=prefetch record/URL=].
+1. Let |status| be null.
+1. Given a |prefetchRecord|'s [=prefetch record/state=]:
+    1. If |prefetchRecord|'s [=prefetch record/state=] is "`completed`":
+        1. If user agent navigated to prerenderingNavigable/traversable then set |status| to "Success".
+        1. Else set |status| to "Ready".
+    1. If |prefetchRecord|'s [=prefetch record/state=] is "`ongoing`", then set |status| to "Running".
+    1. If |prefetchRecord|'s [=prefetch record/state=] is "`canceled`", then set |status| to "Failure".
+    1. Else set |status| to "NotSupported".
+1. Let |relatedNavigables| be a [=/set=] containing |navigable|.
+1. For each |session| in the [=set of sessions for which an event is enabled=] given "<code>speculation.prefetchStatusUpdated</code>" and |relatedNavigables|:
+    1. [=Emit an event=] with |session| and <var ignore>body</var>.
+
+</div>
 
 <h2 id="security-considerations">Security considerations</h2>
 
