@@ -28,7 +28,7 @@ spec: PRERENDERING-REVAMPED; urlPrefix: https://wicg.github.io/nav-speculation/p
     text: start a referrer-initiated navigational prerender
 spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
   type: dfn
-    text: collecting tags for matching speculative load candidates; url: collecting-tags-for-matching-speculative-load-candidates
+    text: collecting tags from speculative load candidates; url: collect-tags-from-speculative-load-candidates
     text: compute a speculative load referrer policy; url: compute-speculative-load-referrer-policy
     text: finding matching links; url: finding-matching-links
     text: inner consider speculative loads steps; url: inner-consider-speculative-loads-steps
@@ -49,6 +49,7 @@ spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
       text: referrer policy; url: sr-referrer-policy
       text: tags; url: sr-tags
       text: No-Vary-Search hint; url: sr-nvs-hint
+      text: requirements; url: sr-requirements
     for: speculation rule set
       text: prefetch rules; url: sr-set-prefetch
     for: speculative load candidate
@@ -126,6 +127,8 @@ Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
   * Remove the <var ignore>typesToTreatAsPrefetch</var> construct, and instead parse |parsed|["`prerender`"] into the [=speculation rule set/prerender rules=] list, in an identical manner to what is done for |parsed|["`prefetch`"] and the [=speculation rule set/prefetch rules=].
 
   * Discard rules parsed from |parsed|["`prefetch`"] if the [=speculation rule/target navigable name hint=] is not null.
+
+  * Discard rules parsed from |parsed|["`prerender`"] if the [=speculation rule/requirements=] contain "`anonymous-client-ip-when-cross-origin`".
 
   <p class="note">Implementations will still be allowed to treat prerender candidates as prefetches, per the modifications in [[#speculation-rules-processing]].</p>
 </div>
@@ -213,17 +216,19 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
   Update subsequent steps for canceling not-still-being-speculated [=prefetch records=] to operate on |speculativeLoadCandidates| instead of |prefetchCandidates|.
 
-  Replace the step which performs the actual prefetching by looping over |prefetchCandidates| with the following:
+  Create a list |prerenderCandidateGroups| in an analogous way to |prefetchCandidateGroups|, but using |prerenderCandidates| instead of |prefetchCandidates|.
 
-  1. [=list/For each=] |candidate| of |speculativeLoadCandidates|:
+  Replace the step which performs the actual prefetching by looping over |prefetchCandidateGroups| with the following:
+
+  1. Let |speculativeLoadCandidateGroups| be the union of |prefetchCandidateGroups| and |prerenderCandidateGroups|.
+
+  1. [=list/For each=] |group| of |speculativeLoadCandidateGroups|:
 
     1. The user agent may run the following steps:
 
-      1. Let |tagCandidates| be |speculativeLoadCandidates|.
+      1. Let |candidate| be |group|[0].
 
-      1. If |candidate| is a [=prerender candidate=], then set |tagCandidates| to |prerenderCandidates|.
-
-      1. Let |tagsToSend| be the result of [=collecting tags for matching speculative load candidates=] given |candidate| and |tagCandidates|.
+      1. Let |tagsToSend| be the result of [=collecting tags from speculative load candidates=] given |group|.
 
       1. Let |prefetchRecord| be a new [=prefetch record=] with
 
@@ -248,11 +253,13 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
       1. If |candidate| is a [=prerender candidate=], then the user agent may run the following steps:
 
-        1. Set |prefetchRecord|'s [=prefetch record/prerendering traversable=] to "`to be created`"
+        1. Set |prefetchRecord|'s [=prefetch record/prerendering traversable=] to "`to be created`".
 
         1. Set |prefetchRecord|'s [=prefetch record/prerendering target navigable name hint=] to |candidate|'s [=prerender candidate/target navigable name hint=].
 
         1. [=Start a referrer-initiated navigational prerender=] given |document| and |prefetchRecord|.
 
       1. If the user agent did not run the previous step, then [=start a referrer-initiated navigational prefetch=] given |document| and |prefetchRecord|.
+
+      (And keep the subsequent discussion of when to execute this "may" step.)
 </div>
