@@ -4,7 +4,7 @@
   <title>Speculation Rules</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 7a96e07ec, updated Mon Jul 14 11:12:36 2025 -0700" name="generator">
+  <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/speculation-rules.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -647,7 +647,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2025-07-27">27 July 2025</time></p>
+    <time class="dt-updated" datetime="2025-08-19">19 August 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -730,6 +730,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>Remove the <var>typesToTreatAsPrefetch</var> construct, and instead parse <var>parsed</var>["<code>prerender</code>"] into the <a data-link-type="dfn" href="#speculation-rule-set-prerender-rules" id="ref-for-speculation-rule-set-prerender-rules">prerender rules</a> list, in an identical manner to what is done for <var>parsed</var>["<code>prefetch</code>"] and the <a data-link-type="dfn" href="https://whatpr.org/html/11426/speculative-loading.html#sr-set-prefetch" id="ref-for-sr-set-prefetch">prefetch rules</a>.</p>
      <li data-md>
       <p>Discard rules parsed from <var>parsed</var>["<code>prefetch</code>"] if the <a data-link-type="dfn" href="#speculation-rule-target-navigable-name-hint" id="ref-for-speculation-rule-target-navigable-name-hint">target navigable name hint</a> is not null.</p>
+     <li data-md>
+      <p>Discard rules parsed from <var>parsed</var>["<code>prerender</code>"] if the <a data-link-type="dfn" href="https://whatpr.org/html/11426/speculative-loading.html#sr-requirements" id="ref-for-sr-requirements">requirements</a> contain "<code>anonymous-client-ip-when-cross-origin</code>".</p>
     </ul>
     <p class="note" role="note">Implementations will still be allowed to treat prerender candidates as prefetches, per the modifications in <a href="#speculation-rules-processing">§ 3 Processing model</a>.</p>
    </div>
@@ -852,20 +854,21 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       <p>Let <var>speculativeLoadCandidates</var> be the union of <var>prefetchCandidates</var> and <var>prerenderCandidates</var>.</p>
     </ol>
     <p>Update subsequent steps for canceling not-still-being-speculated <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record" id="ref-for-prefetch-record">prefetch records</a> to operate on <var>speculativeLoadCandidates</var> instead of <var>prefetchCandidates</var>.</p>
-    <p>Replace the step which performs the actual prefetching by looping over <var>prefetchCandidates</var> with the following:</p>
+    <p>Create a list <var>prerenderCandidateGroups</var> in an analogous way to <var>prefetchCandidateGroups</var>, but using <var>prerenderCandidates</var> instead of <var>prefetchCandidates</var>.</p>
+    <p>Replace the step which performs the actual prefetching by looping over <var>prefetchCandidateGroups</var> with the following:</p>
     <ol>
      <li data-md>
-      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <var>candidate</var> of <var>speculativeLoadCandidates</var>:</p>
+      <p>Let <var>speculativeLoadCandidateGroups</var> be the union of <var>prefetchCandidateGroups</var> and <var>prerenderCandidateGroups</var>.</p>
+     <li data-md>
+      <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-iterate" id="ref-for-list-iterate④">For each</a> <var>group</var> of <var>speculativeLoadCandidateGroups</var>:</p>
       <ol>
        <li data-md>
         <p>The user agent may run the following steps:</p>
         <ol>
          <li data-md>
-          <p>Let <var>tagCandidates</var> be <var>speculativeLoadCandidates</var>.</p>
+          <p>Let <var>candidate</var> be <var>group</var>[0].</p>
          <li data-md>
-          <p>If <var>candidate</var> is a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate②">prerender candidate</a>, then set <var>tagCandidates</var> to <var>prerenderCandidates</var>.</p>
-         <li data-md>
-          <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="https://whatpr.org/html/11426/speculative-loading.html#collecting-tags-for-matching-speculative-load-candidates" id="ref-for-collecting-tags-for-matching-speculative-load-candidates">collecting tags for matching speculative load candidates</a> given <var>candidate</var> and <var>tagCandidates</var>.</p>
+          <p>Let <var>tagsToSend</var> be the result of <a data-link-type="dfn" href="https://whatpr.org/html/11426/speculative-loading.html#collect-tags-from-speculative-load-candidates" id="ref-for-collect-tags-from-speculative-load-candidates">collecting tags from speculative load candidates</a> given <var>group</var>.</p>
          <li data-md>
           <p>Let <var>prefetchRecord</var> be a new <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record" id="ref-for-prefetch-record①">prefetch record</a> with</p>
           <dl class="props">
@@ -888,10 +891,10 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p>If <var>candidate</var> is a <a data-link-type="dfn" href="https://whatpr.org/html/11426/speculative-loading.html#prefetch-candidate" id="ref-for-prefetch-candidate">prefetch candidate</a>, then set <var>prefetchRecord</var>’s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy">anonymization policy</a> to <var>candidate</var>’s <a data-link-type="dfn" href="https://whatpr.org/html/11426/speculative-loading.html#sl-candidate-anonymization-policy" id="ref-for-sl-candidate-anonymization-policy">anonymization policy</a>.</p>
          <li data-md>
-          <p>If <var>candidate</var> is a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate③">prerender candidate</a>, then the user agent may run the following steps:</p>
+          <p>If <var>candidate</var> is a <a data-link-type="dfn" href="#prerender-candidate" id="ref-for-prerender-candidate②">prerender candidate</a>, then the user agent may run the following steps:</p>
           <ol>
            <li data-md>
-            <p>Set <var>prefetchRecord</var>’s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-prerendering-traversable" id="ref-for-prefetch-record-prerendering-traversable">prerendering traversable</a> to "<code>to be created</code>"</p>
+            <p>Set <var>prefetchRecord</var>’s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-prerendering-traversable" id="ref-for-prefetch-record-prerendering-traversable">prerendering traversable</a> to "<code>to be created</code>".</p>
            <li data-md>
             <p>Set <var>prefetchRecord</var>’s <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-prerendering-target-navigable-name-hint" id="ref-for-prefetch-record-prerendering-target-navigable-name-hint">prerendering target navigable name hint</a> to <var>candidate</var>’s <a data-link-type="dfn" href="#prerender-candidate-target-navigable-name-hint" id="ref-for-prerender-candidate-target-navigable-name-hint②">target navigable name hint</a>.</p>
            <li data-md>
@@ -900,6 +903,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
          <li data-md>
           <p>If the user agent did not run the previous step, then <a data-link-type="dfn" href="https://wicg.github.io/nav-speculation/prefetch.html#start-a-referrer-initiated-navigational-prefetch" id="ref-for-start-a-referrer-initiated-navigational-prefetch">start a referrer-initiated navigational prefetch</a> given <var>document</var> and <var>prefetchRecord</var>.</p>
         </ol>
+        <p>(And keep the subsequent discussion of when to execute this "may" step.)</p>
       </ol>
     </ol>
    </div>
@@ -928,7 +932,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="5a57d186">anonymization policy</span>
-     <li><span class="dfn-paneled" id="6803f5d6">collecting tags for matching speculative load candidates</span>
+     <li><span class="dfn-paneled" id="769b0f6e">collecting tags from speculative load candidates</span>
      <li><span class="dfn-paneled" id="e535a7f6">compute a speculative load referrer policy</span>
      <li><span class="dfn-paneled" id="3637d409">eagerness <small>(for speculation rule)</small></span>
      <li><span class="dfn-paneled" id="a16866c7">eagerness <small>(for speculative load candidate)</small></span>
@@ -943,6 +947,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="c8c44926">prefetch candidate</span>
      <li><span class="dfn-paneled" id="6393b8ef">prefetch rules</span>
      <li><span class="dfn-paneled" id="f64cd240">referrer policy</span>
+     <li><span class="dfn-paneled" id="ea540423">requirements</span>
      <li><span class="dfn-paneled" id="7684ffde">speculation rule</span>
      <li><span class="dfn-paneled" id="980dda1d">speculation rule set</span>
      <li><span class="dfn-paneled" id="a4d78a5c">speculation rule sets</span>
@@ -1220,10 +1225,10 @@ let dfnPanelData = {
 "631182ca": {"dfnID":"631182ca","dfnText":"inner consider speculative loads steps","external":true,"refSections":[{"refs":[{"id":"ref-for-inner-consider-speculative-loads-steps"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#inner-consider-speculative-loads-steps"},
 "6393b8ef": {"dfnID":"6393b8ef","dfnText":"prefetch rules","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-set-prefetch"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sr-set-prefetch"},
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"}],"title":"2. Parsing"},{"refs":[{"id":"ref-for-list\u2460"}],"title":"3. Processing model"}],"url":"https://infra.spec.whatwg.org/#list"},
-"6803f5d6": {"dfnID":"6803f5d6","dfnText":"collecting tags for matching speculative load candidates","external":true,"refSections":[{"refs":[{"id":"ref-for-collecting-tags-for-matching-speculative-load-candidates"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#collecting-tags-for-matching-speculative-load-candidates"},
 "6da138da": {"dfnID":"6da138da","dfnText":"source","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-source"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-source"},
 "71b534e4": {"dfnID":"71b534e4","dfnText":"parse a speculation rule","external":true,"refSections":[{"refs":[{"id":"ref-for-speculation-rule"},{"id":"ref-for-speculation-rule\u2460"},{"id":"ref-for-speculation-rule\u2461"},{"id":"ref-for-speculation-rule\u2462"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#speculation-rule"},
 "7684ffde": {"dfnID":"7684ffde","dfnText":"speculation rule","external":true,"refSections":[{"refs":[{"id":"ref-for-speculation-rule"},{"id":"ref-for-speculation-rule\u2460"},{"id":"ref-for-speculation-rule\u2461"},{"id":"ref-for-speculation-rule\u2462"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#speculation-rule"},
+"769b0f6e": {"dfnID":"769b0f6e","dfnText":"collecting tags from speculative load candidates","external":true,"refSections":[{"refs":[{"id":"ref-for-collect-tags-from-speculative-load-candidates"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#collect-tags-from-speculative-load-candidates"},
 "86e3118f": {"dfnID":"86e3118f","dfnText":"tags","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-tags"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-tags"},
 "87c3c6f6": {"dfnID":"87c3c6f6","dfnText":"anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-anonymization-policy"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-anonymization-policy"},
 "91dda5f9": {"dfnID":"91dda5f9","dfnText":"prerendering traversable","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-prerendering-traversable"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-prerendering-traversable"},
@@ -1242,9 +1247,10 @@ let dfnPanelData = {
 "c88f3887": {"dfnID":"c88f3887","dfnText":"item","external":true,"refSections":[{"refs":[{"id":"ref-for-struct-item"},{"id":"ref-for-struct-item\u2460"}],"title":"2. Parsing"},{"refs":[{"id":"ref-for-struct-item\u2461"}],"title":"3. Processing model"}],"url":"https://infra.spec.whatwg.org/#struct-item"},
 "c8c44926": {"dfnID":"c8c44926","dfnText":"prefetch candidate","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#prefetch-candidate"},
 "e535a7f6": {"dfnID":"e535a7f6","dfnText":"compute a speculative load referrer policy","external":true,"refSections":[{"refs":[{"id":"ref-for-compute-speculative-load-referrer-policy"},{"id":"ref-for-compute-speculative-load-referrer-policy\u2460"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#compute-speculative-load-referrer-policy"},
+"ea540423": {"dfnID":"ea540423","dfnText":"requirements","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-requirements"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sr-requirements"},
 "ed08d686": {"dfnID":"ed08d686","dfnText":"tags (for speculation rule)","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-tags"},{"id":"ref-for-sr-tags\u2460"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sr-tags"},
 "f64cd240": {"dfnID":"f64cd240","dfnText":"referrer policy","external":true,"refSections":[{"refs":[{"id":"ref-for-sl-candidate-referrer-policy"},{"id":"ref-for-sl-candidate-referrer-policy\u2460"},{"id":"ref-for-sl-candidate-referrer-policy\u2461"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sl-candidate-referrer-policy"},
-"prerender-candidate": {"dfnID":"prerender-candidate","dfnText":"prerender candidate","external":false,"refSections":[{"refs":[{"id":"ref-for-prerender-candidate"},{"id":"ref-for-prerender-candidate\u2460"},{"id":"ref-for-prerender-candidate\u2461"},{"id":"ref-for-prerender-candidate\u2462"}],"title":"3. Processing model"}],"url":"#prerender-candidate"},
+"prerender-candidate": {"dfnID":"prerender-candidate","dfnText":"prerender candidate","external":false,"refSections":[{"refs":[{"id":"ref-for-prerender-candidate"},{"id":"ref-for-prerender-candidate\u2460"},{"id":"ref-for-prerender-candidate\u2461"}],"title":"3. Processing model"}],"url":"#prerender-candidate"},
 "prerender-candidate-target-navigable-name-hint": {"dfnID":"prerender-candidate-target-navigable-name-hint","dfnText":"target navigable name hint","external":false,"refSections":[{"refs":[{"id":"ref-for-prerender-candidate-target-navigable-name-hint"},{"id":"ref-for-prerender-candidate-target-navigable-name-hint\u2460"},{"id":"ref-for-prerender-candidate-target-navigable-name-hint\u2461"}],"title":"3. Processing model"}],"url":"#prerender-candidate-target-navigable-name-hint"},
 "speculation-rule-set-prerender-rules": {"dfnID":"speculation-rule-set-prerender-rules","dfnText":"prerender rules","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-set-prerender-rules"}],"title":"2. Parsing"},{"refs":[{"id":"ref-for-speculation-rule-set-prerender-rules\u2460"}],"title":"3. Processing model"}],"url":"#speculation-rule-set-prerender-rules"},
 "speculation-rule-target-navigable-name-hint": {"dfnID":"speculation-rule-target-navigable-name-hint","dfnText":"target navigable name hint","external":false,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-target-navigable-name-hint"},{"id":"ref-for-speculation-rule-target-navigable-name-hint\u2460"}],"title":"2. Parsing"},{"refs":[{"id":"ref-for-speculation-rule-target-navigable-name-hint\u2461"},{"id":"ref-for-speculation-rule-target-navigable-name-hint\u2462"}],"title":"3. Processing model"}],"url":"#speculation-rule-target-navigable-name-hint"},
@@ -1653,7 +1659,7 @@ let refsData = {
 "https://infra.spec.whatwg.org/#struct": {"displayText":"struct","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"struct","type":"dfn","url":"https://infra.spec.whatwg.org/#struct"},
 "https://infra.spec.whatwg.org/#struct-item": {"displayText":"item","export":true,"for_":["struct","tuple"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"item","type":"dfn","url":"https://infra.spec.whatwg.org/#struct-item"},
 "https://whatpr.org/html/11426/semantics.html#get-an-element's-target": {"displayText":"get an element's target","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"get an element's target","type":"dfn","url":"https://whatpr.org/html/11426/semantics.html#get-an-element's-target"},
-"https://whatpr.org/html/11426/speculative-loading.html#collecting-tags-for-matching-speculative-load-candidates": {"displayText":"collecting tags for matching speculative load candidates","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"collecting tags for matching speculative load candidates","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#collecting-tags-for-matching-speculative-load-candidates"},
+"https://whatpr.org/html/11426/speculative-loading.html#collect-tags-from-speculative-load-candidates": {"displayText":"collecting tags from speculative load candidates","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"collecting tags from speculative load candidates","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#collect-tags-from-speculative-load-candidates"},
 "https://whatpr.org/html/11426/speculative-loading.html#compute-speculative-load-referrer-policy": {"displayText":"compute a speculative load referrer policy","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"compute a speculative load referrer policy","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#compute-speculative-load-referrer-policy"},
 "https://whatpr.org/html/11426/speculative-loading.html#document-sr-sets": {"displayText":"speculation rule sets","export":true,"for_":["Document"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"speculation rule sets","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#document-sr-sets"},
 "https://whatpr.org/html/11426/speculative-loading.html#finding-matching-links": {"displayText":"finding matching links","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"finding matching links","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#finding-matching-links"},
@@ -1671,6 +1677,7 @@ let refsData = {
 "https://whatpr.org/html/11426/speculative-loading.html#sr-eagerness": {"displayText":"eagerness","export":true,"for_":["speculation rule"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"eagerness","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#sr-eagerness"},
 "https://whatpr.org/html/11426/speculative-loading.html#sr-nvs-hint": {"displayText":"No-Vary-Search hint","export":true,"for_":["speculation rule"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"no-vary-search hint","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#sr-nvs-hint"},
 "https://whatpr.org/html/11426/speculative-loading.html#sr-predicate": {"displayText":"predicate","export":true,"for_":["speculation rule"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"predicate","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#sr-predicate"},
+"https://whatpr.org/html/11426/speculative-loading.html#sr-requirements": {"displayText":"requirements","export":true,"for_":["speculation rule"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"requirements","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#sr-requirements"},
 "https://whatpr.org/html/11426/speculative-loading.html#sr-set-prefetch": {"displayText":"prefetch rules","export":true,"for_":["speculation rule set"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"prefetch rules","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#sr-set-prefetch"},
 "https://whatpr.org/html/11426/speculative-loading.html#sr-tags": {"displayText":"tags","export":true,"for_":["speculation rule"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"tags","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#sr-tags"},
 "https://whatpr.org/html/11426/speculative-loading.html#sr-urls": {"displayText":"URLs","export":true,"for_":["speculation rule"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"urls","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#sr-urls"},
