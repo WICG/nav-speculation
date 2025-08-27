@@ -265,6 +265,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. [=fetch controller/Abort=] |prefetchRecord|'s [=prefetch record/fetch controller=]. <span class="note">This will cause any ongoing fetch to be canceled and yield a [=network error=].</span>
     1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is a [=traversable navigable=], then [=destroy a top-level traversable|destroy=] it.
     1. [=list/Remove=] |prefetchRecord| from |document|'s [=Document/prefetch records=].
+    1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/failure^}" status.
 
     <p class="note">This means that even a completed prefetch or prerender will not be activated. However, the process of prefetching or prerendering might have modified the HTTP cache, making subsequent navigations faster anyway.</p>
 </div>
@@ -277,6 +278,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
     1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] as |prefetchRecord| and whose [=prefetch record/state=] equals "`completed`".
     1. Set |prefetchRecord|'s [=prefetch record/state=] to "`completed`" and [=prefetch record/expiry time=] to |expiryTime|.
+    1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/ready^}" status.
 </div>
 
 <div algorithm>
@@ -294,12 +296,12 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |recordToUse| be |exactRecord| if |exactRecord| is not null, otherwise |inexactRecord|.
     1. If |recordToUse| is not null:
         1. Let |currentTime| be the [=current high resolution time=] for |navigable|'s [=navigable/active document=].
-        1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
+        1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|, return null and [=trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status
         1. [=list/For each=] |exchangeRecord| of |recordToUse|'s [=prefetch record/redirect chain=]:
-            1. If [=conflicting credentials exist=] for |exchangeRecord|'s [=exchange record/response=] given |navigable| and |recordToUse|'s [=prefetch record/source partition key=], return null.
+            1. If [=conflicting credentials exist=] for |exchangeRecord|'s [=exchange record/response=] given |navigable| and |recordToUse|'s [=prefetch record/source partition key=], return null and [=trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status
 
             <div class="note">This handles the case where there were no cross-partition credentials initially, but there are now. User agents could use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number.</div>
-
+        1. [=Trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/success^}" status.
         1. Return |recordToUse|.
     1. Return null.
 
@@ -860,6 +862,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
             <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
+        1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/pending^}" status.
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
             1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
             1. [=Assert=]: |navigationParams|'s [=navigation params/response=] is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
@@ -982,23 +985,21 @@ The speculation module contains commands for managing the remote end behavior fo
 {^Remote end definition^} and {^local end definition^}
 
 <pre class="cddl" data-cddl-module="remote-cddl,local-cddl">
-speculation.PreloadingStatus = "Pending" / "Running" / "Ready" / "Success" /
-                   "Failure" / "NotSupported"
+speculation.PreloadingStatus = "pending" / "ready" / "success" /
+                   "failure" / "not-supported"
 </pre>
 
 The <code>speculation.PreloadingStatus</code> type represents the different types of preloading statuses. This status is shared by prefetches and prerenders.
 
-"`Pending`" status is defined when preloading is triggered. Mainly used for prerenders.
+"<dfn cddl-value>pending</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| begins to [=start a referrer-initiated navigational prefetch=].
 
-"`Running`" status is defined when a [=prefetch record=] |prefetchRecord| begins to [=start a referrer-initiated navigational prefetch=].
+"<dfn cddl-value>ready</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| is [=prefetch record/complete=].
 
-"`Ready`" status is defined when a [=prefetch record=] |prefetchRecord| is [=prefetch record/complete=].
+"<dfn cddl-value>success</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| is activated, such as from the user agent's navigation.
 
-"`Success`" status is defined when a [=prefetch record=] |prefetchRecord| is activated, such as from the user agent's navigation.
+"<dfn cddl-value>failure</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| has failed, such as when the |prefetchRecord| expires.
 
-"`Failure`" status is defined when a [=prefetch record=] |prefetchRecord| has failed, such as when the |prefetchRecord| expires.
-
-"`NotSupported`" status is defined when a [=prefetch record=] |prefetchRecord| is ineligble to [=start a referrer-initiated navigational prefetch=].
+"<dfn cddl-value>not-supported</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| is ineligble to [=start a referrer-initiated navigational prefetch=].
 
 <h3 id="speculation-module-events">Events</h3>
 
@@ -1024,18 +1025,19 @@ speculation.PrefetchStatusUpdatedParameters = {
 </pre>
 
 <div algorithm="remote end event trigger for speculation.prefetchStatusUpdated">
-To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, a string |url|, and a |prefetchRecord|:
+To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, |prefetchRecord| and |preloadStatus|:
 
-1. Let <var ignore>initiatingFrameId</var> be the [=top-level traversable=] |navigable|'s [=navigable id=].
+1. Let |frameId| be |navigable|'s [=navigable/top-level traversable=]'s [=navigable id=].
 1. Let |url| be the |prefetchRecord|'s [=prefetch record/URL=].
 1. Let |status| be null.
-1. Given a |prefetchRecord|'s [=prefetch record/state=]:
-    1. If |prefetchRecord|'s [=prefetch record/state=] is "`completed`":
-        1. If user agent navigated to prerenderingNavigable/traversable then set |status| to "Success".
-        1. Else set |status| to "Ready".
-    1. If |prefetchRecord|'s [=prefetch record/state=] is "`ongoing`", then set |status| to "Running".
-    1. If |prefetchRecord|'s [=prefetch record/state=] is "`canceled`", then set |status| to "Failure".
-    1. Else set |status| to "NotSupported".
+1. If |prefetchRecord|'s [=prefetch record/state=] is "`completed`":
+1. If user agent navigated to prerenderingNavigable/traversable then set |status| to "{^speculation.PreloadingStatus/success^}".
+1. Else set |status| to "{^speculation.PreloadingStatus/ready^}".
+1. If |prefetchRecord|'s [=prefetch record/state=] is "`ongoing`", then set |status| to "{^speculation.PreloadingStatus/pending^}".
+1. If |prefetchRecord|'s [=prefetch record/state=] is "`canceled`", then set |status| to "{^speculation.PreloadingStatus/failure^}".
+1. Else set |status| to "{^speculation.PreloadingStatus/not-supported^}".
+1. Let |params| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production with the <code>initiatingFrameId</code> field set to |frameId|, the <code>url</code> field set to |url|, and the <code>status</code> field set to |status|.
+1. Let |body| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production, with the <code>params</code> field set to |params|.
 1. Let |relatedNavigables| be a [=/set=] containing |navigable|.
 1. For each |session| in the [=set of sessions for which an event is enabled=] given "<code>speculation.prefetchStatusUpdated</code>" and |relatedNavigables|:
     1. [=Emit an event=] with |session| and <var ignore>body</var>.
