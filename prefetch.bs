@@ -1025,7 +1025,7 @@ speculation.PrefetchStatusUpdatedParameters = {
 </pre>
 
 <div algorithm="remote end event trigger for speculation.prefetchStatusUpdated">
-To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, |prefetchRecord| and |preloadStatus|:
+To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, |prefetchRecord|, and "{^speculation.PreloadingStatus^}":
 
 1. Let |frameId| be |navigable|'s [=navigable/top-level traversable=]'s [=navigable id=].
 1. Let |url| be the |prefetchRecord|'s [=prefetch record/URL=].
@@ -1040,7 +1040,7 @@ To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |nav
 1. Let |body| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production, with the <code>params</code> field set to |params|.
 1. Let |relatedNavigables| be a [=/set=] containing |navigable|.
 1. For each |session| in the [=set of sessions for which an event is enabled=] given "<code>speculation.prefetchStatusUpdated</code>" and |relatedNavigables|:
-    1. [=Emit an event=] with |session| and <var ignore>body</var>.
+    1. [=Emit an event=] with |session| and |body|.
 
 </div>
 
