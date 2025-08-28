@@ -31,6 +31,7 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: check if unloading is user-canceled; url: browsing-the-web.html#checking-if-unloading-is-user-canceled
     text: create a new child navigable; url: document-sequences.html#create-a-new-child-navigable
     text: create a new top-level traversable; url: document-sequences.html#creating-a-new-top-level-traversable
+    text: create and initialize a Document object; url: document-lifecycle.html#initialise-the-document-object
     text: create navigation params by fetching; url: browsing-the-web.html#create-navigation-params-by-fetching
     text: current playback position; url: media.html#current-playback-position
     text: destroy a top-level traversable; url: document-sequences.html#destroy-a-top-level-traversable
@@ -52,11 +53,15 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     for: document state
       text: initiator origin; url: browsing-the-web.html#document-state-initiator-origin
     for: navigable
+      text: active document; url: document-sequences.html#nav-document
       text: ongoing navigation; url: browsing-the-web.html#ongoing-navigation
+      text: top-level traversable; url: document-sequences.html#nav-top
       text: parent; url: document-sequences.html#nav-parent
     for: navigate
       text: referrerPolicy; url: browsing-the-web.html#navigation-referrer-policy
     for: navigation params
+      text: navigable; url: browsing-the-web.html#navigation-params-navigable
+      text: origin; url: browsing-the-web.html#navigation-params-origin
       text: request; url: browsing-the-web.html#navigation-params-request
       text: response; url: browsing-the-web.html#navigation-params-response
     for: NavigationType
@@ -242,6 +247,8 @@ Every {{Document}} has a <dfn for="Document">post-prerendering activation steps 
 </dl>
 
 Every {{Document}} has an <dfn for="Document">activation start time</dfn>, which is initially a {{DOMHighResTimeStamp}} with a time value of zero.
+
+Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigation while prerendering</dfn>, which is a [=boolean=], and is initially false.
 
 <h3 id="prerendering-algorithms">Prerender algorithms</h3>
 
@@ -516,6 +523,8 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 
     1. If |navigable| is a [=top-level traversable=], then return null.
 
+    1. Otherwise, if |navigable|'s [=navigable/top-level traversable=]'s [=navigable/active document=]'s [=Document/allow cross origin iframes navigation while prerendering=] is true, return null.
+
     1. Otherwise, the user agent must wait to continue this algorithm until |navigable|'s [=navigable/loading mode=] becomes "`normal`". At any point during this wait (including immediately), it may instead choose to [=destroy a top-level traversable|destroy=] |navigable|'s [=top-level traversable=] and return null from this algorithm.
 
   Append the following steps toward the end of the algorithm, after the steps which check <var ignore>locationURL</var>:
@@ -527,6 +536,18 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
     1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">credentialed-prerender</a></code>\`, then return null.
 
        <p class="note">In the future we could possibly also allow the `uncredentialed-prerender` token to work here. However, since that is primarily intended for the cross site case, which isn't specified or implemented yet, we don't want to encourage its use in the wild, so for now we specify that prerendering fails if only the `uncredentialed-prerender` token is found.
+</div>
+
+<div algorithm="create and initialize a Document object patch">
+  In [=create and initialize a Document object=], add the following step after "If navigationParams's response has a `Refresh` header, then:":
+
+  1. If <var ignore>navigationParams</var>'[=navigation params/navigable=] is a [=prerendering navigable=], then:
+
+    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for <var ignore>response</var>.
+
+    1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">prerender-cross-origin-frames</a></code>\`, then return null.
+
+    1. Set <var ignore>Document</var>'s [=Document/allow cross origin iframes navigation while prerendering=] to true.
 </div>
 
 <div algorithm="attempt to populate the history entry's document patch">
@@ -712,6 +733,8 @@ In some cases, cross-origin web pages might not be prepared to be loaded in a no
 The \`<code><dfn export for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering navigable=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
 
 The \`<code><dfn export for="Supports-Loading-Mode">uncredentialed-prefetch</dfn></code>\` token indicates that the response is suitable to use even if a top-level navigation to this URL would ordinarily send [=credentials=] such as cookies. For instance, the response may be identical or it may be semantically equivalent (e.g., an HTML resource containing script which can update the document after navigation, when local user state is available).
+
+The \`<code><dfn export for="Supports-Loading-Mode">prerender-cross-origin-frames</dfn></code>\` token indicates that the response can be used to prerender all cross-origin iframes. Without this opt-in, such prerenders will be deffered, as outlined in [[#navigate-fetch-patch]].
 
 To <dfn export>get the supported loading modes</dfn> for a [=response=] |response|:
 
