@@ -16,6 +16,8 @@ Indent: 2
 Boilerplate: omit conformance
 </pre>
 <pre class="link-defaults">
+spec:html; type:element; text:a
+spec:html; type:element-attr; for:a; text:target
 </pre>
 <pre class="anchors">
 spec: PREFETCH; urlPrefix: https://wicg.github.io/nav-speculation/prefetch.html
@@ -30,6 +32,7 @@ spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
   type: dfn
     text: collecting tags from speculative load candidates; url: collect-tags-from-speculative-load-candidates
     text: compute a speculative load referrer policy; url: compute-speculative-load-referrer-policy
+    text: consider speculative loads; url: consider-speculative-loads
     text: finding matching links; url: finding-matching-links
     text: inner consider speculative loads steps; url: inner-consider-speculative-loads-steps
     text: parse a speculation rule set string; url: speculation-rule-set
@@ -263,3 +266,7 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
       (And keep the subsequent discussion of when to execute this "may" step.)
 </div>
+
+<h2 id="speculation-rules-triggering">Triggering</h2>
+
+Update the [=attribute change steps=] for <{a}> and <{area}> elements to also monitor the <{a/target}> attribute and [=consider speculative loads=] if it changes.
