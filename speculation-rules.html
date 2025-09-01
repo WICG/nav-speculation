@@ -647,7 +647,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <h1 class="p-name no-ref" id="title">Speculation Rules</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2025-08-28">28 August 2025</time></p>
+    <time class="dt-updated" datetime="2025-08-31">31 August 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -692,6 +692,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     <li><a href="#moving-to-html"><span class="secno">1</span> <span class="content">This specification is moving to HTML</span></a>
     <li><a href="#speculation-rules-parsing"><span class="secno">2</span> <span class="content">Parsing</span></a>
     <li><a href="#speculation-rules-processing"><span class="secno">3</span> <span class="content">Processing model</span></a>
+    <li><a href="#speculation-rules-triggering"><span class="secno">4</span> <span class="content">Triggering</span></a>
     <li>
      <a href="#index"><span class="secno"></span> <span class="content">Index</span></a>
      <ol class="toc">
@@ -907,6 +908,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
       </ol>
     </ol>
    </div>
+   <h2 class="heading settled" data-level="4" id="speculation-rules-triggering"><span class="secno">4. </span><span class="content">Triggering</span><a class="self-link" href="#speculation-rules-triggering"></a></h2>
+   <p>Update the <a data-link-type="dfn" href="https://dom.spec.whatwg.org/#concept-element-attributes-change-ext" id="ref-for-concept-element-attributes-change-ext">attribute change steps</a> for <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element" id="ref-for-the-a-element">a</a></code> and <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element" id="ref-for-the-area-element">area</a></code> elements to also monitor the <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-target" id="ref-for-attr-hyperlink-target">target</a></code> attribute and <a data-link-type="dfn" href="https://whatpr.org/html/11426/speculative-loading.html#consider-speculative-loads" id="ref-for-consider-speculative-loads">consider speculative loads</a> if it changes.</p>
   </main>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
   <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
@@ -929,11 +932,19 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="37e32f12">report a warning to the console</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[DOM]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="d1a6c008">attribute change steps</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[HTML]</a> defines the following terms:
     <ul>
+     <li><span class="dfn-paneled" id="68bf3d31">a</span>
      <li><span class="dfn-paneled" id="5a57d186">anonymization policy</span>
+     <li><span class="dfn-paneled" id="a1a807e5">area</span>
      <li><span class="dfn-paneled" id="769b0f6e">collecting tags from speculative load candidates</span>
      <li><span class="dfn-paneled" id="e535a7f6">compute a speculative load referrer policy</span>
+     <li><span class="dfn-paneled" id="e014bb81">consider speculative loads</span>
      <li><span class="dfn-paneled" id="3637d409">eagerness <small>(for speculation rule)</small></span>
      <li><span class="dfn-paneled" id="a16866c7">eagerness <small>(for speculative load candidate)</small></span>
      <li><span class="dfn-paneled" id="c6371648">finding matching links</span>
@@ -954,6 +965,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li><span class="dfn-paneled" id="c666e05d">speculative load candidate</span>
      <li><span class="dfn-paneled" id="ed08d686">tags <small>(for speculation rule)</small></span>
      <li><span class="dfn-paneled" id="5303d536">tags <small>(for speculative load candidate)</small></span>
+     <li><span class="dfn-paneled" id="9a8e15f0">target</span>
      <li><span class="dfn-paneled" id="c7c0dde1">url <small>(for HTMLHyperlinkElementUtils)</small></span>
      <li><span class="dfn-paneled" id="b141168a">URL <small>(for speculative load candidate)</small></span>
      <li><span class="dfn-paneled" id="a20ea266">URLs</span>
@@ -995,6 +1007,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   <dl>
    <dt id="biblio-console">[CONSOLE]
    <dd>Dominic Farolino; Robert Kowalski; Terin Stock. <a href="https://console.spec.whatwg.org/"><cite>Console Standard</cite></a>. Living Standard. URL: <a href="https://console.spec.whatwg.org/">https://console.spec.whatwg.org/</a>
+   <dt id="biblio-dom">[DOM]
+   <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
    <dt id="biblio-infra">[INFRA]
@@ -1225,6 +1239,7 @@ let dfnPanelData = {
 "631182ca": {"dfnID":"631182ca","dfnText":"inner consider speculative loads steps","external":true,"refSections":[{"refs":[{"id":"ref-for-inner-consider-speculative-loads-steps"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#inner-consider-speculative-loads-steps"},
 "6393b8ef": {"dfnID":"6393b8ef","dfnText":"prefetch rules","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-set-prefetch"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sr-set-prefetch"},
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"}],"title":"2. Parsing"},{"refs":[{"id":"ref-for-list\u2460"}],"title":"3. Processing model"}],"url":"https://infra.spec.whatwg.org/#list"},
+"68bf3d31": {"dfnID":"68bf3d31","dfnText":"a","external":true,"refSections":[{"refs":[{"id":"ref-for-the-a-element"}],"title":"4. Triggering"}],"url":"https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element"},
 "6da138da": {"dfnID":"6da138da","dfnText":"source","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-source"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-source"},
 "6ff9cf24": {"dfnID":"6ff9cf24","dfnText":"parse a speculation rule","external":true,"refSections":[{"refs":[{"id":"ref-for-parse-a-speculation-rule"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#parse-a-speculation-rule"},
 "7684ffde": {"dfnID":"7684ffde","dfnText":"speculation rule","external":true,"refSections":[{"refs":[{"id":"ref-for-speculation-rule"},{"id":"ref-for-speculation-rule\u2460"},{"id":"ref-for-speculation-rule\u2461"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#speculation-rule"},
@@ -1235,8 +1250,10 @@ let dfnPanelData = {
 "980dda1d": {"dfnID":"980dda1d","dfnText":"speculation rule set","external":true,"refSections":[{"refs":[{"id":"ref-for-speculation-rule-set"},{"id":"ref-for-speculation-rule-set\u2460"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#speculation-rule-set"},
 "984221ca": {"dfnID":"984221ca","dfnText":"struct","external":true,"refSections":[{"refs":[{"id":"ref-for-struct"},{"id":"ref-for-struct\u2460"}],"title":"2. Parsing"}],"url":"https://infra.spec.whatwg.org/#struct"},
 "99c55261": {"dfnID":"99c55261","dfnText":"prefetch record","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record"},{"id":"ref-for-prefetch-record\u2460"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record"},
+"9a8e15f0": {"dfnID":"9a8e15f0","dfnText":"target","external":true,"refSections":[{"refs":[{"id":"ref-for-attr-hyperlink-target"}],"title":"4. Triggering"}],"url":"https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-target"},
 "9fe18dd3": {"dfnID":"9fe18dd3","dfnText":"start a referrer-initiated navigational prerender","external":true,"refSections":[{"refs":[{"id":"ref-for-start-a-referrer-initiated-navigational-prerender"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prerendering.html#start-a-referrer-initiated-navigational-prerender"},
 "a16866c7": {"dfnID":"a16866c7","dfnText":"eagerness (for speculative load candidate)","external":true,"refSections":[{"refs":[{"id":"ref-for-sl-candidate-eagerness"},{"id":"ref-for-sl-candidate-eagerness\u2460"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sl-candidate-eagerness"},
+"a1a807e5": {"dfnID":"a1a807e5","dfnText":"area","external":true,"refSections":[{"refs":[{"id":"ref-for-the-area-element"}],"title":"4. Triggering"}],"url":"https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element"},
 "a20ea266": {"dfnID":"a20ea266","dfnText":"URLs","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-urls"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sr-urls"},
 "a47f7739": {"dfnID":"a47f7739","dfnText":"prerendering target navigable name hint","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-prerendering-target-navigable-name-hint"}],"title":"3. Processing model"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-prerendering-target-navigable-name-hint"},
 "a4d78a5c": {"dfnID":"a4d78a5c","dfnText":"speculation rule sets","external":true,"refSections":[{"refs":[{"id":"ref-for-document-sr-sets"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#document-sr-sets"},
@@ -1246,6 +1263,8 @@ let dfnPanelData = {
 "c7c0dde1": {"dfnID":"c7c0dde1","dfnText":"url (for HTMLHyperlinkElementUtils)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-hyperlink-url"}],"title":"3. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url"},
 "c88f3887": {"dfnID":"c88f3887","dfnText":"item","external":true,"refSections":[{"refs":[{"id":"ref-for-struct-item"},{"id":"ref-for-struct-item\u2460"}],"title":"2. Parsing"},{"refs":[{"id":"ref-for-struct-item\u2461"}],"title":"3. Processing model"}],"url":"https://infra.spec.whatwg.org/#struct-item"},
 "c8c44926": {"dfnID":"c8c44926","dfnText":"prefetch candidate","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#prefetch-candidate"},
+"d1a6c008": {"dfnID":"d1a6c008","dfnText":"attribute change steps","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-element-attributes-change-ext"}],"title":"4. Triggering"}],"url":"https://dom.spec.whatwg.org/#concept-element-attributes-change-ext"},
+"e014bb81": {"dfnID":"e014bb81","dfnText":"consider speculative loads","external":true,"refSections":[{"refs":[{"id":"ref-for-consider-speculative-loads"}],"title":"4. Triggering"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#consider-speculative-loads"},
 "e535a7f6": {"dfnID":"e535a7f6","dfnText":"compute a speculative load referrer policy","external":true,"refSections":[{"refs":[{"id":"ref-for-compute-speculative-load-referrer-policy"},{"id":"ref-for-compute-speculative-load-referrer-policy\u2460"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#compute-speculative-load-referrer-policy"},
 "ea540423": {"dfnID":"ea540423","dfnText":"requirements","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-requirements"}],"title":"2. Parsing"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sr-requirements"},
 "ed08d686": {"dfnID":"ed08d686","dfnText":"tags (for speculation rule)","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-tags"},{"id":"ref-for-sr-tags\u2460"}],"title":"3. Processing model"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sr-tags"},
@@ -1648,8 +1667,12 @@ let refsData = {
 "#speculation-rule-target-navigable-name-hint": {"displayText":"target navigable name hint","export":true,"for_":["speculation rule"],"level":"1","normative":true,"shortname":"speculation-rules","spec":"speculation-rules-1","status":"local","text":"target navigable name hint","type":"dfn","url":"#speculation-rule-target-navigable-name-hint"},
 "50adabbe_https://whatpr.org/html/11426/speculative-loading.html#speculation-rule-set": {"displayText":"parse a speculation rule set string","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"parse a speculation rule set string","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#speculation-rule-set"},
 "https://console.spec.whatwg.org/#report-a-warning-to-the-console": {"displayText":"report a warning to the console","export":true,"for_":[],"level":"1","normative":true,"shortname":"console","spec":"console","status":"current","text":"report a warning to the console","type":"dfn","url":"https://console.spec.whatwg.org/#report-a-warning-to-the-console"},
+"https://dom.spec.whatwg.org/#concept-element-attributes-change-ext": {"displayText":"attribute change steps","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"attribute change steps","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-element-attributes-change-ext"},
 "https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword": {"displayText":"valid navigable target name or keyword","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"valid navigable target name or keyword","type":"dfn","url":"https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword"},
+"https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element": {"displayText":"area","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"area","type":"element","url":"https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element"},
+"https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-target": {"displayText":"target","export":true,"for_":["a","area"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"target","type":"element-attr","url":"https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-target"},
 "https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url": {"displayText":"url","export":true,"for_":["HTMLHyperlinkElementUtils"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"url","type":"dfn","url":"https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url"},
+"https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element": {"displayText":"a","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"a","type":"element","url":"https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element"},
 "https://infra.spec.whatwg.org/#list": {"displayText":"list","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"list","type":"dfn","url":"https://infra.spec.whatwg.org/#list"},
 "https://infra.spec.whatwg.org/#list-append": {"displayText":"append","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"append","type":"dfn","url":"https://infra.spec.whatwg.org/#list-append"},
 "https://infra.spec.whatwg.org/#list-iterate": {"displayText":"for each","export":true,"for_":["list","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"for each","type":"dfn","url":"https://infra.spec.whatwg.org/#list-iterate"},
@@ -1660,6 +1683,7 @@ let refsData = {
 "https://whatpr.org/html/11426/semantics.html#get-an-element's-target": {"displayText":"get an element's target","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"get an element's target","type":"dfn","url":"https://whatpr.org/html/11426/semantics.html#get-an-element's-target"},
 "https://whatpr.org/html/11426/speculative-loading.html#collect-tags-from-speculative-load-candidates": {"displayText":"collecting tags from speculative load candidates","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"collecting tags from speculative load candidates","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#collect-tags-from-speculative-load-candidates"},
 "https://whatpr.org/html/11426/speculative-loading.html#compute-speculative-load-referrer-policy": {"displayText":"compute a speculative load referrer policy","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"compute a speculative load referrer policy","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#compute-speculative-load-referrer-policy"},
+"https://whatpr.org/html/11426/speculative-loading.html#consider-speculative-loads": {"displayText":"consider speculative loads","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"consider speculative loads","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#consider-speculative-loads"},
 "https://whatpr.org/html/11426/speculative-loading.html#document-sr-sets": {"displayText":"speculation rule sets","export":true,"for_":["Document"],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"speculation rule sets","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#document-sr-sets"},
 "https://whatpr.org/html/11426/speculative-loading.html#finding-matching-links": {"displayText":"finding matching links","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"finding matching links","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#finding-matching-links"},
 "https://whatpr.org/html/11426/speculative-loading.html#inner-consider-speculative-loads-steps": {"displayText":"inner consider speculative loads steps","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"inner consider speculative loads steps","type":"dfn","url":"https://whatpr.org/html/11426/speculative-loading.html#inner-consider-speculative-loads-steps"},
