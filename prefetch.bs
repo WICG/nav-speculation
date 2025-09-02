@@ -297,14 +297,15 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. If |recordToUse| is not null:
         1. Let |currentTime| be the [=current high resolution time=] for |navigable|'s [=navigable/active document=].
         1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|:
-            1. [=Trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status
-            1. Return null
+            1. [=Trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status.
+            1. Return null.
         1. [=list/For each=] |exchangeRecord| of |recordToUse|'s [=prefetch record/redirect chain=]:
             1. If [=conflicting credentials exist=] for |exchangeRecord|'s [=exchange record/response=] given |navigable| and |recordToUse|'s [=prefetch record/source partition key=]:
-                1. [=Trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status
-                1. Return null
+                1. [=Trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status.
+                1. Return null.
 
             <div class="note">This handles the case where there were no cross-partition credentials initially, but there are now. User agents could use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number.</div>
+        
         1. Return |recordToUse|.
     1. Return null.
 
