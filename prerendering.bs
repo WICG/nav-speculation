@@ -18,6 +18,8 @@ Boilerplate: omit conformance
 <pre class="link-defaults">
 spec:fetch; type:dfn; text:credentials
 spec:infra; type:dfn; text:user agent
+spec:html; type:element; text:a
+spec:html; type:element-attr; for:a; text:target
 </pre>
 <pre class="anchors">
 spec: ecma262; urlPrefix: https://tc39.es/ecma262/
@@ -25,6 +27,7 @@ spec: ecma262; urlPrefix: https://tc39.es/ecma262/
     text: current realm; url: current-realm
 spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
   type: dfn
+    text: valid navigable target name or keyword; url: document-sequences.html#valid-navigable-target-name-or-keyword
     text: active needed worker; url: workers.html#active-needed-worker
     text: attempt to populate the history entry's document; url: browsing-the-web.html#attempt-to-populate-the-history-entry's-document
     text: can have its URL rewritten; url: nav-history-apis.html#can-have-its-url-rewritten
@@ -68,8 +71,46 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: append session history traversal steps; url: browsing-the-web.html#tn-append-session-history-traversal-steps
       text: current session history step; url: document-sequences.html#tn-current-session-history-step
       text: session history entries; url: document-sequences.html#tn-session-history-entries
+    for: HTMLHyperlinkElementUtils
+      text: url; url: links.html#concept-hyperlink-url
     for: Window
       text: navigable; url: nav-history-apis.html#window-navigable
+spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
+  type: dfn
+    text: collecting tags from speculative load candidates; url: collect-tags-from-speculative-load-candidates
+    text: compute a speculative load referrer policy; url: compute-speculative-load-referrer-policy
+    text: consider speculative loads; url: consider-speculative-loads
+    text: finding matching links; url: finding-matching-links
+    text: inner consider speculative loads steps; url: inner-consider-speculative-loads-steps
+    text: parse a speculation rule set string; url: speculation-rule-set
+    text: parse a speculation rule; url: parse-a-speculation-rule
+    text: prefetch candidate; url: prefetch-candidate
+    text: speculation rule set; url: speculation-rule-set
+    text: speculation rule; url: speculation-rule
+    text: speculative load candidate; url: speculative-load-candidate
+    for: Document
+      text: speculation rule sets; url: document-sr-sets
+    for: prefetch candidate
+      text: anonymization policy; url: sl-candidate-anonymization-policy
+    for: speculation rule
+      text: URLs; url: sr-urls
+      text: predicate; url: sr-predicate
+      text: eagerness; url: sr-eagerness
+      text: referrer policy; url: sr-referrer-policy
+      text: tags; url: sr-tags
+      text: No-Vary-Search hint; url: sr-nvs-hint
+      text: requirements; url: sr-requirements
+    for: speculation rule set
+      text: prefetch rules; url: sr-set-prefetch
+    for: speculative load candidate
+      text: URL; url: sl-candidate-url
+      text: No-Vary-Search hint; url: sl-candidate-nvs-hint
+      text: eagerness; url: sl-candidate-eagerness
+      text: referrer policy; url: sl-candidate-referrer-policy
+      text: tags; url: sl-candidate-tags
+spec: HTML; urlPrefix: https://whatpr.org/html/11426/semantics.html#
+  type: dfn
+    text: get an element's target; url: get-an-element's-target
 spec: battery; urlPrefix: https://w3c.github.io/battery/
   type: dfn
     text: [[BatteryPromise]]; url: dfn-batterypromise
@@ -87,12 +128,13 @@ spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-h
     text: equivalent modulo search variance; url: name-comparing
   type: http-header
     text: No-Vary-Search; url: name-http-header-field-definitio
-spec: nav-speculation; urlPrefix: prefetch.html
+spec: PREFETCH; urlPrefix: prefetch.html
   type: dfn
     text: supports prefetch; url: supports-prefetch
     text: list of sufficiently-strict speculative navigation referrer policies
     text: wait for a matching prefetch record; url: wait-for-a-matching-prefetch-record
     text: has a matching prefetch record
+    text: start a referrer-initiated navigational prefetch
     for: prefetch record
       text: source
       text: prerendering traversable
@@ -178,7 +220,176 @@ spec: web-audio; urlPrefix: https://webaudio.github.io/web-audio-api/
   background: white;
   border: solid #D50606;
 }
+
+/* dl.props from https://resources.whatwg.org/standard.css */
+dl.props { display: grid; grid-template-columns: max-content auto; row-gap: 0.25em; column-gap: 1em; }
+dl.props > dt { grid-column-start: 1; margin: 0; }
+dl.props > dd { grid-column-start: 2; margin: 0; }
+p + dl.props { margin-top: -0.5em; }
 </style>
+
+<h2 id="speculation-rules">Speculation rules</h2>
+
+Modify the HTML Standard's speculation rules specification as follows to support prerendering.
+
+(Currently, the HTML Standard's speculation rules lives in <a href="https://github.com/whatwg/html/pull/11426">whatwg/html#11426</a>, with the rendered specification text at <a href="https://whatpr.org/html/11426/speculative-loading.html">this PR preview</a>. But we anticipate it merging in the main HTML Standard shortly.)
+
+<h3 id="speculation-rules-parsing">Parsing</h3>
+
+Extend the [=speculation rule set=] [=struct=] with one additional [=struct/item=]:
+
+* <dfn for="speculation rule set">prerender rules</dfn>, a [=list=] of [=speculation rules=], initially empty
+
+Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
+
+* <dfn for="speculation rule">target navigable name hint</dfn>, a [=string=] or null
+
+<div algorithm="parse a speculation rule set string">
+  Modify [=parse a speculation rule set string=] as follows:
+
+  * Remove the <var ignore>typesToTreatAsPrefetch</var> construct, and instead parse |parsed|["`prerender`"] into the [=speculation rule set/prerender rules=] list, in an identical manner to what is done for |parsed|["`prefetch`"] and the [=speculation rule set/prefetch rules=].
+
+  * Discard rules parsed from |parsed|["`prefetch`"] if the [=speculation rule/target navigable name hint=] is not null.
+
+  * Discard rules parsed from |parsed|["`prerender`"] if the [=speculation rule/requirements=] contain "`anonymous-client-ip-when-cross-origin`".
+
+  <p class="note">Implementations will still be allowed to treat prerender candidates as prefetches, per the modifications in [[#speculation-rules-processing]].</p>
+</div>
+
+<div algorithm="parse a speculation rule">
+  Modify [=parse a speculation rule=] by adding the following steps:
+
+  1. Let |targetHint| be null.
+  1. If |input|["`target_hint`"] [=map/exists=]:
+    1. If |input|["`target_hint`"] is not a [=valid navigable target name or keyword=]:
+      1. The user agent may [=report a warning to the console=] indicating that the supplied target hint was invalid.
+      1. Return null.
+    1. Set |targetHint| to |input|["`target_hint`"].
+
+  and then updating the final step which returns a [=speculation rule=] to include setting the [=speculation rule/target navigable name hint=] to |targetHint|.
+</div>
+
+<h3 id="speculation-rules-processing">Processing model</h3>
+
+A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the following additional [=struct/item=]:
+
+* <dfn for="prerender candidate">target navigable name hint</dfn>, a [=valid navigable target name or keyword=] or null
+
+<div algorithm="inner consider speculative loads steps">
+  Update the [=inner consider speculative loads steps=] algorithm by appending the following steps near the beginning, after assembling |prefetchCandidates|:
+
+  1. Let |prerenderCandidates| be an empty [=list=].
+  1. [=list/For each=] |ruleSet| of |document|'s [=Document/speculation rule sets=]:
+    1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
+        1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+          1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and null.
+          1. [=list/Append=] a new [=prerender candidate=] with
+
+            <dl class="props">
+              : [=speculative load candidate/URL=]
+              :: |url|
+
+              : [=speculative load candidate/No-Vary-Search hint=]
+              :: |rule|'s [=speculation rule/No-Vary-Search hint=]
+
+              : [=speculative load candidate/eagerness=]
+              :: |rule|'s [=speculation rule/eagerness=]
+
+              : [=speculative load candidate/referrer policy=]
+              :: |referrerPolicy|
+
+              : [=speculative load candidate/tags=]
+              :: |rule|'s [=speculation rule/tags=]
+
+              : [=prerender candidate/target navigable name hint=]
+              :: |rule|'s [=speculation rule/target navigable name hint=]
+            </dl>
+
+            to |prerenderCandidates|.
+        1. If |rule|'s [=speculation rule/predicate=] is not null, then:
+          1. Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+          1. [=list/For each=] |link| of |links|:
+            1. Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
+            1. If |target| is null, set it to the result of [=getting an element's target=] given |link|.
+            1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and |link|.
+            1. [=list/Append=] a [=prerender candidate=] with
+
+              <dl class="props">
+                : [=speculative load candidate/URL=]
+                :: |link|'s [=HTMLHyperlinkElementUtils/url=]
+
+                : [=speculative load candidate/No-Vary-Search hint=]
+                :: |rule|'s [=speculation rule/No-Vary-Search hint=]
+
+                : [=speculative load candidate/eagerness=]
+                :: |rule|'s [=speculation rule/eagerness=]
+
+                : [=speculative load candidate/referrer policy=]
+                :: |referrerPolicy|
+
+                : [=speculative load candidate/tags=]
+                :: |rule|'s [=speculation rule/tags=]
+
+                : [=prerender candidate/target navigable name hint=]
+                :: |target|
+              </dl>
+
+              to |prerenderCandidates|.
+  1. Let |speculativeLoadCandidates| be the union of |prefetchCandidates| and |prerenderCandidates|.
+
+  Update subsequent steps for canceling not-still-being-speculated [=prefetch records=] to operate on |speculativeLoadCandidates| instead of |prefetchCandidates|.
+
+  Create a list |prerenderCandidateGroups| in an analogous way to |prefetchCandidateGroups|, but using |prerenderCandidates| instead of |prefetchCandidates|.
+
+  Replace the step which performs the actual prefetching by looping over |prefetchCandidateGroups| with the following:
+
+  1. Let |speculativeLoadCandidateGroups| be the union of |prefetchCandidateGroups| and |prerenderCandidateGroups|.
+
+  1. [=list/For each=] |group| of |speculativeLoadCandidateGroups|:
+
+    1. The user agent may run the following steps:
+
+      1. Let |candidate| be |group|[0].
+
+      1. Let |tagsToSend| be the result of [=collecting tags from speculative load candidates=] given |group|.
+
+      1. Let |prefetchRecord| be a new [=prefetch record=] with
+
+        <dl class="props">
+          : [=prefetch record/source=]
+          :: "`speculation rules`"
+
+          : [=prefetch record/URL=]
+          :: |candidate|'s [=speculative load candidate/URL=]
+
+          : [=prefetch record/No-Vary-Search hint=]
+          :: |candidate|'s [=speculative load candidate/No-Vary-Search hint=]
+
+          : [=prefetch record/referrer policy=]
+          :: |candidate|'s [=speculative load candidate/referrer policy=]
+
+          : [=prefetch record/tags=]
+          :: |tagsToSend|
+        </dl>
+
+      1. If |candidate| is a [=prefetch candidate=], then set |prefetchRecord|'s [=prefetch record/anonymization policy=] to |candidate|'s [=prefetch candidate/anonymization policy=].
+
+      1. If |candidate| is a [=prerender candidate=], then the user agent may run the following steps:
+
+        1. Set |prefetchRecord|'s [=prefetch record/prerendering traversable=] to "`to be created`".
+
+        1. Set |prefetchRecord|'s [=prefetch record/prerendering target navigable name hint=] to |candidate|'s [=prerender candidate/target navigable name hint=].
+
+        1. [=Start a referrer-initiated navigational prerender=] given |document| and |prefetchRecord|.
+
+      1. If the user agent did not run the previous step, then [=start a referrer-initiated navigational prefetch=] given |document| and |prefetchRecord|.
+
+      (And keep the subsequent discussion of when to execute this "may" step.)
+</div>
+
+<h3 id="speculation-rules-triggering">Triggering</h3>
+
+Update the [=attribute change steps=] for <{a}> and <{area}> elements to also monitor the <{a/target}> attribute and [=consider speculative loads=] if it changes.
 
 <h2 id="prerendering-infra">Prerendering infrastructure</h2>
 

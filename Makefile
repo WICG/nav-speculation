@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 
-bikeshed_files = prefetch.bs prerendering.bs speculation-rules.bs
-html_files = index.html no-vary-search.html
+bikeshed_files = prefetch.bs prerendering.bs
+html_files = index.html no-vary-search.html speculation-rules.html
 
 .PHONY: ci clean local remote
 
