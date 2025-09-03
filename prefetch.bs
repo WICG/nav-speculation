@@ -161,10 +161,6 @@ spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-h
     text: No-Vary-Search; url: name-http-header-field-definitio
 spec: resource-timing; urlPrefix: https://w3c.github.io/resource-timing/
   type: dfn; for: PerformanceResourceTiming; text: delivery type; url: dfn-delivery-type
-spec: WEBDRIVER; urlPrefix: https://w3c.github.io/webdriver/
-  type: dfn
-    text: error; url: dfn-errors
-    text: local end; url: dfn-local-ends
 </pre>
 
 <style>
@@ -305,7 +301,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
                 1. Return null.
 
             <div class="note">This handles the case where there were no cross-partition credentials initially, but there are now. User agents could use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number.</div>
-        
+            
         1. Return |recordToUse|.
     1. Return null.
 
@@ -848,6 +844,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
     1. Set |prefetchRecord|'s [=prefetch record/start time=] to the [=current high resolution time=] for the [=relevant global object=] of |document|.
+    1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/pending^}" status.
     1. Let |referrerPolicy| be |prefetchRecord|'s [=prefetch record/referrer policy=] if |prefetchRecord|'s [=prefetch record/referrer policy=] is not the empty string, and |document|'s [=Document/policy container=]'s [=policy container/referrer policy=] otherwise.
     1. Let |documentState| be a new [=document state=] with
         :  [=document state/request referrer policy=]
@@ -867,7 +864,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
             <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-        1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/pending^}" status.
+            
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
             1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
             1. [=Assert=]: |navigationParams|'s [=navigation params/response=] is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
@@ -1030,12 +1027,9 @@ speculation.PrefetchStatusUpdatedParameters = {
 </pre>
 
 <div algorithm="remote end event trigger for speculation.prefetchStatusUpdated">
-To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, |prefetchRecord|, and a {^speculation.PreloadingStatus^} |preloadingStatus|:
+To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, a [=prefetch record=] |prefetchRecord|, and a {^speculation.PreloadingStatus^} |preloadingStatus|:
 
-1. Let |frameId| be |navigable|'s [=navigable/top-level traversable=]'s [=navigable id=].
-1. Let |url| be the |prefetchRecord|'s [=prefetch record/URL=].
-1. Let |status| be the |preloadingStatus|.
-1. Let |params| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production with the <code>context</code> field set to |frameId|, the <code>url</code> field set to |url|, and the <code>status</code> field set to |status|.
+1. Let |params| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production with the <code>context</code> field set to |navigable|'s [=navigable/top-level traversable=]'s [=navigable id=], the <code>url</code> field set to |prefetchRecord|'s [=prefetch record/URL=], and the <code>status</code> field set to |preloadingStatus|.
 1. Let |body| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production, with the <code>params</code> field set to |params|.
 1. Let |relatedNavigables| be a [=/set=] containing |navigable|.
 1. For each |session| in the [=set of sessions for which an event is enabled=] given "<code>speculation.prefetchStatusUpdated</code>" and |relatedNavigables|:
