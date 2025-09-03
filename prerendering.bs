@@ -275,6 +275,10 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
 * <dfn for="prerender candidate">target navigable name hint</dfn>, a [=valid navigable target name or keyword=] or null
 
+<div algorithm="consider speculative loads steps">
+  Update the [=consider speculative loads=] algorithm to bail out early if <var ignore>document</var>'s [=node navigable=] is a [=prerendering navigable=], with an explanatory note about how performing speculative loads in a speculatively-loaded page is too wasteful.
+</div>
+
 <div algorithm="inner consider speculative loads steps">
   Update the [=inner consider speculative loads steps=] algorithm by appending the following steps near the beginning, after assembling |prefetchCandidates|:
 
@@ -1288,4 +1292,4 @@ See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-
 
 For the integration of this spec with No-Vary-Search, see <a href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-privacy-considerations">No-Vary-Search Privacy considerations</a>.
 
-<p class="issue">Add privacy considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>.</p>
+<p class="issue">Add privacy considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>. One in particular worth calling out is how cross-partition prerendering is just disallowed, due to the privacy complexities.</p>
