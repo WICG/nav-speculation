@@ -541,13 +541,13 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 <div algorithm="create and initialize a Document object patch">
   In [=create and initialize a Document object=], add the following step after "If navigationParams's response has a `Refresh` header, then:":
 
-  1. If <var ignore>navigationParams</var>'[=navigation params/navigable=] is a [=prerendering navigable=], then:
+  1. If <var ignore>navigationParams</var>'s [=navigation params/navigable=] is a [=prerendering navigable=], then:
 
     1. Let |loadingModes| be the result of [=getting the supported loading modes=] for <var ignore>response</var>.
 
     1. If |loadingModes| does not [=list/contain=] \`<code><a for="Supports-Loading-Mode">prerender-cross-origin-frames</a></code>\`, then return null.
 
-    1. Set <var ignore>Document</var>'s [=Document/allow cross origin iframes navigation while prerendering=] to true.
+    1. Set <var ignore>document</var>'s [=Document/allow cross origin iframes navigation while prerendering=] to true.
 </div>
 
 <div algorithm="attempt to populate the history entry's document patch">
