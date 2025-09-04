@@ -301,7 +301,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
                 1. Return null.
 
             <div class="note">This handles the case where there were no cross-partition credentials initially, but there are now. User agents could use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number.</div>
-            
+
         1. Return |recordToUse|.
     1. Return null.
 
@@ -988,7 +988,7 @@ The speculation module contains commands for managing the remote end behavior fo
 
 <pre class="cddl" data-cddl-module="remote-cddl,local-cddl">
 speculation.PreloadingStatus = "pending" / "ready" / "success" /
-                   "failure" / "not-supported"
+                   "failure"
 </pre>
 
 The <code>speculation.PreloadingStatus</code> type represents the different types of preloading statuses. This status is shared by prefetches and prerenders.
@@ -1000,8 +1000,6 @@ The <code>speculation.PreloadingStatus</code> type represents the different type
 "<dfn for="speculation.PreloadingStatus" cddl-value>success</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| is activated, such as from the user agent's navigation.
 
 "<dfn for="speculation.PreloadingStatus" cddl-value>failure</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| has failed, such as when the |prefetchRecord| expires.
-
-"<dfn for="speculation.PreloadingStatus" cddl-value>not-supported</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| is ineligble to [=start a referrer-initiated navigational prefetch=].
 
 <h3 id="speculation-module-events">Events</h3>
 
