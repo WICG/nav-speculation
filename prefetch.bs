@@ -980,30 +980,40 @@ For the purposes of user-agent automation and application testing, this document
 
 <h3 id="speculation-module">The speculation module</h3>
 
-The speculation module contains commands for managing the remote end behavior for prefetches, prerenders, and speculation rules.
+The <dfn export for=modules>speculation</dfn> module contains commands for managing the remote end behavior for prefetches, prerenders, and speculation rules.
 
-<h3 id="speculation-module-definitions">Definitions</h3>
+<h4 id="speculation-module-definitions">Definitions</h4>
 
-{^Remote end definition^} and {^local end definition^}
+{^local end definition^}
 
-<pre class="cddl" data-cddl-module="remote-cddl,local-cddl">
-speculation.PreloadingStatus = "pending" / "ready" / "success" /
-                   "failure"
+<pre class="cddl" data-cddl-module="local-cddl">
+speculation.PreloadingStatus = "pending" / "ready" / "success" / "failure"
 </pre>
 
 The <code>speculation.PreloadingStatus</code> type represents the different types of preloading statuses. This status is shared by prefetches and prerenders.
 
-"<dfn for="speculation.PreloadingStatus" cddl-value>pending</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| begins to [=start a referrer-initiated navigational prefetch=].
-
-"<dfn for="speculation.PreloadingStatus" cddl-value>ready</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| is [=prefetch record/complete=].
-
-"<dfn for="speculation.PreloadingStatus" cddl-value>success</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| is activated, such as from the user agent's navigation.
-
-"<dfn for="speculation.PreloadingStatus" cddl-value>failure</dfn>" status is defined when a [=prefetch record=] |prefetchRecord| has failed, such as when the |prefetchRecord| expires.
+<dl>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>pending</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| begins to [=start a referrer-initiated navigational prefetch=].
+  </dd>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>ready</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| is [=prefetch record/complete=].
+  </dd>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>success</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| is activated, such as from the user agent's navigation.
+  </dd>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>failure</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| has failed, such as when the |prefetchRecord| expires.
+  </dd>
+</dl>
 
 <h3 id="speculation-module-events">Events</h3>
 
-<pre highlight="cddl" class="cddl" data-cddl-module="remote-cddl,local-cddl">
+<pre highlight="cddl" class="cddl" data-cddl-module="local-cddl">
 SpeculationEvent = (
   speculation.PrefetchStatusUpdated
 )
