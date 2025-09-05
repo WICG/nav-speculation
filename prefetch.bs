@@ -258,6 +258,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. [=fetch controller/Abort=] |prefetchRecord|'s [=prefetch record/fetch controller=]. <span class="note">This will cause any ongoing fetch to be canceled and yield a [=network error=].</span>
     1. If |prefetchRecord|'s [=prefetch record/prerendering traversable=] is a [=traversable navigable=], then [=destroy a top-level traversable|destroy=] it.
     1. [=list/Remove=] |prefetchRecord| from |document|'s [=Document/prefetch records=].
+    1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/failure^}" status.
 
     <p class="note">This means that even a completed prefetch or prerender will not be activated. However, the process of prefetching or prerendering might have modified the HTTP cache, making subsequent navigations faster anyway.</p>
 </div>
@@ -270,6 +271,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |expiryTime| be |currentTime| + 300000 (i.e., five minutes).
     1. [=list/Remove=] all elements of |document|'s [=Document/prefetch records=] which have the same [=prefetch record/URL=] as |prefetchRecord| and whose [=prefetch record/state=] equals "`completed`".
     1. Set |prefetchRecord|'s [=prefetch record/state=] to "`completed`" and [=prefetch record/expiry time=] to |expiryTime|.
+    1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/ready^}" status.
 </div>
 
 <div algorithm>
@@ -287,9 +289,13 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     1. Let |recordToUse| be |exactRecord| if |exactRecord| is not null, otherwise |inexactRecord|.
     1. If |recordToUse| is not null:
         1. Let |currentTime| be the [=current high resolution time=] for |navigable|'s [=navigable/active document=].
-        1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|, return null.
+        1. If |recordToUse|'s [=prefetch record/expiry time=] is less than |currentTime|:
+            1. [=Trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status.
+            1. Return null.
         1. [=list/For each=] |exchangeRecord| of |recordToUse|'s [=prefetch record/redirect chain=]:
-            1. If [=conflicting credentials exist=] for |exchangeRecord|'s [=exchange record/response=] given |navigable| and |recordToUse|'s [=prefetch record/source partition key=], return null.
+            1. If [=conflicting credentials exist=] for |exchangeRecord|'s [=exchange record/response=] given |navigable| and |recordToUse|'s [=prefetch record/source partition key=]:
+                1. [=Trigger a prefetch status updated event=] given |navigable|, |recordToUse|, and "{^speculation.PreloadingStatus/failure^}" status.
+                1. Return null.
 
             <div class="note">This handles the case where there were no cross-partition credentials initially, but there are now. User agents could use a slightly coarser algorithm, such as monitoring whether the cookies for the URL have been modified at all, or storing a hash, timestamp or revision number.</div>
 
@@ -583,7 +589,8 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
 
                     <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies. If the prefetch never reached a cross-site URL, there will be no cookies to copy.</div>
                 1. Set |prefetched| to true.
-
+                1. [=Trigger a prefetch status updated event=] given <var ignore>navigable</var>, |prefetchRecord|, and "{^speculation.PreloadingStatus/success^}" status.
+                
                 <p class="note">The guard on these steps means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
             1. If |prefetched| is false, then set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
 
@@ -834,6 +841,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
     1. [=list/Append=] |prefetchRecord| to |document|'s [=Document/prefetch records=].
     1. Set |prefetchRecord|'s [=prefetch record/start time=] to the [=current high resolution time=] for the [=relevant global object=] of |document|.
+    1. [=Trigger a prefetch status updated event=] given |document|'s [=node navigable=], |prefetchRecord|, and "{^speculation.PreloadingStatus/pending^}" status.
     1. Let |referrerPolicy| be |prefetchRecord|'s [=prefetch record/referrer policy=] if |prefetchRecord|'s [=prefetch record/referrer policy=] is not the empty string, and |document|'s [=Document/policy container=]'s [=policy container/referrer policy=] otherwise.
     1. Let |documentState| be a new [=document state=] with
         :  [=document state/request referrer policy=]
@@ -853,6 +861,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
             <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
+            
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
             1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
             1. [=Assert=]: |navigationParams|'s [=navigation params/response=] is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
@@ -959,6 +968,79 @@ The following parameters are defined for the `prefetch` token:
 
     This specification conforms to this advice; the [=start a referrer-initiated navigational prefetch=] algorithm does not emit non-boolean values.
   </div>
+
+<h2 id="automated-testing">Automated testing</h2>
+
+For the purposes of user-agent automation and application testing, this document defines extensions to the [[WebDriver-BiDi]] specification.
+
+<div class="issue">CDDL snippets use the "text" type instead of "browsingContext.BrowsingContext" to allow indepedent programmatic processing of CDDL snippets. Currently, other modules cannot be referenced.</div>
+
+<h3 id="speculation-module">The speculation module</h3>
+
+The <dfn export for=modules>speculation</dfn> module contains commands for managing the remote end behavior for prefetches, prerenders, and speculation rules.
+
+<h4 id="speculation-module-definitions">Definitions</h4>
+
+{^local end definition^}
+
+<pre class="cddl" data-cddl-module="local-cddl">
+speculation.PreloadingStatus = "pending" / "ready" / "success" / "failure"
+</pre>
+
+The <code>speculation.PreloadingStatus</code> type represents the different types of preloading statuses. This status is shared by prefetches and prerenders.
+
+<dl>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>pending</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| begins to [=start a referrer-initiated navigational prefetch=].
+  </dd>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>ready</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| is [=prefetch record/complete=].
+  </dd>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>success</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| is activated, such as from the user agent's navigation.
+  </dd>
+  <dt>"<dfn for="speculation.PreloadingStatus" cddl-value>failure</dfn>"</dt>
+  <dd>
+    The [=prefetch record=] |prefetchRecord| has failed, such as when the |prefetchRecord| expires.
+  </dd>
+</dl>
+
+<h4 id="speculation-module-events">Events</h4>
+
+<pre highlight="cddl" class="cddl" data-cddl-module="local-cddl">
+SpeculationEvent = (
+  speculation.PrefetchStatusUpdated
+)
+</pre>
+
+<h5 id="speculation-prefetchstatusupdated-event">The speculation.prefetchStatusUpdated Event</h5>
+
+<pre highlight="cddl" class="cddl" data-cddl-module="local-cddl">
+speculation.PrefetchStatusUpdated = (
+   method: "speculation.prefetchStatusUpdated",
+   params: speculation.PrefetchStatusUpdatedParameters
+)
+
+speculation.PrefetchStatusUpdatedParameters = {
+   context: text,  
+   url: text,
+   status: speculation.PreloadingStatus
+}
+</pre>
+
+<div algorithm="remote end event trigger for speculation.prefetchStatusUpdated">
+To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |navigable|, a [=prefetch record=] |prefetchRecord|, and a {^speculation.PreloadingStatus^} |preloadingStatus|:
+
+1. Let |params| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production with the <code>context</code> field set to |navigable|'s [=navigable/top-level traversable=]'s [=navigable id=], the <code>url</code> field set to |prefetchRecord|'s [=prefetch record/URL=], and the <code>status</code> field set to |preloadingStatus|.
+1. Let |body| be a [=map=] matching the <code>speculation.PrefetchStatusUpdatedParameters</code> production, with the <code>params</code> field set to |params|.
+1. Let |relatedNavigables| be a [=/set=] containing |navigable|.
+1. For each |session| in the [=set of sessions for which an event is enabled=] given "<code>speculation.prefetchStatusUpdated</code>" and |relatedNavigables|:
+    1. [=Emit an event=] with |session| and |body|.
+
+</div>
 
 <h2 id="security-considerations">Security considerations</h2>
 
