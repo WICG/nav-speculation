@@ -146,7 +146,6 @@ spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
 spec: prerendering-revamped; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
-    text: uncredentialed-prefetch; for: Supports-Loading-Mode; url: supports-loading-mode-uncredentialed-prefetch
     text: prerendering navigable; url: prerendering-navigable
     text: prerendering traversable; url: prerendering-traversable
 spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html
@@ -174,9 +173,7 @@ In light of <a href="https://privacycg.github.io/storage-partitioning/">storage 
     1. Let |hypotheticalEnvironment| be the result of [=creating a reserved client=] given |navigable|, |response|'s [=response/URL=], and null.
     1. Let |hypotheticalPartitionKey| be the result of [=determining the network partition key=] given |hypotheticalEnvironment|.
     1. If |hypotheticalPartitionKey| is equal to |sourcePartitionKey| or there are no [=credentials=] associated with [=response/URL=] and |hypotheticalPartitionKey|, then return false.
-    1. Let |loadingModes| be the result of [=getting the supported loading modes=] for |response|.
-    1. If |loadingModes| [=list/contains=] \`<code><a for="Supports-Loading-Mode">uncredentialed-prefetch</a></code>\` then return true.
-    1. Return false.
+    1. Return true.
 </div>
 
 <hr>
@@ -590,7 +587,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
                     <div class="note">This copy is complete before continuing, in the sense that subresource fetches, {{Document/cookie|document.cookie}}, etc. can observe the cookies. If the prefetch never reached a cross-site URL, there will be no cookies to copy.</div>
                 1. Set |prefetched| to true.
                 1. [=Trigger a prefetch status updated event=] given <var ignore>navigable</var>, |prefetchRecord|, and "{^speculation.PreloadingStatus/success^}" status.
-                
+
                 <p class="note">The guard on these steps means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
             1. If |prefetched| is false, then set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
 
@@ -861,7 +858,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
             <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
-            
+
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
             1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
             1. [=Assert=]: |navigationParams|'s [=navigation params/response=] is the [=exchange record/response=] of |prefetchRecord|'s [=prefetch record/redirect chain=]'s last element.
@@ -1025,7 +1022,7 @@ speculation.PrefetchStatusUpdated = (
 )
 
 speculation.PrefetchStatusUpdatedParameters = {
-   context: text,  
+   context: text,
    url: text,
    status: speculation.PreloadingStatus
 }
