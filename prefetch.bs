@@ -187,11 +187,16 @@ An <dfn>exchange record</dfn> is a [=struct=] with the following [=struct/items=
 A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
 
 <div algorithm>
-    To <dfn for="redirect chain">update the response</dfn> for a [=redirect chain=] |redirectChain| given a [=request=] |request| and [=response=] |response|:
+    To <dfn for="redirect chain">update</dfn> a [=redirect chain=] |redirectChain| given a [=request=] |request| and [=response=] |response|:
 
     1. [=Assert=]: |redirectChain| is not [=list/empty=].
-    1. [=Assert=]: |redirectChain|'s last element's [=exchange record/request=] is the same as |request| and its [=exchange record/response=] is null.
-    1. Set |redirectChain|'s last element's [=exchange record/response=] to |response|.
+    1. [=Assert=]: |redirectChain|'s last item's [=exchange record/request=] is the same as |request| and its [=exchange record/response=] is null.
+    1. Set |redirectChain|'s last item's [=exchange record/request=] to a [=request/clone=] of |request|.
+
+      <p class="note" id="note-exchange-record-clone-request">The cloning ensures that any modifications made to |request| during further redirects do not affect the stored [=exchange record/request=], which later needs to be consulted at activation time (during [=create navigation params from a prefetch record=]) to get a full picture of the original redirect chain. The only currently known case where a [=request=] field is mutated and is also consulted during activation is the [=request/referrer=] field, but for specification robustness we clone the entire request.</p>
+
+      <p class="note" id="note-exchange-record-clone-request-body">Since prefetches <a href="#note-prefetch-only-get">are only ever performed for `` `GET` `` requests</a>, the request [=request/body=] is always null, so cloning is relatively straightforward.</p>
+    1. Set |redirectChain|'s last item's [=exchange record/response=] to |response|.
 </div>
 
 <hr>
@@ -588,7 +593,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
                 1. Set |prefetched| to true.
                 1. [=Trigger a prefetch status updated event=] given <var ignore>navigable</var>, |prefetchRecord|, and "{^speculation.PreloadingStatus/success^}" status.
 
-                <p class="note">The guard on these steps means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
+                <p class="note" id="note-prefetch-only-get">The guard on these steps means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
             1. If |prefetched| is false, then set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
 
 </div>
@@ -684,7 +689,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             <p class="note" id="note-prefetch-coop-delay">COOP checks for prefetches are performed at activation time, when we know the target browsing context.
         1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
         1. If |prefetchRecord| was given, then:
-            1. [=redirect chain/Update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
+            1. [=redirect chain/Update=] |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
             1. If [=conflicting credentials exist=] for |response| given |navigable| and |prefetchRecord|'s [=prefetch record/source partition key=], then set |prefetchRecord|'s [=prefetch record/had conflicting credentials=] to true.
 
                 <p class="note">This does not immediately abort the prefetch or stop following redirects, because doing so might reveal whether or not the user has stored state outside the current partition, before the user navigates. Instead, the prefetch continues as though there were no conflicting credentials, except that the prefetch cannot actually be used. User agents might wish to [=report a warning to the console=] or otherwise inform authors that this has happened.</p>
