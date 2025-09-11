@@ -221,7 +221,7 @@ A <dfn export>prefetch record</dfn> is a [=struct=] with the following [=struct/
 
 <div class="note">This tracks prefetches from when they are started to when they are ultimately used or discarded. Consequently some of these fields are immutable, some pertain to the ongoing activity (like [=prefetch record/fetch controller=]), and some (like [=prefetch record/expiry time=]) are populated when the prefetch completes.</div>
 
-<p class="note">Unless the response indicates otherwise using [:Supports-Loading-Mode:], a request which would have ordinarily sent credentials but could not due to cross-partition prefetch causes a prefetch to be abandoned.</p>
+<p class="note">A request which would have ordinarily sent credentials but could not due to cross-partition prefetch causes a prefetch to be abandoned.</p>
 
 A [=prefetch record=]'s <dfn export for="prefetch record">response</dfn> is the [=exchange record/response=] of the last element of its [=prefetch record/redirect chain=], or null if that list [=list/is empty=].
 
@@ -857,7 +857,7 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
-            <div class="note">This means that if any cross-partition origin along the redirect chain had credentials (and did not override this behavior using [:Supports-Loading-Mode:]), the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
+            <div class="note">This means that if any cross-partition origin along the redirect chain had credentials, the prefetch is discarded. This reduces the chance of the user observing a logged-out page when they are logged in.</div>
 
         1. [=Queue a global task=] on the [=networking task source=], given |global|, to:
             1. If |navigationParams| is not a [=navigation params=], then [=prefetch record/cancel and discard=] |prefetchRecord| given |document| and abort these steps.
