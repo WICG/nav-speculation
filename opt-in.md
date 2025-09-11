@@ -31,10 +31,10 @@ Supports-Loading-Mode: uncredentialed-prefetch, uncredentialed-prerender
 
 This is an [HTTP structured header][http-structured-header] which lists tokens indicating the loading modes the content is ready for. The tokens we so far envision are:
 
-* `uncredentialed-prefetch`
-* `uncredentialed-prerender`
-* `credentialed-prerender`
-* `prerender-cross-origin-iframes`
+* `uncredentialed-prefetch` (future idea)
+* `uncredentialed-prerender` (future idea)
+* `credentialed-prerender` (specced and implemented; see [explainer](./prerendering-same-site.md))
+* `prerender-cross-origin-iframes` (specced and implemented; see [explainer](./prerendering-cross-origin-iframes.md))
 
 ## Use cases
 
@@ -50,7 +50,7 @@ To resolve this problem, user agents must only preload pages which either:
 * Indicate that they are prepared to perform this sort of upgrade, by sending the appropriate `Supports-Loading-Mode` header value: either `uncredentialed-prefetch`, `uncredentialed-prerender`, or both.
 
 > **Note**
-> `uncredentialed-prerender` is somewhat speculative at this point; see [cross-site prerendering](prerendering-cross-site.md) for some of the complexity there.
+> `uncredentialed-prerender` is especially speculative at this point; see [cross-site prerendering](prerendering-cross-site.md) for some of the complexity there.
 
 ### Cross-origin same-site prerendering
 
