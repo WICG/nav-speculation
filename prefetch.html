@@ -739,7 +739,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <h1 class="p-name no-ref" id="title">Prefetch</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2025-09-08">8 September 2025</time></p>
+    <time class="dt-updated" datetime="2025-09-10">10 September 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -838,11 +838,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
      <li data-md>
       <p>If <var>hypotheticalPartitionKey</var> is equal to <var>sourcePartitionKey</var> or there are no <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#credentials" id="ref-for-credentials">credentials</a> associated with <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-url" id="ref-for-concept-response-url①">URL</a> and <var>hypotheticalPartitionKey</var>, then return false.</p>
      <li data-md>
-      <p>Let <var>loadingModes</var> be the result of <a data-link-type="dfn" href="prerendering.html#get-the-supported-loading-modes" id="ref-for-get-the-supported-loading-modes">getting the supported loading modes</a> for <var>response</var>.</p>
-     <li data-md>
-      <p>If <var>loadingModes</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contains</a> `<code><a data-link-type="dfn" href="prerendering.html#supports-loading-mode-uncredentialed-prefetch" id="ref-for-supports-loading-mode-uncredentialed-prefetch">uncredentialed-prefetch</a></code>` then return true.</p>
-     <li data-md>
-      <p>Return false.</p>
+      <p>Return true.</p>
     </ol>
    </div>
    <hr>
@@ -2121,7 +2117,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
 <c- p>)</c->
 
 <dfn class="dfn-paneled" data-dfn-type="cddl-type" data-noexport id="cddl-type-speculationprefetchstatusupdatedparameters"><code class="highlight"><c- nc><c- nc>speculation.PrefetchStatusUpdatedParameters</c-></c-></code></dfn> <c- o>=</c-> <c- p>{</c->
-   <dfn class="dfn-paneled" data-dfn-for="speculation.PrefetchStatusUpdatedParameters" data-dfn-type="cddl-key" data-lt="context|&quot;context&quot;" data-noexport id="cddl-key-speculationprefetchstatusupdatedparameters-context"><code class="highlight"><c- s><c- nc>context</c-></c-></code></dfn><c- p>:</c-> <a data-link-type="cddl-type" href="https://www.rfc-editor.org/rfc/rfc8610#appendix-D" id="ref-for-appendix-D">text</a><c- p>,</c->  
+   <dfn class="dfn-paneled" data-dfn-for="speculation.PrefetchStatusUpdatedParameters" data-dfn-type="cddl-key" data-lt="context|&quot;context&quot;" data-noexport id="cddl-key-speculationprefetchstatusupdatedparameters-context"><code class="highlight"><c- s><c- nc>context</c-></c-></code></dfn><c- p>:</c-> <a data-link-type="cddl-type" href="https://www.rfc-editor.org/rfc/rfc8610#appendix-D" id="ref-for-appendix-D">text</a><c- p>,</c->
    <dfn class="dfn-paneled" data-dfn-for="speculation.PrefetchStatusUpdatedParameters" data-dfn-type="cddl-key" data-lt="url|&quot;url&quot;" data-noexport id="cddl-key-speculationprefetchstatusupdatedparameters-url"><code class="highlight"><c- s><c- nc>url</c-></c-></code></dfn><c- p>:</c-> <a data-link-type="cddl-type" href="https://www.rfc-editor.org/rfc/rfc8610#appendix-D" id="ref-for-appendix-D①">text</a><c- p>,</c->
    <dfn class="dfn-paneled" data-dfn-for="speculation.PrefetchStatusUpdatedParameters" data-dfn-type="cddl-key" data-lt="status|&quot;status&quot;" data-noexport id="cddl-key-speculationprefetchstatusupdatedparameters-status"><code class="highlight"><c- s><c- nc>status</c-></c-></code></dfn><c- p>:</c-> <a data-link-type="cddl" href="#cddl-type-speculationpreloadingstatus" id="ref-for-cddl-type-speculationpreloadingstatus"><c- nc>speculation.PreloadingStatus</c-></a>
 <c- p>}</c->
@@ -2471,7 +2467,6 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trigger-a-pref
      <li><span class="dfn-paneled" id="36858240">boolean</span>
      <li><span class="dfn-paneled" id="7b0d918d">break</span>
      <li><span class="dfn-paneled" id="027e3e49">clone</span>
-     <li><span class="dfn-paneled" id="ae8def21">contain</span>
      <li><span class="dfn-paneled" id="f937b7b6">continue</span>
      <li><span class="dfn-paneled" id="03afaf9c">empty</span>
      <li><span class="dfn-paneled" id="16d07e10">for each</span>
@@ -2506,11 +2501,9 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trigger-a-pref
    <li>
     <a data-link-type="biblio">[PRERENDERING-REVAMPED]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="b5201fff">getting the supported loading modes</span>
      <li><span class="dfn-paneled" id="5fc63580">prerendering navigable</span>
      <li><span class="dfn-paneled" id="a132d33a">prerendering traversable</span>
      <li><span class="dfn-paneled" id="0acae8bb">Supports-Loading-Mode</span>
-     <li><span class="dfn-paneled" id="32b89fc7">uncredentialed-prefetch</span>
      <li><span class="dfn-paneled" id="6aad1618">update the successor for activation</span>
     </ul>
    <li>
@@ -2881,7 +2874,6 @@ let dfnPanelData = {
 "2df4d77c": {"dfnID":"2df4d77c","dfnText":"navigable target name","external":true,"refSections":[{"refs":[{"id":"ref-for-document-state-nav-target-name"},{"id":"ref-for-document-state-nav-target-name\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#document-state-nav-target-name"},
 "30717154": {"dfnID":"30717154","dfnText":"top-level traversable (for navigable)","external":true,"refSections":[{"refs":[{"id":"ref-for-nav-top"}],"title":"5. Clear Site Data patches"},{"refs":[{"id":"ref-for-nav-top\u2460"}],"title":"9.1.2.1. The speculation.prefetchStatusUpdated Event"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-top"},
 "3268a8eb": {"dfnID":"3268a8eb","dfnText":"URL (for response)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-url"},{"id":"ref-for-concept-response-url\u2460"},{"id":"ref-for-concept-response-url\u2461"},{"id":"ref-for-concept-response-url\u2462"},{"id":"ref-for-concept-response-url\u2463"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-concept-response-url\u2464"},{"id":"ref-for-concept-response-url\u2465"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-concept-response-url\u2466"}],"title":"5. Clear Site Data patches"}],"url":"https://fetch.spec.whatwg.org/#concept-response-url"},
-"32b89fc7": {"dfnID":"32b89fc7","dfnText":"uncredentialed-prefetch","external":true,"refSections":[{"refs":[{"id":"ref-for-supports-loading-mode-uncredentialed-prefetch"}],"title":"1. Concepts"}],"url":"prerendering.html#supports-loading-mode-uncredentialed-prefetch"},
 "347e8fe9": {"dfnID":"347e8fe9","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-url"},{"id":"ref-for-concept-document-url\u2460"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-concept-document-url\u2461"}],"title":"2. HTML Patches"}],"url":"https://dom.spec.whatwg.org/#concept-document-url"},
 "34ce7bcd": {"dfnID":"34ce7bcd","dfnText":"session history entry","external":true,"refSections":[{"refs":[{"id":"ref-for-session-history-entry"},{"id":"ref-for-session-history-entry\u2460"}],"title":"2. HTML Patches"},{"refs":[{"id":"ref-for-session-history-entry\u2461"}],"title":"6. Prefetch algorithms"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#session-history-entry"},
 "34ed81e0": {"dfnID":"34ed81e0","dfnText":"request content-type","external":true,"refSections":[{"refs":[{"id":"ref-for-post-resource-request-content-type"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#post-resource-request-content-type"},
@@ -3001,12 +2993,10 @@ let dfnPanelData = {
 "abf6cbed": {"dfnID":"abf6cbed","dfnText":"Create Fetch Event and Dispatch","external":true,"refSections":[{"refs":[{"id":"ref-for-create-fetch-event-and-dispatch"}],"title":"4. Service Workers Patches"}],"url":"https://w3c.github.io/ServiceWorker/#create-fetch-event-and-dispatch"},
 "ae2a6342": {"dfnID":"ae2a6342","dfnText":"top-level browsing context","external":true,"refSections":[{"refs":[{"id":"ref-for-top-level-browsing-context"},{"id":"ref-for-top-level-browsing-context\u2460"}],"title":"7. Cookies"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context"},
 "ae56d57e": {"dfnID":"ae56d57e","dfnText":"URL list","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-url-list"}],"title":"1. Concepts"}],"url":"https://fetch.spec.whatwg.org/#concept-request-url-list"},
-"ae8def21": {"dfnID":"ae8def21","dfnText":"contain","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"1. Concepts"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
 "b01b1359": {"dfnID":"b01b1359","dfnText":"opaque origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin-opaque"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-concept-origin-opaque\u2460"},{"id":"ref-for-concept-origin-opaque\u2461"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque"},
 "b141168a": {"dfnID":"b141168a","dfnText":"URL (for speculative load candidate)","external":true,"refSections":[{"refs":[{"id":"ref-for-sl-candidate-url"}],"title":"1. Concepts"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#sl-candidate-url"},
 "b285d8c5": {"dfnID":"b285d8c5","dfnText":"source policy container","external":true,"refSections":[{"refs":[{"id":"ref-for-source-snapshot-params-policy-container"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-source-snapshot-params-policy-container\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-snapshot-params-policy-container"},
 "b393ea32": {"dfnID":"b393ea32","dfnText":"delivery type","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-delivery-type"}],"title":"2. HTML Patches"}],"url":"https://w3c.github.io/resource-timing/#dfn-delivery-type"},
-"b5201fff": {"dfnID":"b5201fff","dfnText":"getting the supported loading modes","external":true,"refSections":[{"refs":[{"id":"ref-for-get-the-supported-loading-modes"}],"title":"1. Concepts"}],"url":"prerendering.html#get-the-supported-loading-modes"},
 "b520afde": {"dfnID":"b520afde","dfnText":"cross-origin opener policy (for cross-origin opener policy enforcement result)","external":true,"refSections":[{"refs":[{"id":"ref-for-coop-enforcement-coop"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#coop-enforcement-coop"},
 "b6ae4501": {"dfnID":"b6ae4501","dfnText":"networking task source","external":true,"refSections":[{"refs":[{"id":"ref-for-networking-task-source"}],"title":"6. Prefetch algorithms"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source"},
 "b8599a7d": {"dfnID":"b8599a7d","dfnText":"cross-origin prefetch IP anonymization policy","external":true,"refSections":[{"refs":[{"id":"ref-for-cross-origin-prefetch-ip-anonymization-policy"}],"title":"1. Concepts"}],"url":"https://whatpr.org/html/11426/speculative-loading.html#cross-origin-prefetch-ip-anonymization-policy"},
@@ -3762,7 +3752,6 @@ let refsData = {
 "https://infra.spec.whatwg.org/#list": {"displayText":"list","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"list","type":"dfn","url":"https://infra.spec.whatwg.org/#list"},
 "https://infra.spec.whatwg.org/#list-append": {"displayText":"append","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"append","type":"dfn","url":"https://infra.spec.whatwg.org/#list-append"},
 "https://infra.spec.whatwg.org/#list-clone": {"displayText":"clone","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"clone","type":"dfn","url":"https://infra.spec.whatwg.org/#list-clone"},
-"https://infra.spec.whatwg.org/#list-contain": {"displayText":"contain","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"contain","type":"dfn","url":"https://infra.spec.whatwg.org/#list-contain"},
 "https://infra.spec.whatwg.org/#list-empty": {"displayText":"empty","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"empty","type":"dfn","url":"https://infra.spec.whatwg.org/#list-empty"},
 "https://infra.spec.whatwg.org/#list-is-empty": {"displayText":"is empty","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"is empty","type":"dfn","url":"https://infra.spec.whatwg.org/#list-is-empty"},
 "https://infra.spec.whatwg.org/#list-item": {"displayText":"item","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"item","type":"dfn","url":"https://infra.spec.whatwg.org/#list-item"},
@@ -3818,10 +3807,8 @@ let refsData = {
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-lists": {"displayText":"List","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"list","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-lists"},
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-strings": {"displayText":"String","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"string","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-strings"},
 "https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens": {"displayText":"Token","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc9651","spec":"rfc9651","status":"anchor-block","text":"token","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9651.html#name-tokens"},
-"prerendering.html#get-the-supported-loading-modes": {"displayText":"getting the supported loading modes","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"getting the supported loading modes","type":"dfn","url":"prerendering.html#get-the-supported-loading-modes"},
 "prerendering.html#prerendering-navigable": {"displayText":"prerendering navigable","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"prerendering navigable","type":"dfn","url":"prerendering.html#prerendering-navigable"},
 "prerendering.html#prerendering-traversable": {"displayText":"prerendering traversable","export":true,"for_":[],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"prerendering traversable","type":"dfn","url":"prerendering.html#prerendering-traversable"},
-"prerendering.html#supports-loading-mode-uncredentialed-prefetch": {"displayText":"uncredentialed-prefetch","export":true,"for_":["Supports-Loading-Mode"],"level":"","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped","status":"anchor-block","text":"uncredentialed-prefetch","type":"dfn","url":"prerendering.html#supports-loading-mode-uncredentialed-prefetch"},
 };
 
 function mkRefHint(link, ref) {
