@@ -115,6 +115,7 @@ spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
     text: prefetch candidate; url: prefetch-candidate
     text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
     text: prerender candidate; url: prerender-candidate
+    text: speculation rule eagerness; url: speculation-rule-eagerness
     text: speculation rule tag; url: speculation-rule-tag
     text: speculative load candidate; url: speculative-load-candidate
     for: cross-origin prefetch IP anonymization policy
@@ -308,22 +309,25 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
     To <dfn export>wait for a matching prefetch record</dfn> given a [=top-level traversable=] |navigable|, [=source snapshot params=] |sourceSnapshotParams|, and [=URL=] |url|:
 
     1. [=Assert=]: this is running [=in parallel=].
-    1. Let |cutoffTime| be null.
-    1. While true:
-        1. Let |completeRecord| be the result of [=finding a matching complete prefetch record=] given |navigable|, |sourceSnapshotParams|, and |url|.
-        1. If |completeRecord| is not null, return |completeRecord|.
-        1. Let |potentialRecords| be an empty [=list=].
-        1. [=list/For each=] |record| of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=]:
-            1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
-                * |record|'s [=prefetch record/state=] is "`ongoing`".
-                * |record| [=prefetch record/is expected to match a URL=] given |url|.
-                * |record|'s [=prefetch record/expiry time=] is greater than the [=current high resolution time=] for |navigable|'s [=navigable/active window=].
-                * |cutoffTime| is null or |record|'s [=prefetch record/start time=] is less than |cutoffTime|.
-        1. If |potentialRecords| [=list/is empty=], return null.
-        1. Wait until the [=prefetch record/state=] of any element of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=] changes.
-        1. If |cutoffTime| is null and any element of |potentialRecords| has a [=prefetch record/state=] that is not "`ongoing`", set |cutoffTime| to the [=current high resolution time=] for |navigable|'s [=navigable/active window=].
+    1. Let |timeout| be null.
+    1. Optionally, set |timeout| to an [=implementation-defined=] duration representing the maximum time the implementation is willing to wait for an ongoing prefetch to respond, before it gives up and restarts the navigation.
+       <p class="note" id="note-wait-for-matching-prefetch-record-timeout">Choosing a good timeout is difficult, and might depend on the exact initiator of the navigation or the prefetch (e.g., its [=speculation rule eagerness=], or whether it will be used for a prerender). In general, a timeout is best avoided, as it is rare that restarting the navigation as a non-prefetch will give a better result than awaiting the ongoing prefetch. But some implementations have found that in some situations, a timeout on the order of seconds can give better results.</p>
+    1. Let |startTime| be the [=unsafe shared current time=].
+    1. Run these steps, but [=abort when=] |timeout| is not null and the [=unsafe shared current time=] &minus; |startTime| is greater than |timeout|:
+      1. While true:
+          1. Let |completeRecord| be the result of [=finding a matching complete prefetch record=] given |navigable|, |sourceSnapshotParams|, and |url|.
+          1. If |completeRecord| is not null, return |completeRecord|.
+          1. Let |potentialRecords| be an empty [=list=].
+          1. [=list/For each=] |record| of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=]:
+              1. If all of the following are true:
+                  * |record|'s [=prefetch record/state=] is "`ongoing`";
+                  * |record| [=prefetch record/is expected to match a URL=] given |url|; and
+                  * |record|'s [=prefetch record/expiry time=] is greater than the [=current high resolution time=] for |navigable|'s [=navigable/active window=],
+                then [=list/append=] |record| to |potentialRecords|.
+          1. If |potentialRecords| [=list/is empty=], return null.
+          1. Wait until the [=prefetch record/state=] of any element of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=] changes.
 
-    <p class="note">The reasoning for setting the cutoff time *after* waiting for a prefetch record to finish is to allow for flexibility in selecting a prefetch to serve the navigation while still guaranteeing falling back to a non-prefetched navigation in the case of repeated prefetch failures. We allow blocking on prefetch attempts which started before we see an attempt fail, but we don't block on subsequent attempts. Notably, this approach: does not finalize the set of prefetches to block on at the start of the navigation; allows a prefetch which started and completed after the navigation started to serve the navigation; avoids the use of a fixed timeout, which would be arbitrary and detrimental to the use of prefetch with slower servers; and blocks on, at most, two nearly-consecutive prefetches before falling back to a conventional navigation.</p>
+    <p class="note" id="note-wait-for-matching-prefetch-record-subtleties">Because |sourceSnapshotParams|'s [=source snapshot params/prefetch records=] are a snapshot, prefetches that start after a navigation cannot be activated as part of that navigation.</p>
 </div>
 
 <div algorithm>
