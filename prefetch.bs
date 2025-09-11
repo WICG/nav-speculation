@@ -384,7 +384,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |redirectChainResponse|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
         1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
-        1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
+        1. <span id="step-activation-time-coop-check"></span>Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
         1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
     1. If |request|'s  [=request/URL=] is not equal to |urlList|[0], then insert |request|'s [=request/URL=] into |urlList| after the 0th [=list/item=].
         <p class="note" id="note-no-vary-search-final-url-impact">In this case, we are navigating to |request|'s [=request/URL=], but fulfilling it with a prefetch that came from a [=response=] whose URL is |urlList|[0], due to [:No-Vary-Search:]. We treat this as if there was a redirect from the 0th response to [=request/URL=]. If, after this insertion, |urlList|'s [=list/size=] is 2, then the resulting {{Document}} will use the navigated-to URL. Otherwise, if the size is greater, then this will have no effect.
@@ -854,6 +854,19 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |global| be |document|'s [=relevant global object=].
     1. [=In parallel=]:
         1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
+
+            <div class="note" id="note-create-navigation-params-navigable">
+              The [=navigable=] used here at prefetch time, i.e. |document|'s [=node navigable=], could potentially be different from the one used at activation time, i.e. the one passed to the [=navigate=] algorithm which eventually calls [=create navigation params from a prefetch record=].
+
+              This is, actually, fine. During the [=navigate|navigation=] that results in prefetch activation, the target navigable will still be used for most of the important checks, which are performed earlier in the process before <a spec=HTML>attempt to populate the history entry's document</a> is called. And, looking at all the ways in which the navigable impacts the prefetch-time [=create navigation params by fetching=]:
+
+              * Setting the prefetch request's [=request/reserved client=] to |document|'s [=node navigable=] is expected. We have to pick one at prefetch time, and this is the only sensible choice.
+              * Checks related to [:Cross-Origin-Resource-Policy:] are not applicable, since <a href="#note-prefetch-top-level">prefetches are only supported in top-level navigables</a>.
+              * Checks related to [:Cross-Origin-Opener-Policy:] are skipped during prefetch time and instead <a href="#step-activation-time-coop-check">performed during activation</a>.
+
+              Also note that within this algorithm, |navigationParams| is basically just used as a wrapper for the prefetch response, and not stored anywhere for longer-term use. Thus, the value of |navigationParams|'s [=navigation params/navigable=] does not leak to the rest of the system. In particular, during activation a new [=navigation params=] is created by the [=create navigation params from a prefetch record=] algorithm, which contains the correct target navigable.
+            </div>
+
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
