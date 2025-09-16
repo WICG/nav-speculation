@@ -98,7 +98,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: create and initialize a Document object; url: initialise-the-document-object
     urlPrefix: document-sequences.html
       text: active browsing context; url: nav-bc
-      text: container document; url: nav-container-document
       text: determine the origin; url: determining-the-origin
       text: navigable container; url: navigable-container
       text: parent; url: nav-parent
@@ -109,22 +108,19 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: process early hint headers; url: process-early-hint-headers
     urlPrefix: structured-data.html
       text: StructuredSerializeForStorage; url: structuredserializeforstorage
-spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
-  type: dfn
-    text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
-    text: prefetch candidate; url: prefetch-candidate
-    text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
-    text: prerender candidate; url: prerender-candidate
-    text: speculation rule tag; url: speculation-rule-tag
-    text: speculative load candidate; url: speculative-load-candidate
-    for: cross-origin prefetch IP anonymization policy
-      text: origin; url: copiap-origin
-    for: prefetch candidate
-      text: anonymization policy; url: sl-candidate-anonymization-policy
-    for: speculative load candidate
-      text: URL; url: sl-candidate-url
-  type: http-header
-    text: Sec-Speculation-Tags; url: sec-speculation-tags
+    urlPrefix: speculative-loading.html
+      text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
+      text: prefetch candidate; url: prefetch-candidate
+      text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
+      text: prerender candidate; url: prerender-candidate
+      text: speculation rule tag; url: speculation-rule-tag
+      text: speculative load candidate; url: speculative-load-candidate
+      for: cross-origin prefetch IP anonymization policy
+        text: origin; url: copiap-origin
+      for: prefetch candidate
+        text: anonymization policy; url: sl-candidate-anonymization-policy
+      for: speculative load candidate
+        text: URL; url: sl-candidate-url
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: network partition key; url: network-partition-key
@@ -368,7 +364,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 
   1. Return false.
 
-  <p class="note">See the discussion [:No-Vary-Search:] comparison <a href="https://whatpr.org/html/11426/document-lifecycle.html#note-sl-candidate-redundant-with-nvs-strictness">in the HTML Standard</a>.</p>
+  <p class="note">See the discussion [:No-Vary-Search:] comparison <a href="https://html.spec.whatwg.org/multipage/document-lifecycle.html#note-sl-candidate-redundant-with-nvs-strictness">in the HTML Standard</a>.</p>
 </div>
 
 <div algorithm>
@@ -687,7 +683,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
 
             <p class="note" id="note-prefetch-coop-delay">COOP checks for prefetches are performed at activation time, when we know the target browsing context.
-        1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
+        1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=navigable/container document=]'s [=Document/origin=], |navigable|'s [=navigable/container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
         1. If |prefetchRecord| was given, then:
             1. [=redirect chain/Update=] |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
             1. If [=conflicting credentials exist=] for |response| given |navigable| and |prefetchRecord|'s [=prefetch record/source partition key=], then set |prefetchRecord|'s [=prefetch record/had conflicting credentials=] to true.
@@ -1046,8 +1042,8 @@ To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |nav
 
 <h2 id="security-considerations">Security considerations</h2>
 
-See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-security">the HTML Standard</a>.
+See [[HTML#speculative-loading-security]].
 
 <h2 id="privacy-considerations">Privacy considerations</h2>
 
-See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-privacy">the HTML Standard</a>.
+See [[HTML#speculative-loading-privacy]].
