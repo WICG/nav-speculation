@@ -234,9 +234,10 @@ Modify [[HTML#speculation-rules]] as follows to support prerendering.
 
 <h3 id="speculation-rules-parsing">Parsing</h3>
 
-Extend the [=speculation rule set=] [=struct=] with one additional [=struct/item=]:
+Extend the [=speculation rule set=] [=struct=] with two additional [=struct/items=]:
 
 * <dfn for="speculation rule set">prerender rules</dfn>, a [=list=] of [=speculation rules=], initially empty
+* <dfn for="speculation rule set">prerender_until_script rules</dfn>, a [=list=] of [=speculation rules=], initially empty
 
 Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
 
@@ -245,7 +246,7 @@ Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
 <div algorithm="parse a speculation rule set string">
   Modify [=parse a speculation rule set string=] as follows:
 
-  * Remove the <var ignore>typesToTreatAsPrefetch</var> construct, and instead parse |parsed|["`prerender`"] into the [=speculation rule set/prerender rules=] list, in an identical manner to what is done for |parsed|["`prefetch`"] and the [=speculation rule set/prefetch rules=].
+  * Remove the <var ignore>typesToTreatAsPrefetch</var> construct, and instead parse |parsed|["`prerender`"] into the [=speculation rule set/prerender rules=] list, and |parsed|["`prerender_until_script`"] into the [=speculation rule set/prerender_until_script rules=] list, both in an identical manner to what is done for |parsed|["`prefetch`"] and the [=speculation rule set/prefetch rules=].
 
   * Discard rules parsed from |parsed|["`prefetch`"] if the [=speculation rule/target navigable name hint=] is not null.
 
@@ -269,9 +270,10 @@ Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
 
 <h3 id="speculation-rules-processing">Processing model</h3>
 
-A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the following additional [=struct/item=]:
+A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the following additional [=struct/items=]:
 
 * <dfn for="prerender candidate">target navigable name hint</dfn>, a [=valid navigable target name or keyword=] or null
+* <dfn for="prerender candidate">scripts paused</dfn>, a [=boolean=], initially false
 
 <div algorithm="consider speculative loads steps">
   Update the [=consider speculative loads=] algorithm to bail out early if <var ignore>document</var>'s [=node navigable=] is a [=prerendering navigable=], with an explanatory note about how performing speculative loads in a speculatively-loaded page is too wasteful.
@@ -282,43 +284,14 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
   1. Let |prerenderCandidates| be an empty [=list=].
   1. [=list/For each=] |ruleSet| of |document|'s [=Document/speculation rule sets=]:
-    1. [=list/For each=] |rule| of |ruleSet|'s [=speculation rule set/prerender rules=]:
-        1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
-          1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and null.
-          1. [=list/Append=] a new [=prerender candidate=] with
-
-            <dl class="props">
-              : [=speculative load candidate/URL=]
-              :: |url|
-
-              : [=speculative load candidate/No-Vary-Search hint=]
-              :: |rule|'s [=speculation rule/No-Vary-Search hint=]
-
-              : [=speculative load candidate/eagerness=]
-              :: |rule|'s [=speculation rule/eagerness=]
-
-              : [=speculative load candidate/referrer policy=]
-              :: |referrerPolicy|
-
-              : [=speculative load candidate/tags=]
-              :: |rule|'s [=speculation rule/tags=]
-
-              : [=prerender candidate/target navigable name hint=]
-              :: |rule|'s [=speculation rule/target navigable name hint=]
-            </dl>
-
-            to |prerenderCandidates|.
-        1. If |rule|'s [=speculation rule/predicate=] is not null, then:
-          1. Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
-          1. [=list/For each=] |link| of |links|:
-            1. Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
-            1. If |target| is null, set it to the result of [=getting an element's target=] given |link|.
-            1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and |link|.
-            1. [=list/Append=] a [=prerender candidate=] with
-
+    1. [=list/For each=] (|rules|, |scriptsPaused|) of « (|ruleSet|'s [=speculation rule set/prerender rules=], false), (|ruleSet|'s [=speculation rule set/prerender_until_script rules=], true) »:
+      1. [=list/For each=] |rule| of |rules|:
+          1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
+            1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and null.
+            1. [=list/Append=] a new [=prerender candidate=] with
               <dl class="props">
                 : [=speculative load candidate/URL=]
-                :: |link|'s [=HTMLHyperlinkElementUtils/url=]
+                :: |url|
 
                 : [=speculative load candidate/No-Vary-Search hint=]
                 :: |rule|'s [=speculation rule/No-Vary-Search hint=]
@@ -333,10 +306,42 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
                 :: |rule|'s [=speculation rule/tags=]
 
                 : [=prerender candidate/target navigable name hint=]
-                :: |target|
-              </dl>
+                :: |rule|'s [=speculation rule/target navigable name hint=]
 
+                : [=prerender candidate/scripts paused=]
+                :: |scriptsPaused|
+              </dl>
               to |prerenderCandidates|.
+          1. If |rule|'s [=speculation rule/predicate=] is not null, then:
+            1. Let |links| be the result of [=finding matching links=] given |document| and |rule|'s [=speculation rule/predicate=].
+            1. [=list/For each=] |link| of |links|:
+              1. Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
+              1. If |target| is null, set it to the result of [=getting an element's target=] given |link|.
+              1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and |link|.
+              1. [=list/Append=] a [=prerender candidate=] with
+                <dl class="props">
+                  : [=speculative load candidate/URL=]
+                  :: |link|'s [=HTMLHyperlinkElementUtils/url=]
+
+                  : [=speculative load candidate/No-Vary-Search hint=]
+                  :: |rule|'s [=speculation rule/No-Vary-Search hint=]
+
+                  : [=speculative load candidate/eagerness=]
+                  :: |rule|'s [=speculation rule/eagerness=]
+
+                  : [=speculative load candidate/referrer policy=]
+                  :: |referrerPolicy|
+
+                  : [=speculative load candidate/tags=]
+                  :: |rule|'s [=speculation rule/tags=]
+
+                  : [=prerender candidate/target navigable name hint=]
+                  :: |target|
+                  
+                  : [=prerender candidate/scripts paused=]
+                  :: |scriptsPaused|
+                </dl>
+                to |prerenderCandidates|.
   1. Let |speculativeLoadCandidates| be the union of |prefetchCandidates| and |prerenderCandidates|.
 
   Update subsequent steps for canceling not-still-being-speculated [=prefetch records=] to operate on |speculativeLoadCandidates| instead of |prefetchCandidates|.
@@ -382,7 +387,7 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
         1. Set |prefetchRecord|'s [=prefetch record/prerendering target navigable name hint=] to |candidate|'s [=prerender candidate/target navigable name hint=].
 
-        1. [=Start a referrer-initiated navigational prerender=] given |document| and |prefetchRecord|.
+        1. [=Start a referrer-initiated navigational prerender=] given |document|, |prefetchRecord|, and |candidate|'s [=prerender candidate/scripts paused=].
 
       1. If the user agent did not run the previous step, then [=start a referrer-initiated navigational prefetch=] given |document| and |prefetchRecord|.
 
@@ -424,6 +429,13 @@ Every [=navigable=] has a <dfn for="navigable">loading mode</dfn>, which is one 
 :: This navigable is displaying prerendered content
 
 By default, a [=navigable=]'s [=navigable/loading mode=] is "`default`". A navigable whose [=navigable/loading mode=] is "`prerender`" is known as a <dfn>prerendering navigable</dfn>. A [=prerendering navigable=] that is also a [=top-level traversable=] is known as a <dfn>prerendering traversable</dfn>.
+
+Every [=navigable=] has a <dfn for="navigable">scripting mode</dfn>, which is one of the following:
+
+: "`enabled`"
+: "`paused-until-activation`"
+
+By default, a [=navigable=]'s [=navigable/scripting mode=] is "`enabled`".
 
 <p class="note">[=Prerendering navigables=]'s [=navigable/active browsing contexts=] are never [=auxiliary browsing contexts=].
 
@@ -497,7 +509,7 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
 </div>
 
 <div>
-  To <dfn export>start a referrer-initiated navigational prerender</dfn> given a {{Document}} |referrerDoc| and a [=prefetch record=] |prefetchRecord|:
+  To <dfn export>start a referrer-initiated navigational prerender</dfn> given a {{Document}} |referrerDoc|, a [=prefetch record=] |prefetchRecord|, and a boolean |scriptsPaused|:
 
   1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
@@ -524,6 +536,8 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
      <p class="note">This is just a hint. The value has no normative implications. It would still be perfectly fine in the future to [=prerendering traversable/activate=] in place of a different predecessor traversable that was not hinted at.
 
   1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
+  
+  1. If |scriptsPaused| is true, set |prerenderingTraversable|'s [=navigable/scripting mode=] to "`paused-until-activation`".
 
   1. Set |prefetchRecord|'s [=prefetch record/prerendering traversable=] to |prerenderingTraversable|.
 
@@ -611,6 +625,12 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
     1. [=map/For each=] |origin| → |hintSet| in |navigable|'s [=prerendering navigable/prerender-scoped Accept-CH cache=]:
 
       1. [=map/Set=] [=Accept-CH cache=][|origin|] to |hintSet|.
+
+    1. If |navigable|'s [=navigable/scripting mode=] is "`paused-until-activation`":
+
+      1. Set |navigable|'s [=navigable/scripting mode=] to "`enabled`".
+    
+      1. Resume script execution in |navigable|'s [=navigable/active document=].
 
     1. Let |doc| be |navigable|'s [=navigable/active document=].
 
@@ -950,6 +970,12 @@ To <dfn export>get the supported loading modes</dfn> for a [=response=] |respons
 
 Various behaviors are disallowed in [=prerendering navigables=] because they would be intrusive to the user, since the prerendered content is not being actively interacted with.
 
+<h3 id="pausing-script-execution">Pausing script execution</h3>
+
+If a [=navigable=]'s [=navigable/scripting mode=] is "`paused-until-activation`", the user agent must not execute script in the navigable's [=navigable/active document=]. This includes, but is not limited to executing `<script>` elements.
+
+<p class="note">This effectively pauses all JavaScript execution until the page is activated. For inline event handlers, the expected behavior is under discussion.</p>
+
 <h3 id="patch-downloading">Downloading resources</h3>
 
 Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that downloads inside [=prerendering navigable=] are delayed until [=prerendering traversable/activate|activation=], by inserting the following before the step which goes [=in parallel=]:
@@ -974,7 +1000,11 @@ Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that down
 
 <h3 id="delay-async-apis">Delaying async API results</h3>
 
-Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering navigable=], most of its work is deferred until the navigable's [=navigable/top-level traversable=] is [=prerendering traversable/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
+Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering navigable=], most of its work is deferred until the navigable's [=navigable/top-level traversable=] is [=prerendering traversable/activated=].
+
+<p class="note">Note that if the [=navigable/scripting mode=] is "`paused-until-activation`", the scripts that would invoke these algorithms are not executed in the first place until activation.</p>
+
+This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
 
 <h4 id="delay-while-prerendering">The {{[DelayWhilePrerendering]}} extended attribute</h4>
 
