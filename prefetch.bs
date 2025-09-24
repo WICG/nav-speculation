@@ -324,8 +324,15 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
                   * |record| [=prefetch record/is expected to match a URL=] given |url|; and
                   * |record|'s [=prefetch record/expiry time=] is greater than the [=current high resolution time=] for |navigable|'s [=navigable/active window=],
                 then [=list/append=] |record| to |potentialRecords|.
+
+            <div class="note" id="note-wait-for-matching-prefetch-record-potential-records">
+              <p>Each iteration of the loop recomputes |potentialRecords|, in a way so that a subsequent iteration's |potentialRecords| will be a subset of the previous iteration's |potentialRecords|. This follows from how |sourceSnapshotParams|'s [=source snapshot params/prefetch records=] is a static snapshot, and none of these three conditions can flip from false to true.</p>
+
+              <p>An equivalent strategy would be to build a single initial instance of |potentialRecords|, and remove items from it as they no longer meet the criteria.</p>
+            </div>
           1. If |potentialRecords| [=list/is empty=], return null.
           1. Wait until the [=prefetch record/state=] of any element of |sourceSnapshotParams|'s [=source snapshot params/prefetch records=] changes.
+    1. Return null.
 
     <p class="note" id="note-wait-for-matching-prefetch-record-subtleties">Because |sourceSnapshotParams|'s [=source snapshot params/prefetch records=] are a snapshot, prefetches that start after a navigation cannot be activated as part of that navigation.</p>
 </div>
