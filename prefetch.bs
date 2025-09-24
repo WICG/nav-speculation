@@ -98,7 +98,6 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: create and initialize a Document object; url: initialise-the-document-object
     urlPrefix: document-sequences.html
       text: active browsing context; url: nav-bc
-      text: container document; url: nav-container-document
       text: determine the origin; url: determining-the-origin
       text: navigable container; url: navigable-container
       text: parent; url: nav-parent
@@ -109,23 +108,19 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: process early hint headers; url: process-early-hint-headers
     urlPrefix: structured-data.html
       text: StructuredSerializeForStorage; url: structuredserializeforstorage
-spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
-  type: dfn
-    text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
-    text: prefetch candidate; url: prefetch-candidate
-    text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
-    text: prerender candidate; url: prerender-candidate
-    text: speculation rule eagerness; url: speculation-rule-eagerness
-    text: speculation rule tag; url: speculation-rule-tag
-    text: speculative load candidate; url: speculative-load-candidate
-    for: cross-origin prefetch IP anonymization policy
-      text: origin; url: copiap-origin
-    for: prefetch candidate
-      text: anonymization policy; url: sl-candidate-anonymization-policy
-    for: speculative load candidate
-      text: URL; url: sl-candidate-url
-  type: http-header
-    text: Sec-Speculation-Tags; url: sec-speculation-tags
+    urlPrefix: speculative-loading.html
+      text: cross-origin prefetch IP anonymization policy; url: cross-origin-prefetch-ip-anonymization-policy
+      text: prefetch candidate; url: prefetch-candidate
+      text: prefetch IP anonymization policy; url: prefetch-ip-anonymization-policy
+      text: speculation rule eagerness; url: speculation-rule-eagerness
+      text: speculation rule tag; url: speculation-rule-tag
+      text: speculative load candidate; url: speculative-load-candidate
+      for: cross-origin prefetch IP anonymization policy
+        text: origin; url: copiap-origin
+      for: prefetch candidate
+        text: anonymization policy; url: sl-candidate-anonymization-policy
+      for: speculative load candidate
+        text: URL; url: sl-candidate-url
 spec: fetch; urlPrefix: https://fetch.spec.whatwg.org/
   type: dfn
     text: network partition key; url: network-partition-key
@@ -147,8 +142,9 @@ spec: COOKIES; urlPrefix: https://httpwg.org/specs/rfc6265.html
 spec: prerendering-revamped; urlPrefix: prerendering.html
   type: dfn
     text: getting the supported loading modes; url: get-the-supported-loading-modes
-    text: prerendering navigable; url: prerendering-navigable
-    text: prerendering traversable; url: prerendering-traversable
+    text: prerendering navigable
+    text: prerendering traversable
+    text: prerender candidate
 spec: no-vary-search; urlPrefix: https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html
   type: dfn
     text: URL search variance; url: name-data-model
@@ -188,11 +184,16 @@ An <dfn>exchange record</dfn> is a [=struct=] with the following [=struct/items=
 A <dfn>redirect chain</dfn> is a [=list=] of [=exchange records=].
 
 <div algorithm>
-    To <dfn for="redirect chain">update the response</dfn> for a [=redirect chain=] |redirectChain| given a [=request=] |request| and [=response=] |response|:
+    To <dfn for="redirect chain">update</dfn> a [=redirect chain=] |redirectChain| given a [=request=] |request| and [=response=] |response|:
 
     1. [=Assert=]: |redirectChain| is not [=list/empty=].
-    1. [=Assert=]: |redirectChain|'s last element's [=exchange record/request=] is the same as |request| and its [=exchange record/response=] is null.
-    1. Set |redirectChain|'s last element's [=exchange record/response=] to |response|.
+    1. [=Assert=]: |redirectChain|'s last item's [=exchange record/request=] is the same as |request| and its [=exchange record/response=] is null.
+    1. Set |redirectChain|'s last item's [=exchange record/request=] to a [=request/clone=] of |request|.
+
+      <p class="note" id="note-exchange-record-clone-request">The cloning ensures that any modifications made to |request| during further redirects do not affect the stored [=exchange record/request=], which later needs to be consulted at activation time (during [=create navigation params from a prefetch record=]) to get a full picture of the original redirect chain. The only currently known case where a [=request=] field is mutated and is also consulted during activation is the [=request/referrer=] field, but for specification robustness we clone the entire request.</p>
+
+      <p class="note" id="note-exchange-record-clone-request-body">Since prefetches <a href="#note-prefetch-only-get">are only ever performed for `` `GET` `` requests</a>, the request [=request/body=] is always null, so cloning is relatively straightforward.</p>
+    1. Set |redirectChain|'s last item's [=exchange record/response=] to |response|.
 </div>
 
 <hr>
@@ -374,7 +375,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
 
   1. Return false.
 
-  <p class="note">See the discussion [:No-Vary-Search:] comparison <a href="https://whatpr.org/html/11426/document-lifecycle.html#note-sl-candidate-redundant-with-nvs-strictness">in the HTML Standard</a>.</p>
+  <p class="note">See the discussion [:No-Vary-Search:] comparison <a href="https://html.spec.whatwg.org/multipage/document-lifecycle.html#note-sl-candidate-redundant-with-nvs-strictness">in the HTML Standard</a>.</p>
 </div>
 
 <div algorithm>
@@ -395,7 +396,7 @@ The user agent may [=prefetch record/cancel and discard=] records from the [=Doc
         1. Set |finalSandboxFlags| to the [=set/union=] of |targetSnapshotParams|'s [=target snapshot params/sandboxing flags=] and |responsePolicyContainer|'s [=policy container/CSP list=]'s [=CSP-derived sandboxing flags=].
         1. Set |responseOrigin| to the result of [=determining the origin=] given |redirectChainResponse|'s [=response/URL=], |finalSandboxFlags|, |documentState|'s [=document state/initiator origin=], and null.
         1. Set |responseCOOP| to the result of [=obtaining a cross-origin opener policy=] given |redirectChainResponse| and |redirectChainRequest|'s [=request/reserved client=].
-        1. Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
+        1. <span id="step-activation-time-coop-check"></span>Set |coopEnforcementResult| to the result of [=enforcing a response's cross-origin opener policy=] given |navigable|'s [=active browsing context=], |redirectChainResponse|'s [=response/URL=], |responseOrigin|, |responseCOOP|, |coopEnforcementResult|, and |redirectChainRequest|'s [=request/referrer=].
         1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
     1. If |request|'s  [=request/URL=] is not equal to |urlList|[0], then insert |request|'s [=request/URL=] into |urlList| after the 0th [=list/item=].
         <p class="note" id="note-no-vary-search-final-url-impact">In this case, we are navigating to |request|'s [=request/URL=], but fulfilling it with a prefetch that came from a [=response=] whose URL is |urlList|[0], due to [:No-Vary-Search:]. We treat this as if there was a redirect from the 0th response to [=request/URL=]. If, after this insertion, |urlList|'s [=list/size=] is 2, then the resulting {{Document}} will use the navigated-to URL. Otherwise, if the size is greater, then this will have no effect.
@@ -599,7 +600,7 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
                 1. Set |prefetched| to true.
                 1. [=Trigger a prefetch status updated event=] given <var ignore>navigable</var>, |prefetchRecord|, and "{^speculation.PreloadingStatus/success^}" status.
 
-                <p class="note">The guard on these steps means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
+                <p class="note" id="note-prefetch-only-get">The guard on these steps means that prefetches are only ever used to fulfill \``GET`\` requests, and only ever activated into [=top-level traversables=].</p>
             1. If |prefetched| is false, then set <var ignore>navigationParams</var> to the result of [=creating navigation params by fetching=] given |request|, <var ignore>entry</var>, <var ignore>navigable</var>, <var ignore>sourceSnapshotParams</var>, <var ignore>targetSnapshotParams</var>, <var ignore>cspNavigationType</var>, <var ignore>navigationId</var>, and <var ignore>navTimingType</var>.
 
 </div>
@@ -693,9 +694,9 @@ Modify the [=snapshot source snapshot params=] algorithm to set the return value
             1. If |finalSandboxFlags| is not empty and |responseCOOP|'s [=cross-origin opener policy/value=] is not "`unsafe-none`", then set |response| to an appropriate [=network error=] and [=iteration/break=].
 
             <p class="note" id="note-prefetch-coop-delay">COOP checks for prefetches are performed at activation time, when we know the target browsing context.
-        1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=container document=]'s [=Document/origin=], |navigable|'s [=container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
+        1. If |response| is not a [=network error=], |navigable| is a [=child navigable=], and the result of performing a [=cross-origin resource policy check=] with |navigable|'s [=navigable/container document=]'s [=Document/origin=], |navigable|'s [=navigable/container document=]'s [=relevant settings object=], |request|'s [=request/destination=], |response|, and true is <strong>blocked</strong>, then set |response| to a [=network error=] and [=iteration/break=].
         1. If |prefetchRecord| was given, then:
-            1. [=redirect chain/Update the response=] for its [=prefetch record/redirect chain=] given |request| and |response|.
+            1. [=redirect chain/Update=] |prefetchRecord|'s [=prefetch record/redirect chain=] given |request| and |response|.
             1. If [=conflicting credentials exist=] for |response| given |navigable| and |prefetchRecord|'s [=prefetch record/source partition key=], then set |prefetchRecord|'s [=prefetch record/had conflicting credentials=] to true.
 
                 <p class="note">This does not immediately abort the prefetch or stop following redirects, because doing so might reveal whether or not the user has stored state outside the current partition, before the user navigates. Instead, the prefetch continues as though there were no conflicting credentials, except that the prefetch cannot actually be used. User agents might wish to [=report a warning to the console=] or otherwise inform authors that this has happened.</p>
@@ -865,6 +866,21 @@ The <dfn>list of sufficiently strict speculative navigation referrer policies</d
     1. Let |global| be |document|'s [=relevant global object=].
     1. [=In parallel=]:
         1. Let |navigationParams| be the result of [=creating navigation params by fetching=] given |request|, |entry|, |document|'s [=node navigable=], |sourceSnapshotParams|, |targetSnapshotParams|, "`other`", null (navigationId), "`navigate`", and <a href="#create-navigation-params-by-fetching-prefetchRecord"><i>prefetchRecord</i></a> |prefetchRecord|.
+
+            <div class="note" id="note-create-navigation-params-navigable">
+              The [=navigable=] used here at prefetch time, i.e., |document|'s [=node navigable=], could potentially be different from the one used at activation time, i.e., the one passed to the [=navigate=] algorithm which eventually calls [=create navigation params from a prefetch record=].
+
+              This is, actually, fine. During the [=navigate|navigation=] that results in prefetch activation, the target navigable will still be used for most of the important checks, which are performed earlier in the process before <a spec=HTML>attempt to populate the history entry's document</a> is called. And, looking at all the ways in which the navigable impacts the prefetch-time [=create navigation params by fetching=]:
+
+              * Setting the prefetch request's [=request/reserved client=] from |document|'s [=node navigable=] is expected. We have to pick one at prefetch time, and this is the only sensible choice.
+
+                (Also, the only potentially-problematic field of the reserved client is its [=environment/target browsing context=]. Since prefetches <a href="#note-prefetch-top-level">prefetches are only supported in top-level traversables</a> and the client's [=environment/execution ready flag=] is left unset, the impact is limited.)
+              * Checks related to [:Cross-Origin-Resource-Policy:] are not applicable, since <a href="#note-prefetch-top-level">prefetches are only supported in top-level traversables</a>.
+              * Checks related to [:Cross-Origin-Opener-Policy:] are skipped during prefetch time and instead <a href="#step-activation-time-coop-check">performed during activation</a>.
+
+              Also note that within this algorithm, |navigationParams| is basically just used as a wrapper for the prefetch response, and not stored anywhere for longer-term use. Thus, the value of |navigationParams|'s [=navigation params/navigable=] does not leak to the rest of the system. In particular, during activation a new [=navigation params=] is created by the [=create navigation params from a prefetch record=] algorithm, which contains the correct target navigable.
+            </div>
+
         1. If |navigationParams|'s [=navigation params/response=] does not [=support prefetch=], then set |navigationParams| to null.
         1. If |prefetchRecord|'s [=prefetch record/had conflicting credentials=] is true, then set |navigationParams| to null.
 
@@ -1052,8 +1068,8 @@ To <dfn>trigger a prefetch status updated event</dfn> given a [=navigable=] |nav
 
 <h2 id="security-considerations">Security considerations</h2>
 
-See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-security">the HTML Standard</a>.
+See [[HTML#speculative-loading-security]].
 
 <h2 id="privacy-considerations">Privacy considerations</h2>
 
-See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-privacy">the HTML Standard</a>.
+See [[HTML#speculative-loading-privacy]].

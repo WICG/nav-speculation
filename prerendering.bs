@@ -49,10 +49,23 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
     text: session history entry; url: browsing-the-web.html#session-history-entry
     text: the worker's lifetime; url: workers.html#the-worker's-lifetime
     text: URL and history update steps; url: browsing-the-web.html#url-and-history-update-steps
+    text: collecting tags from speculative load candidates; url: speculative-loading.html#collect-tags-from-speculative-load-candidates
+    text: compute a speculative load referrer policy; url: speculative-loading.html#compute-a-speculative-load-referrer-policy
+    text: consider speculative loads; url: speculative-loading.html#consider-speculative-loads
+    text: find matching links; url: speculative-loading.html#find-matching-links
+    text: inner consider speculative loads steps; url: speculative-loading.html#inner-consider-speculative-loads-steps
+    text: parse a speculation rule set string; url: speculative-loading.html#speculation-rule-set
+    text: parse a speculation rule; url: speculative-loading.html#parse-a-speculation-rule
+    text: prefetch candidate; url: speculative-loading.html#prefetch-candidate
+    text: speculation rule set; url: speculative-loading.html#speculation-rule-set
+    text: speculation rule; url: speculative-loading.html#speculation-rule
+    text: speculative load candidate; url: speculative-loading.html#speculative-load-candidate
+    text: get an element's target; url: semantics.html#get-an-element's-target
     for: Document
       text: abort; url: document-lifecycle.html#abort-a-document
       text: destroy; url: document-lifecycle.html#destroy-a-document
       text: is initial about:blank; url: dom.html#is-initial-about%3Ablank
+      text: speculation rule sets; url: speculative-loading.html#document-sr-sets
     for: document state
       text: initiator origin; url: browsing-the-web.html#document-state-initiator-origin
     for: navigable
@@ -80,42 +93,24 @@ spec: html; urlPrefix: https://html.spec.whatwg.org/multipage/
       text: url; url: links.html#concept-hyperlink-url
     for: Window
       text: navigable; url: nav-history-apis.html#window-navigable
-spec: HTML; urlPrefix: https://whatpr.org/html/11426/speculative-loading.html#
-  type: dfn
-    text: collecting tags from speculative load candidates; url: collect-tags-from-speculative-load-candidates
-    text: compute a speculative load referrer policy; url: compute-speculative-load-referrer-policy
-    text: consider speculative loads; url: consider-speculative-loads
-    text: finding matching links; url: finding-matching-links
-    text: inner consider speculative loads steps; url: inner-consider-speculative-loads-steps
-    text: parse a speculation rule set string; url: speculation-rule-set
-    text: parse a speculation rule; url: parse-a-speculation-rule
-    text: prefetch candidate; url: prefetch-candidate
-    text: speculation rule set; url: speculation-rule-set
-    text: speculation rule; url: speculation-rule
-    text: speculative load candidate; url: speculative-load-candidate
-    for: Document
-      text: speculation rule sets; url: document-sr-sets
     for: prefetch candidate
-      text: anonymization policy; url: sl-candidate-anonymization-policy
+      text: anonymization policy; url: speculative-loading.html#sl-candidate-anonymization-policy
     for: speculation rule
-      text: URLs; url: sr-urls
-      text: predicate; url: sr-predicate
-      text: eagerness; url: sr-eagerness
-      text: referrer policy; url: sr-referrer-policy
-      text: tags; url: sr-tags
-      text: No-Vary-Search hint; url: sr-nvs-hint
-      text: requirements; url: sr-requirements
+      text: URLs; url: speculative-loading.html#sr-urls
+      text: predicate; url: speculative-loading.html#sr-predicate
+      text: eagerness; url: speculative-loading.html#sr-eagerness
+      text: referrer policy; url: speculative-loading.html#sr-referrer-policy
+      text: tags; url: speculative-loading.html#sr-tags
+      text: No-Vary-Search hint; url: speculative-loading.html#sr-nvs-hint
+      text: requirements; url: speculative-loading.html#sr-requirements
     for: speculation rule set
-      text: prefetch rules; url: sr-set-prefetch
+      text: prefetch rules; url: speculative-loading.html#sr-set-prefetch
     for: speculative load candidate
-      text: URL; url: sl-candidate-url
-      text: No-Vary-Search hint; url: sl-candidate-nvs-hint
-      text: eagerness; url: sl-candidate-eagerness
-      text: referrer policy; url: sl-candidate-referrer-policy
-      text: tags; url: sl-candidate-tags
-spec: HTML; urlPrefix: https://whatpr.org/html/11426/semantics.html#
-  type: dfn
-    text: get an element's target; url: get-an-element's-target
+      text: URL; url: speculative-loading.html#sl-candidate-url
+      text: No-Vary-Search hint; url: speculative-loading.html#sl-candidate-nvs-hint
+      text: eagerness; url: speculative-loading.html#sl-candidate-eagerness
+      text: referrer policy; url: speculative-loading.html#sl-candidate-referrer-policy
+      text: tags; url: speculative-loading.html#sl-candidate-tags
 spec: battery; urlPrefix: https://w3c.github.io/battery/
   type: dfn
     text: [[BatteryPromise]]; url: dfn-batterypromise
@@ -235,9 +230,7 @@ p + dl.props { margin-top: -0.5em; }
 
 <h2 id="speculation-rules">Speculation rules</h2>
 
-Modify the HTML Standard's speculation rules specification as follows to support prerendering.
-
-(Currently, the HTML Standard's speculation rules lives in <a href="https://github.com/whatwg/html/pull/11426">whatwg/html#11426</a>, with the rendered specification text at <a href="https://whatpr.org/html/11426/speculative-loading.html">this PR preview</a>. But we anticipate it merging in the main HTML Standard shortly.)
+Modify [[HTML#speculation-rules]] as follows to support prerendering.
 
 <h3 id="speculation-rules-parsing">Parsing</h3>
 
@@ -1297,7 +1290,7 @@ More complicated cases:
 
 <h2 id="security-considerations">Security considerations</h2>
 
-See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-security">the HTML Standard</a>.
+See [[HTML#speculative-loading-security]].
 
 For the integration of this spec with No-Vary-Search, see <a href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-security-considerations">No-Vary-Search Security considerations</a>.
 
@@ -1305,7 +1298,7 @@ For the integration of this spec with No-Vary-Search, see <a href="https://httpw
 
 <h2 id="privacy-considerations">Privacy considerations</h2>
 
-See <a href="https://whatpr.org/html/11426/speculative-loading.html#speculative-loading-privacy">the HTML Standard</a>.
+See [[HTML#speculative-loading-privacy]].
 
 For the integration of this spec with No-Vary-Search, see <a href="https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-privacy-considerations">No-Vary-Search Privacy considerations</a>.
 

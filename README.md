@@ -2,7 +2,7 @@
 
 [Draft specifications](https://wicg.github.io/nav-speculation/)
 
-In order to making the experience of navigating on the web faster, user agents employ prefetching and prerendering techniques. However, they have historically been [underspecified](https://w3c.github.io/resource-hints/#prerender) and [inconsistently implemented](https://caniuse.com/link-rel-prerender).
+In order to making the experience of navigating on the web faster, user agents employ prefetching and prerendering techniques. However, they have historically been underspecified and [inconsistently implemented](https://caniuse.com/link-rel-prerender).
 
 The space is full of challenges which have not been comprehensively tackled: most notably,
 
