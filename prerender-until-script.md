@@ -54,7 +54,7 @@ We propose a new action, `prerender_until_script`, which can be used within a `<
 
 ```html
 <!-- heavy-script-page.html -->
-<script defer scr="deferred-script.js" id="deferred-script"></script>
+<script defer src="deferred-script.js" id="deferred-script"></script>
 <script async src="async-script.js" id="async-script"></script>
 <img src="image1.jpg" id="first-image"/>
 <script id="first-blocking">
@@ -68,25 +68,50 @@ We propose a new action, `prerender_until_script`, which can be used within a `<
 
 In this example, `/heavy-script-page.html` will be prerendered, but its scripts will not run until the user clicks the link and the page is activated.
 
-More specifically, the user agent processes the page as follows:
+### Workflow Breakdown
 
-1.  The `deferred-script` script is parsed and added to the queue of scripts that will be executed after page parsing is complete. Parsing then resumes.
-2.  The `async-script` script is parsed and added to the queue of scripts that will be executed after prerender activation. Parsing then resumes.
-3.  The `first-image` element is parsed, `image1.jpg` is fetched and loaded, and parsing resumes.
-4.  When the `first-blocking` script is parsed, the parser pauses and waits for prerender activation.
-5.  While waiting for activation, the user agent may optionally prefetch `image2.jpg`.
-6.  The prerendered document is activated.
-7.  The parsing of `first-blocking` script resumes, and the script is executed.
+Here is a step-by-step breakdown of how a user agent would process the `heavy-script-page.html` example:
+
+**Phase 1: Prerendering (Pre-Activation)**
+
+1.  The user agent begins parsing the document.
+2.  The `deferred-script` script is found. The browser starts fetching `deferred-script.js` and queues it for execution after the document has finished parsing and activation.
+3.  The `async-script` script is found. The browser starts fetching `async-script.js`. Once downloaded, it is ready to be executed immediately after the page is activated.
+4.  The `first-image` element is found, and the browser starts fetching `image1.jpg`.
+5.  The parser encounters the `first-blocking` script. At this point, because the `scripting mode` is `paused-until-activation`, the parser is paused.
+6.  While waiting for activation, the user agent may optionally prefetch `image2.jpg`.
+7.  During this entire phase, **no script elements are executed**.
+
+**Phase 2: Activation**
+
+8.  The user clicks the link, and the prerendered document is activated.
+
+**Phase 3: Script Execution (Post-Activation)**
+
+9.  The parser resumes. The `first-blocking` script is the first to be executed.
+10. After `first-blocking` finishes, the parser continues from where it left off, processing the rest of the document.
+11. The `async-script` script (if it has finished downloading) is executed. `async` scripts execute as soon as they are ready post-activation, independently of the document parsing order.
+12. Once the document has finished parsing, the `deferred-script` script (if it has finished downloading) is executed. `defer` scripts always execute after the document is fully parsed, in the order they appeared in the HTML.
  
 ## Detailed Design Discussion
 
 The `prerender_until_script` action is implemented as an extension to the existing prerendering specification. The key technical changes are:
 
 *   A new `prerender_until_script rules` list is added to the `speculation rule set` struct.
-*   A `scripts paused` boolean is added to the `prerender candidate` struct to track whether scripts should be paused.
+*   A `should pause scripts` boolean is added to the `prerender candidate` struct to track whether scripts should be paused.
 *   A `scripting mode` is added to the `navigable` struct, with a state of `paused-until-activation`.
-*   When a page is prerendered with `prerender_until_script`, all script execution is paused. This means that no `<script>` tags are executed, and no timers or promises are allowed to execute their callbacks. The JavaScript engine is effectively "frozen" until the document is activated. Upon activation, script execution resumes as if there was no interruption.
-*   Upon activation, the `finalize activation` algorithm sets the `scripting mode` to `enabled` and resumes script execution.
+
+A key design consideration for this feature is defining the precise scope of what "pausing script execution" entails.
+
+The most straightforward approach, and the one currently specified, is to defer the execution of all `<script>` elements. This means the browser will still fetch external scripts, but will not execute any of parser-blocking, `async`, or `defer`, until the page is activated.
+
+However, web pages execute JavaScript in many ways beyond the `<script>` tag. This includes inline event handlers (e.g., `onclick`), timers (`setTimeout`), and promise resolutions. A more comprehensive approach would be to "freeze" the entire JavaScript engine, pausing all task queues related to script execution. While this provides the strongest guarantee, it is a complex implementation challenge.
+
+The behavior of inline event handlers is a particularly important open question. The most predictable behavior for developers might be to defer these as well, but this requires careful specification. **We are actively seeking feedback from the community on the expected behavior for these cases.**
+
+The current specification focuses on the essential mechanism of deferring `<script>` element execution. The more nuanced behaviors for other script-initiated tasks are a topic for further discussion and will be detailed in future revisions of the spec.
+
+Upon activation, the `finalize activation` algorithm sets the `scripting mode` to `enabled` and resumes script execution, processing the queue of scripts in the appropriate order.
 
 ## Developer Impact
 
@@ -114,10 +139,9 @@ The initial proposal for this feature used the name `preparse`. Other names, suc
 
 ## Stakeholder Feedback
 
-*This section is a placeholder for feedback from browser vendors, web developers, and other stakeholders.*
+*This section is a placeholder for feedback from browser vendors, web developers, and other stakeholders. The initial proposal in [GitHub issue #305](https://github.com/WICG/nav-speculation/issues/305) has received positive feedback from developers on large platforms. They think this feature is an enabler for going beyond prefetch in a lower-risk way.*
 
 ## References & acknowledgements
 
 *   [Speculation Rules API](https://wicg.github.io/nav-speculation/)
 *   [Prerendering Revamped Spec](https://wicg.github.io/nav-speculation/prerendering.html)
-*   [Initial GitHub Issue (#305)](https://github.com/WICG/nav-speculation/issues/305)
