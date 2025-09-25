@@ -101,15 +101,15 @@ The `prerender_until_script` action is implemented as an extension to the existi
 *   A `should pause scripts` boolean is added to the `prerender candidate` struct to track whether scripts should be paused.
 *   A `scripting mode` is added to the `navigable` struct, with a state of `paused-until-activation`.
 
-A key design consideration for this feature is defining the precise scope of what "pausing script execution" entails.
+A key design consideration for this feature is defining the precise scope of what "pausing script execution" entails. The ideal goal is to prevent any developer-authored scripts from running until activation. To achieve this, we need to consider all possible **scripting entry points**. If all entry points are successfully blocked, then no script can run, and therefore no subsequent tasks like timers (`setTimeout`) or promise resolutions can be queued by that script.
 
-The most straightforward approach, and the one currently specified, is to defer the execution of all `<script>` elements. This means the browser will still fetch external scripts, but will not execute any of parser-blocking, `async`, or `defer`, until the page is activated.
+The most direct entry point is the `<script>` element. The current specification focuses on this, deferring the execution of all scripts of this type—whether parser-blocking, `async`, or `defer`, until the page is activated.
 
-However, web pages execute JavaScript in many ways beyond the `<script>` tag. This includes inline event handlers (e.g., `onclick`), timers (`setTimeout`), and promise resolutions. A more comprehensive approach would be to "freeze" the entire JavaScript engine, pausing all task queues related to script execution. While this provides the strongest guarantee, it is a complex implementation challenge.
+To provide a complete solution, other entry points must be considered. These include `javascript:` URLs and inline event handlers (e.g., `onload`). Deferring these handlers seems like the most predictable behavior for developers, but this requires careful specification. **We are actively seeking feedback from the community on how these non-`<script>` entry points should be handled.**
 
-The behavior of inline event handlers is a particularly important open question. The most predictable behavior for developers might be to defer these as well, but this requires careful specification. **We are actively seeking feedback from the community on the expected behavior for these cases.**
+Also, it is a long-standing web development best practice to separate HTML structure from JavaScript behavior by avoiding inline event handlers (e.g., `<div onclick="...">`) in favor of registering event listeners from within `<script>` elements (e.g., `div.addEventListener('click', ...)`). This feature reinforces that best practice. Pages that follow this principle will have their behavior reliably deferred by `prerender_until_script`, as all of their scripting logic will be contained within `<script>` elements.
 
-The current specification focuses on the essential mechanism of deferring `<script>` element execution. The more nuanced behaviors for other script-initiated tasks are a topic for further discussion and will be detailed in future revisions of the spec.
+The current specification focuses on the essential mechanism of deferring `<script>` element execution. The more nuanced behaviors for other entry points are a topic for further discussion and will be detailed in future revisions of the spec.
 
 Upon activation, the `finalize activation` algorithm sets the `scripting mode` to `enabled` and resumes script execution, processing the queue of scripts in the appropriate order.
 
@@ -136,6 +136,32 @@ Another alternative is for developers to modify their pages to be more "prerende
 ### Alternative Naming
 
 The initial proposal for this feature used the name `preparse`. Other names, such as `prescan` and `prefetch_with_subresources`, were also considered. The name `prerender_until_script` was chosen to make it clear that this is a form of prerendering, but with a specific modification to the script execution lifecycle. This naming helps to place the feature within the existing mental model of the Speculation Rules API.
+
+## Potential Scripting Entry Points to Consider
+
+To provide a comprehensive solution that pauses all script execution, the following entry points need to be addressed. The current specification focuses on `<script>` elements, while the others are topics for further investigation and community feedback.
+
+### Entry Points Requiring a Deferral Mechanism
+
+These are entry points that can execute script without user interaction.
+
+*   `<script>` elements: Includes parser-blocking, `async`, and `defer` scripts.
+*   `javascript:` URLs: When used in contexts that load automatically, such as:
+    *   `<iframe src="javascript:...">`
+    *   `<embed src="javascript:...">`
+    *   `<object data="javascript:...">`
+*   `srcdoc` attribute: `<iframe srcdoc="<script>...</script>">`.
+*   Inline event handlers: Handlers for events that can fire without user interaction, such as `onload` or `onerror`. The precise behavior of these is an open area for discussion.
+
+### Entry Points Not Relevant to Prerendering
+
+These entry points require user interaction, which is not possible in a prerendered document. Therefore, they are not a primary concern for this feature.
+
+*   User-activated `javascript:` URLs:
+    *   `<a href="javascript:...">`
+    *   `<form action="javascript:...">`
+*   User-initiated event handlers:
+      `onclick`, `onmouseover`, `onkeydown`, etc.
 
 ## Stakeholder Feedback
 
