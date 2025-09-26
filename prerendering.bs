@@ -273,7 +273,7 @@ Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
 A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the following additional [=struct/items=]:
 
 * <dfn for="prerender candidate">target navigable name hint</dfn>, a [=valid navigable target name or keyword=] or null
-* <dfn for="prerender candidate">should pause scripts</dfn>, a [=boolean=], initially false
+* <dfn for="prerender candidate">should block scripts</dfn>, a [=boolean=], initially false
 
 <div algorithm="consider speculative loads steps">
   Update the [=consider speculative loads=] algorithm to bail out early if <var ignore>document</var>'s [=node navigable=] is a [=prerendering navigable=], with an explanatory note about how performing speculative loads in a speculatively-loaded page is too wasteful.
@@ -284,7 +284,7 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
   1. Let |prerenderCandidates| be an empty [=list=].
   1. [=list/For each=] |ruleSet| of |document|'s [=Document/speculation rule sets=]:
-    1. [=list/For each=] (|rules|, |shouldPauseScripts|) of « (|ruleSet|'s [=speculation rule set/prerender rules=], false), (|ruleSet|'s [=speculation rule set/prerender_until_script rules=], true) »:
+    1. [=list/For each=] (|rules|, |shouldBlockScripts|) of « (|ruleSet|'s [=speculation rule set/prerender rules=], false), (|ruleSet|'s [=speculation rule set/prerender_until_script rules=], true) »:
       1. [=list/For each=] |rule| of |rules|:
           1. [=list/For each=] |url| of |rule|'s [=speculation rule/URLs=]:
             1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and null.
@@ -308,8 +308,8 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
                 : [=prerender candidate/target navigable name hint=]
                 :: |rule|'s [=speculation rule/target navigable name hint=]
 
-                : [=prerender candidate/should pause scripts=]
-                :: |shouldPauseScripts|
+                : [=prerender candidate/should block scripts=]
+                :: |shouldBlockScripts|
               </dl>
               to |prerenderCandidates|.
           1. If |rule|'s [=speculation rule/predicate=] is not null, then:
@@ -338,8 +338,8 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
                   : [=prerender candidate/target navigable name hint=]
                   :: |target|
                   
-                  : [=prerender candidate/should pause scripts=]
-                  :: |shouldPauseScripts|
+                  : [=prerender candidate/should block scripts=]
+                  :: |shouldBlockScripts|
                 </dl>
                 to |prerenderCandidates|.
   1. Let |speculativeLoadCandidates| be the union of |prefetchCandidates| and |prerenderCandidates|.
@@ -387,7 +387,7 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
         1. Set |prefetchRecord|'s [=prefetch record/prerendering target navigable name hint=] to |candidate|'s [=prerender candidate/target navigable name hint=].
 
-        1. [=Start a referrer-initiated navigational prerender=] given |document|, |prefetchRecord|, and |candidate|'s [=prerender candidate/should pause scripts=].
+        1. [=Start a referrer-initiated navigational prerender=] given |document|, |prefetchRecord|, and |candidate|'s [=prerender candidate/should block scripts=].
 
       1. If the user agent did not run the previous step, then [=start a referrer-initiated navigational prefetch=] given |document| and |prefetchRecord|.
 
@@ -438,8 +438,8 @@ Every [=navigable=] has a <dfn for="navigable">scripting mode</dfn>, which is on
 
 : "`enabled`"
 :: Scripts are executed as normal.
-: "`paused-until-activation`"
-:: Scripts are paused until the navigable is activated.
+: "`blocked-until-activation`"
+:: Scripts are blocked until the navigable is activated.
 
 By default, a [=navigable=]'s [=navigable/scripting mode=] is "`enabled`". 
 
@@ -513,7 +513,7 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
 </div>
 
 <div>
-  To <dfn export>start a referrer-initiated navigational prerender</dfn> given a {{Document}} |referrerDoc|, a [=prefetch record=] |prefetchRecord|, and a boolean |shouldPauseScripts|:
+  To <dfn export>start a referrer-initiated navigational prerender</dfn> given a {{Document}} |referrerDoc|, a [=prefetch record=] |prefetchRecord|, and a boolean |blockScripts|:
 
   1. [=Assert=]: |prefetchRecord|'s [=prefetch record/URL=]'s [=url/scheme=] is an [=HTTP(S) scheme=].
 
@@ -541,7 +541,7 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
 
   1. Set |prerenderingTraversable|'s [=navigable/loading mode=] to "`prerender`".
   
-  1. If |shouldPauseScripts| is true, set |prerenderingTraversable|'s [=navigable/scripting mode=] to "`paused-until-activation`".
+  1. If |blockScripts| is true, set |prerenderingTraversable|'s [=navigable/scripting mode=] to "`blocked-until-activation`".
 
   1. Set |prefetchRecord|'s [=prefetch record/prerendering traversable=] to |prerenderingTraversable|.
 
@@ -630,11 +630,11 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
 
       1. [=map/Set=] [=Accept-CH cache=][|origin|] to |hintSet|.
 
-    1. If |navigable|'s [=navigable/scripting mode=] is "`paused-until-activation`":
+    1. If |navigable|'s [=navigable/scripting mode=] is "`blocked-until-activation`":
 
       1. Set |navigable|'s [=navigable/scripting mode=] to "`enabled`".
     
-      1. Resume script execution in |navigable|'s [=navigable/active document=].
+      1. Unblock script execution in |navigable|'s [=navigable/active document=].
 
       <p class="XXX">The precise mechanism for how script execution is resumed, especially how previously-queued tasks are processed, needs to be specified in more detail.</p>
 
@@ -978,9 +978,9 @@ Various behaviors are disallowed in [=prerendering navigables=] because they wou
 
 <h3 id="pausing-script-execution">Pausing script execution</h3>
 
-If a [=navigable=]'s [=navigable/scripting mode=] is "`paused-until-activation`", the user agent must not execute script in the navigable's [=navigable/active document=]. This includes, but is not limited to executing `<script>` elements.
+If a [=navigable=]'s [=navigable/scripting mode=] is "`blocked-until-activation`", the user agent must not execute script in the navigable's [=navigable/active document=]. This includes, but is not limited to executing `<script>` elements.
 
-<p class="XXX">The precise mechanism for how script execution is paused, and how various script-related tasks are queued instead of being processed, needs to be specified in more detail.</p>
+<p class="XXX">The precise mechanism for how script execution is blocked, and how various script-related tasks are queued instead of being processed, needs to be specified in more detail.</p>
 
 <p class="note">This effectively pauses all JavaScript execution until the page is activated. For inline event handlers, the expected behavior is under discussion.</p>
 
@@ -1008,11 +1008,9 @@ Modify the <a spec=HTML>download the hyperlink</a> algorithm to ensure that down
 
 <h3 id="delay-async-apis">Delaying async API results</h3>
 
-Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering navigable=], most of its work is deferred until the navigable's [=navigable/top-level traversable=] is [=prerendering traversable/activated=].
+Many specifications need to be patched so that, if a given algorithm invoked in a [=prerendering navigable=], most of its work is deferred until the navigable's [=navigable/top-level traversable=] is [=prerendering traversable/activated=]. This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
 
-This is tricky to do uniformly, as many of these specifications do not have great hygeine around <a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop-for-spec-authors">using the event loop</a>. Nevertheless, the following sections give our best attempt.
-
-<p class="note">Note that if the [=navigable/scripting mode=] is "`paused-until-activation`", the scripts that would invoke these algorithms are not executed in the first place until activation.</p>
+<p class="note">Note that if the [=navigable/scripting mode=] is "`blocked-until-activation`", the scripts that would invoke these algorithms are not executed in the first place until activation.</p>
 
 <h4 id="delay-while-prerendering">The {{[DelayWhilePrerendering]}} extended attribute</h4>
 
