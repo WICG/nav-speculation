@@ -41,10 +41,12 @@ The navigation history entries that are created by prerender have an an initial 
 For these reasons, this idea is abandoned.
 
 ## Accessibility, privacy, and security considerations
+
 This feature has no accessibility considerations.
 This feature does not have any privacy considerations or security considerations, on top of the existing ones for speculative loads in general.
 
 ### W3C TAG Security and Privacy Questionnaire answers
+
 > 01.  What information does this feature expose, and for what purposes?
 
 None.
