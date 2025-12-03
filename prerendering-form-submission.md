@@ -136,3 +136,7 @@ No.
 Seems fine.
 
 ## Stakeholder feedback
+
+- [Requested by web developers](https://g-issues.chromium.org/issues/346555939)
+- [Workarounds implemented by WordPress](https://github.com/WICG/nav-speculation/issues/322#issuecomment-2162167369)
+
