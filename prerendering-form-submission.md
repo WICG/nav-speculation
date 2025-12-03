@@ -33,6 +33,7 @@ Any of the them can be activated by an activation navigation which matches corre
 ```
 
 ## Design considerations and alternatives considered
+
 Modify the existing logic to allow prerender activation by form submission without this field.
 
 The navigation history entries that are created by prerender have an an initial navigation are not form submissions. Form submissions are subject to extra checks in Chrome at least that would not be checked on initial prerender. Allowing speculation rules to specify the form submission field enables prerender to create the initial prerender in as a form submission navigation. This allows additional checks to complete and avoids wasting resources on prerendering a page which is not eligible, such as CSP disallowing `form-action`.
