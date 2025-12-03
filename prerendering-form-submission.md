@@ -5,7 +5,7 @@ Examples include a simple search form which results in a “/search?q=XXX” GET
 
 
 ## The proposal
-Introduce a field “form_submission” to speculation rules, allowing web developers to specify which speculative navigation is a form submission one. This will only be available for GET form-based speculations.
+Introduce the `form_submission` field to speculation rules, allowing web developers to specify which speculative navigation is a form submission one. This will only be available for GET form-based speculations.
 It should be noted the speculation will need to be triggered by the page in some manner (e.g. by hovering over the submit button). This proposal does not add functionality to trigger the speculation, but simply allows a previously-initiated speculation to be matched upon navigation.
 
 ## Example
