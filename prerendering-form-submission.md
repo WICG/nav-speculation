@@ -11,7 +11,9 @@ Introduce the `form_submission` field to speculation rules, allowing web develop
 It should be noted the speculation will need to be triggered by the page in some manner (e.g. by injecting the rule with JavaScript on hovering over the submit button). This proposal does not add functionality to trigger the speculation, but simply allows a previously-initiated speculation to be matched upon navigation.
 
 ## Example
-This example creates 2 prerendered pages, one being form submission, and the other being non form submission.
+
+This example creates 2 prerendered pages, one being a form submission, and the other being a non-form submission.
+
 Any of the them can be activated by an activation navigation which matches corresponding parameters.
 
 ```json
