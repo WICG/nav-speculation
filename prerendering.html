@@ -4,7 +4,7 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
+  <meta content="Bikeshed version fd9c5ce66, updated Mon Dec 8 22:43:21 2025 +0000" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -361,7 +361,7 @@ body {
 }
 .invalid.example:not(.no-marker)::before,
 .illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
+    content: "Invalid Example " counter(example);
 }
 
 figcaption {
@@ -777,9 +777,9 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </style>
  <body class="h-entry">
   <div class="head">
-   <h1 class="p-name no-ref" id="title">Prerendering Revamped</h1>
+   <h1 class="no-ref p-name" id="title">Prerendering Revamped</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2025-09-25">25 September 2025</time></p>
+    <time class="dt-updated" datetime="2025-12-09">9 December 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -788,8 +788,8 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
      <dd><a href="https://github.com/WICG/nav-speculation/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editors:
-     <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:d@domenic.me">Domenic Denicola</a> (<a class="p-org org" href="https://www.google.com/">Google</a>)
-     <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:domfarolino@gmail.com">Dominic Farolino</a> (<a class="p-org org" href="https://www.google.com/">Google</a>)
+     <dd class="editor h-card p-author vcard"><a class="email fn p-name u-email" href="mailto:d@domenic.me">Domenic Denicola</a> (<a class="org p-org" href="https://www.google.com/">Google</a>)
+     <dd class="editor h-card p-author vcard"><a class="email fn p-name u-email" href="mailto:domfarolino@gmail.com">Dominic Farolino</a> (<a class="org p-org" href="https://www.google.com/">Google</a>)
     </dl>
    </div>
    <div data-fill-with="warning"></div>
@@ -799,11 +799,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
-   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <h2 class="heading no-num no-ref no-toc settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>This document contains a collection of specification patches for well-specified prerendering.</p>
   </div>
   <div data-fill-with="at-risk"></div>
-  <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
+  <h2 class="heading no-num no-ref no-toc settled" id="status"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
    <p>
   This specification was published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a>.
@@ -820,8 +820,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
-   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
-   <ol class="toc" role="directory">
+   <h2 class="no-num no-ref no-toc" id="contents">Table of Contents</h2>
+   <ol class="toc">
     <li>
      <a href="#speculation-rules"><span class="secno">1</span> <span class="content">Speculation rules</span></a>
      <ol class="toc">
@@ -1144,7 +1144,7 @@ to <var>prerenderCandidates</var>.
    <h2 class="heading settled" data-level="2" id="prerendering-infra"><span class="secno">2. </span><span class="content">Prerendering infrastructure</span><a class="self-link" href="#prerendering-infra"></a></h2>
    <h3 class="heading settled" data-level="2.1" id="document-prerendering"><span class="secno">2.1. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> interface</span><a class="self-link" href="#document-prerendering"></a></h3>
    <p>We’d modify <a data-link-type="biblio" href="#biblio-html" title="HTML Standard">[HTML]</a>’s centralized definition of <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①">Document</a></code> as follows:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②"><c- g>Document</c-></a> {
+<pre class="def highlight idl"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document" id="ref-for-document②"><c- g>Document</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean" id="ref-for-idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="boolean" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering"><c- g>prerendering</c-></a>;
 
     // Under "special event handler IDL attributes that only apply to Document objects"
@@ -1741,7 +1741,7 @@ to <var>prerenderCandidates</var>.
    <p><a data-link-type="dfn" href="#prerendering-traversable" id="ref-for-prerendering-traversable②⑥">Prerendering traversables</a> never have <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/interaction.html#system-focus" id="ref-for-system-focus">system focus</a>.</p>
    <h3 class="heading settled" data-level="4.3" id="performance-navigation-timing-extension"><span class="secno">4.3. </span><span class="content">Extensions to the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming">PerformanceNavigationTiming</a></code> interface</span><a class="self-link" href="#performance-navigation-timing-extension"></a></h3>
    <p>Extend the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming①">PerformanceNavigationTiming</a></code> interface as follows:</p>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming②"><c- g>PerformanceNavigationTiming</c-></a> {
+<pre class="def highlight idl"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/navigation-timing/#dom-performancenavigationtiming" id="ref-for-dom-performancenavigationtiming②"><c- g>PerformanceNavigationTiming</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp" id="ref-for-dom-domhighrestimestamp①"><c- n>DOMHighResTimeStamp</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMHighResTimeStamp" href="#dom-performancenavigationtiming-activationstart" id="ref-for-dom-performancenavigationtiming-activationstart"><c- g>activationStart</c-></a>;
 };
 </pre>
@@ -2283,8 +2283,8 @@ This would not matter because the node can automatically start when the context 
    <p class="issue" id="issue-38b286c3"><a class="self-link" href="#issue-38b286c3"></a>Add privacy considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>. One in particular worth calling out is how cross-partition prerendering is just disallowed, due to the privacy complexities.</p>
   </main>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
-  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#prerendering-traversable-activate">activate</a><span>, in § 2.3</span>
    <li><a href="#dom-performancenavigationtiming-activationstart">activationStart</a><span>, in § 4.3</span>
@@ -2331,7 +2331,7 @@ This would not matter because the node can automatically start when the context 
    <li><a href="#prerendering-traversable-update-the-successor-for-activation">update the successor for activation</a><span>, in § 2.3</span>
    <li><a href="#wait-for-a-matching-prerendered-prefetch-record">wait for a matching prerendered prefetch record</a><span>, in § 3.1</span>
   </ul>
-  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[AUDIO-OUTPUT]</a> defines the following terms:
@@ -2891,8 +2891,8 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="dc9c48d6">requestSession(mode)</span>
     </ul>
   </ul>
-  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-audio-output">[AUDIO-OUTPUT]
    <dd>Guido Urdaneta; youenn fablet. <a href="https://w3c.github.io/mediacapture-output/"><cite>Audio Output Devices API</cite></a>. URL: <a href="https://w3c.github.io/mediacapture-output/">https://w3c.github.io/mediacapture-output/</a>
@@ -2907,7 +2907,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-client-hints-infrastructure">[CLIENT-HINTS-INFRASTRUCTURE]
    <dd><a href="https://wicg.github.io/client-hints-infrastructure/"><cite>Client Hints Infrastructure</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/client-hints-infrastructure/">https://wicg.github.io/client-hints-infrastructure/</a>
    <dt id="biblio-clipboard-apis">[CLIPBOARD-APIS]
-   <dd>Gary Kacmarcik; Anupam Snigdha. <a href="https://w3c.github.io/clipboard-apis/"><cite>Clipboard API and events</cite></a>. URL: <a href="https://w3c.github.io/clipboard-apis/">https://w3c.github.io/clipboard-apis/</a>
+   <dd>Rakesh Goulikar; Rohan Raja. <a href="https://w3c.github.io/clipboard-apis/"><cite>Clipboard API and events</cite></a>. URL: <a href="https://w3c.github.io/clipboard-apis/">https://w3c.github.io/clipboard-apis/</a>
    <dt id="biblio-console">[CONSOLE]
    <dd>Dominic Farolino; Robert Kowalski; Terin Stock. <a href="https://console.spec.whatwg.org/"><cite>Console Standard</cite></a>. Living Standard. URL: <a href="https://console.spec.whatwg.org/">https://console.spec.whatwg.org/</a>
    <dt id="biblio-credential-management-1">[CREDENTIAL-MANAGEMENT-1]
@@ -2947,7 +2947,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-notifications">[NOTIFICATIONS]
    <dd>Anne van Kesteren. <a href="https://notifications.spec.whatwg.org/"><cite>Notifications API Standard</cite></a>. Living Standard. URL: <a href="https://notifications.spec.whatwg.org/">https://notifications.spec.whatwg.org/</a>
    <dt id="biblio-payment-request">[PAYMENT-REQUEST]
-   <dd>Marcos Caceres; Rouslan Solomakhin; Ian Jacobs. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
+   <dd>Marcos Caceres; Ian Jacobs; Stephen McGruer. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
    <dt id="biblio-picture-in-picture">[PICTURE-IN-PICTURE]
    <dd>Francois Beaufort. <a href="https://w3c.github.io/picture-in-picture/"><cite>Picture-in-Picture</cite></a>. URL: <a href="https://w3c.github.io/picture-in-picture/">https://w3c.github.io/picture-in-picture/</a>
    <dt id="biblio-pointerlock-2">[POINTERLOCK-2]
@@ -2957,7 +2957,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-presentation-api">[PRESENTATION-API]
    <dd>Mark Foltz. <a href="https://w3c.github.io/presentation-api/"><cite>Presentation API</cite></a>. URL: <a href="https://w3c.github.io/presentation-api/">https://w3c.github.io/presentation-api/</a>
    <dt id="biblio-push-api">[PUSH-API]
-   <dd>Peter Beverloo; Martin Thomson; Marcos Caceres. <a href="https://w3c.github.io/push-api/"><cite>Push API</cite></a>. URL: <a href="https://w3c.github.io/push-api/">https://w3c.github.io/push-api/</a>
+   <dd>Marcos Caceres; Kagami Rosylight. <a href="https://w3c.github.io/push-api/"><cite>Push API</cite></a>. URL: <a href="https://w3c.github.io/push-api/">https://w3c.github.io/push-api/</a>
    <dt id="biblio-rfc8941">[RFC8941]
    <dd>M. Nottingham; P-H. Kamp. <a href="https://httpwg.org/specs/rfc8941.html"><cite>Structured Field Values for HTTP</cite></a>. February 2021. Proposed Standard. URL: <a href="https://httpwg.org/specs/rfc8941.html">https://httpwg.org/specs/rfc8941.html</a>
    <dt id="biblio-screen-capture">[SCREEN-CAPTURE]
@@ -2971,7 +2971,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-serial">[SERIAL]
    <dd><a href="https://wicg.github.io/serial/"><cite>Web Serial API</cite></a>. Editor's Draft. URL: <a href="https://wicg.github.io/serial/">https://wicg.github.io/serial/</a>
    <dt id="biblio-service-workers">[SERVICE-WORKERS]
-   <dd>Yoshisato Yanagisawa; Monica CHINTALA. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
+   <dd>Monica CHINTALA; Yoshisato Yanagisawa. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers Nightly</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
    <dt id="biblio-speech-api">[SPEECH-API]
    <dd><a href="https://webaudio.github.io/web-speech-api/"><cite>Web Speech API</cite></a>. Draft Community Group Report. URL: <a href="https://webaudio.github.io/web-speech-api/">https://webaudio.github.io/web-speech-api/</a>
    <dt id="biblio-storage">[STORAGE]
@@ -3003,13 +3003,13 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-webxr">[WEBXR]
    <dd>Brandon Jones; Manish Goregaokar; Rik Cabanier. <a href="https://immersive-web.github.io/webxr/"><cite>WebXR Device API</cite></a>. URL: <a href="https://immersive-web.github.io/webxr/">https://immersive-web.github.io/webxr/</a>
   </dl>
-  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-pointerlock">[POINTERLOCK]
    <dd>Vincent Scheib. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
   </dl>
-  <h2 class="no-num no-ref heading settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
-<pre class="idl highlight def"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
+  <h2 class="heading no-num no-ref settled" id="idl-index"><span class="content">IDL Index</span><a class="self-link" href="#idl-index"></a></h2>
+<pre class="def highlight idl"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://dom.spec.whatwg.org/#document"><c- g>Document</c-></a> {
     <c- b>readonly</c-> <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-boolean"><c- b>boolean</c-></a> <a class="idl-code" data-link-type="attribute" data-readonly data-type="boolean" href="#dom-document-prerendering"><c- g>prerendering</c-></a>;
 
     // Under "special event handler IDL attributes that only apply to Document objects"
@@ -3021,7 +3021,7 @@ This would not matter because the node can automatically start when the context 
 };
 
 </pre>
-  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <h2 class="heading no-num no-ref settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
    <div class="issue">The concept of a fenced frame navigable is not yet defined but we need to link to it once it exists. <a class="issue-return" href="#issue-4798b01c" title="Jump to section">↵</a></div>
    <div class="issue">Add security considerations that are specific to prerendering. See <a href="https://github.com/WICG/nav-speculation/issues/319">issue #319</a>. <a class="issue-return" href="#issue-6008153e" title="Jump to section">↵</a></div>

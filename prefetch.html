@@ -4,7 +4,7 @@
   <title>Prefetch</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
+  <meta content="Bikeshed version fd9c5ce66, updated Mon Dec 8 22:43:21 2025 +0000" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prefetch.html" rel="canonical">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
@@ -326,7 +326,7 @@ body {
 }
 .invalid.example:not(.no-marker)::before,
 .illegal.example:not(.no-marker)::before {
-    content: "Invalid Example" counter(example);
+    content: "Invalid Example " counter(example);
 }
 
 figcaption {
@@ -737,9 +737,9 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
 </style>
  <body class="h-entry">
   <div class="head">
-   <h1 class="p-name no-ref" id="title">Prefetch</h1>
+   <h1 class="no-ref p-name" id="title">Prefetch</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2025-09-25">25 September 2025</time></p>
+    <time class="dt-updated" datetime="2025-12-09">9 December 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -748,8 +748,8 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
      <dd><a href="https://github.com/WICG/nav-speculation/issues/">GitHub</a>
      <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editors:
-     <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:jbroman@chromium.org">Jeremy Roman</a> (<a class="p-org org" href="https://www.google.com/">Google</a>)
-     <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:d@domenic.me">Domenic Denicola</a> (<a class="p-org org" href="https://www.google.com/">Google</a>)
+     <dd class="editor h-card p-author vcard"><a class="email fn p-name u-email" href="mailto:jbroman@chromium.org">Jeremy Roman</a> (<a class="org p-org" href="https://www.google.com/">Google</a>)
+     <dd class="editor h-card p-author vcard"><a class="email fn p-name u-email" href="mailto:d@domenic.me">Domenic Denicola</a> (<a class="org p-org" href="https://www.google.com/">Google</a>)
     </dl>
    </div>
    <div data-fill-with="warning"></div>
@@ -759,11 +759,11 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
-   <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
+   <h2 class="heading no-num no-ref no-toc settled" id="abstract"><span class="content">Abstract</span></h2>
    <p>A specification for navigational prefetching</p>
   </div>
   <div data-fill-with="at-risk"></div>
-  <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
+  <h2 class="heading no-num no-ref no-toc settled" id="status"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
    <p>
   This specification was published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a>.
@@ -780,8 +780,8 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
-   <h2 class="no-num no-toc no-ref" id="contents">Table of Contents</h2>
-   <ol class="toc" role="directory">
+   <h2 class="no-num no-ref no-toc" id="contents">Table of Contents</h2>
+   <ol class="toc">
     <li><a href="#concepts"><span class="secno">1</span> <span class="content">Concepts</span></a>
     <li><a href="#html-patches"><span class="secno">2</span> <span class="content">HTML Patches</span></a>
     <li><a href="#navigation-timing-patches"><span class="secno">3</span> <span class="content">Navigation Timing Patches</span></a>
@@ -1638,8 +1638,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
           <div class="note" role="note">In practice, this means that cross-site prefetches will abandon rather than expose more information about the referrer URL than the origin.</div>
          <li data-md>
           <p>If <var>request</var> cannot be fetched given <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-anonymization-policy" id="ref-for-prefetch-record-anonymization-policy②">anonymization policy</a> for an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined" id="ref-for-implementation-defined③">implementation-defined</a> reason, then set <var>response</var> to a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error⑥">network error</a> and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break⑥">break</a>.</p>
-          <div class="note" role="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.
-</div>
+          <div class="note" role="note">This explicitly acknowledges that implementations might have additional restrictions. For instance, anonymized traffic might not be possible to some hosts, such as those that are not publicly routable and those that have <a href="https://buettner.github.io/private-prefetch-proxy/traffic-advice.html">traffic advice</a> declining private prefetch traffic.</div>
          <li data-md>
           <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-append" id="ref-for-list-append②">Append</a> a new <a data-link-type="dfn" href="#exchange-record" id="ref-for-exchange-record①">exchange record</a> whose <a data-link-type="dfn" href="#exchange-record-request" id="ref-for-exchange-record-request⑥">request</a> is <var>request</var> and <a data-link-type="dfn" href="#exchange-record-response" id="ref-for-exchange-record-response⑥">response</a> is null to <var>prefetchRecord</var>’s <a data-link-type="dfn" href="#prefetch-record-redirect-chain" id="ref-for-prefetch-record-redirect-chain⑥">redirect chain</a>.</p>
         </ol>
@@ -1829,7 +1828,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
     Add an additional parameter to <a data-link-type="dfn" href="https://w3c.github.io/navigation-timing/#dfn-create-the-navigation-timing-entry" id="ref-for-dfn-create-the-navigation-timing-entry①">create the navigation timing entry</a>, which is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string③">string</a> <var>deliveryType</var>, and pass it as an additional argument to <a data-link-type="dfn" href="https://w3c.github.io/resource-timing/#dfn-setup-the-resource-timing-entry" id="ref-for-dfn-setup-the-resource-timing-entry">setup the resource timing entry</a>.
 </div>
    <h2 class="heading settled" data-level="4" id="service-workers-patches"><span class="secno">4. </span><span class="content">Service Workers Patches</span><a class="self-link" href="#service-workers-patches"></a></h2>
-   <p>This section contains patches to <a data-link-type="biblio" href="#biblio-service-workers" title="Service Workers">[SERVICE-WORKERS]</a>.</p>
+   <p>This section contains patches to <a data-link-type="biblio" href="#biblio-service-workers" title="Service Workers Nightly">[SERVICE-WORKERS]</a>.</p>
    <div class="algorithm" data-algorithm="Create Fetch Event and Dispatch">
     
   Modify <a data-link-type="dfn" href="https://w3c.github.io/ServiceWorker/#create-fetch-event-and-dispatch" id="ref-for-create-fetch-event-and-dispatch">Create Fetch Event and Dispatch</a>’s step which sets <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/ServiceWorker/#dom-fetchevent-resultingclientid" id="ref-for-dom-fetchevent-resultingclientid">resultingClientId</a></code> as follows:
@@ -2120,7 +2119,7 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
    <p>The <dfn class="dfn-paneled" data-dfn-for="modules" data-dfn-type="dfn" data-export id="modules-speculation">speculation</dfn> module contains commands for managing the remote end behavior for prefetches, prerenders, and speculation rules.</p>
    <h4 class="heading settled" data-level="9.1.1" id="speculation-module-definitions"><span class="secno">9.1.1. </span><span class="content">Definitions</span><a class="self-link" href="#speculation-module-definitions"></a></h4>
    <p><code class="cddl"><a data-link-type="cddl" href="https://w3c.github.io/webdriver-bidi/#cddl-module-local-end-definition" id="ref-for-cddl-module-local-end-definition">local end definition</a></code></p>
-<pre class="cddl highlight def" data-cddl-module="local-cddl"><dfn class="dfn-paneled" data-dfn-type="cddl-type" data-noexport id="cddl-type-speculationpreloadingstatus"><code>speculation.PreloadingStatus</code></dfn> = <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-pending" id="ref-for-cddl-value-speculationpreloadingstatus-pending①">"pending"</a> / <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-ready" id="ref-for-cddl-value-speculationpreloadingstatus-ready①">"ready"</a> / <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-success" id="ref-for-cddl-value-speculationpreloadingstatus-success①">"success"</a> / <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-failure" id="ref-for-cddl-value-speculationpreloadingstatus-failure③">"failure"</a>
+<pre class="cddl def highlight" data-cddl-module="local-cddl"><dfn class="dfn-paneled" data-dfn-type="cddl-type" data-noexport id="cddl-type-speculationpreloadingstatus"><code>speculation.PreloadingStatus</code></dfn> = <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-pending" id="ref-for-cddl-value-speculationpreloadingstatus-pending①">"pending"</a> / <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-ready" id="ref-for-cddl-value-speculationpreloadingstatus-ready①">"ready"</a> / <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-success" id="ref-for-cddl-value-speculationpreloadingstatus-success①">"success"</a> / <a data-link-type="cddl-value" href="#cddl-value-speculationpreloadingstatus-failure" id="ref-for-cddl-value-speculationpreloadingstatus-failure③">"failure"</a>
 </pre>
    <p>The <code>speculation.PreloadingStatus</code> type represents the different types of preloading statuses. This status is shared by prefetches and prerenders.</p>
    <dl>
@@ -2142,12 +2141,12 @@ A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/
   
    </dl>
    <h4 class="heading settled" data-level="9.1.2" id="speculation-module-events"><span class="secno">9.1.2. </span><span class="content">Events</span><a class="self-link" href="#speculation-module-events"></a></h4>
-<pre class="cddl highlight def" data-cddl-module="local-cddl"><dfn class="dfn-paneled" data-dfn-type="cddl-type" data-noexport id="cddl-type-speculationevent"><code class="highlight"><c- nc><c- nc>SpeculationEvent</c-></c-></code></dfn> <c- o>=</c-> <c- p>(</c->
+<pre class="cddl def highlight" data-cddl-module="local-cddl"><dfn class="dfn-paneled" data-dfn-type="cddl-type" data-noexport id="cddl-type-speculationevent"><code class="highlight"><c- nc><c- nc>SpeculationEvent</c-></c-></code></dfn> <c- o>=</c-> <c- p>(</c->
   <a data-link-type="cddl" href="#cddl-type-speculationprefetchstatusupdated" id="ref-for-cddl-type-speculationprefetchstatusupdated"><c- nc>speculation.PrefetchStatusUpdated</c-></a>
 <c- p>)</c->
 </pre>
    <h5 class="heading settled" data-level="9.1.2.1" id="speculation-prefetchstatusupdated-event"><span class="secno">9.1.2.1. </span><span class="content">The speculation.prefetchStatusUpdated Event</span><a class="self-link" href="#speculation-prefetchstatusupdated-event"></a></h5>
-<pre class="cddl highlight def" data-cddl-module="local-cddl"><dfn class="dfn-paneled" data-dfn-type="cddl-type" data-noexport id="cddl-type-speculationprefetchstatusupdated"><code class="highlight"><c- nc><c- nc>speculation.PrefetchStatusUpdated</c-></c-></code></dfn> <c- o>=</c-> <c- p>(</c->
+<pre class="cddl def highlight" data-cddl-module="local-cddl"><dfn class="dfn-paneled" data-dfn-type="cddl-type" data-noexport id="cddl-type-speculationprefetchstatusupdated"><code class="highlight"><c- nc><c- nc>speculation.PrefetchStatusUpdated</c-></c-></code></dfn> <c- o>=</c-> <c- p>(</c->
    <dfn class="dfn-paneled" data-dfn-for="speculation.PrefetchStatusUpdated" data-dfn-type="cddl-key" data-lt="method|&quot;method&quot;" data-noexport id="cddl-key-speculationprefetchstatusupdated-method"><code class="highlight"><c- s><c- nc>method</c-></c-></code></dfn><c- p>:</c-> <dfn class="dfn-paneled" data-dfn-for="speculation.PrefetchStatusUpdated/method" data-dfn-type="cddl-value" data-lt="speculation.prefetchStatusUpdated|&quot;speculation.prefetchStatusUpdated&quot;" data-noexport id="cddl-value-speculationprefetchstatusupdated-method-speculationprefetchstatusupdated"><code class="highlight"><c- u><c- u>"speculation.prefetchStatusUpdated"</c-></c-></code></dfn><c- p>,</c->
    <dfn class="dfn-paneled" data-dfn-for="speculation.PrefetchStatusUpdated" data-dfn-type="cddl-key" data-lt="params|&quot;params&quot;" data-noexport id="cddl-key-speculationprefetchstatusupdated-params"><code class="highlight"><c- s><c- nc>params</c-></c-></code></dfn><c- p>:</c-> <a data-link-type="cddl" href="#cddl-type-speculationprefetchstatusupdatedparameters" id="ref-for-cddl-type-speculationprefetchstatusupdatedparameters"><c- nc>speculation.PrefetchStatusUpdatedParameters</c-></a>
 <c- p>)</c->
@@ -2184,8 +2183,8 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trigger-a-pref
    <p>See <a href="https://html.spec.whatwg.org/multipage/speculative-loading.html#speculative-loading-privacy"><cite>HTML</cite> § 7.6.6 Privacy considerations</a>.</p>
   </main>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
-  <h2 class="no-num no-ref heading settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="index"><span class="content">Index</span><a class="self-link" href="#index"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="index-defined-here"><span class="content">Terms defined by this specification</span><a class="self-link" href="#index-defined-here"></a></h3>
   <ul class="index">
    <li><a href="#prefetch-record-anonymization-policy">anonymization policy</a><span>, in § 1</span>
    <li><a href="#sec-purpose-prefetch-anonymous-client-ip">anonymous-client-ip</a><span>, in § 8</span>
@@ -2278,7 +2277,7 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trigger-a-pref
    <li><a href="#cddl-key-speculationprefetchstatusupdatedparameters-url">url</a><span>, in § 9.1.2.1</span>
    <li><a href="#wait-for-a-matching-prefetch-record">wait for a matching prefetch record</a><span>, in § 1</span>
   </ul>
-  <h3 class="no-num no-ref heading settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="index-defined-elsewhere"><span class="content">Terms defined by reference</span><a class="self-link" href="#index-defined-elsewhere"></a></h3>
   <ul class="index">
    <li>
     <a data-link-type="biblio">[CLEAR-SITE-DATA]</a> defines the following terms:
@@ -2606,8 +2605,8 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trigger-a-pref
      <li><span class="dfn-paneled" id="23af542f">set of sessions for which an event is enabled</span>
     </ul>
   </ul>
-  <h2 class="no-num no-ref heading settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
-  <h3 class="no-num no-ref heading settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
+  <h2 class="heading no-num no-ref settled" id="references"><span class="content">References</span><a class="self-link" href="#references"></a></h2>
+  <h3 class="heading no-num no-ref settled" id="normative"><span class="content">Normative References</span><a class="self-link" href="#normative"></a></h3>
   <dl>
    <dt id="biblio-clear-site-data">[CLEAR-SITE-DATA]
    <dd>Mike West. <a href="https://w3c.github.io/webappsec-clear-site-data/"><cite>Clear Site Data</cite></a>. URL: <a href="https://w3c.github.io/webappsec-clear-site-data/">https://w3c.github.io/webappsec-clear-site-data/</a>
@@ -2642,21 +2641,21 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trigger-a-pref
    <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
    <dd>Mike West. <a href="https://w3c.github.io/webappsec-secure-contexts/"><cite>Secure Contexts</cite></a>. URL: <a href="https://w3c.github.io/webappsec-secure-contexts/">https://w3c.github.io/webappsec-secure-contexts/</a>
    <dt id="biblio-service-workers">[SERVICE-WORKERS]
-   <dd>Yoshisato Yanagisawa; Monica CHINTALA. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
+   <dd>Monica CHINTALA; Yoshisato Yanagisawa. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers Nightly</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
    <dt id="biblio-webdriver-bidi">[WebDriver-BiDi]
    <dd>James Graham; Alex Rudenko; Maksim Sadym. <a href="https://w3c.github.io/webdriver-bidi/"><cite>WebDriver BiDi</cite></a>. URL: <a href="https://w3c.github.io/webdriver-bidi/">https://w3c.github.io/webdriver-bidi/</a>
   </dl>
-  <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
+  <h3 class="heading no-num no-ref settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
    <dt id="biblio-console">[CONSOLE]
    <dd>Dominic Farolino; Robert Kowalski; Terin Stock. <a href="https://console.spec.whatwg.org/"><cite>Console Standard</cite></a>. Living Standard. URL: <a href="https://console.spec.whatwg.org/">https://console.spec.whatwg.org/</a>
    <dt id="biblio-navigation-timing">[NAVIGATION-TIMING]
    <dd>Zhiheng Wang. <a href="https://www.w3.org/TR/navigation-timing/"><cite>Navigation Timing</cite></a>. 17 December 2012. REC. URL: <a href="https://www.w3.org/TR/navigation-timing/">https://www.w3.org/TR/navigation-timing/</a>
   </dl>
-  <h2 class="no-num no-ref heading settled" id="cddl-index"><span class="content">CDDL Index</span><a class="self-link" href="#cddl-index"></a></h2>
-  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <h2 class="heading no-num no-ref settled" id="cddl-index"><span class="content">CDDL Index</span><a class="self-link" href="#cddl-index"></a></h2>
+  <h2 class="heading no-num no-ref settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
    <div class="issue">It might be possible to use cache response headers to determine when a response can be used multiple times, but given the short lifetime of the prefetch buffer it’s unclear whether this is worthwhile. <a class="issue-return" href="#issue-34917491" title="Jump to section">↵</a></div>
    <div class="issue">At the moment, how IP anonymization is achieved is handwaved. This will probably be done in an <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#implementation-defined">implementation-defined</a> manner using some kind of proxy or relay. Ideally this would be plumbed down to <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-connection-obtain">obtain a connection</a>, and possibly even the mechanism could be further standardized. <a class="issue-return" href="#issue-9a2d41cc" title="Jump to section">↵</a></div>
