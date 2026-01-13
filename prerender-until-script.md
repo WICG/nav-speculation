@@ -123,6 +123,8 @@ The `prerender_until_script` action inherits all the security and privacy protec
 
 This feature does not introduce any new security or privacy concerns beyond those already addressed by the prerendering specification. By deferring script execution until activation, it offers a model with a more limited execution context during the speculation phase, which can be a desirable characteristic for some applications.
 
+[Answers to Security/Privacy Questionnaire](https://docs.google.com/document/d/18Ny-OJ5kfyxkZ8h73OGigk8B3gDnoxjH34RVcvSo5Do/edit?tab=t.szm4nrdsfrjv#heading=h.2y2pz55u4tal).
+
 ## Considered Alternatives
 
 ### No Prerendering
