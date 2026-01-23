@@ -10,6 +10,11 @@ Introduce the `form_submission` field to speculation rules, allowing web develop
 
 It should be noted the speculation will need to be triggered by the page in some manner (e.g. by injecting the rule with JavaScript on hovering over the submit button). This proposal does not add functionality to trigger the speculation, but simply allows a previously-initiated speculation to be matched upon navigation.
 
+### More details
+
+Note that this field is only required for prerender. On the other hand, prefetch speculation rules can be used by form navigations without specifying this field.
+The key difference is that unlike prefetch, which only downloads HTML, prerendering actually starts the navigation. Because parameters are involved, using a standard (non-form) prerender for a form submission will result in breakage."
+
 ## Example
 
 This example creates 2 prerendered pages, one being a form submission, and the other being a non-form submission.
