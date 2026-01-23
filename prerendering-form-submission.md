@@ -13,7 +13,7 @@ It should be noted the speculation will need to be triggered by the page in some
 ### More details
 
 Note that this field is only required for prerender. On the other hand, prefetch speculation rules can be used by form navigations without specifying this field.
-The key difference is that unlike prefetch, which only downloads HTML resources, prerendering actually starts the navigation. Because parameters are involved, using a standard (non-form) prerender for a form submission will result in breakage.
+The key difference is that unlike prefetch, which only downloads HTML resources, prerendering actually starts the navigation. Because internal navigation parameters in a browser are predetermined, using a standard (non-form) prerender for a form submission will result in breakage.
 
 ## Example
 
