@@ -1,19 +1,15 @@
 # Speculation Rules form submission Explainer
 
-Currently, form submissions cannot activate prerendered pages by design. This is an explainer for a proposed addition to the [Speculation Rules API](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API), which allows web developers to specify `form_submission` in their speculation rules to specify that a prerendered page can only be activated by a form submission.
+Currently, form submissions cannot activate prerendered pages by design, due to internal browser limitations. In at least Chrome, ordinary form submission navigations have special state and run extra checks that ordinary prerenders don't experience.
+This means that a form submission can never activate a prerender, because the prerender was not prepared properly as a form submission.
+On the other hand, prefetch speculation rules, which only downloads HTML resources without starting a navigation with the internal state, can be used by form navigations without specifying this field.
 Examples include a simple search form which results in a “/search?q=XXX” GET request navigation, [support of which has been requested by web developers](https://issues.chromium.org/issues/346555939).
-
 
 ## The proposal
 
 Introduce the `form_submission` field to speculation rules, allowing web developers to specify which speculative navigation is a form submission one. This will only be available for GET form-based speculations.
 
 It should be noted the speculation will need to be triggered by the page in some manner (e.g. by injecting the rule with JavaScript on hovering over the submit button). This proposal does not add functionality to trigger the speculation, but simply allows a previously-initiated speculation to be matched upon navigation.
-
-### More details
-
-Note that this field is only required for prerender. On the other hand, prefetch speculation rules can be used by form navigations without specifying this field.
-The key difference is that unlike prefetch, which only downloads HTML resources, prerendering actually starts the navigation. Because internal navigation parameters in a browser are predetermined, using a standard (non-form) prerender for a form submission will result in problems mentioned in the section "Design considerations and alternatives considered".
 
 ## Example
 
