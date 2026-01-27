@@ -3,11 +3,8 @@
 Currently, form submissions cannot activate prerendered pages by design, due to internal browser limitations. In at least Chrome, ordinary form submission navigations have special state and run extra checks that ordinary prerenders don't experience.
 This means that a form submission can never activate a prerender, because the prerender was not prepared properly as a form submission.
 On the other hand, prefetch speculation rules, which only downloads HTML resources without starting a navigation with the internal state, can be used by form navigations without specifying this field.
-Examples include a simple search form which results in a “/search?q=XXX” GET request navigation, [support of which has been requested by web developers](https://issues.chromium.org/issues/346555939).
 
-## The proposal
-
-Introduce the `form_submission` field to speculation rules, allowing web developers to specify which speculative navigation is a form submission one. This will only be available for GET form-based speculations.
+We propose an addition to the Speculation Rules API, which allows web developers to specify form_submission in their speculation rules for prerenders, which directs the browser to prepare the prerender as a form submission, so that it can be activated by real form submission navigations. Examples include a simple search form which results in a “/search?q=XXX” GET request navigation, [support of which has been requested by web developers](https://issues.chromium.org/issues/346555939).
 
 It should be noted the speculation will need to be triggered by the page in some manner (e.g. by injecting the rule with JavaScript on hovering over the submit button). This proposal does not add functionality to trigger the speculation, but simply allows a previously-initiated speculation to be matched upon navigation.
 
