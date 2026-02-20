@@ -258,12 +258,17 @@ Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
 <div algorithm="parse a speculation rule">
   Modify [=parse a speculation rule=] by adding the following steps:
 
-  1. Let |targetHint| be null.
+  1. Let |targetHint| be null and |formSubmission| be false.
   1. If |input|["`target_hint`"] [=map/exists=]:
     1. If |input|["`target_hint`"] is not a [=valid navigable target name or keyword=]:
       1. The user agent may [=report a warning to the console=] indicating that the supplied target hint was invalid.
       1. Return null.
     1. Set |targetHint| to |input|["`target_hint`"].
+  1. If |input|["`form_submission`"] [=map/exists=]:
+    1. If |input|["`form_submission`"] is not a boolean value:
+      1. The user agent may [=report a warning to the console=] indicating that the supplied form submission was invalid.
+      1. Return null.
+    1. Set |formSubmission| to boolean value of |input|["`form_submission`"].
 
   and then updating the final step which returns a [=speculation rule=] to include setting the [=speculation rule/target navigable name hint=] to |targetHint|.
 </div>
