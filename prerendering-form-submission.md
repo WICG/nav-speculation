@@ -21,9 +21,7 @@ Any of the them can be activated by an activation navigation which matches corre
     {
       "form_submission": true,
       "urls": ["/expect_form_submission.html"]
-    }
-  ],
-  "prerender": [
+    },
     {
       "urls": ["/not_expect_form_submission.html"]
     }
