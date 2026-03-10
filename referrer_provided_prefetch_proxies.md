@@ -1,0 +1,249 @@
+# Explainer: Referrer-Provided Prefetch Proxies
+
+This proposal is an early design sketch by the Chrome Prefetch Proxy team to describe the problem below and solicit feedback on the proposed solution. It has not been approved to ship in Chrome.
+
+## Proponents
+- Chrome Prefetch Proxy team
+
+## Participate
+- https://github.com/WICG/nav-speculation/issues
+
+## Table of Contents
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+- [Introduction](#introduction)
+- [Goals](#goals)
+- [Non-goals](#non-goals)
+- [User research](#user-research)
+- [Use cases](#use-cases)
+- [Proposed solution: referrer-provided prefetch proxies](#proposed-solution-referrer-provided-prefetch-proxies)
+  - [New speculation rule requirements](#new-speculation-rule-requirements)
+  - [Parsing model](#parsing-model)
+  - [Processing model](#processing-model)
+  - [Creating an IP anonymized connection](#creating-an-ip-anonymized-connection)
+- [Detailed design discussion](#detailed-design-discussion)
+  - [Specifying a standard for privacy-preserving prefetch proxies](#specifying-a-standard-for-privacy-preserving-prefetch-proxies)
+  - [Token handling algorithm for CONNECT requests](#token-handling-algorithm-for-connect-requests)
+- [Considered alternatives](#considered-alternatives)
+  - [Status quo: browser-provided proxies only](#status-quo-browser-provided-proxies-only)
+  - [Alternatives for specifying a referrer-provided prefetch proxy](#alternatives-for-specifying-a-referrer-provided-prefetch-proxy)
+  - [Alternatives for authenticating to a referrer-provided prefetch proxy](#alternatives-for-authenticating-to-a-referrer-provided-prefetch-proxy)
+  - [OHTTP-based approach](#ohttp-based-approach)
+- [Security and Privacy Considerations](#security-and-privacy-considerations)
+- [Stakeholder Feedback / Opposition](#stakeholder-feedback--opposition)
+- [References & acknowledgements](#references--acknowledgements)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+## Introduction
+
+Web developers use **speculation rules** to instruct the browser to perform navigation actions like prefetching or prerendering before navigation starts, speeding up subsequent navigations. For cross-origin prefetches, the user’s IP address must be anonymized to prevent the origin from learning that a UA speculatively navigated to a page before the user expressed intent to navigate.
+
+IP anonymization [is understood to mean that the user agent should hide or mask the external IP address of the client](https://github.com/WICG/nav-speculation/blob/main/anonymous-client-ip.md). IP anonymization may be requested by a referring page to avoid leaking client PII when performing a cross-origin prefetch. This requirement is expressed as a speculation rule requirement: "anonymous-client-ip-when-cross-origin" (**ACIWCO**). Speculation rules can include arrays of speculation rule requirements and ACIWCO is the only one yet defined. When set in a rule, ACIWCO requires a **cross-origin prefetch IP anonymization policy** to be set for the prefetch candidate corresponding to the rule.
+
+Today, the Prefetch spec asks browsers to implement a cross-origin prefetch IP anonymization policy. Previous work has described [a browser-provided privacy-preserving prefetch proxy](https://github.com/buettner/private-prefetch-proxy). This isn’t ideal for a few reasons: costs are a significant factor for vendors; privacy concerns limit the use of browser-provided prefetch proxies; and referrers don’t share the cost of supporting their speculation rules.
+
+This explainer describes another model, a referrer-provided prefetch proxy, in order to get public feedback on its feasibility for standardization. In the **referrer-provided prefetch proxy** architecture, the website initiating the prefetch (the referrer) operates its own privacy-preserving proxy server and specifies it in the page’s Speculation Rules script. This shifts the operational cost to the party that directly benefits from faster navigation and aligns the proxy trust model.
+
+## Goals
+
+* Enable any referring site to offer privacy-preserving cross-origin prefetch to its users without dependence on browser-provided proxy infrastructure.  
+* Give origins control over prefetch traffic using existing mechanisms: .well-known/traffic-advice configuration, Sec-Purpose headers.  
+* Specify how referrer-provided proxies can be privacy-preserving.  
+* Specify how cross-origin/site prefetches can avoid leaking additional information about clients.
+
+## Non-goals
+
+* This proposal is scoped to cross-origin/site prefetch only. Same-origin/site prefetch and prerendering are out of scope.  
+* This proposal does not define how user agents or sites should implement a privacy-preserving prefetch architecture, only the privacy and security goals of such architectures.  
+* This proposal does not deprecate the ability of user agents to operate IP anonymizing services for cross-origin/site prefetching. That will remain an implementation option.
+
+## User research
+
+Site owners have shown significant performance gains from using Speculation Rules for same-site and cross-origin navigations. For example:
+* [Google Search reduced LCP for clicks from Search by \~60 ms](https://developer.chrome.com/blog/search-speculation-rules)
+* [Shopify reduced loading metrics by 130-180 ms](https://performance.shopify.com/blogs/blog/speculation-rules-at-shopify)
+* [Etsy saw a 20-24% improvement in FCP and LCP](https://www.etsy.com/codeascraft/search-prefetching-performance)
+
+These findings suggest that enabling cross-origin prefetch in a more scalable and accessible way could yield similar benefits for the broader web ecosystem.
+
+## Use cases
+
+A site owner wants to speed up cross-origin/site navigations on their pages. They want to get the same performance improvement on cross-origin navigation as they do on same-site navigation.
+
+Their current implementation options are limited:
+* Use Speculation Rules API or another means of speculatively loading resources without a privacy-preserving proxy. **This exposes client IP addresses to 3P origins.**  
+* Use Speculation Rules API with the ACIWCO requirement. The satisfaction of this requirement is left up to the UA implementation, which might not support ACIWCO. If the UA doesn’t support ACIWCO, it [must not execute any rules with that requirement](https://wicg.github.io/nav-speculation/prefetch.html#ref-for-prefetch-record-anonymization-policy%E2%91%A0).
+
+The site owner cannot control how the ACIWCO requirement is satisfied for their speculation rule. This proposal is to give them control by letting them bring their own proxy.
+
+Sites may want to implement their own prefetch proxy if:
+* Browser-provided implementations don't exist. Referrer-provided prefetch proxies can support private cross-origin prefetch in every browser that implements the feature.
+* Sites may not want to send prefetch traffic to another company’s proxy infrastructure.
+* The browser-provided implementation requires a user opt-in for privacy reasons. Having the same party operate the referrer page and proxy prevents additional information leakage to the proxy operator, which may obviate the need for user opt-in.
+* The site wants more direct control over prefetch usage, cost, or infrastructure.
+* Sites may already have the infrastructure in place to operate a prefetch proxy.
+
+## Proposed solution: referrer-provided prefetch proxies
+
+We propose the **referrer-provided prefetch proxy** architecture, where the referring website operates its own privacy-preserving proxy server and specifies it in the Speculation Rules.
+
+### New speculation rule requirements
+
+We propose adding two new speculation rule requirements at the rule level:
+
+* “use-referrer-provided-prefetch-proxy”, which instructs the browser to use a specific privacy-preserving prefetch proxy  
+* “prefetch-proxy-authorization-tokens”, which instructs the browser to use authorization tokens provided in the rule when connecting to a specified privacy-preserving prefetch proxy.
+
+When one of the above requirements is set, its respective key must be set with an appropriate value in the speculation rule JSON object:
+
+* “referrer\_provided\_prefetch\_proxy”: Valid URL string  
+* “proxy\_authorization\_tokens”: List of JavaScript strings
+
+These keys are parsed into corresponding items in the speculation rule struct:
+
+* Referrer provided prefetch proxy URL, a URL  
+* Proxy authorization tokens, an ordered set of (ASCII strings?)
+
+Speculation rules with the new requirements are only well-defined when:
+
+* **All three requirements are set:** UA must use the referrer-provided prefetch proxy and authenticate with the provided authorization tokens. If this connection does not succeed, the UA may fall back to its own IP anonymization implementation.  
+* **Only the two new requirements are set:** UA must use the referrer-provided prefetch proxy and authenticate with the provided authorization tokens. If this connection does not succeed, the UA stops execution of this speculation rule.  
+* **Only ACIWCO is set:** No change from current spec – UA either provides IP anonymization for this prefetch, or it [must not execute the speculation rule](https://github.com/WICG/nav-speculation/blob/main/anonymous-client-ip.md).  
+* **No requirements are set:** UA will not use a proxy to prefetch this speculation rule candidate.
+
+After this change, the meaning of the existing **ACIWCO** requirement will change. The requirement is now associated with using the UA’s IP-anonymization implementation. If the two new requirements are set, **ACIWCO** will be used as a fallback, not as the first-choice proxy, if the connection to the referrer-provided proxy does not succeed.
+
+Example:
+
+```json
+<script type="speculationrules">
+{
+  "prefetch": [
+    {
+      "urls": ["bar.com"],
+      "requires": [
+        "anonymous-client-ip-when-cross-origin",
+        "use-referrer-provided-prefetch-proxy",
+        "prefetch-proxy-authorization-tokens"
+      ],
+      "referrer_provided_prefetch_proxy": "https://prefetch.bar.com",
+      "proxy_authorization_tokens": ["EXAMPLE_TOKEN"]
+    }
+  ]
+}
+</script>
+```
+
+### Parsing model
+
+A UA should parse the new keys by:
+
+1. Let *referrerProvidedPrefetchProxyURL* be an empty URL.  
+2. If input\[“referrer\_provided\_prefetch\_proxy”\] exists:  
+   1. If input\[“referrer\_provided\_prefetch\_proxy”\] is not a valid URL string:  
+      1. The user agent may report a warning to the console indicating that the referrer-provided URL was not understood.  
+      2. Return null.  
+   2. Set *referrerProvidedPrefetchProxyURL* to input\[“referrer\_provided\_prefetch\_proxy”\].  
+3. Let *proxyAuthorizationTokens* be an empty set.  
+4. If input\[“proxy\_authorization\_tokens”\] exists, append input\[“proxy\_authorization\_tokens”\] to *proxyAuthorizationTokens*.
+
+### Processing model
+
+We will add the following items to the definition of a cross-origin prefetch IP anonymization policy struct:
+
+* Referrer-provided prefetch proxy, a URL  
+* Proxy authorization tokens, an ordered set of (ASCII strings?)
+
+A browser would process a speculation rule with the three requirements “anonymous-client-ip-when-cross-origin”, “cross-origin-prefetch-proxy”, and “prefetch-proxy-authorization-tokens” by:
+
+1. If the origin is not cross-origin to the referrer:  
+   1. The user agent should not use *referrerProvidedPrefetchProxyURL* as the prefetch proxy.  
+2. The user agent must use *referrerProvidedPrefetchProxyURL* as the prefetch proxy.  
+   1. Set parameters in the prefetch record struct.  
+   2. Start a referrer-initiated navigational prefetch.
+
+### Creating an IP anonymized connection
+
+We will define an algorithm for browsers to create an IP anonymized connection. The algorithm will:
+
+* Require browsers to start an encrypted HTTP CONNECT tunnel session with the proxy server  
+* Specify headers for the CONNECT request, such as Host (of the origin) and Proxy-Authorization (for authorization tokens)  
+* **Require the proxy URL to be same-site to the referrer document**  
+* Require browsers to use an isolated network context that does not reveal previous browser state  
+* Require browsers to use the following headers for connections to the proxy and tunneled connections to the origin: Sec-Purpose: “prefetch; anonymous-client-ip”
+
+We will also define proxy server requirements in a separate document formatted as an Internet Draft. This draft will:
+
+* Specify the server side of the client-server protocol for prefetch IP anonymization  
+* Define privacy and security requirements for servers  
+* Formalize the ./well-known/traffic-advice file for site developers  
+* Require prefetch servers to respect ./well-known/traffic-advice files
+
+**See [Referrer-provided Prefetch Proxy Server Requirements](referrer_provided_prefetch_proxy_server_requirements.md) for more details.**
+
+## Detailed design discussion
+
+### Specifying a standard for privacy-preserving prefetch proxies
+
+* **Should the referrer-provided proxy take precedence over the UA IP anonymization implementation when all three speculation rule requirements are listed in a rule?**  
+  Yes: the site is explicitly providing a resource for the UA. If cost is a concern, this prevents the UA from paying for IP anonymization itself.  
+* **What network protocol should UAs use to connect to a proxy?**  
+  An encrypted version of HTTP CONNECT (HTTPS, H/2, H/3). Connection should be encrypted from the UA to the proxy and from the proxy to the origin server.  
+* **Privacy standards for proxy implementations**  
+  Additional privacy requirements are discussed in the attached document on proxy server requirements.
+
+### Token handling algorithm for CONNECT requests
+
+* **How do site developers control which tokens are used by a UA in a specific request?**  
+  Proposal: it shouldn’t matter exactly which token a UA uses, the site should provide as many tokens as there are prefetch candidates.  
+* **What happens if a speculation rules JSON document doesn’t provide exactly as many tokens as there are prefetch candidates?**  
+  Proposal: UA will select and remove a token at random from the ordered set of tokens and use that token for a CONNECT request. If the set is empty, the “create navigation params” algorithm should fail and print a warning to the console.  
+* **What if a site developer wants to use the same token for every prefetch request?**  
+  Proposal: Call this something else to distinguish from the temporary token use case. Open to naming suggestions.
+
+## Considered alternatives
+
+### Status quo: browser-provided proxies only
+
+* Expensive for browsers to maintain and offer.  
+* Trade-off between privacy and cost: using a single proxy server reveals information about the target sites to the proxy; using a two-hop proxy chain hides more information but is more expensive.
+
+### Alternatives for specifying a referrer-provided prefetch proxy
+
+* We considered putting the proxy configuration in the speculation rule set level, but decided on the per-rule level for better flexibility and alignment with existing requirements.
+
+### Alternatives for authenticating to a referrer-provided prefetch proxy
+
+* We explored mechanisms other than auth tokens, but tokens provide a simple and effective way for sites to manage access and cost.
+
+### OHTTP-based approach
+
+We ruled out Oblivious HTTP as an alternative proxying protocol because OHTTP is message-oriented rather than connection-oriented and thus easier to MITM. Connection-oriented protocols establish a TLS connection from the UA to the origin and ensure that the proxy server can’t tamper with the HTTP request in the CONNECT tunnel.
+
+## Security and Privacy Considerations
+
+Prefetching web pages has the risk of exposing user information through speculative navigations. We consider the following parties in our privacy model: User agent, Referrer page, Private prefetch proxy, and Origin server.
+
+The goal of this privacy model is to define principles that result in the least information being available to the proxy and the origin server.
+
+First, no information about the client is leaked to the proxy *if the referrer and proxy are run by the same party*. The proxy server learns only the same information about the client that has been revealed when the client navigated to the referrer page. Therefore **we propose that the referrer-provided proxy must be same-site to the referrer page.**
+
+Second, **the user agent should not selectively send prefetch requests based on client PII** to avoid leaking information about PII. When the referrer and the proxy are run by the same party, that party can identify which prefetches are requested by the referring page and not sent to the proxy. This can leak PII that the user agent uses in the decision to prefetch, like the presence of a cookie for a particular site.
+
+**See the [Security and Privacy Questionnaire](referrer_provided_prefetch_proxy_security_privacy_questionnaire.md) for more information.**
+
+## Stakeholder Feedback / Opposition
+
+* **Firefox:** No public position. Firefox engineers wrote the initial public proposal for this feature in March 2025: [https://github.com/WICG/nav-speculation/issues/368](https://github.com/WICG/nav-speculation/issues/368).  
+* **Safari:** No public position.  
+* **Edge:** No public position.
+
+## References & acknowledgements
+
+* [HTML Standard, “Speculative loading”](https://html.spec.whatwg.org/multipage/speculative-loading.html#speculative-loading)
+* [Prefetch draft CG report](https://wicg.github.io/nav-speculation/prefetch.html)
+* ["Private Prefetch Proxy Explained"](https://github.com/buettner/private-prefetch-proxy), [Michael Buettner](mailto:buettner@google.com)   
+* Thanks to [Dominic Farolino](mailto:domfarolino@google.com) for the spec mentorship\!
