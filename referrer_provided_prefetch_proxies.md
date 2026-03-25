@@ -144,13 +144,13 @@ Example:
 A UA should parse the new keys by:
 
 1. Let *referrerProvidedPrefetchProxyURL* be an empty URL.  
-2. If input\[“referrer\_provided\_prefetch\_proxy”\] exists:  
-   1. If input\[“referrer\_provided\_prefetch\_proxy”\] is not a valid URL string:  
+2. If input\["referrer\_provided\_prefetch\_proxy"\] exists:  
+   1. If input\["referrer\_provided\_prefetch\_proxy"\] is not a valid URL string:  
       1. The user agent may report a warning to the console indicating that the referrer-provided URL was not understood.  
       2. Return null.  
-   2. Set *referrerProvidedPrefetchProxyURL* to input\[“referrer\_provided\_prefetch\_proxy”\].  
+   2. Set *referrerProvidedPrefetchProxyURL* to input\["referrer\_provided\_prefetch\_proxy"\].  
 3. Let *proxyAuthorizationTokens* be an empty set.  
-4. If input\[“proxy\_authorization\_tokens”\] exists, append input\[“proxy\_authorization\_tokens”\] to *proxyAuthorizationTokens*.
+4. If input\["proxy\_authorization\_tokens"\] exists, append input\["proxy\_authorization\_tokens"\] to *proxyAuthorizationTokens*.
 
 ### Processing model
 
@@ -234,15 +234,15 @@ Prefetching web pages has the risk of exposing user information through speculat
 
 The goal of this privacy model is to define principles that result in the least information being available to the proxy and the origin server.
 
-First, no information about the client is leaked to the proxy *if the referrer and proxy are run by the same party*. The proxy server learns only the same information about the client that has been revealed when the client navigated to the referrer page. Therefore **we propose that the referrer-provided proxy must be same-site to the referrer page.**
+First, **we propose that the referrer-provided proxy must be same-site to the referrer page.**. If the referrer and proxy are same-site, then the proxy operator has all the information that the referrer received. No additional user information is sent to the proxy that the referrer didn't already receive. Allowing non same-site proxies reintroduces many of the issues with the original UA implementation.
 
-Second, **the user agent should not selectively send prefetch requests based on client PII** to avoid leaking information about PII. When the referrer and the proxy are run by the same party, that party can identify which prefetches are requested by the referring page and not sent to the proxy. This can leak PII that the user agent uses in the decision to prefetch, like the presence of a cookie for a particular site.
+Second, **the user agent should not selectively send prefetch requests based on client PII, or include PII in prefetch requests** to avoid leaking information about PII. When the referrer and the proxy are run by the same party, that party can identify which prefetches are requested by the referring page and not sent to the proxy. This can indirectly leak PII that the user agent uses in the decision to prefetch, like the presence of a cookie for a particular site. Including PII in prefetch requests, like cookies or service workers, may directly leak user identity to origin servers.
 
 **See the [Security and Privacy Questionnaire](referrer_provided_prefetch_proxy_security_privacy_questionnaire.md) for more information.**
 
 ## Stakeholder Feedback / Opposition
 
-* **Firefox:** No public position. Firefox engineers originaly suggested this feature in March 2025: [https://github.com/WICG/nav-speculation/issues/368](https://github.com/WICG/nav-speculation/issues/368).  
+* **Firefox:** No public position. Firefox engineers originally suggested this feature in March 2025: [https://github.com/WICG/nav-speculation/issues/368](https://github.com/WICG/nav-speculation/issues/368).  
 * **Safari:** No public position.  
 * **Edge:** No public position.
 
