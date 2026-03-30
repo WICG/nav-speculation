@@ -249,7 +249,7 @@ See the [**Security and Privacy Questionnaire**](#security-and-privacy-questionn
 
 * [HTML Standard, “Speculative loading”](https://html.spec.whatwg.org/multipage/speculative-loading.html#speculative-loading)
 * [Prefetch draft CG report](https://wicg.github.io/nav-speculation/prefetch.html)
-* ["Private Prefetch Proxy Explained"](https://github.com/buettner/private-prefetch-proxy), [Michael Buettner](mailto:buettner@google.com)   
+* ["Private Prefetch Proxy Explained"](https://github.com/buettner/private-prefetch-proxy), [Michael Buettner](https://www.github.com/buettner)   
 * Thanks to [Dominic Farolino](https://www.github.com/domfarolino) for the spec mentorship\!
 
 ## Security and Privacy Questionnaire
