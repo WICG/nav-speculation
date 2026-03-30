@@ -237,7 +237,7 @@ First, **we propose that the referrer-provided proxy must be same-site to the re
 
 Second, **the user agent should not selectively send prefetch requests based on client PII, or include PII in prefetch requests** to avoid leaking information about PII. When the referrer and the proxy are run by the same party, that party can identify which prefetches are requested by the referring page and not sent to the proxy. This can indirectly leak PII that the user agent uses in the decision to prefetch, like the presence of a cookie for a particular site. Including PII in prefetch requests, like cookies or service workers, may directly leak user identity to origin servers.
 
-See the **Security and Privacy Questionnaire** section below for more information.
+See the [**Security and Privacy Questionnaire**](#security-and-privacy-questionnaire) section below for more information.
 
 ## Stakeholder Feedback / Opposition
 
