@@ -54,12 +54,12 @@ This explainer introduces a referrer-provided prefetch proxy, in order to get pu
 * Enable any referring site to offer privacy-preserving cross-origin prefetch to its users without relying on browser-provided proxy infrastructure.  
 * Give origins control over prefetch traffic using existing mechanisms: .well-known/traffic-advice configuration, Sec-Purpose headers.  
 * Specify how referrer-provided proxies can be privacy-preserving.  
-* Specify how cross-origin/site prefetches can avoid leaking additional information about clients.
+* Specify how cross-origin prefetches can avoid leaking additional information about clients.
 
 ## Non-goals
 
 * This proposal is scoped to cross-origin prefetch only. Same-origin prefetch and prerendering are out of scope.  
-* This proposal does not deprecate the ability of user agents to operate IP anonymizing services for cross-origin/site prefetching. That will remain an implementation option.
+* This proposal does not deprecate the ability of user agents to operate IP anonymizing services for cross-origin prefetching. That will remain an implementation option.
 
 ## User research
 
@@ -72,7 +72,7 @@ These findings suggest that enabling cross-origin prefetch in a more scalable an
 
 ## Use cases
 
-A site owner wants to speed up cross-origin/site navigations on their pages. They want to get the same performance improvement on cross-origin navigation as they do on same-site navigation.
+A site owner wants to speed up cross-origin navigations on their pages. They want to get the same performance improvement on cross-origin navigation as they do on same-origin navigation.
 
 Their current implementation options are limited:
 * Use Speculation Rules API or another means of speculatively loading resources without a privacy-preserving proxy. **This exposes client IP addresses to 3P origins.**  
@@ -273,7 +273,7 @@ No.
 
 ### 2.4 How do the features in your specification deal with sensitive information?
 
-This feature requires a prefetch proxy to be same-site to the referring document so that no information is exposed to any party that the party could not already access. All other restrictions of cross-site prefetching remain in effect.
+This feature requires a prefetch proxy to be same-site to the referring document so that no information is exposed to any party that the party could not already access. All other restrictions of cross-origin prefetching remain in effect.
 
 ### 2.5 Does data exposed by your specification carry related but distinct information that may not be obvious to users?
 
