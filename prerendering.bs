@@ -262,7 +262,8 @@ Extend the [=speculation rule=] [=struct=] with two additional [=struct/items=]:
 <div algorithm="parse a speculation rule">
   Modify [=parse a speculation rule=] by adding the following steps:
 
-  1. Let |targetHint| be null and |formSubmission| be false.
+  1. Let |targetHint| be null.
+  1. Let |formSubmission| be false.
   1. If |input|["`target_hint`"] [=map/exists=]:
     1. If |input|["`target_hint`"] is not a [=valid navigable target name or keyword=]:
       1. The user agent may [=report a warning to the console=] indicating that the supplied target hint was invalid.
@@ -331,7 +332,6 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
               1. Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
               1. If |target| is null, set it to the result of [=getting an element's target=] given |link|.
               1. Let |formSubmission| be |rule|'s [=speculation rule/form submission=].
-              1. If |formSubmission| is not specified, set it to be false.
               1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and |link|.
               1. [=list/Append=] a [=prerender candidate=] with
                 <dl class="props">
