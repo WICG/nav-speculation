@@ -698,10 +698,12 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
 <div algorithm>
-  To <dfn>find a matching prerendered prefetch record</dfn> given a {{Document}} |predecessorDocument| and [=URL=] |url|:
+  To <dfn>find a matching prerendered prefetch record</dfn> given a {{Document}} |predecessorDocument|, [=URL=] |url|, and a string |cspNavigationType|:
 
     1. Let |recordToUse| be null.
     1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prefetch records=]:
+        1. Let |expectedCspNavigationType| be "`form-action`" if |record|'s [=prefetch record/prerendering form submission=] is true; otherwise "`other`".
+        1. If |cspNavigationType| is not |expectedCspNavigationType|, then [=iteration/continue=].
         1. If |record|'s [=prefetch record/prerendering traversable=] is not a [=prerendering traversable=], then [=iteration/continue=].
         1. If |record|'s [=prefetch record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true, then [=iteration/continue=].
         1. If |record|'s [=prefetch record/URL=] is equal to |url|:
@@ -724,7 +726,6 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
       * |navigable| is a [=prerendering traversable=];
       * |navigable| is a [fenced frame](https://github.com/shivanigithub/fenced-frame);
          <p class="issue">The concept of a fenced frame navigable is not yet defined but we need to link to it once it exists.</p>
-      * |cspNavigationType| is not "`other`"; or
       * |documentResource| is not null
 
     then return null.
@@ -732,11 +733,13 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
   1. Let |predecessorDocument| be |navigable|'s [=navigable/active document=].
   1. Let |cutoffTime| be null.
   1. While true:
-      1. Let |completeRecord| be the result of [=finding a matching prerendered prefetch record=] given |predecessorDocument| and |url|.
+      1. Let |completeRecord| be the result of [=finding a matching prerendered prefetch record=] given |predecessorDocument|, |url|, and |cspNavigationType|.
       1. If |completeRecord| is not null, return |completeRecord|.
       1. Let |potentialRecords| be an empty [=list=].
       1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prefetch records=]:
+          1. Let |expectedCspNavigationType| be "`form-action`" if |record|'s [=prefetch record/prerendering form submission=] is true; otherwise "`other`".
           1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
+              * |cspNavigationType| is |expectedCspNavigationType|;
               * |record|'s [=prefetch record/prerendering traversable=] is a [=prerendering traversable=];
               * |record|'s [=prefetch record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true;
               * |record| [=prefetch record/is expected to match a URL=] given |url|; and
