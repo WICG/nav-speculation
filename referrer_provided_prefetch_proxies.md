@@ -202,8 +202,8 @@ We will also define proxy server requirements in a separate document formatted a
   Options: UAs pick a token at random from the list of authorization tokens, or UAs use the ordering of the list. The latter doesn't seem great as there are complex speculation rules with no ordering guarantees on execution. For example, on-hover speculation rules depend on user input. If a site developer must control which tokens are used for a proxy request, they can provide a single token for all proxy requests.
 * **What happens if a speculation rules JSON document doesn’t provide exactly as many tokens as there are prefetch candidates?**  
   Proposal: UA will select and remove a token at random from the ordered set of tokens and use that token for a CONNECT request. If the set is empty, the “create navigation params” algorithm should fail and print a warning to the console.  
-* **What if a site developer wants to use the same token for every prefetch request?**  
-  Proposal: Call this something else to distinguish from the temporary token use case. Open to naming suggestions.
+* **What if a site developer wants to use the same token for every prefetch execution?**  
+  Proposal: UAs will support this. Speculation rules documents can specify this behavior by providing only one token in the rule. In this case, UAs should not remove the token from the set when executing a prefetch. UAs will consume tokens from the set when there are multiple tokens provided.
 
 ## Considered alternatives
 
