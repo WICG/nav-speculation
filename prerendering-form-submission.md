@@ -7,7 +7,7 @@ On the other hand, prefetch speculation rules, which only downloads HTML resourc
 
 We propose an addition to the Speculation Rules API, which allows web developers to specify `form_submission` in their speculation rules for prerenders, which directs the browser to prepare the prerender as a form submission, so that it can be activated by real form submission navigations. Examples include a simple search form which results in a `/search?q=XXX` GET request navigation, [support of which has been requested by web developers](https://issues.chromium.org/issues/346555939).
 
-It should be noted the speculation will need to be triggered by the page in some manner (e.g. by injecting the rule with JavaScript on hovering over the submit button). This proposal does not add functionality to trigger the speculation, but simply allows a previously-initiated speculation to be matched upon navigation.
+It should be noted the speculation will need to be triggered by the page in some manner (e.g. by injecting the rule with JavaScript on hovering over the submit button). This proposal does not add functionality to trigger the speculation, but simply allows a previously-initiated speculation to be matched upon navigation. This means form submission speculations are restricted to list rules (where the URL is given) and cannot be used for document rules (since those are limited to links and do not include buttons). When the form is sufficiently complete to speculate is best left to the developer to decide rather than for browser heuristics. This may be on hovering the submit button, when all fields have been completed, or some other form-specific point.
 
 ## Example
 
