@@ -139,6 +139,7 @@ spec: PREFETCH; urlPrefix: prefetch.html
       text: source
       text: prerendering traversable
       text: prerendering target navigable name hint
+      text: prerendering form submission
     for: has a matching prefetch record
       text: checkPrerender
     for: Sec-Purpose prefetch
@@ -239,9 +240,10 @@ Extend the [=speculation rule set=] [=struct=] with two additional [=struct/item
 * <dfn for="speculation rule set">prerender rules</dfn>, a [=list=] of [=speculation rules=], initially empty
 * <dfn for="speculation rule set">prerender_until_script rules</dfn>, a [=list=] of [=speculation rules=], initially empty
 
-Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
+Extend the [=speculation rule=] [=struct=] with two additional [=struct/items=]:
 
 * <dfn for="speculation rule">target navigable name hint</dfn>, a [=string=] or null
+* <dfn for="speculation rule">form submission</dfn>, a [=boolean=], initially false
 
 <div algorithm="parse a speculation rule set string">
   Modify [=parse a speculation rule set string=] as follows:
@@ -249,6 +251,8 @@ Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
   * Remove the <var ignore>typesToTreatAsPrefetch</var> construct, and instead parse |parsed|["`prerender`"] into the [=speculation rule set/prerender rules=] list, and |parsed|["`prerender_until_script`"] into the [=speculation rule set/prerender_until_script rules=] list, both in an identical manner to what is done for |parsed|["`prefetch`"] and the [=speculation rule set/prefetch rules=].
 
   * Discard rules parsed from |parsed|["`prefetch`"] if the [=speculation rule/target navigable name hint=] is not null.
+
+  * Discard rules parsed from |parsed|["`prefetch`"] if the [=speculation rule/form submission=] is specified.
 
   * Discard rules parsed from |parsed|["`prerender`"] and |parsed|["`prerender_until_script`"] if the [=speculation rule/requirements=] contain "`anonymous-client-ip-when-cross-origin`".
 
@@ -259,13 +263,19 @@ Extend the [=speculation rule=] [=struct=] with one additional [=struct/item=]:
   Modify [=parse a speculation rule=] by adding the following steps:
 
   1. Let |targetHint| be null.
+  1. Let |formSubmission| be false.
   1. If |input|["`target_hint`"] [=map/exists=]:
     1. If |input|["`target_hint`"] is not a [=valid navigable target name or keyword=]:
       1. The user agent may [=report a warning to the console=] indicating that the supplied target hint was invalid.
       1. Return null.
     1. Set |targetHint| to |input|["`target_hint`"].
+  1. If |input|["`form_submission`"] [=map/exists=]:
+    1. If |input|["`form_submission`"] is not a boolean value:
+      1. The user agent may [=report a warning to the console=] indicating that the supplied form submission was invalid.
+      1. Return null.
+    1. Set |formSubmission| to boolean value of |input|["`form_submission`"].
 
-  and then updating the final step which returns a [=speculation rule=] to include setting the [=speculation rule/target navigable name hint=] to |targetHint|.
+  and then updating the final step which returns a [=speculation rule=] to include setting the [=speculation rule/target navigable name hint=] to |targetHint| and [=speculation rule/form submission=] to |formSubmission|.
 </div>
 
 <h3 id="speculation-rules-processing">Processing model</h3>
@@ -274,6 +284,7 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
 
 * <dfn for="prerender candidate">target navigable name hint</dfn>, a [=valid navigable target name or keyword=] or null
 * <dfn for="prerender candidate">should block scripts</dfn>, a [=boolean=], initially false
+* <dfn for="prerender candidate">form submission</dfn>, a [=boolean=], initially false
 
 <div algorithm="consider speculative loads steps">
   Update the [=consider speculative loads=] algorithm to bail out early if <var ignore>document</var>'s [=node navigable=] is a [=prerendering navigable=], with an explanatory note about how performing speculative loads in a speculatively-loaded page is too wasteful.
@@ -308,6 +319,9 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
                 : [=prerender candidate/target navigable name hint=]
                 :: |rule|'s [=speculation rule/target navigable name hint=]
 
+                : [=prerender candidate/form submission=]
+                :: |rule|'s [=speculation rule/form submission=]
+
                 : [=prerender candidate/should block scripts=]
                 :: |shouldBlockScripts|
               </dl>
@@ -317,6 +331,7 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
             1. [=list/For each=] |link| of |links|:
               1. Let |target| be |rule|'s [=speculation rule/target navigable name hint=].
               1. If |target| is null, set it to the result of [=getting an element's target=] given |link|.
+              1. Let |formSubmission| be |rule|'s [=speculation rule/form submission=].
               1. Let |referrerPolicy| be the result of [=computing a speculative load referrer policy=] given |rule| and |link|.
               1. [=list/Append=] a [=prerender candidate=] with
                 <dl class="props">
@@ -338,6 +353,9 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
                   : [=prerender candidate/target navigable name hint=]
                   :: |target|
                   
+                  : [=prerender candidate/form submission=]
+                  :: |formSubmission|
+
                   : [=prerender candidate/should block scripts=]
                   :: |shouldBlockScripts|
                 </dl>
@@ -386,6 +404,8 @@ A <dfn>prerender candidate</dfn> is a [=speculative load candidate=] with the fo
         1. Set |prefetchRecord|'s [=prefetch record/prerendering traversable=] to "`to be created`".
 
         1. Set |prefetchRecord|'s [=prefetch record/prerendering target navigable name hint=] to |candidate|'s [=prerender candidate/target navigable name hint=].
+
+        1. Set |prefetchRecord|'s [=prefetch record/prerendering form submission=] to |candidate|'s [=prerender candidate/form submission=].
 
         1. [=Start a referrer-initiated navigational prerender=] given |document|, |prefetchRecord|, and |candidate|'s [=prerender candidate/should block scripts=].
 
@@ -678,10 +698,12 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
 <h3 id="navigate-activation">Allowing activation in place of navigation</h3>
 
 <div algorithm>
-  To <dfn>find a matching prerendered prefetch record</dfn> given a {{Document}} |predecessorDocument| and [=URL=] |url|:
+  To <dfn>find a matching prerendered prefetch record</dfn> given a {{Document}} |predecessorDocument|, [=URL=] |url|, and a string |cspNavigationType|:
 
     1. Let |recordToUse| be null.
     1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prefetch records=]:
+        1. Let |expectedCspNavigationType| be "`form-action`" if |record|'s [=prefetch record/prerendering form submission=] is true; otherwise "`other`".
+        1. If |cspNavigationType| is not |expectedCspNavigationType|, then [=iteration/continue=].
         1. If |record|'s [=prefetch record/prerendering traversable=] is not a [=prerendering traversable=], then [=iteration/continue=].
         1. If |record|'s [=prefetch record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true, then [=iteration/continue=].
         1. If |record|'s [=prefetch record/URL=] is equal to |url|:
@@ -704,7 +726,6 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
       * |navigable| is a [=prerendering traversable=];
       * |navigable| is a [fenced frame](https://github.com/shivanigithub/fenced-frame);
          <p class="issue">The concept of a fenced frame navigable is not yet defined but we need to link to it once it exists.</p>
-      * |cspNavigationType| is not "`other`"; or
       * |documentResource| is not null
 
     then return null.
@@ -712,11 +733,13 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
   1. Let |predecessorDocument| be |navigable|'s [=navigable/active document=].
   1. Let |cutoffTime| be null.
   1. While true:
-      1. Let |completeRecord| be the result of [=finding a matching prerendered prefetch record=] given |predecessorDocument| and |url|.
+      1. Let |completeRecord| be the result of [=finding a matching prerendered prefetch record=] given |predecessorDocument|, |url|, and |cspNavigationType|.
       1. If |completeRecord| is not null, return |completeRecord|.
       1. Let |potentialRecords| be an empty [=list=].
       1. [=list/For each=] |record| of |predecessorDocument|'s [=Document/prefetch records=]:
+          1. Let |expectedCspNavigationType| be "`form-action`" if |record|'s [=prefetch record/prerendering form submission=] is true; otherwise "`other`".
           1. If all of the following are true, then [=list/append=] |record| to |potentialRecords|:
+              * |cspNavigationType| is |expectedCspNavigationType|;
               * |record|'s [=prefetch record/prerendering traversable=] is a [=prerendering traversable=];
               * |record|'s [=prefetch record/prerendering traversable=]'s [=navigable/active document=]'s [=Document/is initial about:blank=] is true;
               * |record| [=prefetch record/is expected to match a URL=] given |url|; and
