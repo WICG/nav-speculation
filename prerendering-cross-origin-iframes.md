@@ -40,6 +40,41 @@ An argument could be made for page A, but:
 
 Overall, in the same way that page B controls its other subresources loads, such as images or videos, we think page B is best to control the loading of its iframes.
 
+### Nested iframes
+
+When iframes are nested (i.e., an iframe contains its own child iframes), the opt-in is evaluated per parent-child boundary:
+
+```mermaid
+graph LR
+    A["Top-level Page A (example.com)"] -->|prerenders| B["Page B (sub.example.com)"]
+    subgraph B ["Page B (sub.example.com)"]
+        C["Iframe C (other.example)"]
+        subgraph C ["Iframe C (other.example)"]
+            D1["Iframe D1 (other.example)<br>Same-origin to C"] ~~~
+            D2["Iframe D2 (third.example)<br>Cross-origin to C"]
+        end
+    end
+```
+
+In this scenario:
+* **Page B** must provide `Supports-Loading-Mode: prerender-cross-origin-frames` for **Iframe C** to be prerendered (since C is cross-origin to B).
+* **Iframe D1** is **same-origin** with respect to its immediate parent frame (C). It is allowed to prerender immediately without requiring any extra header on C, matching the standard same-origin iframe behavior within an active container.
+* **Iframe D2** is **cross-origin** with respect to its immediate parent frame (C). It is deferred by default, unless **Iframe C** also provides the `Supports-Loading-Mode: prerender-cross-origin-frames` header in its HTTP response.
+
+#### Summary of the recursive rule
+
+A nested iframe will only be prerendered if **all of its ancestor frames have been prerendered**, and it meets at least one of the following conditions:
+
+1. It is **same-origin** with respect to its immediate parent frame; or
+2. Its immediate parent frame responds with the `Supports-Loading-Mode: prerender-cross-origin-frames` header.
+
+This rule applies recursively down the frame hierarchy, with no limit on nesting depth.
+
+#### Interaction with other `Supports-Loading-Mode` tokens and elements
+
+* `Supports-Loading-Mode: credentialed-prerender`: This is a page-level opt-in for top-level same-site cross-origin navigations (e.g. Page B). It does not affect the decision to prerender nested iframes.
+* `<fencedframe>`: Because fenced frames do not support prerendering at all, `Supports-Loading-Mode: fenced-frame` is ignored in prerendering contexts.
+
 ### The header itself
 
 This proposal leans on the [existing `Supports-Loading-Mode` header](./opt-in.md) proposal, which is already used for other preloading-related features. It is a structured header which can take one or more tokens; the `prerender-cross-origin-frames` value is a new such token. It can thus be used in combination with others, e.g.
