@@ -57,7 +57,7 @@ graph LR
 ```
 
 In this scenario:
-* **Page B** must provide `Supports-Loading-Mode: prerender-cross-origin-frames` for **Iframe C** to be prerendered (since C is cross-origin to B).
+* **Page B** must provide the `Supports-Loading-Mode: prerender-cross-origin-frames` for **Iframe C** to be prerendered (since C is cross-origin to B).
 * **Iframe D1** is **same-origin** with respect to its immediate parent frame (C). It is allowed to prerender immediately without requiring any extra header on C, matching the standard same-origin iframe behavior within an active container.
 * **Iframe D2** is **cross-origin** with respect to its immediate parent frame (C). It is deferred by default, unless **Iframe C** also provides the `Supports-Loading-Mode: prerender-cross-origin-frames` header in its HTTP response.
 
