@@ -753,15 +753,17 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 
   Append the following steps after the first sub-step under "While true:":
 
-  1. If |navigable| is a [=prerendering navigable=] and <var ignore>currentURL</var>'s [=url/origin=] is not [=/same site=] with |initiatorOrigin|, then:
+  1. If |navigable| is a [=prerendering navigable=], then:
 
-    1. If |navigable| is a [=top-level traversable=], then return null.
+    1. If |navigable| is a [=top-level traversable=] and <var ignore>currentURL</var>'s [=url/origin=] is not [=/same site=] with |initiatorOrigin|, then return null.
 
-    1. Otherwise, if |navigable|'s [=navigable/top-level traversable=]'s [=navigable/active document=]'s [=Document/allow cross origin iframes navigation while prerendering=] is false,  the user agent must wait to continue this algorithm until |navigable|'s [=navigable/loading mode=] becomes "`normal`". At any point during this wait (including immediately), it may instead choose to [=destroy a top-level traversable|destroy=] |navigable|'s [=top-level traversable=] and return null from this algorithm.
+    1. Otherwise, if <var ignore>currentURL</var>'s [=url/origin=] is not [=same origin=] with |navigable|'s [=navigable/parent=]'s [=navigable/active document=]'s [=Document/origin=] and |navigable|'s [=navigable/parent=]'s [=navigable/active document=]'s [=Document/allow cross origin iframes navigation while prerendering=] is false, the user agent must wait to continue this algorithm until |navigable|'s [=navigable/loading mode=] becomes "`normal`". At any point during this wait (including immediately), it may instead choose to [=destroy a top-level traversable|destroy=] |navigable|'s [=top-level traversable=] and return null from this algorithm.
+
+       <p class="note">When iframes are nested, this check is evaluated at each parent-child boundary. A child iframe will only be prerendered if all of its ancestor frames have been prerendered, and it is either same-origin with its immediate parent frame, or its immediate parent frame's document has [=Document/allow cross origin iframes navigation while prerendering=] set to true.</p>
 
   Append the following steps toward the end of the algorithm, after the steps which check <var ignore>locationURL</var>:
 
-  1. If |navigable| is a [=prerendering navigable=], and <var ignore>responseOrigin</var> is not [=same origin=] with |initiatorOrigin|, then:
+  1. If |navigable| is a [=prerendering traversable=], and <var ignore>responseOrigin</var> is not [=same origin=] with |initiatorOrigin|, then:
 
     1. Let |loadingModes| be the result of [=getting the supported loading modes=] for <var ignore>response</var>.
 
@@ -962,7 +964,7 @@ In some cases, cross-origin web pages might not be prepared to be loaded in a no
 
 The \`<code><dfn export for="Supports-Loading-Mode">credentialed-prerender</dfn></code>\` token indicates that the response can be used to create a [=prerendering navigable=], despite the prerendering being initiated by a cross-origin same-site referrer. Without this opt-in, such prerenders will fail, as outlined in [[#navigate-fetch-patch]].
 
-The \`<code><dfn export for="Supports-Loading-Mode">prerender-cross-origin-frames</dfn></code>\` token indicates that the response can be used to prerender all cross-origin iframes. Without this opt-in, such prerenders will be deferred, as outlined in [[#navigate-fetch-patch]].
+The \`<code><dfn export for="Supports-Loading-Mode">prerender-cross-origin-frames</dfn></code>\` token indicates that the response can be used to prerender its child cross-origin iframes. Without this opt-in, such prerenders will be deferred, as outlined in [[#navigate-fetch-patch]].
 
 To <dfn export>get the supported loading modes</dfn> for a [=response=] |response|:
 
