@@ -4,9 +4,9 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 0a3d88311, updated Mon May 4 18:07:03 2026 +0000" name="generator">
+  <meta content="Bikeshed version ac92c2f0d, updated Fri Aug 21 16:01:29 2026 -0700" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
-  <meta content="8f51f04ce5f03acd4dfc7ca3cb2ef99c81fc3d4e" name="revision">
+  <meta content="45e9c0ac7c8d85efa48ef6f9bcf3cfa46b80511d" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -811,7 +811,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <h1 class="no-ref p-name" id="title">Prerendering Revamped</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2026-05-14">14 May 2026</time></p>
+    <time class="dt-updated" datetime="2026-08-27">27 August 2026</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2163,7 +2163,7 @@ to <var>prerenderCandidates</var>.
    <h4 class="heading settled" data-level="6.4.15" id="autoplay-patch"><span class="secno">6.4.15. </span><span class="content">Media Autoplay</span><a class="self-link" href="#autoplay-patch"></a></h4>
    <p>Modify the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#playing-the-media-resource" id="ref-for-playing-the-media-resource">playing the media resource</a> section to indicate that the the <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/media.html#current-playback-position" id="ref-for-current-playback-position">current playback position</a> of a	<code class="idl"><a data-link-type="idl" href="https://html.spec.whatwg.org/multipage/media.html#htmlmediaelement" id="ref-for-htmlmediaelement">HTMLMediaElement</a></code> must increase monotonically only when the <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document①⑥">Document</a></code> is not <code class="idl"><a data-link-type="idl" href="#dom-document-prerendering" id="ref-for-dom-document-prerendering⑤">prerendering</a></code>.</p>
    <h4 class="heading settled" data-level="6.4.16" id="media-capture-patch"><span class="secno">6.4.16. </span><span class="content">Media Capture and Streams</span><a class="self-link" href="#media-capture-patch"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①③">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-navigator-getusermedia" id="ref-for-dom-navigator-getusermedia">getUserMedia()</a></code>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-getusermedia" id="ref-for-dom-mediadevices-getusermedia">getUserMedia()</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-enumeratedevices" id="ref-for-dom-mediadevices-enumeratedevices">enumerateDevices()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①③">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia" id="ref-for-dom-navigator-getusermedia">getUserMedia()</a></code>, <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-getusermedia" id="ref-for-dom-mediadevices-getusermedia">getUserMedia()</a></code> and <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices-enumeratedevices" id="ref-for-dom-mediadevices-enumeratedevices">enumerateDevices()</a></code>.</p>
    <div class="algorithm" data-algorithm="mediacapture device-change path">
     
   Modify the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/mediacapture-main/#dom-mediadevices" id="ref-for-dom-mediadevices">MediaDevices</a></code> section by prepending the following step to the <a data-link-type="dfn" href="https://w3c.github.io/mediacapture-main/#dfn-device-change-notification-steps" id="ref-for-dfn-device-change-notification-steps">device change notification steps</a>:
@@ -2684,7 +2684,7 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="c464e7b6">MediaDevices</span>
      <li><span class="dfn-paneled" id="4f6f075f">enumerateDevices()</span>
      <li><span class="dfn-paneled" id="eca80770">getUserMedia() <small>(for MediaDevices)</small></span>
-     <li><span class="dfn-paneled" id="e7a79d4f">getUserMedia() <small>(for Navigator)</small></span>
+     <li><span class="dfn-paneled" id="b1e9d95c">getUserMedia() <small>(for Navigator)</small></span>
     </ul>
    <li>
     <a data-link-type="biblio">[NAVIGATION-TIMING-2]</a> defines the following terms:
@@ -2946,7 +2946,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-dom">[DOM]
    <dd>Anne van Kesteren. <a href="https://dom.spec.whatwg.org/"><cite>DOM Standard</cite></a>. Living Standard. URL: <a href="https://dom.spec.whatwg.org/">https://dom.spec.whatwg.org/</a>
    <dt id="biblio-encrypted-media-2">[ENCRYPTED-MEDIA-2]
-   <dd>Joey Parrish; Greg Freedman. <a href="https://w3c.github.io/encrypted-media/"><cite>Encrypted Media Extensions</cite></a>. URL: <a href="https://w3c.github.io/encrypted-media/">https://w3c.github.io/encrypted-media/</a>
+   <dd>Xiaohan Wang; Greg Freedman. <a href="https://w3c.github.io/encrypted-media/"><cite>Encrypted Media Extensions</cite></a>. URL: <a href="https://w3c.github.io/encrypted-media/">https://w3c.github.io/encrypted-media/</a>
    <dt id="biblio-fetch">[FETCH]
    <dd>Anne van Kesteren. <a href="https://fetch.spec.whatwg.org/"><cite>Fetch Standard</cite></a>. Living Standard. URL: <a href="https://fetch.spec.whatwg.org/">https://fetch.spec.whatwg.org/</a>
    <dt id="biblio-file-system-access">[FILE-SYSTEM-ACCESS]
@@ -2980,7 +2980,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-payment-request">[PAYMENT-REQUEST]
    <dd>Marcos Caceres; Ian Jacobs; Stephen McGruer. <a href="https://w3c.github.io/payment-request/"><cite>Payment Request API</cite></a>. URL: <a href="https://w3c.github.io/payment-request/">https://w3c.github.io/payment-request/</a>
    <dt id="biblio-picture-in-picture">[PICTURE-IN-PICTURE]
-   <dd>Francois Beaufort. <a href="https://w3c.github.io/picture-in-picture/"><cite>Picture-in-Picture</cite></a>. URL: <a href="https://w3c.github.io/picture-in-picture/">https://w3c.github.io/picture-in-picture/</a>
+   <dd>Francois Beaufort; Simon Farre. <a href="https://w3c.github.io/picture-in-picture/"><cite>Picture-in-Picture</cite></a>. URL: <a href="https://w3c.github.io/picture-in-picture/">https://w3c.github.io/picture-in-picture/</a>
    <dt id="biblio-pointerlock">[POINTERLOCK]
    <dd>Mustaq Ahmed; Vincent Scheib. <a href="https://w3c.github.io/pointerlock/"><cite>Pointer Lock 2.0</cite></a>. URL: <a href="https://w3c.github.io/pointerlock/">https://w3c.github.io/pointerlock/</a>
    <dt id="biblio-prefetch">[PREFETCH]
@@ -2994,7 +2994,7 @@ This would not matter because the node can automatically start when the context 
    <dt id="biblio-screen-capture">[SCREEN-CAPTURE]
    <dd>Jan-Ivar Bruaroey; Elad Alon. <a href="https://w3c.github.io/mediacapture-screen-share/"><cite>Screen Capture</cite></a>. URL: <a href="https://w3c.github.io/mediacapture-screen-share/">https://w3c.github.io/mediacapture-screen-share/</a>
    <dt id="biblio-screen-orientation">[SCREEN-ORIENTATION]
-   <dd>Marcos Caceres. <a href="https://w3c.github.io/screen-orientation/"><cite>Screen Orientation</cite></a>. URL: <a href="https://w3c.github.io/screen-orientation/">https://w3c.github.io/screen-orientation/</a>
+   <dd>Marcos Caceres; Léonie Watson. <a href="https://w3c.github.io/screen-orientation/"><cite>Screen Orientation</cite></a>. URL: <a href="https://w3c.github.io/screen-orientation/">https://w3c.github.io/screen-orientation/</a>
    <dt id="biblio-screen-wake-lock">[SCREEN-WAKE-LOCK]
    <dd>Kenneth Christiansen; Marcos Caceres. <a href="https://w3c.github.io/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. URL: <a href="https://w3c.github.io/screen-wake-lock/">https://w3c.github.io/screen-wake-lock/</a>
    <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
@@ -3490,6 +3490,7 @@ let dfnPanelData = {
 "ae8def21": {"dfnID":"ae8def21","dfnText":"contain","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"},{"id":"ref-for-list-contain\u2460"}],"title":"3.2. Navigation fetch changes"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
 "b06889d5": {"dfnID":"b06889d5","dfnText":"getDevices()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-usb-getdevices"}],"title":"6.4.23. WebUSB API"}],"url":"https://wicg.github.io/webusb/#dom-usb-getdevices"},
 "b0f5bc03": {"dfnID":"b0f5bc03","dfnText":"create()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-credentialscontainer-create"}],"title":"6.4.27. Credential Management"}],"url":"https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-create"},
+"b1e9d95c": {"dfnID":"b1e9d95c","dfnText":"getUserMedia() (for Navigator)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-navigator-getusermedia"}],"title":"6.4.16. Media Capture and Streams"}],"url":"https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia"},
 "b262501e": {"dfnID":"b262501e","dfnText":"reject","external":true,"refSections":[{"refs":[{"id":"ref-for-reject"},{"id":"ref-for-reject\u2460"}],"title":"6.4.12. Screen Orientation API"}],"url":"https://webidl.spec.whatwg.org/#reject"},
 "b3c9c293": {"dfnID":"b3c9c293","dfnText":"request(name, options, callback)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-lockmanager-request-name-options-callback"}],"title":"6.4.29. Web Locks API"}],"url":"https://w3c.github.io/web-locks/#dom-lockmanager-request-name-options-callback"},
 "b4c365f8": {"dfnID":"b4c365f8","dfnText":"visibility state","external":true,"refSections":[{"refs":[{"id":"ref-for-visibility-state"}],"title":"4.1. Interaction with Page Visibility"},{"refs":[{"id":"ref-for-visibility-state\u2460"},{"id":"ref-for-visibility-state\u2461"},{"id":"ref-for-visibility-state\u2462"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://html.spec.whatwg.org/multipage/interaction.html#visibility-state"},
@@ -3551,7 +3552,6 @@ let dfnPanelData = {
 "e2546d7b": {"dfnID":"e2546d7b","dfnText":"write(data)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-clipboard-write"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://w3c.github.io/clipboard-apis/#dom-clipboard-write"},
 "e2ebbc7a": {"dfnID":"e2ebbc7a","dfnText":"tags (for speculative load candidate)","external":true,"refSections":[{"refs":[{"id":"ref-for-sl-candidate-tags"},{"id":"ref-for-sl-candidate-tags\u2460"}],"title":"1.2. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/speculative-loading.html#sl-candidate-tags"},
 "e4c9e427": {"dfnID":"e4c9e427","dfnText":"prefetch rules","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-set-prefetch"}],"title":"1.1. Parsing"}],"url":"https://html.spec.whatwg.org/multipage/speculative-loading.html#sr-set-prefetch"},
-"e7a79d4f": {"dfnID":"e7a79d4f","dfnText":"getUserMedia() (for Navigator)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-navigator-getusermedia"}],"title":"6.4.16. Media Capture and Streams"}],"url":"https://w3c.github.io/mediacapture-main/#dom-navigator-getusermedia"},
 "e8409d67": {"dfnID":"e8409d67","dfnText":"token","external":true,"refSections":[{"refs":[{"id":"ref-for-name-tokens"}],"title":"4.6. Interaction with Fetch"},{"refs":[{"id":"ref-for-name-tokens\u2460"},{"id":"ref-for-name-tokens\u2461"},{"id":"ref-for-name-tokens\u2462"}],"title":"5. The `Supports-Loading-Mode` HTTP response header"}],"url":"https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens"},
 "e925c31b": {"dfnID":"e925c31b","dfnText":"client hints set","external":true,"refSections":[{"refs":[{"id":"ref-for-client-hints-set"}],"title":"4.4. Interaction with Client Hint Cache"}],"url":"https://wicg.github.io/client-hints-infrastructure#client-hints-set"},
 "e97a9688": {"dfnID":"e97a9688","dfnText":"unsigned long","external":true,"refSections":[{"refs":[{"id":"ref-for-idl-unsigned-long"}],"title":"6.4.4. Geolocation API"}],"url":"https://webidl.spec.whatwg.org/#idl-unsigned-long"},
@@ -4252,7 +4252,6 @@ let refsData = {
 "https://w3c.github.io/mediacapture-main/#dom-mediadevices": {"displayText":"MediaDevices","export":true,"for_":[],"level":"1","normative":true,"shortname":"mediacapture-streams","spec":"mediacapture-streams","status":"current","text":"MediaDevices","type":"interface","url":"https://w3c.github.io/mediacapture-main/#dom-mediadevices"},
 "https://w3c.github.io/mediacapture-main/#dom-mediadevices-enumeratedevices": {"displayText":"enumerateDevices()","export":true,"for_":["MediaDevices"],"level":"1","normative":true,"shortname":"mediacapture-streams","spec":"mediacapture-streams","status":"current","text":"enumerateDevices()","type":"method","url":"https://w3c.github.io/mediacapture-main/#dom-mediadevices-enumeratedevices"},
 "https://w3c.github.io/mediacapture-main/#dom-mediadevices-getusermedia": {"displayText":"getUserMedia()","export":true,"for_":["MediaDevices"],"level":"1","normative":true,"shortname":"mediacapture-streams","spec":"mediacapture-streams","status":"current","text":"getUserMedia()","type":"method","url":"https://w3c.github.io/mediacapture-main/#dom-mediadevices-getusermedia"},
-"https://w3c.github.io/mediacapture-main/#dom-navigator-getusermedia": {"displayText":"getUserMedia()","export":true,"for_":["Navigator"],"level":"1","normative":false,"shortname":"mediacapture-streams","spec":"mediacapture-streams","status":"current","text":"getUserMedia()","type":"method","url":"https://w3c.github.io/mediacapture-main/#dom-navigator-getusermedia"},
 "https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput": {"displayText":"selectAudioOutput()","export":true,"for_":["MediaDevices"],"level":"1","normative":true,"shortname":"audio-output","spec":"audio-output","status":"current","text":"selectAudioOutput()","type":"method","url":"https://w3c.github.io/mediacapture-output/#dom-mediadevices-selectaudiooutput"},
 "https://w3c.github.io/mediacapture-screen-share/#dom-mediadevices-getdisplaymedia": {"displayText":"getDisplayMedia()","export":true,"for_":["MediaDevices"],"level":"1","normative":true,"shortname":"screen-capture","spec":"screen-capture","status":"current","text":"getDisplayMedia()","type":"method","url":"https://w3c.github.io/mediacapture-screen-share/#dom-mediadevices-getdisplaymedia"},
 "https://w3c.github.io/navigation-timing/#performancenavigationtiming": {"displayText":"PerformanceNavigationTiming","export":true,"for_":[],"level":"2","normative":true,"shortname":"navigation-timing","spec":"navigation-timing-2","status":"current","text":"PerformanceNavigationTiming","type":"interface","url":"https://w3c.github.io/navigation-timing/#performancenavigationtiming"},
@@ -4354,6 +4353,7 @@ let refsData = {
 "https://www.rfc-editor.org/rfc/rfc8941.html#name-lists": {"displayText":"list","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"list","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc8941.html#name-lists"},
 "https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens": {"displayText":"token","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"token","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens"},
 "https://www.rfc-editor.org/rfc/rfc8941.html#section-1": {"displayText":"structured header","export":true,"for_":[],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"structured header","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc8941.html#section-1"},
+"https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia": {"displayText":"getUserMedia()","export":true,"for_":["Navigator"],"level":"1","normative":false,"shortname":"mediacapture-streams","spec":"mediacapture-streams","status":"snapshot","text":"getUserMedia()","type":"method","url":"https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia"},
 "prefetch.html#checkprerender": {"displayText":"checkPrerender","export":true,"for_":["has a matching prefetch record"],"level":"","normative":true,"shortname":"prefetch","spec":"prefetch","status":"anchor-block","text":"checkprerender","type":"dfn","url":"prefetch.html#checkprerender"},
 "prefetch.html#has-a-matching-prefetch-record": {"displayText":"has a matching prefetch record","export":true,"for_":[],"level":"","normative":true,"shortname":"prefetch","spec":"prefetch","status":"anchor-block","text":"has a matching prefetch record","type":"dfn","url":"prefetch.html#has-a-matching-prefetch-record"},
 "prefetch.html#prerender": {"displayText":"prerender","export":true,"for_":["Sec-Purpose prefetch"],"level":"","normative":true,"shortname":"prefetch","spec":"prefetch","status":"anchor-block","text":"prerender","type":"dfn","url":"prefetch.html#prerender"},
