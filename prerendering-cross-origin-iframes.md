@@ -59,7 +59,7 @@ graph LR
 In this scenario:
 * **Page B** must provide the `Supports-Loading-Mode: prerender-cross-origin-frames` for **Iframe C** to be prerendered (since C is cross-origin to B).
 * **Iframe D1** is **same-origin** with respect to its immediate parent frame (C). It is allowed to prerender immediately without requiring any extra header on C, matching the standard same-origin iframe behavior within an active container.
-* **Iframe D2** is **cross-origin** with respect to its immediate parent frame (C). It is deferred by default, unless **Iframe C** also provides the `Supports-Loading-Mode: prerender-cross-origin-frames` header in its HTTP response.
+* **Iframe D2** is **cross-origin** with respect to its immediate parent frame (C). It is deferred by default, unless **Iframe C** provides the `Supports-Loading-Mode: prerender-cross-origin-frames` header in its HTTP response. (Note: The requirement is strictly evaluated at each immediate parent-child boundary. If Iframe C were instead same-origin with Page B, Page B would not need to provide the header for C to load, and Iframe C's header alone would be sufficient to allow D2 to prerender.)
 
 #### Summary of the recursive rule
 
