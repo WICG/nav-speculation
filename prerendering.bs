@@ -423,7 +423,7 @@ As is customary for [[HTML]], the definition of {{Document/prerendering}} would 
 
 Every [=navigable=] has a <dfn for="navigable">loading mode</dfn>, which is one of the following:
 
-: "`default`"
+: "<dfn for="loading mode">`default`</dfn>"
 :: No special considerations are applied to content loaded in this navigable
 : "`prerender`"
 :: This navigable is displaying prerendered content
@@ -638,6 +638,8 @@ Every {{Document}} has an <dfn for="Document">allow cross origin iframes navigat
 
       <p class="XXX">The precise mechanism for how script execution is resumed, especially how previously-queued tasks are processed, needs to be specified in more detail.</p>
 
+    1. Set |navigable|'s [=navigable/loading mode=] to "<code>[=loading mode/default=]</code>".
+
     1. Let |doc| be |navigable|'s [=navigable/active document=].
 
     1. <p class="XXX">We should really propagate the loading mode change here, in the posted task. This is where implementations would update what is returned by {{Document/prerendering|document.prerendering}}. However, right now it lives on the traversable, so it gets magically updated when we move over the session history entry. Probably we need to move it to the {{Document}}.
@@ -757,7 +759,7 @@ Patch the [=navigate=] algorithm to allow the [=prerendering traversable/activat
 
     1. If |navigable| is a [=top-level traversable=], then return null.
 
-    1. Otherwise, if |navigable|'s [=navigable/top-level traversable=]'s [=navigable/active document=]'s [=Document/allow cross origin iframes navigation while prerendering=] is false,  the user agent must wait to continue this algorithm until |navigable|'s [=navigable/loading mode=] becomes "`normal`". At any point during this wait (including immediately), it may instead choose to [=destroy a top-level traversable|destroy=] |navigable|'s [=top-level traversable=] and return null from this algorithm.
+    1. Otherwise, if |navigable|'s [=navigable/top-level traversable=]'s [=navigable/active document=]'s [=Document/allow cross origin iframes navigation while prerendering=] is false,  the user agent must wait to continue this algorithm until |navigable|'s [=navigable/loading mode=] becomes "<code>[=loading mode/default=]</code>". At any point during this wait (including immediately), it may instead choose to [=destroy a top-level traversable|destroy=] |navigable|'s [=top-level traversable=] and return null from this algorithm.
 
   Append the following steps toward the end of the algorithm, after the steps which check <var ignore>locationURL</var>:
 
