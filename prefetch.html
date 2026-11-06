@@ -4,9 +4,8 @@
   <title>Prefetch</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version ac92c2f0d, updated Fri Aug 21 16:01:29 2026 -0700" name="generator">
+  <meta content="Bikeshed version e0b165ae4, updated Mon Nov 2 15:16:49 2026 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prefetch.html" rel="canonical">
-  <meta content="45e9c0ac7c8d85efa48ef6f9bcf3cfa46b80511d" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -367,14 +366,17 @@ figure.table figcaption:not(.no-marker)::before {
     height: auto;
     max-height: 500px;
     overflow: auto;
+    margin: 0;
     padding: 0.5em 0.75em;
     font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
     background: var(--dfnpanel-bg);
     color: var(--dfnpanel-text);
     border: outset 0.2em;
     white-space: normal; /* in case it's moved into a pre */
+    inset: auto;
+    position-area: bottom span-right;
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
 }
-.dfn-panel:not(.on) { display: none; }
 .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
 .dfn-panel > b { display: block; }
 .dfn-panel a { color: var(--dfnpanel-text); }
@@ -394,6 +396,9 @@ figure.table figcaption:not(.no-marker)::before {
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
+    position-area: none;
+    top: auto;
+    right: auto;
     left: 8px;
     bottom: 2em;
     margin: 0 auto;
@@ -450,7 +455,8 @@ figure.table figcaption:not(.no-marker)::before {
     opacity: 1;
 }
 
-.dfn-paneled[role="button"] { cursor: help; }
+.dfn-paneled { cursor: help; }
+.dfn-paneled > .dfn-panelbutton { all: unset; }
 
 .highlighted {
     animation: target-fade 3s;
@@ -771,7 +777,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <h1 class="no-ref p-name" id="title">Prefetch</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2026-08-27">27 August 2026</time></p>
+    <time class="dt-updated" datetime="2026-11-06">6 November 2026</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1383,7 +1389,7 @@ A human-readable <a href="https://www.w3.org/community/about/agreements/cla-deed
    <dl>
     <dt data-md><dfn class="dfn-paneled" data-dfn-for="navigation params" data-dfn-type="dfn" data-noexport id="navigation-params-delivery-type">delivery type</dfn>
     <dd data-md>
-     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a> (corresponding to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/resource-timing/#performanceresourcetiming" id="ref-for-performanceresourcetiming">PerformanceResourceTiming</a></code> <a data-link-type="dfn" href="https://w3c.github.io/resource-timing/#dfn-delivery-type" id="ref-for-dfn-delivery-type">delivery type</a>)</p>
+     <p>a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a> (corresponding to <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/resource-timing/#performanceresourcetiming" id="ref-for-performanceresourcetiming">PerformanceResourceTiming</a></code> <a data-link-type="dfn" href="https://w3c.github.io/resource-timing/#performanceresourcetiming-delivery-type" id="ref-for-performanceresourcetiming-delivery-type">delivery type</a>)</p>
    </dl>
    <p>Update all creation sites to supply an empty string, except for any in this document which supply a different value (in <a data-link-type="dfn" href="#create-navigation-params-from-a-prefetch-record" id="ref-for-create-navigation-params-from-a-prefetch-record①">create navigation params from a prefetch record</a>).</p>
    <hr>
@@ -2589,7 +2595,7 @@ To <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="trigger-a-pref
     <a data-link-type="biblio">[RESOURCE-TIMING]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="f17ac856">PerformanceResourceTiming</span>
-     <li><span class="dfn-paneled" id="b393ea32">delivery type</span>
+     <li><span class="dfn-paneled" id="ae5eeebc">delivery type</span>
      <li><span class="dfn-paneled" id="8d639a78">setup the resource timing entry</span>
     </ul>
    <li>
@@ -3075,9 +3081,9 @@ let dfnPanelData = {
 "abf6cbed": {"dfnID":"abf6cbed","dfnText":"Create Fetch Event and Dispatch","external":true,"refSections":[{"refs":[{"id":"ref-for-create-fetch-event-and-dispatch"}],"title":"4. Service Workers Patches"}],"url":"https://w3c.github.io/ServiceWorker/#create-fetch-event-and-dispatch"},
 "ae2a6342": {"dfnID":"ae2a6342","dfnText":"top-level browsing context","external":true,"refSections":[{"refs":[{"id":"ref-for-top-level-browsing-context"},{"id":"ref-for-top-level-browsing-context\u2460"}],"title":"7. Cookies"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#top-level-browsing-context"},
 "ae56d57e": {"dfnID":"ae56d57e","dfnText":"URL list","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-url-list"}],"title":"1. Concepts"}],"url":"https://fetch.spec.whatwg.org/#concept-request-url-list"},
+"ae5eeebc": {"dfnID":"ae5eeebc","dfnText":"delivery type","external":true,"refSections":[{"refs":[{"id":"ref-for-performanceresourcetiming-delivery-type"}],"title":"2. HTML Patches"}],"url":"https://w3c.github.io/resource-timing/#performanceresourcetiming-delivery-type"},
 "b01b1359": {"dfnID":"b01b1359","dfnText":"opaque origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin-opaque"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-concept-origin-opaque\u2460"},{"id":"ref-for-concept-origin-opaque\u2461"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin-opaque"},
 "b285d8c5": {"dfnID":"b285d8c5","dfnText":"source policy container","external":true,"refSections":[{"refs":[{"id":"ref-for-source-snapshot-params-policy-container"}],"title":"1. Concepts"},{"refs":[{"id":"ref-for-source-snapshot-params-policy-container\u2460"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#source-snapshot-params-policy-container"},
-"b393ea32": {"dfnID":"b393ea32","dfnText":"delivery type","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-delivery-type"}],"title":"2. HTML Patches"}],"url":"https://w3c.github.io/resource-timing/#dfn-delivery-type"},
 "b520afde": {"dfnID":"b520afde","dfnText":"cross-origin opener policy (for cross-origin opener policy enforcement result)","external":true,"refSections":[{"refs":[{"id":"ref-for-coop-enforcement-coop"}],"title":"2. HTML Patches"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#coop-enforcement-coop"},
 "b6ae4501": {"dfnID":"b6ae4501","dfnText":"networking task source","external":true,"refSections":[{"refs":[{"id":"ref-for-networking-task-source"}],"title":"6. Prefetch algorithms"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#networking-task-source"},
 "b8bb48a1": {"dfnID":"b8bb48a1","dfnText":"reload-navigation flag","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-reload-navigation-flag"}],"title":"2. HTML Patches"}],"url":"https://fetch.spec.whatwg.org/#concept-request-reload-navigation-flag"},
@@ -3213,16 +3219,6 @@ let dfnPanelData = {
 
 document.addEventListener("DOMContentLoaded", ()=>{
     genAllDfnPanels();
-
-    document.body.addEventListener("click", (e) => {
-        // If not handled already, just hide all dfn panels.
-        hideAllDfnPanels();
-    });
-});
-
-window.addEventListener("resize", () => {
-    // Pin any visible dfn panel
-    queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>positionDfnPanel(el));
 });
 
 function genAllDfnPanels() {
@@ -3234,16 +3230,17 @@ function genAllDfnPanels() {
             continue;
         }
         dfn.panelData = panelData;
-        insertDfnPopupAction(dfn);
+        genDfnPanel(dfn, panelData);
     }
 }
 
 function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
-    const dfnPanel = mk.aside({
-        class: "dfn-panel on",
+    const dfnPanel = mk.dialog({
+        class: "dfn-panel",
         id: `infopanel-for-${dfnID}`,
+        popover: "hint",
         "data-for": dfnID,
-        "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+        "aria-labelledby": `infopaneltitle-for-${dfnID}`,
         },
         mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
             `Info about the '${dfnText}' ${external?"external":""} reference.`),
@@ -3275,106 +3272,34 @@ function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
         event.stopPropagation();
         refocusOnTarget(event);
     });
-    dfnPanel.addEventListener('keydown', (event) => {
-        if(event.keyCode == 27) { // Escape key
-            hideDfnPanel({dfnPanel});
-            event.stopPropagation();
-            event.preventDefault();
+
+    dfnPanel.addEventListener('toggle', event=>{
+        if(event.newState == "closed") {
+            unpinDfnPanel(dfnPanel);
         }
     });
 
     dfnPanel.dfn = dfn;
     dfn.dfnPanel = dfnPanel;
+    dfn.after(dfnPanel);
+    const button = mk.button(
+        {
+            class:"dfn-panelbutton",
+            "popovertarget":dfnPanel.id
+        },
+        ...dfn.childNodes
+    );
+    dfn.append(button);
     return dfnPanel;
-}
-
-
-
-function hideAllDfnPanels() {
-    // Delete the currently-active dfn panel.
-    queryAll(".dfn-panel").forEach(dfnPanel=>hideDfnPanel({dfnPanel}));
-}
-
-function showDfnPanel(dfn) {
-    hideAllDfnPanels(); // Only display one at a time.
-
-    dfn.setAttribute("aria-expanded", "true");
-
-    const dfnPanel = genDfnPanel(dfn, dfn.panelData);
-
-    // Give the dfn a unique tabindex, and then
-    // give all the tabbable panel bits successive indexes.
-    let tabIndex = 100;
-    dfn.tabIndex = tabIndex++;
-    const tabbable = dfnPanel.querySelectorAll(":is(a, button)");
-    for (const el of tabbable) {
-        el.tabIndex = tabIndex++;
-    }
-
-    append(document.body, dfnPanel);
-    positionDfnPanel(dfnPanel);
-}
-
-function positionDfnPanel(dfnPanel) {
-    const dfn = dfnPanel.dfn;
-    const dfnPos = getBounds(dfn);
-    dfnPanel.style.top = dfnPos.bottom + "px";
-    dfnPanel.style.left = dfnPos.left + "px";
-
-    const panelPos = dfnPanel.getBoundingClientRect();
-    const panelMargin = 8;
-    const maxRight = document.body.parentNode.clientWidth - panelMargin;
-    if (panelPos.right > maxRight) {
-        const overflowAmount = panelPos.right - maxRight;
-        const newLeft = Math.max(panelMargin, dfnPos.left - overflowAmount);
-        dfnPanel.style.left = newLeft + "px";
-    }
 }
 
 function pinDfnPanel(dfnPanel) {
     // Switch it to "activated" state, which pins it.
     dfnPanel.classList.add("activated");
-    dfnPanel.style.position = "fixed";
-    dfnPanel.style.left = null;
-    dfnPanel.style.top = null;
 }
 
-function hideDfnPanel({dfn, dfnPanel}) {
-    if(!dfnPanel) dfnPanel = dfn.dfnPanel;
-    if(!dfn) dfn = dfnPanel.dfn;
-    dfn.dfnPanel = undefined;
-    dfnPanel.dfn = undefined;
-    dfn.setAttribute("aria-expanded", "false");
-    dfn.tabIndex = undefined;
-    dfnPanel.remove()
-}
-
-function toggleDfnPanel(dfn) {
-    if(dfn.dfnPanel) {
-        hideDfnPanel(dfn);
-    } else {
-        showDfnPanel(dfn);
-    }
-}
-
-function insertDfnPopupAction(dfn) {
-    dfn.setAttribute('role', 'button');
-    dfn.setAttribute('aria-expanded', 'false')
-    dfn.tabIndex = 0;
-    dfn.classList.add('has-dfn-panel');
-    dfn.addEventListener('click', (event) => {
-        toggleDfnPanel(dfn);
-        event.stopPropagation();
-    });
-    dfn.addEventListener('keypress', (event) => {
-        const kc = event.keyCode;
-        // 32->Space, 13->Enter
-        if(kc == 32 || kc == 13) {
-            toggleDfnPanel(dfn);
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    });
+function unpinDfnPanel(dfnPanel) {
+    dfnPanel.classList.remove("activated");
 }
 
 function refocusOnTarget(event) {
@@ -3384,21 +3309,6 @@ function refocusOnTarget(event) {
         // This is needed after browser scrolls to the destination.
         target.focus();
     });
-}
-
-// TODO: shared util
-// Returns the root-level absolute position {left and top} of element.
-function getBounds(el, relativeTo=document.body) {
-    const relativeRect = relativeTo.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    const top = elRect.top - relativeRect.top;
-    const left = elRect.left - relativeRect.left;
-    return {
-        top,
-        left,
-        bottom: top + elRect.height,
-        right: left + elRect.width,
-    }
 }
 
 function scrollToTargetAndHighlight(event) {
@@ -3876,8 +3786,8 @@ let refsData = {
 "https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp": {"displayText":"DOMHighResTimeStamp","export":true,"for_":[],"level":"3","normative":true,"shortname":"hr-time","spec":"hr-time-3","status":"current","text":"DOMHighResTimeStamp","type":"typedef","url":"https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp"},
 "https://w3c.github.io/navigation-timing/#create-the-navigation-timing-entry": {"displayText":"create the navigation timing entry","export":true,"for_":[],"level":"2","normative":true,"shortname":"navigation-timing","spec":"navigation-timing-2","status":"current","text":"create the navigation timing entry","type":"dfn","url":"https://w3c.github.io/navigation-timing/#create-the-navigation-timing-entry"},
 "https://w3c.github.io/navigation-timing/#enumdef-navigationtimingtype": {"displayText":"NavigationTimingType","export":true,"for_":[],"level":"2","normative":true,"shortname":"navigation-timing","spec":"navigation-timing-2","status":"current","text":"NavigationTimingType","type":"enum","url":"https://w3c.github.io/navigation-timing/#enumdef-navigationtimingtype"},
-"https://w3c.github.io/resource-timing/#dfn-delivery-type": {"displayText":"delivery type","export":true,"for_":["PerformanceResourceTiming"],"level":"","normative":true,"shortname":"resource-timing","spec":"resource-timing","status":"anchor-block","text":"delivery type","type":"dfn","url":"https://w3c.github.io/resource-timing/#dfn-delivery-type"},
 "https://w3c.github.io/resource-timing/#performanceresourcetiming": {"displayText":"PerformanceResourceTiming","export":true,"for_":[],"level":"1","normative":true,"shortname":"resource-timing","spec":"resource-timing","status":"current","text":"PerformanceResourceTiming","type":"interface","url":"https://w3c.github.io/resource-timing/#performanceresourcetiming"},
+"https://w3c.github.io/resource-timing/#performanceresourcetiming-delivery-type": {"displayText":"delivery type","export":false,"for_":["PerformanceResourceTiming"],"level":"1","normative":true,"shortname":"resource-timing","spec":"resource-timing","status":"current","text":"delivery type","type":"dfn","url":"https://w3c.github.io/resource-timing/#performanceresourcetiming-delivery-type"},
 "https://w3c.github.io/resource-timing/#setup-the-resource-timing-entry": {"displayText":"setup the resource timing entry","export":true,"for_":[],"level":"1","normative":true,"shortname":"resource-timing","spec":"resource-timing","status":"current","text":"setup the resource timing entry","type":"dfn","url":"https://w3c.github.io/resource-timing/#setup-the-resource-timing-entry"},
 "https://w3c.github.io/webappsec-clear-site-data/#abstract-opdef-clear-site-data-for-response": {"displayText":"clear site data for response","export":true,"for_":[],"level":"1","normative":true,"shortname":"clear-site-data","spec":"clear-site-data","status":"current","text":"clear site data for response","type":"abstract-op","url":"https://w3c.github.io/webappsec-clear-site-data/#abstract-opdef-clear-site-data-for-response"},
 "https://w3c.github.io/webappsec-clear-site-data/#abstract-opdef-parse-responses-clear-site-data-header": {"displayText":"parse response's Clear-Site-Data header","export":true,"for_":[],"level":"1","normative":true,"shortname":"clear-site-data","spec":"clear-site-data","status":"current","text":"parse response's Clear-Site-Data header","type":"abstract-op","url":"https://w3c.github.io/webappsec-clear-site-data/#abstract-opdef-parse-responses-clear-site-data-header"},

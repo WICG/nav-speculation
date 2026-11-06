@@ -4,9 +4,8 @@
   <title>Prerendering Revamped</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version ac92c2f0d, updated Fri Aug 21 16:01:29 2026 -0700" name="generator">
+  <meta content="Bikeshed version e0b165ae4, updated Mon Nov 2 15:16:49 2026 -0800" name="generator">
   <link href="https://wicg.github.io/nav-speculation/prerendering.html" rel="canonical">
-  <meta content="45e9c0ac7c8d85efa48ef6f9bcf3cfa46b80511d" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -402,14 +401,17 @@ figure.table figcaption:not(.no-marker)::before {
     height: auto;
     max-height: 500px;
     overflow: auto;
+    margin: 0;
     padding: 0.5em 0.75em;
     font: small Helvetica Neue, sans-serif, Droid Sans Fallback;
     background: var(--dfnpanel-bg);
     color: var(--dfnpanel-text);
     border: outset 0.2em;
     white-space: normal; /* in case it's moved into a pre */
+    inset: auto;
+    position-area: bottom span-right;
+    position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
 }
-.dfn-panel:not(.on) { display: none; }
 .dfn-panel * { margin: 0; padding: 0; text-indent: 0; }
 .dfn-panel > b { display: block; }
 .dfn-panel a { color: var(--dfnpanel-text); }
@@ -429,6 +431,9 @@ figure.table figcaption:not(.no-marker)::before {
 .dfn-panel.activated {
     display: inline-block;
     position: fixed;
+    position-area: none;
+    top: auto;
+    right: auto;
     left: 8px;
     bottom: 2em;
     margin: 0 auto;
@@ -485,7 +490,8 @@ figure.table figcaption:not(.no-marker)::before {
     opacity: 1;
 }
 
-.dfn-paneled[role="button"] { cursor: help; }
+.dfn-paneled { cursor: help; }
+.dfn-paneled > .dfn-panelbutton { all: unset; }
 
 .highlighted {
     animation: target-fade 3s;
@@ -811,7 +817,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <h1 class="no-ref p-name" id="title">Prerendering Revamped</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
-    <time class="dt-updated" datetime="2026-08-27">27 August 2026</time></p>
+    <time class="dt-updated" datetime="2026-11-06">6 November 2026</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2032,11 +2038,11 @@ to <var>prerenderCandidates</var>.
     </ol>
    </div>
    <h4 class="heading settled" data-level="6.4.5" id="patch-serial"><span class="secno">6.4.5. </span><span class="content">Web Serial API</span><a class="self-link" href="#patch-serial"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/serial/#dom-serial-requestport" id="ref-for-dom-serial-requestport">requestPort()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑤">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://serial.spec.whatwg.org/#dom-serial-requestport" id="ref-for-dom-serial-requestport">requestPort()</a></code>.</p>
    <p>TODO: the below could probably be done by generalizing <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering⑥">[DelayWhilePrerendering]</a></code> to use owner document while in dedicated workers.</p>
    <div class="algorithm" data-algorithm="Serial getPorts patch">
     
-  Modify the <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/serial/#dom-serial-getports" id="ref-for-dom-serial-getports">getPorts()</a></code> method steps by inserting the following steps after the initial creation of <var>promise</var>:
+  Modify the <code class="idl"><a data-link-type="idl" href="https://serial.spec.whatwg.org/#dom-serial-getports" id="ref-for-dom-serial-getports">getPorts()</a></code> method steps by inserting the following steps after the initial creation of <var>promise</var>:
 
 
     <ol>
@@ -2209,11 +2215,11 @@ This would not matter because the node can automatically start when the context 
    <h4 class="heading settled" data-level="6.4.22" id="persist-patch"><span class="secno">6.4.22. </span><span class="content">Storage API</span><a class="self-link" href="#persist-patch"></a></h4>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑧">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://storage.spec.whatwg.org/#dom-storagemanager-persist" id="ref-for-dom-storagemanager-persist">persist()</a></code>.</p>
    <h4 class="heading settled" data-level="6.4.23" id="webusb-patch"><span class="secno">6.4.23. </span><span class="content">WebUSB API</span><a class="self-link" href="#webusb-patch"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑨">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webusb/#dom-usb-getdevices" id="ref-for-dom-usb-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webusb/#dom-usb-requestdevice" id="ref-for-dom-usb-requestdevice">requestDevice()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering①⑨">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://usb.spec.whatwg.org/#dom-usb-getdevices" id="ref-for-dom-usb-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://usb.spec.whatwg.org/#dom-usb-requestdevice" id="ref-for-dom-usb-requestdevice">requestDevice()</a></code>.</p>
    <h4 class="heading settled" data-level="6.4.24" id="web-bluetooth-patch"><span class="secno">6.4.24. </span><span class="content">Web Bluetooth</span><a class="self-link" href="#web-bluetooth-patch"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⓪">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-getdevices" id="ref-for-dom-bluetooth-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-requestdevice" id="ref-for-dom-bluetooth-requestdevice">requestDevice()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②⓪">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://bluetooth.spec.whatwg.org/#dom-bluetooth-getdevices" id="ref-for-dom-bluetooth-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://bluetooth.spec.whatwg.org/#dom-bluetooth-requestdevice" id="ref-for-dom-bluetooth-requestdevice">requestDevice()</a></code>.</p>
    <h4 class="heading settled" data-level="6.4.25" id="webhid-patch"><span class="secno">6.4.25. </span><span class="content">WebHID API</span><a class="self-link" href="#webhid-patch"></a></h4>
-   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②①">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webhid/#dom-hid-getdevices" id="ref-for-dom-hid-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://wicg.github.io/webhid/#dom-hid-requestdevice" id="ref-for-dom-hid-requestdevice">requestDevice()</a></code>.</p>
+   <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②①">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://hid.spec.whatwg.org/#dom-hid-getdevices" id="ref-for-dom-hid-getdevices">getDevices()</a></code> and <code class="idl"><a data-link-type="idl" href="https://hid.spec.whatwg.org/#dom-hid-requestdevice" id="ref-for-dom-hid-requestdevice">requestDevice()</a></code>.</p>
    <h4 class="heading settled" data-level="6.4.26" id="webxr-patch"><span class="secno">6.4.26. </span><span class="content">WebXR Device API</span><a class="self-link" href="#webxr-patch"></a></h4>
    <p>Add <code class="idl"><a data-link-type="idl" href="#extendedattrdef-delaywhileprerendering" id="ref-for-extendedattrdef-delaywhileprerendering②②">[DelayWhilePrerendering]</a></code> to <code class="idl"><a data-link-type="idl" href="https://immersive-web.github.io/webxr/#dom-xrsystem-requestsession" id="ref-for-dom-xrsystem-requestsession">requestSession()</a></code>.</p>
    <h4 class="heading settled" data-level="6.4.27" id="credential-manamgenet-patch"><span class="secno">6.4.27. </span><span class="content">Credential Management</span><a class="self-link" href="#credential-manamgenet-patch"></a></h4>
@@ -2390,6 +2396,12 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="55bf4994">getBattery()</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[BLUETOOTH]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="c5dff7a2">getDevices()</span>
+     <li><span class="dfn-paneled" id="2ecfa365">requestDevice()</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[CLEAR-SITE-DATA]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="90605561">clear site data for response</span>
@@ -2498,6 +2510,12 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="5db91c48">clearWatch(watchId)</span>
      <li><span class="dfn-paneled" id="0a0c7db3">getCurrentPosition()</span>
      <li><span class="dfn-paneled" id="9ee4791f">watchPosition()</span>
+    </ul>
+   <li>
+    <a data-link-type="biblio">[HID]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="147da5de">getDevices()</span>
+     <li><span class="dfn-paneled" id="190a30d9">requestDevice()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HR-TIME-3]</a> defines the following terms:
@@ -2787,12 +2805,6 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="9c5d9c4d">potentially trustworthy URL</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[SERIAL]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="1767a082">getPorts()</span>
-     <li><span class="dfn-paneled" id="67c70582">requestPort()</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[SERVICE-WORKERS]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="fcba80ff">postMessage(message, options)</span>
@@ -2825,6 +2837,12 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="dcffbccd">URL</span>
     </ul>
    <li>
+    <a data-link-type="biblio">[USB]</a> defines the following terms:
+    <ul>
+     <li><span class="dfn-paneled" id="0fee9c7e">getDevices()</span>
+     <li><span class="dfn-paneled" id="d34a92ab">requestDevice(options)</span>
+    </ul>
+   <li>
     <a data-link-type="biblio">[WEB-AUDIO]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="64087201">[[control thread state]]</span>
@@ -2832,12 +2850,6 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="03294253">allowed to start</span>
      <li><span class="dfn-paneled" id="ddf40434">queue a control message</span>
      <li><span class="dfn-paneled" id="caf47a45">running</span>
-    </ul>
-   <li>
-    <a data-link-type="biblio">[WEB-BLUETOOTH]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="082e17af">getDevices()</span>
-     <li><span class="dfn-paneled" id="2239c7c4">requestDevice()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEB-LOCKS]</a> defines the following terms:
@@ -2879,12 +2891,6 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="f27ed005">WebDriver BiDi navigation started</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[WEBHID]</a> defines the following terms:
-    <ul>
-     <li><span class="dfn-paneled" id="839d6e2c">getDevices()</span>
-     <li><span class="dfn-paneled" id="961183e0">requestDevice()</span>
-    </ul>
-   <li>
     <a data-link-type="biblio">[WEBIDL]</a> defines the following terms:
     <ul>
      <li><span class="dfn-paneled" id="dca2de17">DOMException</span>
@@ -2911,10 +2917,10 @@ This would not matter because the node can automatically start when the context 
      <li><span class="dfn-paneled" id="96692103">requestMIDIAccess()</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[WEBUSB]</a> defines the following terms:
+    <a data-link-type="biblio">[WEBSERIAL]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="b06889d5">getDevices()</span>
-     <li><span class="dfn-paneled" id="a13e147b">requestDevice(options)</span>
+     <li><span class="dfn-paneled" id="3399ad4e">getPorts()</span>
+     <li><span class="dfn-paneled" id="9b924eac">requestPort()</span>
     </ul>
    <li>
     <a data-link-type="biblio">[WEBXR]</a> defines the following terms:
@@ -2933,6 +2939,8 @@ This would not matter because the node can automatically start when the context 
    <dd><a href="https://wicg.github.io/background-sync/spec/"><cite>Web Background Synchronization</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/background-sync/spec/">https://wicg.github.io/background-sync/spec/</a>
    <dt id="biblio-battery-status">[BATTERY-STATUS]
    <dd>Anssi Kostiainen. <a href="https://w3c.github.io/battery/"><cite>Battery Status API</cite></a>. URL: <a href="https://w3c.github.io/battery/">https://w3c.github.io/battery/</a>
+   <dt id="biblio-bluetooth">[BLUETOOTH]
+   <dd>Web Bluetooth URL: <a href="https://bluetooth.spec.whatwg.org/">https://bluetooth.spec.whatwg.org/</a>
    <dt id="biblio-clear-site-data">[CLEAR-SITE-DATA]
    <dd>Mike West. <a href="https://w3c.github.io/webappsec-clear-site-data/"><cite>Clear Site Data</cite></a>. URL: <a href="https://w3c.github.io/webappsec-clear-site-data/">https://w3c.github.io/webappsec-clear-site-data/</a>
    <dt id="biblio-client-hints-infrastructure">[CLIENT-HINTS-INFRASTRUCTURE]
@@ -2959,6 +2967,8 @@ This would not matter because the node can automatically start when the context 
    <dd>Rick Waldron. <a href="https://w3c.github.io/sensors/"><cite>Generic Sensor API</cite></a>. URL: <a href="https://w3c.github.io/sensors/">https://w3c.github.io/sensors/</a>
    <dt id="biblio-geolocation">[GEOLOCATION]
    <dd>Marcos Caceres; Reilly Grant. <a href="https://w3c.github.io/geolocation/"><cite>Geolocation</cite></a>. URL: <a href="https://w3c.github.io/geolocation/">https://w3c.github.io/geolocation/</a>
+   <dt id="biblio-hid">[HID]
+   <dd>WebHID Standard URL: <a href="https://hid.spec.whatwg.org/">https://hid.spec.whatwg.org/</a>
    <dt id="biblio-hr-time-3">[HR-TIME-3]
    <dd>Yoav Weiss. <a href="https://w3c.github.io/hr-time/"><cite>High Resolution Time</cite></a>. URL: <a href="https://w3c.github.io/hr-time/">https://w3c.github.io/hr-time/</a>
    <dt id="biblio-html">[HTML]
@@ -2999,8 +3009,6 @@ This would not matter because the node can automatically start when the context 
    <dd>Kenneth Christiansen; Marcos Caceres. <a href="https://w3c.github.io/screen-wake-lock/"><cite>Screen Wake Lock API</cite></a>. URL: <a href="https://w3c.github.io/screen-wake-lock/">https://w3c.github.io/screen-wake-lock/</a>
    <dt id="biblio-secure-contexts">[SECURE-CONTEXTS]
    <dd>Mike West. <a href="https://w3c.github.io/webappsec-secure-contexts/"><cite>Secure Contexts</cite></a>. URL: <a href="https://w3c.github.io/webappsec-secure-contexts/">https://w3c.github.io/webappsec-secure-contexts/</a>
-   <dt id="biblio-serial">[SERIAL]
-   <dd><a href="https://wicg.github.io/serial/"><cite>Web Serial API</cite></a>. Editor's Draft. URL: <a href="https://wicg.github.io/serial/">https://wicg.github.io/serial/</a>
    <dt id="biblio-service-workers">[SERVICE-WORKERS]
    <dd>Monica CHINTALA; Yoshisato Yanagisawa. <a href="https://w3c.github.io/ServiceWorker/"><cite>Service Workers Nightly</cite></a>. URL: <a href="https://w3c.github.io/ServiceWorker/">https://w3c.github.io/ServiceWorker/</a>
    <dt id="biblio-speech-api">[SPEECH-API]
@@ -3009,8 +3017,8 @@ This would not matter because the node can automatically start when the context 
    <dd>Anne van Kesteren. <a href="https://storage.spec.whatwg.org/"><cite>Storage Standard</cite></a>. Living Standard. URL: <a href="https://storage.spec.whatwg.org/">https://storage.spec.whatwg.org/</a>
    <dt id="biblio-url">[URL]
    <dd>Anne van Kesteren. <a href="https://url.spec.whatwg.org/"><cite>URL Standard</cite></a>. Living Standard. URL: <a href="https://url.spec.whatwg.org/">https://url.spec.whatwg.org/</a>
-   <dt id="biblio-web-bluetooth">[WEB-BLUETOOTH]
-   <dd>Jeffrey Yasskin. <a href="https://webbluetoothcg.github.io/web-bluetooth/"><cite>Web Bluetooth</cite></a>. URL: <a href="https://webbluetoothcg.github.io/web-bluetooth/">https://webbluetoothcg.github.io/web-bluetooth/</a>
+   <dt id="biblio-usb">[USB]
+   <dd>WebUSB API URL: <a href="https://usb.spec.whatwg.org/">https://usb.spec.whatwg.org/</a>
    <dt id="biblio-web-locks">[WEB-LOCKS]
    <dd>Kagami Rosylight. <a href="https://w3c.github.io/web-locks/"><cite>Web Locks API</cite></a>. URL: <a href="https://w3c.github.io/web-locks/">https://w3c.github.io/web-locks/</a>
    <dt id="biblio-web-nfc">[WEB-NFC]
@@ -3023,14 +3031,12 @@ This would not matter because the node can automatically start when the context 
    <dd>Daniel Huigens. <a href="https://w3c.github.io/webcrypto/"><cite>Web Cryptography Level 2</cite></a>. URL: <a href="https://w3c.github.io/webcrypto/">https://w3c.github.io/webcrypto/</a>
    <dt id="biblio-webdriver-bidi">[WEBDRIVER-BIDI]
    <dd>James Graham; Alex Rudenko; Maksim Sadym. <a href="https://w3c.github.io/webdriver-bidi/"><cite>WebDriver BiDi</cite></a>. URL: <a href="https://w3c.github.io/webdriver-bidi/">https://w3c.github.io/webdriver-bidi/</a>
-   <dt id="biblio-webhid">[WEBHID]
-   <dd><a href="https://wicg.github.io/webhid/"><cite>WebHID API</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/webhid/">https://wicg.github.io/webhid/</a>
    <dt id="biblio-webidl">[WEBIDL]
    <dd>Edgar Chen; Timothy Gu. <a href="https://webidl.spec.whatwg.org/"><cite>Web IDL Standard</cite></a>. Living Standard. URL: <a href="https://webidl.spec.whatwg.org/">https://webidl.spec.whatwg.org/</a>
    <dt id="biblio-webmidi">[WEBMIDI]
-   <dd>Chris Wilson; Michael Wilson. <a href="https://webaudio.github.io/web-midi-api/"><cite>Web MIDI API</cite></a>. URL: <a href="https://webaudio.github.io/web-midi-api/">https://webaudio.github.io/web-midi-api/</a>
-   <dt id="biblio-webusb">[WEBUSB]
-   <dd><a href="https://wicg.github.io/webusb/"><cite>WebUSB API</cite></a>. Draft Community Group Report. URL: <a href="https://wicg.github.io/webusb/">https://wicg.github.io/webusb/</a>
+   <dd>Michael Wilson. <a href="https://webaudio.github.io/web-midi-api/"><cite>Web MIDI API</cite></a>. URL: <a href="https://webaudio.github.io/web-midi-api/">https://webaudio.github.io/web-midi-api/</a>
+   <dt id="biblio-webserial">[WEBSERIAL]
+   <dd>Reilly Grant. <a href="https://serial.spec.whatwg.org/"><cite>WebSerial Standard</cite></a>. Living Standard. URL: <a href="https://serial.spec.whatwg.org/">https://serial.spec.whatwg.org/</a>
    <dt id="biblio-webxr">[WEBXR]
    <dd>Brandon Jones; Manish Goregaokar; Rik Cabanier. <a href="https://immersive-web.github.io/webxr/"><cite>WebXR Device API</cite></a>. URL: <a href="https://immersive-web.github.io/webxr/">https://immersive-web.github.io/webxr/</a>
   </dl>
@@ -3268,7 +3274,6 @@ let dfnPanelData = {
 "07991385": {"dfnID":"07991385","dfnText":"append session history traversal steps","external":true,"refSections":[{"refs":[{"id":"ref-for-tn-append-session-history-traversal-steps"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#tn-append-session-history-traversal-steps"},
 "07ad3048": {"dfnID":"07ad3048","dfnText":"create navigation params by fetching","external":true,"refSections":[{"refs":[{"id":"ref-for-create-navigation-params-by-fetching"}],"title":"3.2. Navigation fetch changes"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#create-navigation-params-by-fetching"},
 "07bd1803": {"dfnID":"07bd1803","dfnText":"return type","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-return-type"},{"id":"ref-for-dfn-return-type\u2460"}],"title":"6.4.1. The [DelayWhilePrerendering] extended attribute"}],"url":"https://webidl.spec.whatwg.org/#dfn-return-type"},
-"082e17af": {"dfnID":"082e17af","dfnText":"getDevices()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-bluetooth-getdevices"}],"title":"6.4.24. Web Bluetooth"}],"url":"https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-getdevices"},
 "086e3aff": {"dfnID":"086e3aff","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-origin"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-concept-origin\u2460"},{"id":"ref-for-concept-origin\u2461"}],"title":"4.4. Interaction with Client Hint Cache"},{"refs":[{"id":"ref-for-concept-origin\u2462"}],"title":"4.5. Interaction with Clear Site Data"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin"},
 "08aa1844": {"dfnID":"08aa1844","dfnText":"speculative load candidate","external":true,"refSections":[{"refs":[{"id":"ref-for-speculative-load-candidate"}],"title":"1.2. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/speculative-loading.html#speculative-load-candidate"},
 "08b27354": {"dfnID":"08b27354","dfnText":"resume()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-speechsynthesis-resume"}],"title":"6.4.28. Web Speech API"}],"url":"https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-resume"},
@@ -3279,6 +3284,7 @@ let dfnPanelData = {
 "0e3ba9f8": {"dfnID":"0e3ba9f8","dfnText":"fully active","external":true,"refSections":[{"refs":[{"id":"ref-for-fully-active"}],"title":"3.4. Interaction with worker lifetime"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#fully-active"},
 "0e6b2056": {"dfnID":"0e6b2056","dfnText":"set","external":true,"refSections":[{"refs":[{"id":"ref-for-map-set"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-map-set\u2460"},{"id":"ref-for-map-set\u2461"}],"title":"4.4. Interaction with Client Hint Cache"}],"url":"https://infra.spec.whatwg.org/#map-set"},
 "0fcfef4a": {"dfnID":"0fcfef4a","dfnText":"AudioBufferSourceNode","external":true,"refSections":[{"refs":[{"id":"ref-for-AudioBufferSourceNode"}],"title":"6.4.17. Web Audio API"}],"url":"https://webaudio.github.io/web-audio-api/#AudioBufferSourceNode"},
+"0fee9c7e": {"dfnID":"0fee9c7e","dfnText":"getDevices()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-usb-getdevices"}],"title":"6.4.23. WebUSB API"}],"url":"https://usb.spec.whatwg.org/#dom-usb-getdevices"},
 "100523d5": {"dfnID":"100523d5","dfnText":"request()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-wakelock-request"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://w3c.github.io/screen-wake-lock/#dom-wakelock-request"},
 "101c721c": {"dfnID":"101c721c","dfnText":"active window","external":true,"refSections":[{"refs":[{"id":"ref-for-nav-window"},{"id":"ref-for-nav-window\u2460"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-nav-window\u2461"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-window"},
 "10311302": {"dfnID":"10311302","dfnText":"fire a push/replace/reload navigate event","external":true,"refSections":[{"refs":[{"id":"ref-for-fire-a-push/replace/reload-navigate-event"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#fire-a-push/replace/reload-navigate-event"},
@@ -3290,11 +3296,12 @@ let dfnPanelData = {
 "1243a891": {"dfnID":"1243a891","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"}],"title":"1.1. Parsing"},{"refs":[{"id":"ref-for-map-exists\u2460"}],"title":"4.4. Interaction with Client Hint Cache"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
 "124a994b": {"dfnID":"124a994b","dfnText":"system focus","external":true,"refSections":[{"refs":[{"id":"ref-for-system-focus"}],"title":"4.2. Interaction with system focus"},{"refs":[{"id":"ref-for-system-focus\u2460"},{"id":"ref-for-system-focus\u2461"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://html.spec.whatwg.org/multipage/interaction.html#system-focus"},
 "13dd6cae": {"dfnID":"13dd6cae","dfnText":"node navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-node-navigable"}],"title":"1.2. Processing model"},{"refs":[{"id":"ref-for-node-navigable\u2460"}],"title":"2.2. Prerendering navigables"},{"refs":[{"id":"ref-for-node-navigable\u2461"},{"id":"ref-for-node-navigable\u2462"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-node-navigable\u2463"}],"title":"2.4. Modifications to creating navigables"},{"refs":[{"id":"ref-for-node-navigable\u2464"}],"title":"3.4. Interaction with worker lifetime"},{"refs":[{"id":"ref-for-node-navigable\u2465"}],"title":"6.2. Downloading resources"},{"refs":[{"id":"ref-for-node-navigable\u2466"}],"title":"6.4.5. Web Serial API"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#node-navigable"},
+"147da5de": {"dfnID":"147da5de","dfnText":"getDevices()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-hid-getdevices"}],"title":"6.4.25. WebHID API"}],"url":"https://hid.spec.whatwg.org/#dom-hid-getdevices"},
 "1565d481": {"dfnID":"1565d481","dfnText":"attempt to populate the history entry's document","external":true,"refSections":[{"refs":[{"id":"ref-for-attempt-to-populate-the-history-entry's-document"}],"title":"3.2. Navigation fetch changes"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#attempt-to-populate-the-history-entry's-document"},
 "168f1b6e": {"dfnID":"168f1b6e","dfnText":"global object (for realm)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-realm-global"}],"title":"6.4.1. The [DelayWhilePrerendering] extended attribute"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#concept-realm-global"},
 "16d07e10": {"dfnID":"16d07e10","dfnText":"for each (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-iterate"},{"id":"ref-for-list-iterate\u2460"},{"id":"ref-for-list-iterate\u2461"},{"id":"ref-for-list-iterate\u2462"},{"id":"ref-for-list-iterate\u2463"},{"id":"ref-for-list-iterate\u2464"}],"title":"1.2. Processing model"},{"refs":[{"id":"ref-for-list-iterate\u2465"},{"id":"ref-for-list-iterate\u2466"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-list-iterate\u2467"},{"id":"ref-for-list-iterate\u2468"}],"title":"3.1. Allowing activation in place of navigation"},{"refs":[{"id":"ref-for-list-iterate\u2460\u24ea"},{"id":"ref-for-list-iterate\u2460\u2460"},{"id":"ref-for-list-iterate\u2460\u2461"}],"title":"4.5. Interaction with Clear Site Data"}],"url":"https://infra.spec.whatwg.org/#list-iterate"},
-"1767a082": {"dfnID":"1767a082","dfnText":"getPorts()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-serial-getports"}],"title":"6.4.5. Web Serial API"}],"url":"https://wicg.github.io/serial/#dom-serial-getports"},
 "18ed861a": {"dfnID":"18ed861a","dfnText":"request(name, callback)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-lockmanager-request"}],"title":"6.4.29. Web Locks API"}],"url":"https://w3c.github.io/web-locks/#dom-lockmanager-request"},
+"190a30d9": {"dfnID":"190a30d9","dfnText":"requestDevice()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-hid-requestdevice"}],"title":"6.4.25. WebHID API"}],"url":"https://hid.spec.whatwg.org/#dom-hid-requestdevice"},
 "19725961": {"dfnID":"19725961","dfnText":"regular operation","external":true,"refSections":[{"refs":[{"id":"ref-for-dfn-regular-operation"},{"id":"ref-for-dfn-regular-operation\u2460"}],"title":"6.4.1. The [DelayWhilePrerendering] extended attribute"}],"url":"https://webidl.spec.whatwg.org/#dfn-regular-operation"},
 "1ae60107": {"dfnID":"1ae60107","dfnText":"response","external":true,"refSections":[{"refs":[{"id":"ref-for-navigation-params-response"},{"id":"ref-for-navigation-params-response\u2460"},{"id":"ref-for-navigation-params-response\u2461"},{"id":"ref-for-navigation-params-response\u2462"}],"title":"3.2. Navigation fetch changes"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-response"},
 "1b1da154": {"dfnID":"1b1da154","dfnText":"active needed worker","external":true,"refSections":[{"refs":[{"id":"ref-for-active-needed-worker"},{"id":"ref-for-active-needed-worker\u2460"},{"id":"ref-for-active-needed-worker\u2461"},{"id":"ref-for-active-needed-worker\u2462"}],"title":"3.4. Interaction with worker lifetime"}],"url":"https://html.spec.whatwg.org/multipage/workers.html#active-needed-worker"},
@@ -3303,7 +3310,6 @@ let dfnPanelData = {
 "1e542ed3": {"dfnID":"1e542ed3","dfnText":"obtain a URL search variance","external":true,"refSections":[{"refs":[{"id":"ref-for-name-obtain-a-url-search-varianc"}],"title":"3.2. Navigation fetch changes"}],"url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#name-obtain-a-url-search-varianc"},
 "220e841a": {"dfnID":"220e841a","dfnText":"URL and history update steps","external":true,"refSections":[{"refs":[{"id":"ref-for-url-and-history-update-steps"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-url-and-history-update-steps\u2460"}],"title":"3.3. Maintaining a trivial session history"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#url-and-history-update-steps"},
 "2230aff6": {"dfnID":"2230aff6","dfnText":"cannot show simple dialogs","external":true,"refSections":[{"refs":[{"id":"ref-for-cannot-show-simple-dialogs"}],"title":"6.3. User prompts"}],"url":"https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#cannot-show-simple-dialogs"},
-"2239c7c4": {"dfnID":"2239c7c4","dfnText":"requestDevice()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-bluetooth-requestdevice"}],"title":"6.4.24. Web Bluetooth"}],"url":"https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-requestdevice"},
 "228be966": {"dfnID":"228be966","dfnText":"navigable (for Window)","external":true,"refSections":[{"refs":[{"id":"ref-for-window-navigable"},{"id":"ref-for-window-navigable\u2460"}],"title":"4.4. Interaction with Client Hint Cache"},{"refs":[{"id":"ref-for-window-navigable\u2461"}],"title":"4.6. Interaction with Fetch"},{"refs":[{"id":"ref-for-window-navigable\u2462"},{"id":"ref-for-window-navigable\u2463"}],"title":"6.3. User prompts"},{"refs":[{"id":"ref-for-window-navigable\u2464"}],"title":"6.4.1. The [DelayWhilePrerendering] extended attribute"},{"refs":[{"id":"ref-for-window-navigable\u2465"},{"id":"ref-for-window-navigable\u2466"},{"id":"ref-for-window-navigable\u2467"}],"title":"6.4.4. Geolocation API"},{"refs":[{"id":"ref-for-window-navigable\u2468"},{"id":"ref-for-window-navigable\u2460\u24ea"}],"title":"6.4.6. Notifications API"},{"refs":[{"id":"ref-for-window-navigable\u2460\u2460"}],"title":"6.4.9. Generic Sensor API"},{"refs":[{"id":"ref-for-window-navigable\u2460\u2461"}],"title":"6.4.11. Battery Status API"},{"refs":[{"id":"ref-for-window-navigable\u2460\u2462"}],"title":"6.4.12. Screen Orientation API"},{"refs":[{"id":"ref-for-window-navigable\u2460\u2463"},{"id":"ref-for-window-navigable\u2460\u2464"}],"title":"6.4.13. Gamepad"},{"refs":[{"id":"ref-for-window-navigable\u2460\u2465"}],"title":"6.4.16. Media Capture and Streams"},{"refs":[{"id":"ref-for-window-navigable\u2460\u2466"},{"id":"ref-for-window-navigable\u2460\u2467"}],"title":"6.4.30. Custom Scheme Handlers"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#window-navigable"},
 "22bab20d": {"dfnID":"22bab20d","dfnText":"fetch(id, requests)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-backgroundfetchmanager-fetch"}],"title":"6.4.20. Background Fetch"}],"url":"https://wicg.github.io/background-fetch/#dom-backgroundfetchmanager-fetch"},
 "2594e562": {"dfnID":"2594e562","dfnText":"navigate","external":true,"refSections":[{"refs":[{"id":"ref-for-navigate"},{"id":"ref-for-navigate\u2460"},{"id":"ref-for-navigate\u2461"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-navigate\u2462"},{"id":"ref-for-navigate\u2463"}],"title":"3.1. Allowing activation in place of navigation"},{"refs":[{"id":"ref-for-navigate\u2464"}],"title":"3.3. Maintaining a trivial session history"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate"},
@@ -3316,6 +3322,7 @@ let dfnPanelData = {
 "2acaad68": {"dfnID":"2acaad68","dfnText":"prefetch candidate","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-candidate"}],"title":"1.2. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/speculative-loading.html#prefetch-candidate"},
 "2c95c4a9": {"dfnID":"2c95c4a9","dfnText":"registerProtocolHandler(scheme, url)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-navigator-registerprotocolhandler"}],"title":"6.4.30. Custom Scheme Handlers"}],"url":"https://html.spec.whatwg.org/multipage/system-state.html#dom-navigator-registerprotocolhandler"},
 "2e493c47": {"dfnID":"2e493c47","dfnText":"Cross-Origin-Opener-Policy","external":true,"refSections":[{"refs":[{"id":"ref-for-cross-origin-opener-policy-2"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/browsers.html#cross-origin-opener-policy-2"},
+"2ecfa365": {"dfnID":"2ecfa365","dfnText":"requestDevice()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-bluetooth-requestdevice"}],"title":"6.4.24. Web Bluetooth"}],"url":"https://bluetooth.spec.whatwg.org/#dom-bluetooth-requestdevice"},
 "2ed109ef": {"dfnID":"2ed109ef","dfnText":"start(when)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-audioscheduledsourcenode-start"}],"title":"6.4.17. Web Audio API"}],"url":"https://webaudio.github.io/web-audio-api/#dom-audioscheduledsourcenode-start"},
 "2ef14d2e": {"dfnID":"2ef14d2e","dfnText":"nodes","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-node"}],"title":"2.2. Prerendering navigables"}],"url":"https://dom.spec.whatwg.org/#concept-node"},
 "30717154": {"dfnID":"30717154","dfnText":"top-level traversable (for navigable)","external":true,"refSections":[{"refs":[{"id":"ref-for-nav-top"},{"id":"ref-for-nav-top\u2460"}],"title":"3.2. Navigation fetch changes"},{"refs":[{"id":"ref-for-nav-top\u2461"}],"title":"4.5. Interaction with Clear Site Data"},{"refs":[{"id":"ref-for-nav-top\u2462"}],"title":"6.4. Delaying async API results"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-top"},
@@ -3325,6 +3332,7 @@ let dfnPanelData = {
 "31e1c2ad": {"dfnID":"31e1c2ad","dfnText":"store()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-credentialscontainer-store"}],"title":"6.4.27. Credential Management"}],"url":"https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-store"},
 "3268a8eb": {"dfnID":"3268a8eb","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-url"}],"title":"4.5. Interaction with Clear Site Data"}],"url":"https://fetch.spec.whatwg.org/#concept-response-url"},
 "3349d69f": {"dfnID":"3349d69f","dfnText":"associated Document","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-window"}],"title":"2.2. Prerendering navigables"},{"refs":[{"id":"ref-for-concept-document-window\u2460"}],"title":"4.3. Extensions to the PerformanceNavigationTiming interface"},{"refs":[{"id":"ref-for-concept-document-window\u2461"}],"title":"6.4.5. Web Serial API"}],"url":"https://html.spec.whatwg.org/multipage/nav-history-apis.html#concept-document-window"},
+"3399ad4e": {"dfnID":"3399ad4e","dfnText":"getPorts()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-serial-getports"}],"title":"6.4.5. Web Serial API"}],"url":"https://serial.spec.whatwg.org/#dom-serial-getports"},
 "347e8fe9": {"dfnID":"347e8fe9","dfnText":"URL","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-url"}],"title":"2.3. Prerender algorithms"}],"url":"https://dom.spec.whatwg.org/#concept-document-url"},
 "34ce7bcd": {"dfnID":"34ce7bcd","dfnText":"session history entry","external":true,"refSections":[{"refs":[{"id":"ref-for-session-history-entry"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#session-history-entry"},
 "35972864": {"dfnID":"35972864","dfnText":"active document","external":true,"refSections":[{"refs":[{"id":"ref-for-nav-document"},{"id":"ref-for-nav-document\u2460"},{"id":"ref-for-nav-document\u2461"},{"id":"ref-for-nav-document\u2462"},{"id":"ref-for-nav-document\u2463"},{"id":"ref-for-nav-document\u2464"},{"id":"ref-for-nav-document\u2465"},{"id":"ref-for-nav-document\u2466"},{"id":"ref-for-nav-document\u2467"},{"id":"ref-for-nav-document\u2468"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-nav-document\u2460\u24ea"},{"id":"ref-for-nav-document\u2460\u2460"},{"id":"ref-for-nav-document\u2460\u2461"},{"id":"ref-for-nav-document\u2460\u2462"}],"title":"3.1. Allowing activation in place of navigation"},{"refs":[{"id":"ref-for-nav-document\u2460\u2463"}],"title":"3.2. Navigation fetch changes"},{"refs":[{"id":"ref-for-nav-document\u2460\u2464"},{"id":"ref-for-nav-document\u2460\u2465"}],"title":"4.5. Interaction with Clear Site Data"},{"refs":[{"id":"ref-for-nav-document\u2460\u2466"}],"title":"6.1. Pausing script execution"},{"refs":[{"id":"ref-for-nav-document\u2460\u2467"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#nav-document"},
@@ -3397,7 +3405,6 @@ let dfnPanelData = {
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"},{"id":"ref-for-list\u2460"}],"title":"1.1. Parsing"},{"refs":[{"id":"ref-for-list\u2461"}],"title":"1.2. Processing model"},{"refs":[{"id":"ref-for-list\u2462"}],"title":"2.2. Prerendering navigables"},{"refs":[{"id":"ref-for-list\u2463"}],"title":"3.1. Allowing activation in place of navigation"},{"refs":[{"id":"ref-for-list\u2464"}],"title":"5. The `Supports-Loading-Mode` HTTP response header"}],"url":"https://infra.spec.whatwg.org/#list"},
 "65181da8": {"dfnID":"65181da8","dfnText":"secure context","external":true,"refSections":[{"refs":[{"id":"ref-for-secure-context"}],"title":"6.4.13. Gamepad"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
 "65393af9": {"dfnID":"65393af9","dfnText":"document","external":true,"refSections":[{"refs":[{"id":"ref-for-she-document"},{"id":"ref-for-she-document\u2460"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#she-document"},
-"67c70582": {"dfnID":"67c70582","dfnText":"requestPort()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-serial-requestport"}],"title":"6.4.5. Web Serial API"}],"url":"https://wicg.github.io/serial/#dom-serial-requestport"},
 "68bf3d31": {"dfnID":"68bf3d31","dfnText":"a","external":true,"refSections":[{"refs":[{"id":"ref-for-the-a-element"}],"title":"1.3. Triggering"}],"url":"https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-a-element"},
 "693b6384": {"dfnID":"693b6384","dfnText":"navigable (for navigation params)","external":true,"refSections":[{"refs":[{"id":"ref-for-navigation-params-navigable"}],"title":"3.2. Navigation fetch changes"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigation-params-navigable"},
 "6a75b46b": {"dfnID":"6a75b46b","dfnText":"create or override the cached client hints set","external":true,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-create-or-override-the-cached-client-hints-set"}],"title":"4.4. Interaction with Client Hint Cache"}],"url":"https://wicg.github.io/client-hints-infrastructure#abstract-opdef-create-or-override-the-cached-client-hints-set"},
@@ -3432,7 +3439,6 @@ let dfnPanelData = {
 "7f118064": {"dfnID":"7f118064","dfnText":"finalize a cross-document navigation","external":true,"refSections":[{"refs":[{"id":"ref-for-finalize-a-cross-document-navigation"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/browsing-the-web.html#finalize-a-cross-document-navigation"},
 "7f3b9a3d": {"dfnID":"7f3b9a3d","dfnText":"start time","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-start-time"}],"title":"3.1. Allowing activation in place of navigation"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-start-time"},
 "833d2200": {"dfnID":"833d2200","dfnText":"print()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-print"}],"title":"6.3. User prompts"}],"url":"https://html.spec.whatwg.org/multipage/timers-and-user-prompts.html#dom-print"},
-"839d6e2c": {"dfnID":"839d6e2c","dfnText":"getDevices()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-hid-getdevices"}],"title":"6.4.25. WebHID API"}],"url":"https://wicg.github.io/webhid/#dom-hid-getdevices"},
 "84b454ff": {"dfnID":"84b454ff","dfnText":"ordered map","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-map"}],"title":"4.4. Interaction with Client Hint Cache"}],"url":"https://infra.spec.whatwg.org/#ordered-map"},
 "85394472": {"dfnID":"85394472","dfnText":"Document","external":true,"refSections":[{"refs":[{"id":"ref-for-document"},{"id":"ref-for-document\u2460"},{"id":"ref-for-document\u2461"}],"title":"2.1. Extensions to the Document interface"},{"refs":[{"id":"ref-for-document\u2462"},{"id":"ref-for-document\u2463"},{"id":"ref-for-document\u2464"},{"id":"ref-for-document\u2465"}],"title":"2.2. Prerendering navigables"},{"refs":[{"id":"ref-for-document\u2466"},{"id":"ref-for-document\u2467"},{"id":"ref-for-document\u2468"},{"id":"ref-for-document\u2460\u24ea"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-document\u2460\u2460"}],"title":"3.1. Allowing activation in place of navigation"},{"refs":[{"id":"ref-for-document\u2460\u2461"}],"title":"3.4. Interaction with worker lifetime"},{"refs":[{"id":"ref-for-document\u2460\u2462"},{"id":"ref-for-document\u2460\u2463"}],"title":"3.5. Cleanup upon discarding a Document"},{"refs":[{"id":"ref-for-document\u2460\u2464"}],"title":"6.4.13. Gamepad"},{"refs":[{"id":"ref-for-document\u2460\u2465"}],"title":"6.4.15. Media Autoplay"}],"url":"https://dom.spec.whatwg.org/#document"},
 "857d5516": {"dfnID":"857d5516","dfnText":"client","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-client"}],"title":"4.6. Interaction with Fetch"}],"url":"https://fetch.spec.whatwg.org/#concept-request-client"},
@@ -3451,7 +3457,6 @@ let dfnPanelData = {
 "91ad6459": {"dfnID":"91ad6459","dfnText":"cancel()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-speechsynthesis-cancel"}],"title":"6.4.28. Web Speech API"}],"url":"https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-cancel"},
 "928a0e65": {"dfnID":"928a0e65","dfnText":"structured header","external":true,"refSections":[{"refs":[{"id":"ref-for-section-1"}],"title":"5. The `Supports-Loading-Mode` HTTP response header"}],"url":"https://www.rfc-editor.org/rfc/rfc8941.html#section-1"},
 "959ad97b": {"dfnID":"959ad97b","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-url-origin"},{"id":"ref-for-concept-url-origin\u2460"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-concept-url-origin\u2461"}],"title":"3.2. Navigation fetch changes"},{"refs":[{"id":"ref-for-concept-url-origin\u2462"}],"title":"4.5. Interaction with Clear Site Data"}],"url":"https://url.spec.whatwg.org/#concept-url-origin"},
-"961183e0": {"dfnID":"961183e0","dfnText":"requestDevice()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-hid-requestdevice"}],"title":"6.4.25. WebHID API"}],"url":"https://wicg.github.io/webhid/#dom-hid-requestdevice"},
 "96692103": {"dfnID":"96692103","dfnText":"requestMIDIAccess()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-navigator-requestmidiaccess"}],"title":"6.4.7. Web MIDI API"}],"url":"https://webaudio.github.io/web-midi-api/#dom-navigator-requestmidiaccess"},
 "97c2bf8a": {"dfnID":"97c2bf8a","dfnText":"lock()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-keyboard-lock"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://wicg.github.io/keyboard-lock/#dom-keyboard-lock"},
 "980528b0": {"dfnID":"980528b0","dfnText":"HTTP-network-or-cache fetch","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-http-network-or-cache-fetch"}],"title":"4.6. Interaction with Fetch"}],"url":"https://fetch.spec.whatwg.org/#concept-http-network-or-cache-fetch"},
@@ -3464,6 +3469,7 @@ let dfnPanelData = {
 "9b3ccdfd": {"dfnID":"9b3ccdfd","dfnText":"scan()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-ndefreader-scan"}],"title":"6.4.10. Web NFC"}],"url":"https://w3c-cg.github.io/web-nfc/#dom-ndefreader-scan"},
 "9b5830c5": {"dfnID":"9b5830c5","dfnText":"default URL search variance","external":true,"refSections":[{"refs":[{"id":"ref-for-iref-default-url-search-variance"}],"title":"2.3. Prerender algorithms"}],"url":"https://httpwg.org/http-extensions/draft-ietf-httpbis-no-vary-search.html#iref-default-url-search-variance"},
 "9b650163": {"dfnID":"9b650163","dfnText":"No-Vary-Search hint (for speculation rule)","external":true,"refSections":[{"refs":[{"id":"ref-for-sr-nvs-hint"},{"id":"ref-for-sr-nvs-hint\u2460"}],"title":"1.2. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/speculative-loading.html#sr-nvs-hint"},
+"9b924eac": {"dfnID":"9b924eac","dfnText":"requestPort()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-serial-requestport"}],"title":"6.4.5. Web Serial API"}],"url":"https://serial.spec.whatwg.org/#dom-serial-requestport"},
 "9c19b7fc": {"dfnID":"9c19b7fc","dfnText":"navigable","external":true,"refSections":[{"refs":[{"id":"ref-for-navigable"},{"id":"ref-for-navigable\u2460"},{"id":"ref-for-navigable\u2461"},{"id":"ref-for-navigable\u2462"}],"title":"2.2. Prerendering navigables"},{"refs":[{"id":"ref-for-navigable\u2463"}],"title":"3.1. Allowing activation in place of navigation"},{"refs":[{"id":"ref-for-navigable\u2464"}],"title":"6.1. Pausing script execution"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#navigable"},
 "9c4c1e66": {"dfnID":"9c4c1e66","dfnText":"relevant settings object","external":true,"refSections":[{"refs":[{"id":"ref-for-relevant-settings-object"}],"title":"6.4.13. Gamepad"},{"refs":[{"id":"ref-for-relevant-settings-object\u2460"},{"id":"ref-for-relevant-settings-object\u2461"}],"title":"6.4.30. Custom Scheme Handlers"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#relevant-settings-object"},
 "9c5d9c4d": {"dfnID":"9c5d9c4d","dfnText":"potentially trustworthy URL","external":true,"refSections":[{"refs":[{"id":"ref-for-potentially-trustworthy-url"}],"title":"3.2. Navigation fetch changes"}],"url":"https://w3c.github.io/webappsec-secure-contexts/#potentially-trustworthy-url"},
@@ -3473,7 +3479,6 @@ let dfnPanelData = {
 "9ed4546c": {"dfnID":"9ed4546c","dfnText":"register(scriptURL, options)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-serviceworkercontainer-register"}],"title":"6.4.2. Service Workers"}],"url":"https://w3c.github.io/ServiceWorker/#dom-serviceworkercontainer-register"},
 "9ee4791f": {"dfnID":"9ee4791f","dfnText":"watchPosition()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-geolocation-watchposition"}],"title":"6.4.4. Geolocation API"}],"url":"https://w3c.github.io/geolocation/#dom-geolocation-watchposition"},
 "a01d649b": {"dfnID":"a01d649b","dfnText":"showOpenFilePicker()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-window-showopenfilepicker"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://wicg.github.io/file-system-access/#dom-window-showopenfilepicker"},
-"a13e147b": {"dfnID":"a13e147b","dfnText":"requestDevice(options)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-usb-requestdevice"}],"title":"6.4.23. WebUSB API"}],"url":"https://wicg.github.io/webusb/#dom-usb-requestdevice"},
 "a1a807e5": {"dfnID":"a1a807e5","dfnText":"area","external":true,"refSections":[{"refs":[{"id":"ref-for-the-area-element"}],"title":"1.3. Triggering"}],"url":"https://html.spec.whatwg.org/multipage/image-maps.html#the-area-element"},
 "a1d47575": {"dfnID":"a1d47575","dfnText":"status","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-response-status"}],"title":"3.2. Navigation fetch changes"}],"url":"https://fetch.spec.whatwg.org/#concept-response-status"},
 "a253f84c": {"dfnID":"a253f84c","dfnText":"is expected to match a URL","external":true,"refSections":[{"refs":[{"id":"ref-for-prefetch-record-is-expected-to-match-a-url"}],"title":"3.1. Allowing activation in place of navigation"}],"url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-is-expected-to-match-a-url"},
@@ -3488,7 +3493,6 @@ let dfnPanelData = {
 "ab86e0f1": {"dfnID":"ab86e0f1","dfnText":"show()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-paymentrequest-show"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://w3c.github.io/payment-request/#dom-paymentrequest-show"},
 "ad5c87c1": {"dfnID":"ad5c87c1","dfnText":"current session history step","external":true,"refSections":[{"refs":[{"id":"ref-for-tn-current-session-history-step"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/document-sequences.html#tn-current-session-history-step"},
 "ae8def21": {"dfnID":"ae8def21","dfnText":"contain","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"},{"id":"ref-for-list-contain\u2460"}],"title":"3.2. Navigation fetch changes"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
-"b06889d5": {"dfnID":"b06889d5","dfnText":"getDevices()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-usb-getdevices"}],"title":"6.4.23. WebUSB API"}],"url":"https://wicg.github.io/webusb/#dom-usb-getdevices"},
 "b0f5bc03": {"dfnID":"b0f5bc03","dfnText":"create()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-credentialscontainer-create"}],"title":"6.4.27. Credential Management"}],"url":"https://w3c.github.io/webappsec-credential-management/#dom-credentialscontainer-create"},
 "b1e9d95c": {"dfnID":"b1e9d95c","dfnText":"getUserMedia() (for Navigator)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-navigator-getusermedia"}],"title":"6.4.16. Media Capture and Streams"}],"url":"https://www.w3.org/TR/mediacapture-streams/#dom-navigator-getusermedia"},
 "b262501e": {"dfnID":"b262501e","dfnText":"reject","external":true,"refSections":[{"refs":[{"id":"ref-for-reject"},{"id":"ref-for-reject\u2460"}],"title":"6.4.12. Screen Orientation API"}],"url":"https://webidl.spec.whatwg.org/#reject"},
@@ -3512,6 +3516,7 @@ let dfnPanelData = {
 "c464e7b6": {"dfnID":"c464e7b6","dfnText":"MediaDevices","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-mediadevices"}],"title":"6.4.16. Media Capture and Streams"}],"url":"https://w3c.github.io/mediacapture-main/#dom-mediadevices"},
 "c53cc156": {"dfnID":"c53cc156","dfnText":"update the client hints set from cache","external":true,"refSections":[{"refs":[{"id":"ref-for-update-the-client-hints-set-from-cache"}],"title":"4.4. Interaction with Client Hint Cache"}],"url":"https://wicg.github.io/client-hints-infrastructure#update-the-client-hints-set-from-cache"},
 "c5d508d9": {"dfnID":"c5d508d9","dfnText":"subscribe()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-pushmanager-subscribe"}],"title":"6.4.19. Push API"}],"url":"https://w3c.github.io/push-api/#dom-pushmanager-subscribe"},
+"c5dff7a2": {"dfnID":"c5dff7a2","dfnText":"getDevices()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-bluetooth-getdevices"}],"title":"6.4.24. Web Bluetooth"}],"url":"https://bluetooth.spec.whatwg.org/#dom-bluetooth-getdevices"},
 "c62cd7cf": {"dfnID":"c62cd7cf","dfnText":"origin","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-document-origin"},{"id":"ref-for-concept-document-origin\u2460"},{"id":"ref-for-concept-document-origin\u2461"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-concept-document-origin\u2462"}],"title":"4.5. Interaction with Clear Site Data"}],"url":"https://dom.spec.whatwg.org/#concept-document-origin"},
 "c6d19e56": {"dfnID":"c6d19e56","dfnText":"event loop","external":true,"refSections":[{"refs":[{"id":"ref-for-event-loop"}],"title":"2.3. Prerender algorithms"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#event-loop"},
 "c7c0dde1": {"dfnID":"c7c0dde1","dfnText":"url (for HTMLHyperlinkElementUtils)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-hyperlink-url"}],"title":"1.2. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/links.html#concept-hyperlink-url"},
@@ -3528,6 +3533,7 @@ let dfnPanelData = {
 "d0e24766": {"dfnID":"d0e24766","dfnText":"prerendering traversable","external":true,"refSections":[{"refs":[{"id":"ref-for-prerendering-traversable"}],"title":"1.2. Processing model"},{"refs":[{"id":"ref-for-prerendering-traversable\u2461"},{"id":"ref-for-prerendering-traversable\u2462"},{"id":"ref-for-prerendering-traversable\u2464"},{"id":"ref-for-prerendering-traversable\u2465"}],"title":"2.3. Prerender algorithms"},{"refs":[{"id":"ref-for-prerendering-traversable\u2460\u2463"},{"id":"ref-for-prerendering-traversable\u2460\u2465"},{"id":"ref-for-prerendering-traversable\u2460\u2467"},{"id":"ref-for-prerendering-traversable\u2461\u24ea"},{"id":"ref-for-prerendering-traversable\u2461\u2460"},{"id":"ref-for-prerendering-traversable\u2461\u2461"},{"id":"ref-for-prerendering-traversable\u2461\u2463"}],"title":"3.1. Allowing activation in place of navigation"},{"refs":[{"id":"ref-for-prerendering-traversable\u2461\u2466"}],"title":"4.5. Interaction with Clear Site Data"}],"url":"prefetch.html#prerendering-traversable"},
 "d1a6c008": {"dfnID":"d1a6c008","dfnText":"attribute change steps","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-element-attributes-change-ext"}],"title":"1.3. Triggering"}],"url":"https://dom.spec.whatwg.org/#concept-element-attributes-change-ext"},
 "d2e8c0f5": {"dfnID":"d2e8c0f5","dfnText":"pause()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-speechsynthesis-pause"}],"title":"6.4.28. Web Speech API"}],"url":"https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-pause"},
+"d34a92ab": {"dfnID":"d34a92ab","dfnText":"requestDevice(options)","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-usb-requestdevice"}],"title":"6.4.23. WebUSB API"}],"url":"https://usb.spec.whatwg.org/#dom-usb-requestdevice"},
 "d5b28105": {"dfnID":"d5b28105","dfnText":"find matching links","external":true,"refSections":[{"refs":[{"id":"ref-for-find-matching-links"}],"title":"1.2. Processing model"}],"url":"https://html.spec.whatwg.org/multipage/speculative-loading.html#find-matching-links"},
 "d7ee77de": {"dfnID":"d7ee77de","dfnText":"showDirectoryPicker()","external":true,"refSections":[{"refs":[{"id":"ref-for-dom-window-showdirectorypicker"}],"title":"6.5. Implicitly restricted APIs"}],"url":"https://wicg.github.io/file-system-access/#dom-window-showdirectorypicker"},
 "d899aea4": {"dfnID":"d899aea4","dfnText":"destroy","external":true,"refSections":[{"refs":[{"id":"ref-for-destroy-a-document"}],"title":"3.5. Cleanup upon discarding a Document"}],"url":"https://html.spec.whatwg.org/multipage/document-lifecycle.html#destroy-a-document"},
@@ -3618,16 +3624,6 @@ let dfnPanelData = {
 
 document.addEventListener("DOMContentLoaded", ()=>{
     genAllDfnPanels();
-
-    document.body.addEventListener("click", (e) => {
-        // If not handled already, just hide all dfn panels.
-        hideAllDfnPanels();
-    });
-});
-
-window.addEventListener("resize", () => {
-    // Pin any visible dfn panel
-    queryAll(".dfn-panel.on, .dfn-panel.activated").forEach(el=>positionDfnPanel(el));
 });
 
 function genAllDfnPanels() {
@@ -3639,16 +3635,17 @@ function genAllDfnPanels() {
             continue;
         }
         dfn.panelData = panelData;
-        insertDfnPopupAction(dfn);
+        genDfnPanel(dfn, panelData);
     }
 }
 
 function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
-    const dfnPanel = mk.aside({
-        class: "dfn-panel on",
+    const dfnPanel = mk.dialog({
+        class: "dfn-panel",
         id: `infopanel-for-${dfnID}`,
+        popover: "hint",
         "data-for": dfnID,
-        "aria-labelled-by":`infopaneltitle-for-${dfnID}`,
+        "aria-labelledby": `infopaneltitle-for-${dfnID}`,
         },
         mk.span({id:`infopaneltitle-for-${dfnID}`, style:"display:none"},
             `Info about the '${dfnText}' ${external?"external":""} reference.`),
@@ -3680,106 +3677,34 @@ function genDfnPanel(dfn, { dfnID, url, dfnText, refSections, external }) {
         event.stopPropagation();
         refocusOnTarget(event);
     });
-    dfnPanel.addEventListener('keydown', (event) => {
-        if(event.keyCode == 27) { // Escape key
-            hideDfnPanel({dfnPanel});
-            event.stopPropagation();
-            event.preventDefault();
+
+    dfnPanel.addEventListener('toggle', event=>{
+        if(event.newState == "closed") {
+            unpinDfnPanel(dfnPanel);
         }
     });
 
     dfnPanel.dfn = dfn;
     dfn.dfnPanel = dfnPanel;
+    dfn.after(dfnPanel);
+    const button = mk.button(
+        {
+            class:"dfn-panelbutton",
+            "popovertarget":dfnPanel.id
+        },
+        ...dfn.childNodes
+    );
+    dfn.append(button);
     return dfnPanel;
-}
-
-
-
-function hideAllDfnPanels() {
-    // Delete the currently-active dfn panel.
-    queryAll(".dfn-panel").forEach(dfnPanel=>hideDfnPanel({dfnPanel}));
-}
-
-function showDfnPanel(dfn) {
-    hideAllDfnPanels(); // Only display one at a time.
-
-    dfn.setAttribute("aria-expanded", "true");
-
-    const dfnPanel = genDfnPanel(dfn, dfn.panelData);
-
-    // Give the dfn a unique tabindex, and then
-    // give all the tabbable panel bits successive indexes.
-    let tabIndex = 100;
-    dfn.tabIndex = tabIndex++;
-    const tabbable = dfnPanel.querySelectorAll(":is(a, button)");
-    for (const el of tabbable) {
-        el.tabIndex = tabIndex++;
-    }
-
-    append(document.body, dfnPanel);
-    positionDfnPanel(dfnPanel);
-}
-
-function positionDfnPanel(dfnPanel) {
-    const dfn = dfnPanel.dfn;
-    const dfnPos = getBounds(dfn);
-    dfnPanel.style.top = dfnPos.bottom + "px";
-    dfnPanel.style.left = dfnPos.left + "px";
-
-    const panelPos = dfnPanel.getBoundingClientRect();
-    const panelMargin = 8;
-    const maxRight = document.body.parentNode.clientWidth - panelMargin;
-    if (panelPos.right > maxRight) {
-        const overflowAmount = panelPos.right - maxRight;
-        const newLeft = Math.max(panelMargin, dfnPos.left - overflowAmount);
-        dfnPanel.style.left = newLeft + "px";
-    }
 }
 
 function pinDfnPanel(dfnPanel) {
     // Switch it to "activated" state, which pins it.
     dfnPanel.classList.add("activated");
-    dfnPanel.style.position = "fixed";
-    dfnPanel.style.left = null;
-    dfnPanel.style.top = null;
 }
 
-function hideDfnPanel({dfn, dfnPanel}) {
-    if(!dfnPanel) dfnPanel = dfn.dfnPanel;
-    if(!dfn) dfn = dfnPanel.dfn;
-    dfn.dfnPanel = undefined;
-    dfnPanel.dfn = undefined;
-    dfn.setAttribute("aria-expanded", "false");
-    dfn.tabIndex = undefined;
-    dfnPanel.remove()
-}
-
-function toggleDfnPanel(dfn) {
-    if(dfn.dfnPanel) {
-        hideDfnPanel(dfn);
-    } else {
-        showDfnPanel(dfn);
-    }
-}
-
-function insertDfnPopupAction(dfn) {
-    dfn.setAttribute('role', 'button');
-    dfn.setAttribute('aria-expanded', 'false')
-    dfn.tabIndex = 0;
-    dfn.classList.add('has-dfn-panel');
-    dfn.addEventListener('click', (event) => {
-        toggleDfnPanel(dfn);
-        event.stopPropagation();
-    });
-    dfn.addEventListener('keypress', (event) => {
-        const kc = event.keyCode;
-        // 32->Space, 13->Enter
-        if(kc == 32 || kc == 13) {
-            toggleDfnPanel(dfn);
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    });
+function unpinDfnPanel(dfnPanel) {
+    dfnPanel.classList.remove("activated");
 }
 
 function refocusOnTarget(event) {
@@ -3789,21 +3714,6 @@ function refocusOnTarget(event) {
         // This is needed after browser scrolls to the destination.
         target.focus();
     });
-}
-
-// TODO: shared util
-// Returns the root-level absolute position {left and top} of element.
-function getBounds(el, relativeTo=document.body) {
-    const relativeRect = relativeTo.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    const top = elRect.top - relativeRect.top;
-    const left = elRect.left - relativeRect.left;
-    return {
-        top,
-        left,
-        bottom: top + elRect.height,
-        right: left + elRect.width,
-    }
 }
 
 function scrollToTargetAndHighlight(event) {
@@ -4038,6 +3948,8 @@ let refsData = {
 "#supports-loading-mode-prerender-cross-origin-frames": {"displayText":"prerender-cross-origin-frames","export":true,"for_":["Supports-Loading-Mode"],"level":"1","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped-1","status":"local","text":"prerender-cross-origin-frames","type":"dfn","url":"#supports-loading-mode-prerender-cross-origin-frames"},
 "#wait-for-a-matching-prerendered-prefetch-record": {"displayText":"wait for a matching prerendered prefetch record","export":true,"for_":[],"level":"1","normative":true,"shortname":"prerendering-revamped","spec":"prerendering-revamped-1","status":"local","text":"wait for a matching prerendered prefetch record","type":"dfn","url":"#wait-for-a-matching-prerendered-prefetch-record"},
 "478c0e72_https://html.spec.whatwg.org/multipage/speculative-loading.html#speculation-rule-set": {"displayText":"parse a speculation rule set string","export":true,"for_":[],"level":"","normative":true,"shortname":"html","spec":"html","status":"anchor-block","text":"parse a speculation rule set string","type":"dfn","url":"https://html.spec.whatwg.org/multipage/speculative-loading.html#speculation-rule-set"},
+"https://bluetooth.spec.whatwg.org/#dom-bluetooth-getdevices": {"displayText":"getDevices()","export":true,"for_":["Bluetooth"],"level":"1","normative":true,"shortname":"bluetooth","spec":"bluetooth","status":"current","text":"getDevices()","type":"method","url":"https://bluetooth.spec.whatwg.org/#dom-bluetooth-getdevices"},
+"https://bluetooth.spec.whatwg.org/#dom-bluetooth-requestdevice": {"displayText":"requestDevice()","export":true,"for_":["Bluetooth"],"level":"1","normative":true,"shortname":"bluetooth","spec":"bluetooth","status":"current","text":"requestDevice()","type":"method","url":"https://bluetooth.spec.whatwg.org/#dom-bluetooth-requestdevice"},
 "https://console.spec.whatwg.org/#report-a-warning-to-the-console": {"displayText":"report a warning to the console","export":true,"for_":[],"level":"1","normative":true,"shortname":"console","spec":"console","status":"current","text":"report a warning to the console","type":"dfn","url":"https://console.spec.whatwg.org/#report-a-warning-to-the-console"},
 "https://dom.spec.whatwg.org/#concept-document": {"displayText":"document","export":true,"for_":[],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"document","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-document"},
 "https://dom.spec.whatwg.org/#concept-document-origin": {"displayText":"origin","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"dom","spec":"dom","status":"current","text":"origin","type":"dfn","url":"https://dom.spec.whatwg.org/#concept-document-origin"},
@@ -4061,6 +3973,8 @@ let refsData = {
 "https://fetch.spec.whatwg.org/#http-scheme": {"displayText":"HTTP(S) scheme","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"http(s) scheme","type":"dfn","url":"https://fetch.spec.whatwg.org/#http-scheme"},
 "https://fetch.spec.whatwg.org/#http-sec-purpose": {"displayText":"Sec-Purpose","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"sec-purpose","type":"http-header","url":"https://fetch.spec.whatwg.org/#http-sec-purpose"},
 "https://fullscreen.spec.whatwg.org/#dom-element-requestfullscreen": {"displayText":"requestFullscreen()","export":true,"for_":["Element"],"level":"1","normative":true,"shortname":"fullscreen","spec":"fullscreen","status":"current","text":"requestFullscreen()","type":"method","url":"https://fullscreen.spec.whatwg.org/#dom-element-requestfullscreen"},
+"https://hid.spec.whatwg.org/#dom-hid-getdevices": {"displayText":"getDevices()","export":true,"for_":["HID"],"level":"1","normative":true,"shortname":"hid","spec":"hid","status":"current","text":"getDevices()","type":"method","url":"https://hid.spec.whatwg.org/#dom-hid-getdevices"},
+"https://hid.spec.whatwg.org/#dom-hid-requestdevice": {"displayText":"requestDevice()","export":true,"for_":["HID"],"level":"1","normative":true,"shortname":"hid","spec":"hid","status":"current","text":"requestDevice()","type":"method","url":"https://hid.spec.whatwg.org/#dom-hid-requestdevice"},
 "https://html.spec.whatwg.org/multipage/browsers.html#active-sandboxing-flag-set": {"displayText":"active sandboxing flag set","export":true,"for_":["Document"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"active sandboxing flag set","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#active-sandboxing-flag-set"},
 "https://html.spec.whatwg.org/multipage/browsers.html#concept-origin": {"displayText":"origin","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"origin","type":"dfn","url":"https://html.spec.whatwg.org/multipage/browsers.html#concept-origin"},
 "https://html.spec.whatwg.org/multipage/browsers.html#cross-origin-opener-policy-2": {"displayText":"Cross-Origin-Opener-Policy","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"cross-origin-opener-policy","type":"http-header","url":"https://html.spec.whatwg.org/multipage/browsers.html#cross-origin-opener-policy-2"},
@@ -4218,11 +4132,15 @@ let refsData = {
 "https://notifications.spec.whatwg.org/#dom-notification-permission": {"displayText":"permission","export":true,"for_":["Notification"],"level":"1","normative":true,"shortname":"notifications","spec":"notifications","status":"current","text":"permission","type":"attribute","url":"https://notifications.spec.whatwg.org/#dom-notification-permission"},
 "https://notifications.spec.whatwg.org/#dom-notification-requestpermission": {"displayText":"requestPermission()","export":true,"for_":["Notification"],"level":"1","normative":true,"shortname":"notifications","spec":"notifications","status":"current","text":"requestPermission()","type":"method","url":"https://notifications.spec.whatwg.org/#dom-notification-requestpermission"},
 "https://notifications.spec.whatwg.org/#get-the-notifications-permission-state": {"displayText":"get the notifications permission state","export":false,"for_":[],"level":"1","normative":true,"shortname":"notifications","spec":"notifications","status":"current","text":"get the notifications permission state","type":"dfn","url":"https://notifications.spec.whatwg.org/#get-the-notifications-permission-state"},
+"https://serial.spec.whatwg.org/#dom-serial-getports": {"displayText":"getPorts()","export":true,"for_":["Serial"],"level":"1","normative":true,"shortname":"serial","spec":"serial","status":"current","text":"getPorts()","type":"method","url":"https://serial.spec.whatwg.org/#dom-serial-getports"},
+"https://serial.spec.whatwg.org/#dom-serial-requestport": {"displayText":"requestPort()","export":true,"for_":["Serial"],"level":"1","normative":true,"shortname":"serial","spec":"serial","status":"current","text":"requestPort()","type":"method","url":"https://serial.spec.whatwg.org/#dom-serial-requestport"},
 "https://storage.spec.whatwg.org/#dom-storagemanager-persist": {"displayText":"persist()","export":true,"for_":["StorageManager"],"level":"1","normative":true,"shortname":"storage","spec":"storage","status":"current","text":"persist()","type":"method","url":"https://storage.spec.whatwg.org/#dom-storagemanager-persist"},
 "https://tc39.es/ecma262/#current-realm": {"displayText":"current realm","export":true,"for_":[],"level":"","normative":true,"shortname":"ecma262","spec":"ecma262","status":"anchor-block","text":"current realm","type":"dfn","url":"https://tc39.es/ecma262/#current-realm"},
 "https://url.spec.whatwg.org/#concept-url": {"displayText":"URL","export":true,"for_":[],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"url","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url"},
 "https://url.spec.whatwg.org/#concept-url-origin": {"displayText":"origin","export":true,"for_":["url"],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"origin","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-origin"},
 "https://url.spec.whatwg.org/#concept-url-scheme": {"displayText":"scheme","export":true,"for_":["url"],"level":"1","normative":true,"shortname":"url","spec":"url","status":"current","text":"scheme","type":"dfn","url":"https://url.spec.whatwg.org/#concept-url-scheme"},
+"https://usb.spec.whatwg.org/#dom-usb-getdevices": {"displayText":"getDevices()","export":true,"for_":["USB"],"level":"1","normative":true,"shortname":"usb","spec":"usb","status":"current","text":"getDevices()","type":"method","url":"https://usb.spec.whatwg.org/#dom-usb-getdevices"},
+"https://usb.spec.whatwg.org/#dom-usb-requestdevice": {"displayText":"requestDevice(options)","export":true,"for_":["USB"],"level":"1","normative":true,"shortname":"usb","spec":"usb","status":"current","text":"requestDevice(options)","type":"method","url":"https://usb.spec.whatwg.org/#dom-usb-requestdevice"},
 "https://w3c-cg.github.io/web-nfc/#dom-ndefreader-scan": {"displayText":"scan()","export":true,"for_":["NDEFReader"],"level":"1","normative":true,"shortname":"web-nfc","spec":"web-nfc","status":"current","text":"scan()","type":"method","url":"https://w3c-cg.github.io/web-nfc/#dom-ndefreader-scan"},
 "https://w3c-cg.github.io/web-nfc/#dom-ndefreader-write": {"displayText":"write()","export":true,"for_":["NDEFReader"],"level":"1","normative":true,"shortname":"web-nfc","spec":"web-nfc","status":"current","text":"write()","type":"method","url":"https://w3c-cg.github.io/web-nfc/#dom-ndefreader-write"},
 "https://w3c.github.io/ServiceWorker/#dom-serviceworker-postmessage": {"displayText":"postMessage(message, transfer)","export":true,"for_":["ServiceWorker"],"level":"1","normative":true,"shortname":"service-workers","spec":"service-workers","status":"current","text":"postMessage(message, transfer)","type":"method","url":"https://w3c.github.io/ServiceWorker/#dom-serviceworker-postmessage"},
@@ -4301,8 +4219,6 @@ let refsData = {
 "https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-pause": {"displayText":"pause()","export":true,"for_":["SpeechSynthesis"],"level":"1","normative":true,"shortname":"speech-api","spec":"speech-api","status":"current","text":"pause()","type":"method","url":"https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-pause"},
 "https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-resume": {"displayText":"resume()","export":true,"for_":["SpeechSynthesis"],"level":"1","normative":true,"shortname":"speech-api","spec":"speech-api","status":"current","text":"resume()","type":"method","url":"https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-resume"},
 "https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-speak": {"displayText":"speak(utterance)","export":true,"for_":["SpeechSynthesis"],"level":"1","normative":true,"shortname":"speech-api","spec":"speech-api","status":"current","text":"speak(utterance)","type":"method","url":"https://webaudio.github.io/web-speech-api/#dom-speechsynthesis-speak"},
-"https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-getdevices": {"displayText":"getDevices()","export":true,"for_":["Bluetooth"],"level":"1","normative":true,"shortname":"web-bluetooth","spec":"web-bluetooth","status":"current","text":"getDevices()","type":"method","url":"https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-getdevices"},
-"https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-requestdevice": {"displayText":"requestDevice()","export":true,"for_":["Bluetooth"],"level":"1","normative":true,"shortname":"web-bluetooth","spec":"web-bluetooth","status":"current","text":"requestDevice()","type":"method","url":"https://webbluetoothcg.github.io/web-bluetooth/#dom-bluetooth-requestdevice"},
 "https://webidl.spec.whatwg.org/#a-new-promise": {"displayText":"a new promise","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a new promise","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-new-promise"},
 "https://webidl.spec.whatwg.org/#a-promise-rejected-with": {"displayText":"a promise rejected with","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"a promise rejected with","type":"dfn","url":"https://webidl.spec.whatwg.org/#a-promise-rejected-with"},
 "https://webidl.spec.whatwg.org/#dfn-exposure-set": {"displayText":"exposure set","export":true,"for_":[],"level":"1","normative":true,"shortname":"webidl","spec":"webidl","status":"current","text":"exposure set","type":"dfn","url":"https://webidl.spec.whatwg.org/#dfn-exposure-set"},
@@ -4344,12 +4260,6 @@ let refsData = {
 "https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-start-time": {"displayText":"start time","export":true,"for_":["prefetch record"],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch","status":"current","text":"start time","type":"dfn","url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-start-time"},
 "https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-tags": {"displayText":"tags","export":true,"for_":["prefetch record"],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch","status":"current","text":"tags","type":"dfn","url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-tags"},
 "https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-url": {"displayText":"URL","export":true,"for_":["prefetch record"],"level":"1","normative":true,"shortname":"prefetch","spec":"prefetch","status":"current","text":"url","type":"dfn","url":"https://wicg.github.io/nav-speculation/prefetch.html#prefetch-record-url"},
-"https://wicg.github.io/serial/#dom-serial-getports": {"displayText":"getPorts()","export":true,"for_":["Serial"],"level":"1","normative":true,"shortname":"serial","spec":"serial","status":"current","text":"getPorts()","type":"method","url":"https://wicg.github.io/serial/#dom-serial-getports"},
-"https://wicg.github.io/serial/#dom-serial-requestport": {"displayText":"requestPort()","export":true,"for_":["Serial"],"level":"1","normative":true,"shortname":"serial","spec":"serial","status":"current","text":"requestPort()","type":"method","url":"https://wicg.github.io/serial/#dom-serial-requestport"},
-"https://wicg.github.io/webhid/#dom-hid-getdevices": {"displayText":"getDevices()","export":true,"for_":["HID"],"level":"1","normative":true,"shortname":"webhid","spec":"webhid","status":"current","text":"getDevices()","type":"method","url":"https://wicg.github.io/webhid/#dom-hid-getdevices"},
-"https://wicg.github.io/webhid/#dom-hid-requestdevice": {"displayText":"requestDevice()","export":true,"for_":["HID"],"level":"1","normative":true,"shortname":"webhid","spec":"webhid","status":"current","text":"requestDevice()","type":"method","url":"https://wicg.github.io/webhid/#dom-hid-requestdevice"},
-"https://wicg.github.io/webusb/#dom-usb-getdevices": {"displayText":"getDevices()","export":true,"for_":["USB"],"level":"1","normative":true,"shortname":"webusb","spec":"webusb","status":"current","text":"getDevices()","type":"method","url":"https://wicg.github.io/webusb/#dom-usb-getdevices"},
-"https://wicg.github.io/webusb/#dom-usb-requestdevice": {"displayText":"requestDevice(options)","export":true,"for_":["USB"],"level":"1","normative":true,"shortname":"webusb","spec":"webusb","status":"current","text":"requestDevice(options)","type":"method","url":"https://wicg.github.io/webusb/#dom-usb-requestdevice"},
 "https://www.rfc-editor.org/rfc/rfc8941.html#name-lists": {"displayText":"list","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"list","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc8941.html#name-lists"},
 "https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens": {"displayText":"token","export":true,"for_":["structured header"],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"token","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc8941.html#name-tokens"},
 "https://www.rfc-editor.org/rfc/rfc8941.html#section-1": {"displayText":"structured header","export":true,"for_":[],"level":"","normative":true,"shortname":"rfc8941","spec":"rfc8941","status":"anchor-block","text":"structured header","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc8941.html#section-1"},
