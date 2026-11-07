@@ -970,6 +970,8 @@ To <dfn export>get the supported loading modes</dfn> for a [=response=] |respons
 
 1. Let |slmHeader| be the result of [=header list/getting a structured field value=] given [:Supports-Loading-Mode:] and "`list`" from |response|'s [=response/header list=].
 
+1. If |slmHeader| is null, then return an empty list.
+
 1. Return a [=list=] containing all elements of |slmHeader| that are [=structured header/tokens=].
 
 <h2 id="intrusive-behaviors">Preventing intrusive behaviors</h2>
